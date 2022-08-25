@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.YearMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.Year">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="year_name" jdbcType="VARCHAR" property="yearName" />
+    <result column="year_start" jdbcType="TIMESTAMP" property="yearStart" />
+    <result column="year_end" jdbcType="TIMESTAMP" property="yearEnd" />
+    <result column="curr" jdbcType="INTEGER" property="curr" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, year_name, year_start, year_end, curr, create_time, create_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_year
+    where oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_year
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.Year">
+    insert into t_year (oid, year_name, year_start, 
+      year_end, curr, create_time, create_user
+      )
+    values (#{oid,jdbcType=BIGINT}, #{yearName,jdbcType=VARCHAR}, #{yearStart,jdbcType=TIMESTAMP}, 
+      #{yearEnd,jdbcType=TIMESTAMP}, #{curr,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Year">
+    insert into t_year
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="yearName != null">
+        year_name,
+      </if>
+      <if test="yearStart != null">
+        year_start,
+      </if>
+      <if test="yearEnd != null">
+        year_end,
+      </if>
+      <if test="curr != null">
+        curr,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=BIGINT},
+      </if>
+      <if test="yearName != null">
+        #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="yearStart != null">
+        #{yearStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yearEnd != null">
+        #{yearEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="curr != null">
+        #{curr,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Year">
+    update t_year
+    <set>
+      <if test="yearName != null">
+        year_name = #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="yearStart != null">
+        year_start = #{yearStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yearEnd != null">
+        year_end = #{yearEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="curr != null">
+        curr = #{curr,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Year">
+    update t_year
+    set year_name = #{yearName,jdbcType=VARCHAR},
+      year_start = #{yearStart,jdbcType=TIMESTAMP},
+      year_end = #{yearEnd,jdbcType=TIMESTAMP},
+      curr = #{curr,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=BIGINT}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+    count(ty.oid)
+    from t_year as ty
+    where 1=1
+    <if test="key != null and key != ''">
+      AND ty.year_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    ty.*
+    from t_year as ty
+    where 1=1
+    <if test="key != null and key != ''">
+      AND ty.year_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    order by ty.curr asc, ty.oid desc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+  <select id="checkYear" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    ty.*
+    FROM
+    t_year AS ty
+    WHERE
+    1=1
+    <if test="yearName != null">
+      AND ty.year_name = #{yearName,jdbcType=VARCHAR}
+    </if>
+    <if test="oid != null">
+      AND ty.oid != #{oid,jdbcType=BIGINT}
+    </if>
+    ORDER BY
+    ty.oid DESC
+    LIMIT 1
+  </select>
+  <delete id="deleteBatch">
+    delete from t_year
+    where oid in
+    <foreach collection="array" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <select id="findCurrYear" resultMap="BaseResultMap">
+    SELECT
+    ty.*
+    FROM
+    t_year AS ty
+    WHERE
+      ty.curr = 1
+    order by ty.year_start asc
+    limit 1
+  </select>
+  <update id="updateSetCurrYear" parameterType="java.lang.Long">
+    update t_year set curr = 1 where oid = #{oid,jdbcType=BIGINT};
+    update t_year set curr = 2 where oid != #{oid,jdbcType=BIGINT};
+  </update>
+</mapper>

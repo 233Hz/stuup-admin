@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.MenuMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.Menu">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+    <result column="menu_code" jdbcType="VARCHAR" property="menuCode" />
+    <result column="link" jdbcType="VARCHAR" property="link" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, menu_name, menu_code, link, icon, parent_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_menu
+    where oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_menu
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.Menu">
+    insert into t_menu (oid, menu_name, menu_code, 
+      link, icon, parent_id
+      )
+    values (#{oid,jdbcType=BIGINT}, #{menuName,jdbcType=VARCHAR}, #{menuCode,jdbcType=VARCHAR}, 
+      #{link,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Menu">
+    insert into t_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="menuName != null">
+        menu_name,
+      </if>
+      <if test="menuCode != null">
+        menu_code,
+      </if>
+      <if test="link != null">
+        link,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=BIGINT},
+      </if>
+      <if test="menuName != null">
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuCode != null">
+        #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="link != null">
+        #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Menu">
+    update t_menu
+    <set>
+      <if test="menuName != null">
+        menu_name = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuCode != null">
+        menu_code = #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="link != null">
+        link = #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Menu">
+    update t_menu
+    set menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_code = #{menuCode,jdbcType=VARCHAR},
+      link = #{link,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+    count(tm.oid)
+    from t_menu as tm
+    where 1=1
+    <if test="parentId != null">
+      AND tm.parent_id = #{parentId,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    tm.*
+    from t_menu as tm
+    where 1=1
+    <if test="parentId != null">
+      AND tm.parent_id = #{parentId,jdbcType=BIGINT}
+    </if>
+    order by tm.oid asc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+  <select id="queryUserMenus" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT DISTINCT
+      tm.oid,
+      tm.menu_name,
+      tm.menu_code,
+      tm.link,
+      tm.icon,
+      tm.parent_id
+    FROM
+      t_role_menu AS trm
+        LEFT JOIN t_menu AS tm ON tm.oid = trm.menu_id
+        LEFT JOIN t_user_role AS tur ON tur.role_id = trm.role_id
+    WHERE
+      tur.user_id = #{userId,jdbcType=BIGINT}
+    ORDER BY
+      tm.oid ASC
+  </select>
+</mapper>

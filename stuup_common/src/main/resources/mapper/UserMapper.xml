@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.User">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="degree" jdbcType="VARCHAR" property="degree" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="dept_name" property="deptName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, user_name, sex, mobile, dept_id, degree, user_type, id_card, birthday, login_name, password, state, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    tu.*,
+    td.dept_name
+    from t_user as tu
+    left join t_dept as td on td.oid = tu.dept_id
+    where tu.oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_user
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.User">
+    insert into t_user (oid, user_name, sex, 
+      mobile, dept_id, degree, user_type,
+      id_card, birthday, login_name, 
+      password, state, create_time
+      )
+    values (#{oid,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
+      #{mobile,jdbcType=VARCHAR}, #{deptId,jdbcType=BIGINT}, #{degree,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},
+      #{idCard,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.User" useGeneratedKeys="true" keyProperty="oid">
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="degree != null">
+        degree,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="idCard != null">
+        id_card,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="degree != null">
+        #{degree,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="idCard != null">
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.User">
+    update t_user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="degree != null">
+        degree = #{degree,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="idCard != null">
+        id_card = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.User">
+    update t_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      dept_id = #{deptId,jdbcType=BIGINT},
+      degree = #{degree,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=INTEGER},
+      id_card = #{idCard,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=VARCHAR},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+    count(tu.oid)
+    from t_user as tu
+    where 1=1
+    <if test="key != null and key != ''">
+      AND (tu.user_name LIKE CONCAT(CONCAT('%',#{key}),'%') or tu.mobile LIKE CONCAT(CONCAT('%',#{key}),'%'))
+    </if>
+    <if test="state != null">
+      AND tu.state = #{state,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    tu.*,
+    td.dept_name
+    from t_user as tu
+    left join t_dept as td on td.oid = tu.dept_id
+    where 1=1
+    <if test="key != null and key != ''">
+      AND (tu.user_name LIKE CONCAT(CONCAT('%',#{key}),'%') or tu.mobile LIKE CONCAT(CONCAT('%',#{key}),'%'))
+    </if>
+    <if test="state != null">
+      AND tu.state = #{state,jdbcType=INTEGER}
+    </if>
+    order by tu.oid desc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+  <select id="checkUser" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    tu.*
+    FROM
+    t_user AS tu
+    WHERE 1=1
+    <if test="mobile != null">
+      AND tu.mobile = #{mobile,jdbcType=VARCHAR}
+    </if>
+    <if test="loginName != null">
+      AND tu.login_name = #{loginName,jdbcType=VARCHAR}
+    </if>
+    <if test="password != null">
+      AND tu.password = #{password,jdbcType=VARCHAR}
+    </if>
+    <if test="oid != null">
+      AND tu.oid != #{oid,jdbcType=BIGINT}
+    </if>
+    ORDER BY
+    tu.oid DESC
+    LIMIT 1
+  </select>
+  <delete id="deleteBatch">
+    delete from t_user
+    where oid in
+    <foreach close=")" collection="array" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <select id="findAssessMiddleUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    tu.*,
+    td.dept_name
+    FROM
+    t_user AS tu
+    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
+    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
+    WHERE
+    tar.year_id = #{yearId,jdbcType=BIGINT}
+    AND (tar.user_type = 3 OR tar.user_type = 4)
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="findAssessTeachers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    tu.*,
+    tar.dept_id,
+    td.dept_name
+    FROM
+    t_user AS tu
+    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
+    AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
+    WHERE tar.user_type = 5
+    AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    <if test="userType != null">
+      AND tu.user_type = #{userType,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="findAssessUserTotal" parameterType="java.util.HashMap" resultType="int">
+    SELECT
+    count(tu.oid)
+    FROM
+    t_user AS tu
+    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
+    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
+    WHERE
+    tar.year_id = #{yearId,jdbcType=BIGINT}
+    <choose>
+      <when test="userType == 1">
+        AND (tar.user_type = 1 OR tar.user_type = 2)
+      </when>
+      <when test="userType == 2">
+        AND (tar.user_type = 1 OR tar.user_type = 2)
+        AND tar.oid in (SELECT leader_range_id FROM t_range_middle)
+      </when>
+      <when test="userType == 6">
+        AND (tar.user_type = 3 OR tar.user_type = 4)
+      </when>
+      <otherwise>
+        AND tar.user_type = #{userType,jdbcType=INTEGER}
+      </otherwise>
+    </choose>
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="findAssessZCYGTotal" parameterType="java.util.HashMap" resultType="int">
+    SELECT
+    count(tu.oid)
+    FROM
+    t_user AS tu
+    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
+    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
+    WHERE
+      tar.year_id = #{yearId,jdbcType=BIGINT}
+      AND (tar.user_type = 3 OR tar.user_type = 4 OR tar.user_type = 5)
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="findRangeCanUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+      tu.*
+    FROM
+      t_user AS tu
+    WHERE
+      tu.state = 1
+      AND (tu.dept_id = #{deptId,jdbcType=BIGINT} OR tu.dept_id IS NULL)
+      AND tu.oid NOT IN (
+      SELECT
+        tar.user_id
+      FROM
+        t_assess_range AS tar
+      WHERE
+        tar.user_type != 5
+        AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    )
+  </select>
+  <select id="findLeaderRangeCanUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+      tu.*
+    FROM
+      t_user AS tu
+    WHERE
+      tu.state = 1
+      AND tu.oid NOT IN (
+        SELECT
+          tar.user_id
+        FROM
+          t_assess_range AS tar
+        WHERE
+          tar.year_id = #{yearId,jdbcType=BIGINT}
+          <if test="oid != null">
+            AND tar.oid != #{oid,jdbcType=BIGINT}
+          </if>
+      )
+  </select>
+  <select id="findRangeUsers" parameterType="java.util.HashMap" resultType="Long">
+    SELECT
+      tu.oid
+    FROM
+      t_user AS tu
+        LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
+    WHERE
+      tar.year_id = #{yearId,jdbcType=BIGINT}
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+      AND tar.user_type = #{userType,jdbcType=INTEGER}
+  </select>
+  <select id="findRangeUserList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    tu.*
+    FROM
+    t_user AS tu
+    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
+    WHERE
+    tar.year_id = #{yearId,jdbcType=BIGINT}
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+    <if test="userType != null">
+      AND tar.user_type = #{userType,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="findAssessMiddleRangeUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+      tu.*,
+      td.dept_name
+    FROM
+      t_range_middle AS trm
+      LEFT JOIN t_assess_range AS tar ON tar.oid = trm.assess_range_id
+      LEFT JOIN t_user AS tu ON tu.oid = tar.user_id
+      LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
+    WHERE
+      trm.leader_range_id = #{leaderRangeId,jdbcType=BIGINT}
+  </select>
+</mapper>

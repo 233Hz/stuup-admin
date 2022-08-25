@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.AssessRangeMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.AssessRange">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="year_id" jdbcType="BIGINT" property="yearId" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="retire" jdbcType="INTEGER" property="retire" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="user_name" property="userName" />
+    <result column="year_name" property="yearName" />
+    <result column="dept_name" property="deptName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, year_id, user_type, dept_id, user_id, create_user, create_time, retire, note
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_assess_range
+    where oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_assess_range
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.AssessRange">
+    insert into t_assess_range (oid, year_id, user_type, 
+      dept_id, user_id, create_user, 
+      create_time, retire, note
+      )
+    values (#{oid,jdbcType=BIGINT}, #{yearId,jdbcType=BIGINT}, #{userType,jdbcType=INTEGER}, 
+      #{deptId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{createUser,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{retire,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.AssessRange">
+    insert into t_assess_range
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="yearId != null">
+        year_id,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="retire != null">
+        retire,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=BIGINT},
+      </if>
+      <if test="yearId != null">
+        #{yearId,jdbcType=BIGINT},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="retire != null">
+        #{retire,jdbcType=INTEGER},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.AssessRange">
+    update t_assess_range
+    <set>
+      <if test="yearId != null">
+        year_id = #{yearId,jdbcType=BIGINT},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="retire != null">
+        retire = #{retire,jdbcType=INTEGER},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.AssessRange">
+    update t_assess_range
+    set year_id = #{yearId,jdbcType=BIGINT},
+      user_type = #{userType,jdbcType=INTEGER},
+      dept_id = #{deptId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      create_user = #{createUser,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      retire = #{retire,jdbcType=INTEGER},
+      note = #{note,jdbcType=VARCHAR}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+    count(tar.oid)
+    from t_assess_range as tar
+    left join t_user as tu on tu.oid = tar.user_id
+    left join t_dept as td on td.oid = tar.dept_id
+    where 1=1
+    <if test="yearId != null">
+      AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    </if>
+    <if test="userType != null">
+      AND tar.user_type = #{userType,jdbcType=INTEGER}
+    </if>
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+    <if test="key != null and key != ''">
+      AND tu.user_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    tar.*,
+    tu.user_name,
+    ty.year_name,
+    td.dept_name
+    from t_assess_range as tar
+    left join t_user as tu on tu.oid = tar.user_id
+    left join t_year as ty on ty.oid = tar.year_id
+    left join t_dept as td on td.oid = tar.dept_id
+    where 1=1
+    <if test="yearId != null">
+      AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    </if>
+    <if test="userType != null">
+      AND tar.user_type = #{userType,jdbcType=INTEGER}
+    </if>
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+    <if test="key != null and key != ''">
+      AND tu.user_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    order by tar.oid desc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+  <select id="checkAssessRange" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    tar.*,
+    td.dept_name
+    FROM
+    t_assess_range AS tar
+    left join t_dept as td on td.oid = tar.dept_id
+    WHERE 1=1
+    <if test="yearId != null">
+      AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    </if>
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+    <if test="userId != null">
+      AND tar.user_id = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="userType != null">
+      AND tar.user_type = #{userType,jdbcType=INTEGER}
+    </if>
+    <if test="oid != null">
+      AND tar.oid != #{oid,jdbcType=BIGINT}
+    </if>
+    ORDER BY
+    tar.oid DESC
+    LIMIT 1
+  </select>
+  <delete id="deleteBatch">
+    delete from t_assess_range
+    where oid in
+    <foreach close=")" collection="array" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="updateData" parameterType="com.poho.stuup.model.AssessRange">
+    update t_assess_range
+    set year_id = #{yearId,jdbcType=BIGINT},
+        user_type = #{userType,jdbcType=INTEGER},
+        dept_id = #{deptId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=BIGINT}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <delete id="delYearDeptYG" parameterType="java.util.HashMap">
+    delete from t_assess_range
+    where year_id = #{yearId,jdbcType=BIGINT}
+    and dept_id = #{deptId,jdbcType=BIGINT}
+    and user_type = #{userType,jdbcType=INTEGER}
+  </delete>
+  <select id="queryMiddleRange" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+      tar.*,
+      CONCAT(tu.user_name, '-', td.dept_name) AS user_name
+    FROM
+      t_assess_range AS tar
+      LEFT JOIN t_user AS tu ON tu.oid = tar.user_id
+      LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
+    WHERE
+      (tar.user_type = 3 OR tar.user_type = 4)
+      AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    ORDER BY
+      tar.oid DESC
+  </select>
+  <select id="queryRangeLeader" parameterType="java.util.HashMap" resultType="java.lang.String">
+    SELECT
+      tu.user_name
+    FROM
+      t_assess_range AS tar
+      LEFT JOIN t_user AS tu ON tu.oid = tar.user_id
+    WHERE
+      tar.year_id = #{yearId,jdbcType=BIGINT}
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+      AND tar.user_type = #{userType,jdbcType=INTEGER}
+    ORDER BY
+      tar.user_id ASC
+    LIMIT 1
+  </select>
+</mapper>

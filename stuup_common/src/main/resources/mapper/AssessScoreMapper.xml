@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.AssessScoreMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.AssessScore">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="year_id" jdbcType="BIGINT" property="yearId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="qzcp" jdbcType="DOUBLE" property="qzcp" />
+    <result column="adjust_qzcp" jdbcType="DOUBLE" property="adjustQzcp" />
+    <result column="qzcprs" jdbcType="INTEGER" property="qzcprs" />
+    <result column="zphp" jdbcType="DOUBLE" property="zphp" />
+    <result column="zphprs" jdbcType="INTEGER" property="zphprs" />
+    <result column="fgld" jdbcType="DOUBLE" property="fgld" />
+    <result column="fgldrs" jdbcType="INTEGER" property="fgldrs" />
+    <result column="dzld" jdbcType="DOUBLE" property="dzld" />
+    <result column="dzldrs" jdbcType="INTEGER" property="dzldrs" />
+    <result column="score" jdbcType="DOUBLE" property="score" />
+    <result column="adjust_score" jdbcType="DOUBLE" property="adjustScore" />
+    <result column="ranking" jdbcType="INTEGER" property="ranking" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="user_name" property="userName" />
+    <result column="user_type" property="userType" />
+    <result column="year_name" property="yearName" />
+    <result column="dept_name" property="deptName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, year_id, user_id, qzcp, adjust_qzcp, qzcprs, zphp, zphprs, fgld, fgldrs, dzld, 
+    dzldrs, score, adjust_score, ranking, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_assess_score
+    where oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_assess_score
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.AssessScore">
+    insert into t_assess_score (oid, year_id, user_id, 
+      qzcp, adjust_qzcp, qzcprs, 
+      zphp, zphprs, fgld, fgldrs, 
+      dzld, dzldrs, score, 
+      adjust_score, ranking, create_time
+      )
+    values (#{oid,jdbcType=BIGINT}, #{yearId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{qzcp,jdbcType=DOUBLE}, #{adjustQzcp,jdbcType=DOUBLE}, #{qzcprs,jdbcType=INTEGER}, 
+      #{zphp,jdbcType=DOUBLE}, #{zphprs,jdbcType=INTEGER}, #{fgld,jdbcType=DOUBLE}, #{fgldrs,jdbcType=INTEGER}, 
+      #{dzld,jdbcType=DOUBLE}, #{dzldrs,jdbcType=INTEGER}, #{score,jdbcType=DOUBLE}, 
+      #{adjustScore,jdbcType=DOUBLE}, #{ranking,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.AssessScore">
+    insert into t_assess_score
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="yearId != null">
+        year_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="qzcp != null">
+        qzcp,
+      </if>
+      <if test="adjustQzcp != null">
+        adjust_qzcp,
+      </if>
+      <if test="qzcprs != null">
+        qzcprs,
+      </if>
+      <if test="zphp != null">
+        zphp,
+      </if>
+      <if test="zphprs != null">
+        zphprs,
+      </if>
+      <if test="fgld != null">
+        fgld,
+      </if>
+      <if test="fgldrs != null">
+        fgldrs,
+      </if>
+      <if test="dzld != null">
+        dzld,
+      </if>
+      <if test="dzldrs != null">
+        dzldrs,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="adjustScore != null">
+        adjust_score,
+      </if>
+      <if test="ranking != null">
+        ranking,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=BIGINT},
+      </if>
+      <if test="yearId != null">
+        #{yearId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="qzcp != null">
+        #{qzcp,jdbcType=DOUBLE},
+      </if>
+      <if test="adjustQzcp != null">
+        #{adjustQzcp,jdbcType=DOUBLE},
+      </if>
+      <if test="qzcprs != null">
+        #{qzcprs,jdbcType=INTEGER},
+      </if>
+      <if test="zphp != null">
+        #{zphp,jdbcType=DOUBLE},
+      </if>
+      <if test="zphprs != null">
+        #{zphprs,jdbcType=INTEGER},
+      </if>
+      <if test="fgld != null">
+        #{fgld,jdbcType=DOUBLE},
+      </if>
+      <if test="fgldrs != null">
+        #{fgldrs,jdbcType=INTEGER},
+      </if>
+      <if test="dzld != null">
+        #{dzld,jdbcType=DOUBLE},
+      </if>
+      <if test="dzldrs != null">
+        #{dzldrs,jdbcType=INTEGER},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="adjustScore != null">
+        #{adjustScore,jdbcType=DOUBLE},
+      </if>
+      <if test="ranking != null">
+        #{ranking,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.AssessScore">
+    update t_assess_score
+    <set>
+      <if test="yearId != null">
+        year_id = #{yearId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="qzcp != null">
+        qzcp = #{qzcp,jdbcType=DOUBLE},
+      </if>
+      <if test="adjustQzcp != null">
+        adjust_qzcp = #{adjustQzcp,jdbcType=DOUBLE},
+      </if>
+      <if test="qzcprs != null">
+        qzcprs = #{qzcprs,jdbcType=INTEGER},
+      </if>
+      <if test="zphp != null">
+        zphp = #{zphp,jdbcType=DOUBLE},
+      </if>
+      <if test="zphprs != null">
+        zphprs = #{zphprs,jdbcType=INTEGER},
+      </if>
+      <if test="fgld != null">
+        fgld = #{fgld,jdbcType=DOUBLE},
+      </if>
+      <if test="fgldrs != null">
+        fgldrs = #{fgldrs,jdbcType=INTEGER},
+      </if>
+      <if test="dzld != null">
+        dzld = #{dzld,jdbcType=DOUBLE},
+      </if>
+      <if test="dzldrs != null">
+        dzldrs = #{dzldrs,jdbcType=INTEGER},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="adjustScore != null">
+        adjust_score = #{adjustScore,jdbcType=DOUBLE},
+      </if>
+      <if test="ranking != null">
+        ranking = #{ranking,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.AssessScore">
+    update t_assess_score
+    set year_id = #{yearId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      qzcp = #{qzcp,jdbcType=DOUBLE},
+      adjust_qzcp = #{adjustQzcp,jdbcType=DOUBLE},
+      qzcprs = #{qzcprs,jdbcType=INTEGER},
+      zphp = #{zphp,jdbcType=DOUBLE},
+      zphprs = #{zphprs,jdbcType=INTEGER},
+      fgld = #{fgld,jdbcType=DOUBLE},
+      fgldrs = #{fgldrs,jdbcType=INTEGER},
+      dzld = #{dzld,jdbcType=DOUBLE},
+      dzldrs = #{dzldrs,jdbcType=INTEGER},
+      score = #{score,jdbcType=DOUBLE},
+      adjust_score = #{adjustScore,jdbcType=DOUBLE},
+      ranking = #{ranking,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+    count(tas.oid)
+    from t_assess_score as tas
+    left join t_assess_range as tar on tar.user_id = tas.user_id
+    <if test="yearId != null">
+      AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    </if>
+    left join t_user as tu on tu.oid = tas.user_id
+    left join t_dept as td on td.oid = tar.dept_id
+    where 1=1
+    <if test="yearId != null">
+      AND tas.year_id = #{yearId,jdbcType=BIGINT}
+    </if>
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+    <if test="key != null and key != ''">
+      AND tu.user_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    tas.*,
+    tu.user_name,
+    tu.user_type,
+    ty.year_name,
+    td.dept_name
+    from t_assess_score as tas
+    left join t_assess_range as tar on tar.user_id = tas.user_id
+    <if test="yearId != null">
+      AND tar.year_id = #{yearId,jdbcType=BIGINT}
+    </if>
+    left join t_user as tu on tu.oid = tas.user_id
+    left join t_year as ty on ty.oid = tas.year_id
+    left join t_dept as td on td.oid = tar.dept_id
+    where 1=1
+    <if test="yearId != null">
+      AND tas.year_id = #{yearId,jdbcType=BIGINT}
+    </if>
+    <if test="deptId != null">
+      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
+    </if>
+    <if test="key != null and key != ''">
+      AND tu.user_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    order by IFNULL(tas.adjust_score, tas.score) desc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+  <delete id="delYearScore" parameterType="java.lang.Long">
+    delete from t_assess_score
+    where year_id = #{_parameter,jdbcType=BIGINT}
+  </delete>
+  <update id="updateAdjustScore" parameterType="com.poho.stuup.model.AssessScore">
+    update t_assess_score
+    set adjust_score = #{adjustScore,jdbcType=INTEGER}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateAdjustQzcp" parameterType="com.poho.stuup.model.AssessScore">
+    update t_assess_score
+    set adjust_qzcp = #{adjustQzcp,jdbcType=INTEGER}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="reCalculateScore" parameterType="java.lang.Long">
+    UPDATE
+        t_assess_score
+    SET score = IFNULL(adjust_qzcp, qzcp) + IFNULL(zphp, 0) + IFNULL(fgld, 0) + IFNULL(dzld, 0)
+    WHERE
+      oid = #{oid,jdbcType=BIGINT}
+  </update>
+</mapper>

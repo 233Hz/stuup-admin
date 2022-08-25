@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.StandardCategoryMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.StandardCategory">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="category_score" jdbcType="INTEGER" property="categoryScore" />
+    <result column="create_user" jdbcType="BIGINT" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, category_name, category_score, create_user, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_standard_category
+    where oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_standard_category
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.StandardCategory">
+    insert into t_standard_category (oid, category_name, category_score, 
+      create_user, create_time)
+    values (#{oid,jdbcType=BIGINT}, #{categoryName,jdbcType=VARCHAR}, #{categoryScore,jdbcType=INTEGER}, 
+      #{createUser,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.StandardCategory">
+    insert into t_standard_category
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="categoryName != null">
+        category_name,
+      </if>
+      <if test="categoryScore != null">
+        category_score,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=BIGINT},
+      </if>
+      <if test="categoryName != null">
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryScore != null">
+        #{categoryScore,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.StandardCategory">
+    update t_standard_category
+    <set>
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryScore != null">
+        category_score = #{categoryScore,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.StandardCategory">
+    update t_standard_category
+    set category_name = #{categoryName,jdbcType=VARCHAR},
+      category_score = #{categoryScore,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+    count(tsc.oid)
+    from t_standard_category as tsc
+    where 1=1
+    <if test="key != null and key != ''">
+      AND tsc.category_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    tsc.*
+    from t_standard_category as tsc
+    where 1=1
+    <if test="key != null and key != ''">
+      AND tsc.category_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    order by tsc.create_time desc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+  <select id="checkCategory" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    tsc.*
+    FROM
+    t_standard_category AS tsc
+    WHERE 1=1
+    <if test="categoryName != null">
+      AND tsc.category_name = #{categoryName,jdbcType=VARCHAR}
+    </if>
+    <if test="oid != null">
+      AND tsc.oid != #{oid,jdbcType=BIGINT}
+    </if>
+    ORDER BY
+    tsc.oid DESC
+    LIMIT 1
+  </select>
+  <delete id="deleteBatch">
+    delete from t_standard_category
+    where oid in
+    <foreach collection="array" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+</mapper>
