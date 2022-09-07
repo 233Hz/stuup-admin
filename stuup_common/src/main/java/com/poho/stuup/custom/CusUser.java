@@ -17,13 +17,7 @@ public class CusUser {
     private String deptName;
     private Integer userType;
     private String degree;
-    private String position;
     private String roleIds;
-    private Long yearId;
-    private String yearName;
-    private Long userRangeId;
-    private Integer staffType;
-    private String leader;
 
     public CusUser() {
 
@@ -109,13 +103,6 @@ public class CusUser {
         this.degree = degree;
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
 
     public String getRoleIds() {
         return roleIds;
@@ -125,43 +112,5 @@ public class CusUser {
         this.roleIds = roleIds;
     }
 
-    public Long getYearId() {
-        return yearId;
-    }
 
-    public void setYearId(Long yearId) {
-        this.yearId = yearId;
-    }
-
-    public String getYearName() {
-        return yearName;
-    }
-
-    public void setYearName(String yearName) {
-        this.yearName = yearName;
-    }
-
-    public Long getUserRangeId() {
-        return userRangeId;
-    }
-
-    public void setUserRangeId(Long userRangeId) {
-        this.userRangeId = userRangeId;
-    }
-
-    public Integer getStaffType() {
-        return staffType;
-    }
-
-    public void setStaffType(Integer staffType) {
-        this.staffType = staffType;
-    }
-
-    public String getLeader() {
-        return leader;
-    }
-
-    public void setLeader(String leader) {
-        this.leader = leader;
-    }
 }

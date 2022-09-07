@@ -1,20 +1,17 @@
 package com.poho.stuup.api.controller;
 
-import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.api.config.PropertiesConfig;
-import com.poho.stuup.service.IExportService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.Map;
 
 /**
  * @Author: wupeng
@@ -25,8 +22,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/download")
 public class DownloadController {
-    @Resource
-    private IExportService exportService;
     @Resource
     private PropertiesConfig config;
     @Resource
@@ -65,49 +60,5 @@ public class DownloadController {
         }
     }
 
-    /**
-     * 导出考核登记信息
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/reg/{oid}", method = RequestMethod.POST)
-    public ResponseModel reg(@PathVariable Long oid) {
-        return exportService.exportRegPdf(config.getBaseDoc(), config.getBaseUrl(), oid);
-    }
 
-    /**
-     * 导出绩效考核结果
-     * @return
-     */
-    @RequestMapping(value = "/exportResult/{yearId}", method = RequestMethod.POST)
-    public void exportResult(@PathVariable Long yearId) {
-        String templatePath = "template/resultTemplate.xls";
-        ClassPathResource resource = new ClassPathResource(templatePath);
-        InputStream inputStream = null;
-        try {
-            inputStream = resource.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        exportService.exportResult(yearId, inputStream, response);
-    }
-
-    /**
-     * 导出员工绩效考核表
-     * @return
-     */
-    @RequestMapping(value = "/exportStaff", method = RequestMethod.POST)
-    public void exportStaff(@RequestBody Map<String, String> params) {
-        String templatePath = "template/staffTemplate.xls";
-        ClassPathResource resource = new ClassPathResource(templatePath);
-        InputStream inputStream = null;
-        try {
-            inputStream = resource.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String yearId = params.get("yearId");
-        String deptId = params.get("deptId");
-        exportService.exportStaff(yearId, deptId, inputStream, response);
-    }
 }

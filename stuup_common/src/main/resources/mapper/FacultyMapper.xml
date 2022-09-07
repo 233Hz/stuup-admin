@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microvan.eva.dao.FacultyMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.Faculty">
+    <id column="oid" jdbcType="INTEGER" property="oid" />
+    <result column="faculty_name" jdbcType="VARCHAR" property="facultyName" />
+    <result column="faculty_code" jdbcType="VARCHAR" property="facultyCode" />
+    <result column="faculty_admin" jdbcType="INTEGER" property="facultyAdmin" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="admin_name" property="adminName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, faculty_name, faculty_code, faculty_admin, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_faculty
+    where oid = #{oid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_faculty
+    where oid = #{oid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.Faculty">
+    insert into t_faculty (oid, faculty_name, faculty_code, 
+      faculty_admin, create_time)
+    values (#{oid,jdbcType=INTEGER}, #{facultyName,jdbcType=VARCHAR}, #{facultyCode,jdbcType=VARCHAR}, 
+      #{facultyAdmin,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Faculty">
+    insert into t_faculty
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="facultyName != null">
+        faculty_name,
+      </if>
+      <if test="facultyCode != null">
+        faculty_code,
+      </if>
+      <if test="facultyAdmin != null">
+        faculty_admin,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=INTEGER},
+      </if>
+      <if test="facultyName != null">
+        #{facultyName,jdbcType=VARCHAR},
+      </if>
+      <if test="facultyCode != null">
+        #{facultyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="facultyAdmin != null">
+        #{facultyAdmin,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Faculty">
+    update t_faculty
+    <set>
+      <if test="facultyName != null">
+        faculty_name = #{facultyName,jdbcType=VARCHAR},
+      </if>
+      <if test="facultyCode != null">
+        faculty_code = #{facultyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="facultyAdmin != null">
+        faculty_admin = #{facultyAdmin,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Faculty">
+    update t_faculty
+    set faculty_name = #{facultyName,jdbcType=VARCHAR},
+      faculty_code = #{facultyCode,jdbcType=VARCHAR},
+      faculty_admin = #{facultyAdmin,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <select id="findAllFaculty" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_faculty
+    ORDER BY create_time DESC
+  </select>
+  <select id="findTotalFacultyByCond" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    SELECT COUNT(td.oid) FROM t_faculty AS td
+    WHERE 1=1
+    <if test="key != null and key != ''">
+      AND td.faculty_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="findFacultyPageResultByCond" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT td.*, tt.name AS admin_name
+    FROM t_faculty AS td
+    LEFT JOIN t_teacher AS tt ON tt.id = td.faculty_admin
+    WHERE 1=1
+    <if test="key != null and key != ''">
+      AND td.faculty_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    ORDER BY td.create_time DESC
+    limit #{start},#{length}
+  </select>
+  <select id="checkFaculty" parameterType="com.poho.stuup.model.Faculty" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_faculty AS td
+    WHERE td.faculty_name = #{facultyName}
+    <if test="oid != null and oid != ''">
+      AND td.oid != #{oid}
+    </if>
+    limit 1
+  </select>
+  <select id="findFacultyByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_faculty AS td
+    WHERE td.faculty_name = #{_parameter}
+    limit 1
+  </select>
+  <select id="findFacultyByAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_faculty AS td
+    where
+      td.faculty_admin = #{_parameter,jdbcType=INTEGER}
+  </select>
+</mapper>

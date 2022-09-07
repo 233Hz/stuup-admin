@@ -63,5 +63,7 @@ public class PasswordUtil {
         String npassword = generate(password);
         System.out.println("加盐后MD5码：" + npassword);
         System.out.println("是否是同一字符串:" + verify(password, npassword));
+
+        System.out.println(generate(pass));
     }
 }

@@ -26,12 +26,11 @@ public class MicrovanWebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(corsInterceptor).addPathPatterns("/**");
         registry.addInterceptor(microvanInterceptor).addPathPatterns("/**")
+                .excludePathPatterns("/login")
                 .excludePathPatterns("/swagger-ui.html")
                 .excludePathPatterns("/webjars/**")
                 .excludePathPatterns("/swagger-resources/**")
                 .excludePathPatterns("/v2/**")
-                .excludePathPatterns("/csrf")
-                .excludePathPatterns("/login")
-                .excludePathPatterns("/msg/sendCode");
+                .excludePathPatterns("/csrf");
     }
 }

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microvan.eva.dao.MajorMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.Major">
+    <id column="oid" jdbcType="INTEGER" property="oid" />
+    <result column="major_name" jdbcType="VARCHAR" property="majorName" />
+    <result column="major_code" jdbcType="VARCHAR" property="majorCode" />
+    <result column="faculty_id" jdbcType="INTEGER" property="facultyId" />
+    <result column="system" jdbcType="VARCHAR" property="system" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="faculty_name" jdbcType="VARCHAR" property="facultyName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, major_name, major_code, faculty_id, system, state
+  </sql>
+  <sql id="Special_Column_List">
+    tm.oid, tm.major_name, tm.major_code, tm.faculty_id, tm.system, tm.state, td.faculty_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_major
+    where oid = #{oid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_major
+    where oid = #{oid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.Major">
+    insert into t_major (oid, major_name, major_code, 
+      faculty_id, system, state
+      )
+    values (#{oid,jdbcType=INTEGER}, #{majorName,jdbcType=VARCHAR}, #{majorCode,jdbcType=VARCHAR}, 
+      #{facultyId,jdbcType=INTEGER}, #{system,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Major">
+    insert into t_major
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="majorName != null">
+        major_name,
+      </if>
+      <if test="majorCode != null">
+        major_code,
+      </if>
+      <if test="facultyId != null">
+        faculty_id,
+      </if>
+      <if test="system != null">
+        system,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=INTEGER},
+      </if>
+      <if test="majorName != null">
+        #{majorName,jdbcType=VARCHAR},
+      </if>
+      <if test="majorCode != null">
+        #{majorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="facultyId != null">
+        #{facultyId,jdbcType=INTEGER},
+      </if>
+      <if test="system != null">
+        #{system,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Major">
+    update t_major
+    <set>
+      <if test="majorName != null">
+        major_name = #{majorName,jdbcType=VARCHAR},
+      </if>
+      <if test="majorCode != null">
+        major_code = #{majorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="facultyId != null">
+        faculty_id = #{facultyId,jdbcType=INTEGER},
+      </if>
+      <if test="system != null">
+        system = #{system,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Major">
+    update t_major
+    set major_name = #{majorName,jdbcType=VARCHAR},
+      major_code = #{majorCode,jdbcType=VARCHAR},
+      faculty_id = #{facultyId,jdbcType=INTEGER},
+      system = #{system,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER}
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <select id="findTotalMajorByCond" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    SELECT COUNT(tm.oid) FROM t_major AS tm
+    WHERE 1=1
+    <if test="key != null and key != ''">
+      AND tm.major_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="findMajorPageResultByCond" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Special_Column_List"/>
+    FROM t_major AS tm LEFT JOIN t_faculty AS td ON tm.faculty_id = td.oid
+    WHERE 1=1
+    <if test="key != null and key != ''">
+      AND tm.major_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    limit #{start},#{length}
+  </select>
+  <select id="checkMajor" parameterType="com.poho.stuup.model.Major" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_major AS tm
+    WHERE tm.major_name = #{majorName}
+    <if test="oid != null and oid != ''">
+      AND tm.oid != #{oid}
+    </if>
+    limit 1
+  </select>
+  <select id="findMajors" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_major AS tm
+    ORDER BY tm.major_name ASC
+  </select>
+  <select id="findMajorByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_major AS tm
+    WHERE tm.major_name = #{_parameter}
+    limit 1
+  </select>
+</mapper>

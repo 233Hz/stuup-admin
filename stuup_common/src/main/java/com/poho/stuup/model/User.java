@@ -18,6 +18,8 @@ public class User {
 
     private Integer userType;
 
+    private Integer teacherType;
+
     private String idCard;
 
     private String birthday;
@@ -90,6 +92,14 @@ public class User {
 
     public void setUserType(Integer userType) {
         this.userType = userType;
+    }
+
+    public Integer getTeacherType() {
+        return teacherType;
+    }
+
+    public void setTeacherType(Integer teacherType) {
+        this.teacherType = teacherType;
     }
 
     public String getIdCard() {

@@ -9,6 +9,7 @@
     <result column="dept_id" jdbcType="BIGINT" property="deptId" />
     <result column="degree" jdbcType="VARCHAR" property="degree" />
     <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="teacher_type" jdbcType="INTEGER" property="teacherType" />
     <result column="id_card" jdbcType="VARCHAR" property="idCard" />
     <result column="birthday" jdbcType="VARCHAR" property="birthday" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
@@ -18,7 +19,7 @@
     <result column="dept_name" property="deptName" />
   </resultMap>
   <sql id="Base_Column_List">
-    oid, user_name, sex, mobile, dept_id, degree, user_type, id_card, birthday, login_name, password, state, create_time
+    oid, user_name, sex, mobile, dept_id, degree, user_type,teacher_type, id_card, birthday, login_name, password, state, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -34,12 +35,12 @@
   </delete>
   <insert id="insert" parameterType="com.poho.stuup.model.User">
     insert into t_user (oid, user_name, sex, 
-      mobile, dept_id, degree, user_type,
+      mobile, dept_id, degree, user_type,teacher_type,
       id_card, birthday, login_name, 
       password, state, create_time
       )
     values (#{oid,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
-      #{mobile,jdbcType=VARCHAR}, #{deptId,jdbcType=BIGINT}, #{degree,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},
+      #{mobile,jdbcType=VARCHAR}, #{deptId,jdbcType=BIGINT}, #{degree,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER}, #{teacherType,jdbcType=INTEGER},
       #{idCard,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
       )
@@ -67,6 +68,9 @@
       </if>
       <if test="userType != null">
         user_type,
+      </if>
+      <if test="teacherType != null">
+        teacher_type,
       </if>
       <if test="idCard != null">
         id_card,
@@ -150,6 +154,9 @@
       <if test="userType != null">
         user_type = #{userType,jdbcType=INTEGER},
       </if>
+      <if test="teacherType != null">
+        teacher_type = #{teacherType,jdbcType=INTEGER},
+      </if>
       <if test="idCard != null">
         id_card = #{idCard,jdbcType=VARCHAR},
       </if>
@@ -179,6 +186,7 @@
       dept_id = #{deptId,jdbcType=BIGINT},
       degree = #{degree,jdbcType=VARCHAR},
       user_type = #{userType,jdbcType=INTEGER},
+      teacher_type = #{teacherType,jdbcType=INTEGER},
       id_card = #{idCard,jdbcType=VARCHAR},
       birthday = #{birthday,jdbcType=VARCHAR},
       login_name = #{loginName,jdbcType=VARCHAR},
@@ -246,152 +254,5 @@
       #{id}
     </foreach>
   </delete>
-  <select id="findAssessMiddleUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    SELECT
-    tu.*,
-    td.dept_name
-    FROM
-    t_user AS tu
-    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
-    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
-    WHERE
-    tar.year_id = #{yearId,jdbcType=BIGINT}
-    AND (tar.user_type = 3 OR tar.user_type = 4)
-    <if test="deptId != null">
-      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
-    </if>
-  </select>
-  <select id="findAssessTeachers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    SELECT
-    tu.*,
-    tar.dept_id,
-    td.dept_name
-    FROM
-    t_user AS tu
-    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
-    AND tar.year_id = #{yearId,jdbcType=BIGINT}
-    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
-    WHERE tar.user_type = 5
-    AND tar.dept_id = #{deptId,jdbcType=BIGINT}
-    <if test="userType != null">
-      AND tu.user_type = #{userType,jdbcType=INTEGER}
-    </if>
-  </select>
-  <select id="findAssessUserTotal" parameterType="java.util.HashMap" resultType="int">
-    SELECT
-    count(tu.oid)
-    FROM
-    t_user AS tu
-    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
-    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
-    WHERE
-    tar.year_id = #{yearId,jdbcType=BIGINT}
-    <choose>
-      <when test="userType == 1">
-        AND (tar.user_type = 1 OR tar.user_type = 2)
-      </when>
-      <when test="userType == 2">
-        AND (tar.user_type = 1 OR tar.user_type = 2)
-        AND tar.oid in (SELECT leader_range_id FROM t_range_middle)
-      </when>
-      <when test="userType == 6">
-        AND (tar.user_type = 3 OR tar.user_type = 4)
-      </when>
-      <otherwise>
-        AND tar.user_type = #{userType,jdbcType=INTEGER}
-      </otherwise>
-    </choose>
-    <if test="deptId != null">
-      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
-    </if>
-  </select>
-  <select id="findAssessZCYGTotal" parameterType="java.util.HashMap" resultType="int">
-    SELECT
-    count(tu.oid)
-    FROM
-    t_user AS tu
-    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
-    LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
-    WHERE
-      tar.year_id = #{yearId,jdbcType=BIGINT}
-      AND (tar.user_type = 3 OR tar.user_type = 4 OR tar.user_type = 5)
-    <if test="deptId != null">
-      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
-    </if>
-  </select>
-  <select id="findRangeCanUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    SELECT
-      tu.*
-    FROM
-      t_user AS tu
-    WHERE
-      tu.state = 1
-      AND (tu.dept_id = #{deptId,jdbcType=BIGINT} OR tu.dept_id IS NULL)
-      AND tu.oid NOT IN (
-      SELECT
-        tar.user_id
-      FROM
-        t_assess_range AS tar
-      WHERE
-        tar.user_type != 5
-        AND tar.year_id = #{yearId,jdbcType=BIGINT}
-    )
-  </select>
-  <select id="findLeaderRangeCanUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    SELECT
-      tu.*
-    FROM
-      t_user AS tu
-    WHERE
-      tu.state = 1
-      AND tu.oid NOT IN (
-        SELECT
-          tar.user_id
-        FROM
-          t_assess_range AS tar
-        WHERE
-          tar.year_id = #{yearId,jdbcType=BIGINT}
-          <if test="oid != null">
-            AND tar.oid != #{oid,jdbcType=BIGINT}
-          </if>
-      )
-  </select>
-  <select id="findRangeUsers" parameterType="java.util.HashMap" resultType="Long">
-    SELECT
-      tu.oid
-    FROM
-      t_user AS tu
-        LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
-    WHERE
-      tar.year_id = #{yearId,jdbcType=BIGINT}
-      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
-      AND tar.user_type = #{userType,jdbcType=INTEGER}
-  </select>
-  <select id="findRangeUserList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    SELECT
-    tu.*
-    FROM
-    t_user AS tu
-    LEFT JOIN t_assess_range AS tar ON tar.user_id = tu.oid
-    WHERE
-    tar.year_id = #{yearId,jdbcType=BIGINT}
-    <if test="deptId != null">
-      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
-    </if>
-    <if test="userType != null">
-      AND tar.user_type = #{userType,jdbcType=INTEGER}
-    </if>
-  </select>
-  <select id="findAssessMiddleRangeUsers" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    SELECT
-      tu.*,
-      td.dept_name
-    FROM
-      t_range_middle AS trm
-      LEFT JOIN t_assess_range AS tar ON tar.oid = trm.assess_range_id
-      LEFT JOIN t_user AS tu ON tu.oid = tar.user_id
-      LEFT JOIN t_dept AS td ON td.oid = tar.dept_id
-    WHERE
-      trm.leader_range_id = #{leaderRangeId,jdbcType=BIGINT}
-  </select>
+
 </mapper>

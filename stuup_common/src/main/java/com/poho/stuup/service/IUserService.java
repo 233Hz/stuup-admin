@@ -25,14 +25,8 @@ public interface IUserService {
 
     int updateByPrimaryKey(User record);
 
-    /**
-     *
-     * @param mobile
-     * @param msgCode
-     * @param msgId
-     * @return
-     */
-    ResponseModel checkLogin(String mobile, String msgCode, String msgId);
+
+    ResponseModel checkLogin(String loginName, String password);
 
     /**
      *
@@ -72,26 +66,6 @@ public interface IUserService {
      */
     ResponseModel updatePassword(String userId, Map params);
 
-    /**
-     * 查询中层用户
-     * @param yearId
-     * @param deptId
-     * @param assessType
-     * @param assessUserId
-     * @return
-     */
-    ResponseModel findAssessMiddleUsers(Long yearId, Long deptId, Integer assessType, Long assessUserId);
-
-    /**
-     *
-     * @param yearId
-     * @param deptId
-     * @param assessType
-     * @param assessUserId
-     * @param userType
-     * @return
-     */
-    ResponseModel findAssessTeachers(Long yearId, Long deptId, Integer assessType, Long assessUserId, Integer userType);
 
     /**
      *
@@ -108,10 +82,4 @@ public interface IUserService {
      */
     Map<String, Object> importUserList(List<User> userList);
 
-    /**
-     *
-     * @param userRangeId
-     * @return
-     */
-    ResponseModel findAssessRangeMiddleUsers(Long userRangeId);
 }

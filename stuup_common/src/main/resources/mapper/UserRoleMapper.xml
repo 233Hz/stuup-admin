@@ -5,7 +5,6 @@
     <id column="oid" jdbcType="BIGINT" property="oid" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
-    <result column="year_id" jdbcType="BIGINT" property="yearId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -22,10 +21,8 @@
     where oid = #{oid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.poho.stuup.model.UserRole">
-    insert into t_user_role (oid, user_id, role_id, 
-      year_id, create_time)
-    values (#{oid,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
-            #{yearId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP})
+    insert into t_user_role (oid, user_id, role_id)
+    values (#{oid,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.poho.stuup.model.UserRole">
     insert into t_user_role
@@ -39,12 +36,7 @@
       <if test="roleId != null">
         role_id,
       </if>
-      <if test="yearId != null">
-        year_id,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="oid != null">
@@ -56,12 +48,7 @@
       <if test="roleId != null">
         #{roleId,jdbcType=BIGINT},
       </if>
-      <if test="yearId != null">
-        #{yearId,jdbcType=BIGINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
+
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.UserRole">
@@ -73,21 +60,13 @@
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=BIGINT},
       </if>
-      <if test="yearId != null">
-        year_id = #{yearId,jdbcType=BIGINT},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
     </set>
     where oid = #{oid,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.UserRole">
     update t_user_role
     set user_id = #{userId,jdbcType=BIGINT},
-      role_id = #{roleId,jdbcType=BIGINT},
-      year_id = #{yearId,jdbcType=BIGINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      role_id = #{roleId,jdbcType=BIGINT}
     where oid = #{oid,jdbcType=BIGINT}
   </update>
   <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
@@ -98,45 +77,35 @@
     <if test="userId != null">
       and tur.user_id = #{userId,jdbcType=BIGINT}
     </if>
-    <if test="yearId != null">
-      AND (tur.year_id = #{yearId,jdbcType=BIGINT} OR tur.year_id IS NULl)
-    </if>
   </select>
   <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     select
       distinct tur.role_id,
       tur.oid,
       tur.user_id,
-      tur.year_id,
       tur.create_time
     from t_user_role as tur
     where 1=1
     <if test="userId != null">
       and tur.user_id = #{userId,jdbcType=BIGINT}
     </if>
-    <if test="yearId != null">
-      AND (tur.year_id = #{yearId,jdbcType=BIGINT} OR tur.year_id IS NULl)
-    </if>
     order by tur.oid desc
     <if test="start != null and length != null">
       limit #{start},#{length}
     </if>
   </select>
-  <select id="queryUserYearRoles" parameterType="java.util.HashMap" resultType="Long">
+  <select id="queryUserRoles" parameterType="java.util.HashMap" resultType="Long">
     SELECT
       distinct tur.role_id
     FROM
       t_user_role AS tur
     WHERE
       tur.user_id = #{userId,jdbcType=BIGINT}
-    <if test="yearId != null">
-      AND (tur.year_id = #{yearId,jdbcType=BIGINT} OR tur.year_id IS NULl)
-    </if>
     ORDER BY
       tur.role_id ASC
   </select>
   <delete id="clearUserRole" parameterType="java.lang.Long">
-    delete from t_user_role where user_id = #{_parameter,jdbcType=BIGINT} and year_id is null
+    delete from t_user_role where user_id = #{_parameter,jdbcType=BIGINT}
   </delete>
   <delete id="clearUserAllRole" parameterType="java.lang.Long">
     delete from t_user_role where user_id = #{_parameter,jdbcType=BIGINT}
@@ -148,35 +117,6 @@
     WHERE
       user_id = #{userId,jdbcType=BIGINT}
       AND role_id = #{roleId,jdbcType=BIGINT}
-    <if test="yearId != null">
-      AND year_id = #{yearId,jdbcType=BIGINT}
-    </if>
   </delete>
-  <delete id="clearUserYearRole" parameterType="java.util.HashMap">
-    DELETE
-    FROM
-    t_user_role
-    WHERE
-    user_id = #{userId,jdbcType=BIGINT}
-    AND role_id = #{roleId,jdbcType=BIGINT}
-    AND year_id = #{yearId,jdbcType=BIGINT}
-  </delete>
-  <delete id="clearYearDeptUserRole" parameterType="java.util.HashMap">
-    DELETE tur.*
-    FROM
-      t_user_role AS tur
-      LEFT JOIN t_assess_range AS tar ON tar.user_id = tur.user_id
-    WHERE
-      tar.year_id = #{yearId,jdbcType=BIGINT}
-      AND tur.role_id = #{roleId,jdbcType=BIGINT}
-      AND tar.dept_id = #{deptId,jdbcType=BIGINT}
-  </delete>
-  <update id="updateUserRoleYear" parameterType="java.util.HashMap">
-    UPDATE t_user_role AS tur
-    SET tur.year_id = #{yearId,jdbcType=BIGINT}
-    WHERE
-      tur.user_id = #{userId,jdbcType=BIGINT}
-      AND tur.role_id = #{roleId,jdbcType=BIGINT}
-      AND tur.year_id IS NULL
-  </update>
+
 </mapper>

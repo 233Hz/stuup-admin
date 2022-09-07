@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.microvan.eva.dao.TermMapper">
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.Term">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="year" property="year" jdbcType="VARCHAR"/>
+        <result column="term_no" property="termNo" jdbcType="INTEGER"/>
+        <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="is_valid" property="isValid" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, name, year, term_no, begin_time, end_time, is_valid
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from t_term
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from t_term
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.poho.stuup.model.Term">
+        insert into t_term (id, name, year, term_no,
+          begin_time, end_time, is_valid
+          )
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{year,jdbcType=VARCHAR},
+          #{termNo,jdbcType=INTEGER}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{isValid,jdbcType=INTEGER}
+          )
+    </insert>
+    <insert id="insertSelective" parameterType="com.poho.stuup.model.Term">
+        insert into t_term
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="year != null">
+                year,
+            </if>
+            <if test="termNo != null">
+                term_no,
+            </if>
+            <if test="beginTime != null">
+                begin_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="termNo != null">
+                #{termNo,jdbcType=INTEGER},
+            </if>
+            <if test="beginTime != null">
+                #{beginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Term">
+        update t_term
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="year != null">
+                year = #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="termNo != null">
+                term_no = #{termNo,jdbcType=INTEGER},
+            </if>
+            <if test="beginTime != null">
+                begin_time = #{beginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Term">
+        update t_term
+        set name = #{name,jdbcType=VARCHAR},
+          year = #{year,jdbcType=VARCHAR},
+          term_no = #{termNo,jdbcType=INTEGER},
+          begin_time = #{beginTime,jdbcType=TIMESTAMP},
+          end_time = #{endTime,jdbcType=TIMESTAMP},
+          is_valid = #{isValid,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="findMaxPublishTerms" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+            tt.*
+        FROM
+            t_term AS tt
+        WHERE
+            tt.id IN (
+                SELECT DISTINCT
+                    tes.term_id
+                FROM
+                    t_evaluate_stat AS tes
+            )
+        ORDER BY
+            tt.id DESC
+        LIMIT #{_parameter}
+    </select>
+    <select id="findTotalTermByCond" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        SELECT COUNT(tt.id) FROM t_term AS tt
+        WHERE 1=1
+        <if test="key != null and key != ''">
+            AND tt.name LIKE CONCAT(CONCAT('%',#{key}),'%')
+        </if>
+    </select>
+    <select id="findTermPageResultByCond" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tt.* FROM t_term AS tt
+        WHERE 1=1
+        <if test="key != null and key != ''">
+            AND tt.name LIKE CONCAT(CONCAT('%',#{key}),'%')
+        </if>
+        ORDER BY tt.begin_time DESC
+        limit #{start},#{length}
+    </select>
+    <select id="findTerms" resultMap="BaseResultMap">
+        SELECT
+            tt.*
+        FROM
+            t_term AS tt
+        ORDER BY
+            tt.begin_time DESC
+    </select>
+    <select id="checkTerm" parameterType="com.poho.stuup.model.Term" resultMap="BaseResultMap">
+        SELECT
+            tt.*
+        FROM
+            t_term AS tt
+        WHERE
+            tt. NAME = #{name}
+            AND tt.term_no = ${termNo}
+        <if test="id != null and id != ''">
+            AND tt.id != #{id}
+        </if>
+        ORDER BY
+            tt.begin_time DESC
+        limit 1
+    </select>
+</mapper>

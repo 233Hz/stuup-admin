@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.poho.stuup.dao.ClassMapper">
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.Class">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="faculty_id" property="facultyId" jdbcType="INTEGER"/>
+        <result column="grade_id" property="gradeId" jdbcType="INTEGER"/>
+        <result column="teacher_id" property="teacherId" jdbcType="INTEGER"/>
+        <result column="admin_id" property="adminId" jdbcType="INTEGER"/>
+        <result column="major_id" property="majorId" jdbcType="INTEGER"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+        <result column="is_valid" property="isValid" jdbcType="INTEGER"/>
+        <result column="join_exam" property="joinExam" jdbcType="INTEGER"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="major_name" property="majorName"/>
+        <result column="faculty_name" property="facultyName" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, num, code, name, faculty_id, grade_id, teacher_id, admin_id, major_id, count, is_valid, join_exam
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from t_class
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_class
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteClass" parameterType="java.util.HashMap">
+        update t_class
+        set is_valid = 2
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+    </delete>
+    <insert id="insert" parameterType="com.poho.stuup.model.Class">
+      insert into t_class (id, num, code, name,
+        faculty_id, grade_id, teacher_id, admin_id, count, major_id, is_valid, join_exam)
+      values (#{id,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+        #{facultyId,jdbcType=INTEGER}, #{gradeId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER},
+        #{adminId, jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{majorId,jdbcType=INTEGER},
+        #{isValid,jdbcType=INTEGER}, #{joinExam,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.poho.stuup.model.Class">
+        insert into t_class
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="facultyId != null">
+                faculty_id,
+            </if>
+            <if test="gradeId != null">
+                grade_id,
+            </if>
+            <if test="teacherId != null">
+                teacher_id,
+            </if>
+            <if test="adminId != null">
+                admin_id,
+            </if>
+            <if test="count != null">
+                count,
+            </if>
+            <if test="majorId != null">
+                major_id,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+            <if test="joinExam != null">
+                join_exam,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=INTEGER},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="facultyId != null">
+                #{facultyId,jdbcType=VARCHAR},
+            </if>
+            <if test="gradeId != null">
+                #{gradeId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                #{teacherId,jdbcType=INTEGER},
+            </if>
+            <if test="adminId != null">
+                #{adminId,jdbc=INTEGER},
+            </if>
+            <if test="count != null">
+                #{count,jdbcType=INTEGER},
+            </if>
+            <if test="majorId != null">
+                #{majorId,jdbcType=INTEGER},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="joinExam != null">
+                #{joinExam,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Class">
+        update t_class
+        <set>
+            <if test="num != null">
+                num = #{num,jdbcType=INTEGER},
+            </if>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="facultyId != null">
+                faculty_id = #{facultyId,jdbcType=INTEGER},
+            </if>
+            <if test="gradeId != null">
+                grade_id = #{gradeId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                teacher_id = #{teacherId,jdbcType=INTEGER},
+            </if>
+            <if test="adminId != null">
+                admin_id = #{adminId,jdbcType=INTEGER},
+            </if>
+            <if test="count != null">
+                count = #{count,jdbcType=INTEGER},
+            </if>
+            <if test="majorId != null">
+                major_id = #{majorId,jdbcType=INTEGER},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="joinExam != null">
+                join_exam = #{joinExam,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Class">
+      update t_class
+          set num = #{num,jdbcType=INTEGER},
+          code = #{code,jdbcType=VARCHAR},
+          name = #{name,jdbcType=VARCHAR},
+          faculty_id = #{facultyId,jdbcType=INTEGER},
+          grade_id = #{gradeId,jdbcType=INTEGER},
+          teacher_id = #{teacherId,jdbcType=INTEGER},
+          admin_id = #{adminId,jdbcType=INTEGER},
+          count = #{count,jdbcType=INTEGER},
+          major_id = #{majorId,jdbcType=INTEGER},
+          is_valid = #{isValid,jdbcType=INTEGER},
+          join_exam = #{joinExam,jdbcType=INTEGER}
+      where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="findClassByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_class as tc
+        WHERE tc.code = #{_parameter}
+    </select>
+    <select id="findClassByName" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_class
+        WHERE name = #{name,jdbcType=VARCHAR} AND is_valid = 1
+        <if test="id != null">
+            AND id != #{id,jdbcType=INTEGER}
+        </if>
+        limit 1
+    </select>
+    <select id="findAllClass" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_class WHERE 1=1
+        <if test="mark != null">
+            AND (admin_id is null or admin_id = '')
+        </if>
+        <if test="classId != null">
+            AND id = #{classId,jdbcType=INTEGER}
+        </if>
+        <if test="facultyId != null and facultyId != ''">
+            AND faculty_id = #{facultyId,jdbcType=VARCHAR}
+        </if>
+        <if test="isValid != null">
+            and is_valid = #{isValid,jdbcType=INTEGER}
+        </if>
+        <if test="joinExam != null">
+            and join_exam = #{joinExam,jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="findTotalClassByCond" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        SELECT count(tc.id)
+        FROM t_class as tc
+        LEFT JOIN t_teacher as tt ON tt.id = tc.teacher_id
+        WHERE 1=1 and tc.is_valid = 1
+        <if test="key != null and key != ''">
+            and (tc.name like CONCAT(CONCAT('%',#{key}),'%') OR tc.code like CONCAT(CONCAT('%',#{key}),'%'))
+        </if>
+        <if test="gradeId != null">
+            AND tc.grade_id = #{gradeId}
+        </if>
+        <if test="facultyId != null">
+            AND tc.faculty_id = #{facultyId}
+        </if>
+    </select>
+    <select id="findClassPageResultByCond" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tc.*, tt.name AS teacher_name, td.faculty_name, tm.major_name, tg.grade_name
+        FROM t_class AS tc
+        LEFT JOIN t_teacher AS tt ON tt.id = tc.teacher_id
+        LEFT JOIN t_faculty AS td ON td.oid = tc.faculty_id
+        LEFT JOIN t_major AS tm ON tm.oid = tc.major_id
+        LEFT JOIN t_grade AS tg ON tg.oid = tc.grade_id
+        WHERE 1=1 and tc.is_valid = 1
+        <if test="key != null and key != ''">
+            AND (tc.name like CONCAT(CONCAT('%',#{key}),'%') OR tc.code like CONCAT(CONCAT('%',#{key}),'%'))
+        </if>
+        <if test="gradeId != null">
+            AND tc.grade_id = #{gradeId}
+        </if>
+        <if test="facultyId != null">
+            AND tc.faculty_id = #{facultyId}
+        </if>
+        ORDER BY tc.name DESC
+        limit #{start},#{length}
+    </select>
+    <select id="findClassByGrade" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+          tc.*
+        FROM
+          t_class AS tc
+        WHERE
+          tc.is_valid = 1 AND tc.grade_id = #{_parameter}
+        ORDER BY tc.id
+    </select>
+    <select id="findClass" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT
+          count(tc.id)
+        FROM
+          t_class as tc
+        WHERE
+          tc.is_valid = 1 AND tc.num = #{num} AND tc.grade_id = #{grade}
+        <if test="id != null and id != ''">
+            AND tc.id != #{id}
+        </if>
+    </select>
+    <select id="checkClass" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+            tc.*
+        FROM
+            t_class AS tc
+        WHERE
+            tc. NAME = #{name} AND tc.grade_id = #{grade}
+    </select>
+    <select id="findClassByAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        tc.*,
+        tg.grade_name as gradeName,
+        tm.major_name as majorName
+        from t_class as tc
+        left join t_grade as tg on tc.grade_id=tg.oid
+        left join t_major as tm on tc.major_id=tm.oid
+        where
+            tc.teacher_id = #{_parameter,jdbcType=INTEGER}
+    </select>
+</mapper>

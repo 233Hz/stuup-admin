@@ -6,14 +6,13 @@ import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.*;
 import com.poho.stuup.constant.ProjectConstants;
-import com.poho.stuup.custom.CusAssessTeacher;
-import com.poho.stuup.custom.CusAssessUser;
-import com.poho.stuup.custom.CusNormScore;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
 import com.poho.stuup.service.IUserService;
 import com.poho.stuup.util.ProjectUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +26,9 @@ import java.util.*;
  */
 @Service
 public class UserServiceImpl implements IUserService {
+
+    private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -34,21 +36,7 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private RoleMapper roleMapper;
     @Resource
-    private MsgMapper msgMapper;
-    @Resource
-    private YearMapper yearMapper;
-    @Resource
     private DeptMapper deptMapper;
-    @Resource
-    private StandardCategoryMapper standardCategoryMapper;
-    @Resource
-    private StandardNormMapper standardNormMapper;
-    @Resource
-    private AssessRecordMapper assessRecordMapper;
-    @Resource
-    private AssessRangeMapper assessRangeMapper;
-    @Resource
-    private RegisterMapper registerMapper;
 
     @Override
     public int deleteByPrimaryKey(Long oid) {
@@ -81,74 +69,40 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ResponseModel checkLogin(String mobile, String msgCode, String msgId) {
+    public ResponseModel checkLogin(String loginName, String password) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("登录失败，请稍后重试");
+        model.setMessage("账号或密码错误");
         Map<String, Object> map = new HashMap<>();
-        map.put("mobile", mobile);
+        map.put("loginName", loginName);
         User user = userMapper.checkUser(map);
+        logger.info(String.format("登录 loginName:%s , pwd:%s", loginName, password));
         if (MicrovanUtil.isNotEmpty(user)) {
-            if (user.getState().intValue() == ProjectConstants.USER_STATE_COMMON) {
-                Year year = yearMapper.findCurrYear();
-                if (MicrovanUtil.isNotEmpty(year)) {
-                    map.put("yearId", year.getOid());
-                }
-                map.put("userId", user.getOid());
-                AssessRange assessRange = assessRangeMapper.checkAssessRange(map);
-                List<Long> roleIds = userRoleMapper.queryUserYearRoles(map);
-                if (MicrovanUtil.isNotEmpty(roleIds)) {
-                    Msg msg = msgMapper.selectByPrimaryKey(Long.valueOf(msgId));
-                    if (MicrovanUtil.isNotEmpty(msg)) {
-                        Date sendTime = msg.getSendTime();
-                        Date nowTime = new Date();
-                        long diff = nowTime.getTime() - sendTime.getTime();
-                        if (diff > ProjectConstants.MSG_VALID_TIME) {
-                            model.setCode(CommonConstants.CODE_EXCEPTION);
-                            model.setMessage("验证码过期");
-                        } else if (msg.getMsgCode().equals(msgCode)) {
-                            CusUser cusUser = new CusUser();
-                            cusUser.setUserId(user.getOid());
-                            cusUser.setUserName(user.getUserName());
-                            cusUser.setMobile(user.getMobile());
-                            cusUser.setStaffType(user.getUserType());
-                            if (MicrovanUtil.isNotEmpty(year)) {
-                                cusUser.setYearId(year.getOid());
-                                cusUser.setYearName(year.getYearName());
-                            }
-                            if (MicrovanUtil.isNotEmpty(assessRange)) {
-                                cusUser.setDeptId(assessRange.getDeptId());
-                                cusUser.setDeptName(assessRange.getDeptName());
-                                cusUser.setUserRangeId(assessRange.getOid());
-                            }
-                            Register register = registerMapper.checkRegister(map);
-                            if (MicrovanUtil.isNotEmpty(register)) {
-                                cusUser.setPosition(register.getPosition());
-                            }
-                            cusUser.setRoleIds(ProjectUtil.splitListUseComma(roleIds));
-                            model.setCode(CommonConstants.CODE_SUCCESS);
-                            model.setMessage("登录成功");
-                            model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));
-                            model.setData(cusUser);
-                        } else {
-                            model.setCode(CommonConstants.CODE_EXCEPTION);
-                            model.setMessage("验证码错误");
-                        }
+            if (PasswordUtil.verify(password, user.getPassword())) { //验证密码
+                if (user.getState().intValue() == ProjectConstants.USER_STATE_COMMON) {
+                    map.put("userId", user.getOid());
+                    List<Long> roleIds = userRoleMapper.queryUserRoles(map);
+                    if (MicrovanUtil.isNotEmpty(roleIds)) {
+                        CusUser cusUser = new CusUser();
+                        cusUser.setUserId(user.getOid());
+                        cusUser.setUserName(user.getUserName());
+                        cusUser.setMobile(user.getMobile());
+                        cusUser.setDeptId(user.getDeptId());
+                        cusUser.setUserType(user.getUserType());
+                        cusUser.setRoleIds(ProjectUtil.splitListUseComma(roleIds));
+                        model.setCode(CommonConstants.CODE_SUCCESS);
+                        model.setMessage("登录成功");
+                        model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));
+                        model.setData(cusUser);
                     } else {
                         model.setCode(CommonConstants.CODE_EXCEPTION);
-                        model.setMessage("验证码错误");
+                        model.setMessage("用户未设置角色，暂无法登录");
                     }
                 } else {
                     model.setCode(CommonConstants.CODE_EXCEPTION);
-                    model.setMessage("用户未设置角色，暂无法登录");
+                    model.setMessage("你的账号已被禁止登录系统");
                 }
-            } else {
-                model.setCode(CommonConstants.CODE_EXCEPTION);
-                model.setMessage("你的账号已被禁止登录系统");
             }
-        } else {
-            model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("手机号码非本系统用户");
         }
         return model;
     }
@@ -167,12 +121,10 @@ public class UserServiceImpl implements IUserService {
         map.put("length", pageSize);
         List<User> list = userMapper.queryList(map);
         if (MicrovanUtil.isNotEmpty(list)) {
-            Year year = yearMapper.findCurrYear();
             map.clear();
-            map.put("yearId", year.getOid());
             for (User user : list) {
                 map.put("userId", user.getOid());
-                List<Long> roleIds = userRoleMapper.queryUserYearRoles(map);
+                List<Long> roleIds = userRoleMapper.queryUserRoles(map);
                 if (MicrovanUtil.isNotEmpty(roleIds)) {
                     List<String> roleNames = roleMapper.queryRoleNames(roleIds);
                     user.setRoles(roleIds);
@@ -303,172 +255,6 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ResponseModel findAssessMiddleUsers(Long yearId, Long deptId, Integer assessType, Long assessUserId) {
-        ResponseModel model = new ResponseModel();
-        model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setMessage("请求成功");
-        List<CusAssessUser> assessUsers = new ArrayList<>();
-        User findUser = userMapper.selectByPrimaryKey(assessUserId);
-        if (MicrovanUtil.isNotEmpty(findUser)) {
-            Map<String, Object> param = new HashMap<>();
-            param.put("yearId", yearId);
-            //分管领导或群众评中层时只查询他所在部门下的中层
-            if (assessType.intValue() == ProjectConstants.ASSESS_TYPE_FGLDPZC || assessType.intValue() == ProjectConstants.ASSESS_TYPE_QZPZC) {
-                param.put("deptId", deptId);
-            }
-            List<User> users = userMapper.findAssessMiddleUsers(param);
-            if (MicrovanUtil.isNotEmpty(users)) {
-                for (User user : users) {
-                    CusAssessUser assessUser = new CusAssessUser();
-                    assessUser.setUserId(user.getOid());
-                    assessUser.setUserName(user.getUserName());
-                    List<CusNormScore> scores = new ArrayList<>();
-                    List<StandardCategory> list = standardCategoryMapper.queryList(null);
-                    if (MicrovanUtil.isNotEmpty(list)) {
-                        int total = 0;
-                        for (StandardCategory category : list) {
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("categoryId", Long.valueOf(category.getOid()));
-                            List<StandardNorm> standardNorms = standardNormMapper.queryList(map);
-                            for (StandardNorm standardNorm: standardNorms) {
-                                CusNormScore normScore = new CusNormScore();
-                                normScore.setNormId(standardNorm.getOid());
-                                Map<String, Object> recordParam = new HashMap<>();
-                                recordParam.put("yearId", yearId);
-                                recordParam.put("userId", user.getOid());
-                                recordParam.put("assessType", assessType);
-                                recordParam.put("assessUser", assessUserId);
-                                recordParam.put("normId", standardNorm.getOid());
-                                AssessRecord assessRecord = assessRecordMapper.checkAssessRecord(recordParam);
-                                if (MicrovanUtil.isNotEmpty(assessRecord)) {
-                                    normScore.setScore(assessRecord.getScore());
-                                } else {
-                                    normScore.setScore(0);
-                                }
-                                total = total + normScore.getScore();
-                                scores.add(normScore);
-                            }
-                        }
-                        CusNormScore cusNormScore = new CusNormScore();
-                        cusNormScore.setNormId(ProjectConstants.TEMP_COUNT_ID);
-                        cusNormScore.setScore(total);
-                        scores.add(cusNormScore);
-                    }
-                    assessUser.setScores(scores);
-                    assessUsers.add(assessUser);
-                }
-            }
-        }
-        model.setData(assessUsers);
-        return model;
-    }
-
-    @Override
-    public ResponseModel findAssessRangeMiddleUsers(Long userRangeId) {
-        ResponseModel model = new ResponseModel();
-        model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setMessage("请求成功");
-        List<CusAssessUser> assessUsers = new ArrayList<>();
-        AssessRange assessRange = assessRangeMapper.selectByPrimaryKey(userRangeId);
-        if (MicrovanUtil.isNotEmpty(assessRange)) {
-            Map<String, Object> param = new HashMap<>();
-            param.put("leaderRangeId", userRangeId);
-            List<User> users = userMapper.findAssessMiddleRangeUsers(param);
-            if (MicrovanUtil.isNotEmpty(users)) {
-                for (User user : users) {
-                    CusAssessUser assessUser = new CusAssessUser();
-                    assessUser.setUserId(user.getOid());
-                    assessUser.setUserName(user.getUserName());
-                    List<CusNormScore> scores = new ArrayList<>();
-                    List<StandardCategory> list = standardCategoryMapper.queryList(null);
-                    if (MicrovanUtil.isNotEmpty(list)) {
-                        int total = 0;
-                        for (StandardCategory category : list) {
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("categoryId", Long.valueOf(category.getOid()));
-                            List<StandardNorm> standardNorms = standardNormMapper.queryList(map);
-                            for (StandardNorm standardNorm: standardNorms) {
-                                CusNormScore normScore = new CusNormScore();
-                                normScore.setNormId(standardNorm.getOid());
-                                Map<String, Object> recordParam = new HashMap<>();
-                                recordParam.put("yearId", assessRange.getYearId());
-                                recordParam.put("userId", user.getOid());
-                                recordParam.put("assessType", ProjectConstants.ASSESS_TYPE_FGLDPZC);
-                                recordParam.put("assessUser", assessRange.getUserId());
-                                recordParam.put("normId", standardNorm.getOid());
-                                AssessRecord assessRecord = assessRecordMapper.checkAssessRecord(recordParam);
-                                if (MicrovanUtil.isNotEmpty(assessRecord)) {
-                                    normScore.setScore(assessRecord.getScore());
-                                } else {
-                                    normScore.setScore(0);
-                                }
-                                total = total + normScore.getScore();
-                                scores.add(normScore);
-                            }
-                        }
-                        CusNormScore cusNormScore = new CusNormScore();
-                        cusNormScore.setNormId(ProjectConstants.TEMP_COUNT_ID);
-                        cusNormScore.setScore(total);
-                        scores.add(cusNormScore);
-                    }
-                    assessUser.setScores(scores);
-                    assessUsers.add(assessUser);
-                }
-            }
-        }
-        model.setData(assessUsers);
-        return model;
-    }
-
-    @Override
-    public ResponseModel findAssessTeachers(Long yearId, Long deptId, Integer assessType, Long assessUserId, Integer userType) {
-        ResponseModel model = new ResponseModel();
-        model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setMessage("请求成功");
-        List<CusAssessTeacher> assessTeachers = new ArrayList<>();
-        User findUser = userMapper.selectByPrimaryKey(assessUserId);
-        if (MicrovanUtil.isNotEmpty(findUser)) {
-            Map<String, Object> param = new HashMap<>();
-            param.put("yearId", yearId);
-            param.put("deptId", deptId);
-            param.put("userType", userType);
-            List<User> users = userMapper.findAssessTeachers(param);
-            if (MicrovanUtil.isNotEmpty(users)) {
-                for (User user : users) {
-                    CusAssessTeacher assessTeacher = new CusAssessTeacher();
-                    assessTeacher.setUserId(user.getOid());
-                    assessTeacher.setUserName(user.getUserName());
-                    assessTeacher.setDeptId(user.getDeptId());
-                    assessTeacher.setDeptName(user.getDeptName());
-                    assessTeacher.setUserType(ProjectUtil.convertUserType(user.getUserType()));
-                    Map<String, Object> recordParam = new HashMap<>();
-                    recordParam.put("yearId", yearId);
-                    recordParam.put("userId", user.getOid());
-                    recordParam.put("assessType", assessType);
-                    recordParam.put("assessUser", assessUserId);
-                    AssessRecord assessRecord = assessRecordMapper.checkAssessRecord(recordParam);
-                    if (MicrovanUtil.isNotEmpty(assessRecord)) {
-                        assessTeacher.setScore(assessRecord.getScore());
-                    }
-                    Map<String, Object> rangeParam = new HashMap<>();
-                    rangeParam.put("yearId", yearId);
-                    rangeParam.put("deptId", user.getDeptId());
-                    rangeParam.put("userId", user.getOid());
-                    rangeParam.put("userType", ProjectConstants.RANGE_TYPE_PTYG);
-                    AssessRange assessRange = assessRangeMapper.checkAssessRange(rangeParam);
-                    if (MicrovanUtil.isNotEmpty(rangeParam)) {
-                        assessTeacher.setRetire(assessRange.getRetire());
-                        assessTeacher.setNote(assessRange.getNote());
-                    }
-                    assessTeachers.add(assessTeacher);
-                }
-            }
-        }
-        model.setData(assessTeachers);
-        return model;
-    }
-
-    @Override
     public ResponseModel findUserData(Long oid, Long yearId) {
         ResponseModel model = new ResponseModel();
         User user = userMapper.selectByPrimaryKey(oid);
@@ -476,27 +262,6 @@ public class UserServiceImpl implements IUserService {
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("获取成功");
             CusUser cusUser = ProjectUtil.convertCusUser(user);
-            if(MicrovanUtil.isNotEmpty(yearId)) {
-                Map<String, Object> param = new HashMap<>();
-                param.put("yearId", yearId);
-                param.put("userId", oid);
-                AssessRange assessRange = assessRangeMapper.checkAssessRange(param);
-                if (MicrovanUtil.isNotEmpty(assessRange)) {
-                    cusUser.setDeptId(assessRange.getDeptId());
-                    if (MicrovanUtil.isNotEmpty(assessRange.getDeptName())) {
-                        cusUser.setDeptName(assessRange.getDeptName());
-                    }
-                    cusUser.setUserType(assessRange.getUserType());
-                    if (assessRange.getUserType() == ProjectConstants.RANGE_TYPE_PTYG) {
-                        param.put("deptId", assessRange.getDeptId());
-                        param.put("userType", ProjectConstants.RANGE_TYPE_BMFZR);
-                        String leader = assessRangeMapper.queryRangeLeader(param);
-                        if (MicrovanUtil.isNotEmpty(leader)) {
-                            cusUser.setLeader(leader);
-                        }
-                    }
-                }
-            }
             model.setData(cusUser);
         }  else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
@@ -579,7 +344,7 @@ public class UserServiceImpl implements IUserService {
                     if (line > 0) {
                         param.clear();
                         param.put("userId", user.getOid());
-                        List<Long> roleIds = userRoleMapper.queryUserYearRoles(param);
+                        List<Long> roleIds = userRoleMapper.queryUserRoles(param);
                         Long roleId = ProjectConstants.ROLE_PTJS;
                         if (MicrovanUtil.isEmpty(roleIds) || (MicrovanUtil.isNotEmpty(roleIds) && !roleIds.contains(roleId))) {
                             UserRole userRole = new UserRole();

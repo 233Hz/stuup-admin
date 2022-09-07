@@ -9,8 +9,6 @@ public class UserRole {
 
     private Long roleId;
 
-    private Long yearId;
-
     private Date createTime;
 
     public Long getOid() {
@@ -35,14 +33,6 @@ public class UserRole {
 
     public void setRoleId(Long roleId) {
         this.roleId = roleId;
-    }
-
-    public Long getYearId() {
-        return yearId;
-    }
-
-    public void setYearId(Long yearId) {
-        this.yearId = yearId;
     }
 
     public Date getCreateTime() {

@@ -11,7 +11,7 @@ public interface UserRoleMapper extends BaseDao<UserRole> {
      * @param param
      * @return
      */
-    List<Long> queryUserYearRoles(Map<String, Object> param);
+    List<Long> queryUserRoles(Map<String, Object> param);
 
     /**
      *
@@ -33,23 +33,4 @@ public interface UserRoleMapper extends BaseDao<UserRole> {
      */
     int clearUserRoleId(Map<String, Object> param);
 
-    /**
-     * 清除年份下用户的角色
-     * @param param
-     */
-    int clearUserYearRole(Map<String, Object> param);
-
-    /**
-     * 清除某年下指定部门下人的某角色
-     * @param param
-     * @return
-     */
-    int clearYearDeptUserRole(Map<String, Object> param);
-
-    /**
-     *
-     * @param param
-     * @return
-     */
-    int updateUserRoleYear(Map<String, Object> param);
 }

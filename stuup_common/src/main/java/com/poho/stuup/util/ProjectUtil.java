@@ -5,8 +5,6 @@ import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusTransfer;
 import com.poho.stuup.custom.CusUser;
-import com.poho.stuup.model.AssessRange;
-import com.poho.stuup.model.AssessRecord;
 import com.poho.stuup.model.User;
 import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
@@ -182,25 +180,6 @@ public class ProjectUtil {
         return grade;
     }
 
-    /**
-     * 计算最终评分
-     * @param assessRecords
-     * @param scale
-     * @return
-     */
-    public static double calculateAssessScore(List<AssessRecord> assessRecords, double scale) {
-        double val;
-        if (assessRecords.size() > 1) {
-            int total = 0;
-            for (AssessRecord assessRecord : assessRecords) {
-                total = total + assessRecord.getScore();
-            }
-            val = (total / assessRecords.size()) * scale;
-        } else {
-            val = assessRecords.get(0).getScore().intValue() * scale;
-        }
-        return MicrovanUtil.convertDouble(val);
-    }
 
     /**
      * 转换用户数据为穿梭框需要的数据
@@ -217,20 +196,6 @@ public class ProjectUtil {
         return cusTransfers;
     }
 
-    /**
-     * 转换可分管中层为穿梭框需要的数据
-     * @param canRangeData
-     * @return
-     */
-    public static List<CusTransfer> convertCusRangeTransfer(List<AssessRange> canRangeData) {
-        List<CusTransfer> cusTransfers = new ArrayList<>();
-        if (MicrovanUtil.isNotEmpty(canRangeData)) {
-            for (AssessRange assessRange : canRangeData) {
-                cusTransfers.add(new CusTransfer(assessRange.getOid(), assessRange.getUserName()));
-            }
-        }
-        return cusTransfers;
-    }
 
     /**
      *

@@ -37,13 +37,6 @@ public class ProjectConstants {
      */
     public static final String API_URL_NEW = "http://192.168.20.224:7081/api/vocational_school";
 
-    /**
-     * 默认考核等级ABCD的占比
-     */
-    public static double SCALE_A_PER = 0.1;
-    public static double SCALE_B_PER = 0.7;
-    public static double SCALE_C_PER = 0.1;
-    public static double SCALE_D_PER = 0.1;
 
     /**
      * 系统默认角色：党政领导
@@ -80,29 +73,35 @@ public class ProjectConstants {
     public static long ROLE_RLZYCCZ = 8;
 
     /**
+     * 系统默认角色：学生
+     */
+    public static long ROLE_STU = 9;
+
+    /**
      * 用户状态
      */
     public static int USER_STATE_COMMON = 1;
     public static int USER_STATE_DISABLE = 2;
 
-    /**
-     * 评价类型
-     */
-    public static int ASSESS_TYPE_DZLDPZC = 1; //党政领导评中层
-    public static int ASSESS_TYPE_FGLDPZC = 2; //分管领导评中层
-    public static int ASSESS_TYPE_ZCZPHP = 3; //中层自评互评
-    public static int ASSESS_TYPE_QZPZC = 4; //群众测评
-    public static int ASSESS_TYPE_ZCPYG = 5; //中层评员工
+
 
     /**
-     * 用户类型
+     * 教师类型
      * 1在职在编
      * 2编外运行
      * 3行政外聘
      */
-    public static int USER_TYPE_ZZZB = 1;
-    public static int USER_TYPE_BWYX = 2;
-    public static int USER_TYPE_XZWP = 3;
+    public static int TEACHER_TYPE_ZZZB = 1;
+    public static int TEACHER_TYPE_BWYX = 2;
+    public static int TEACHER_TYPE_XZWP = 3;
+
+    /**
+     * 用户类型
+     * 1 学生
+     * 2 教师
+     */
+    public static int USER_TYPE_STU = 1;
+    public static int USER_TYPE_TEACHER = 2;
 
     /**
      * 1党政领导
