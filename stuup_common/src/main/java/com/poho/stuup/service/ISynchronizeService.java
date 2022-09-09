@@ -41,4 +41,9 @@ public interface ISynchronizeService {
      */
     void synchronizeFaculty();
 
+    /**
+     * 同步教研组[已完成]
+     */
+    void synchronizeTeachGroup();
+
 }

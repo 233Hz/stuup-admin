@@ -7,6 +7,7 @@ package com.poho.stuup.constant;
  * @Modified By:
  */
 public class ProjectConstants {
+
     public static String PROJECT_PIC = "pic";
     public static String PROJECT_PDF = "pdf";
     public static String PROJECT_TEMP = "temp";
@@ -118,56 +119,9 @@ public class ProjectConstants {
     public static int RANGE_TYPE_PTYG= 5; //普通员工
     public static int RANGE_TYPE_SYZC= 6; //所有中层
 
-    /**
-     * 考核登记状态 1待评鉴 2提交 3通过 4退回
-     */
-    public static int REG_STATE_OPINION = 1;
-    public static int REG_STATE_SUBMIT = 2;
-    public static int REG_STATE_SUCCESS = 3;
-    public static int REG_STATE_BACK = 4;
-
-    public static double SCALE_QZCP = 0.15;
-    public static double SCALE_ZPHP = 0.15;
-    public static double SCALE_FGLD = 0.5;
-    public static double SCALE_DZLD = 0.2;
-
-    /**
-     * 1登录验证码
-     * 2开始提醒
-     * 3结束提醒
-     */
-    public static int MSG_TYPE_CODE = 1;
-    public static int MSG_TYPE_START = 2;
-    public static int MSG_TYPE_END = 3;
-
-    /**
-     * 评分状态1保存；2提交
-     */
-    public static int ASSESS_STATE_SAVE = 1;
-    public static int ASSESS_STATE_SUBMIT = 2;
-
-    /**
-     * 1测评表下发
-     * 2绩效考核结果生成
-     */
-    public static int OPER_TYPE_SEND_NORM = 1;
-    public static int OPER_TYPE_RESULT = 2;
 
     /**
      * 系统参数：同步开关
      */
     public static final String PARAM_SYNC_SWITCH = "sync_switch";
-    /**
-     * 系统参数：短信提醒开关
-     */
-    public static final String PARAM_REMIND_SWITCH = "remind_switch";
-    /**
-     * 系统参数：登录验证短信开关
-     */
-    public static final String PARAM_VALIDATE_CODE = "validate_code";
-
-    /**
-     * 统计临时id
-     */
-    public static long TEMP_COUNT_ID = 999999;
 }

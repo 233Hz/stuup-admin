@@ -113,6 +113,9 @@
       <if test="userType != null">
         #{userType,jdbcType=INTEGER},
       </if>
+      <if test="teacherType != null">
+        #{teacherType,jdbcType=INTEGER},
+      </if>
       <if test="idCard != null">
         #{idCard,jdbcType=VARCHAR},
       </if>

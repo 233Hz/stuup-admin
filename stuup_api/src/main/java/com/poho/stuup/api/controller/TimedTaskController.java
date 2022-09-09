@@ -38,10 +38,24 @@ public class TimedTaskController {
                 syncSwitch = config.getConfigValue();
             }
             if ("true".equals(syncSwitch)) {
-                //同步系部
+                //同步部门
                 synchronizeService.synchronizeDept();
+                //同步系部
+                synchronizeService.synchronizeFaculty();
+                //同步教研组
+                synchronizeService.synchronizeTeachGroup();
+                //同步年级
+                synchronizeService.synchronizeGrade();
+                //同步学期
+                synchronizeService.synchronizeTerm();
+                //同步专业
+                synchronizeService.synchronizeMajor();
+                //同步班级
+                synchronizeService.synchronizeClass();
                 //同步教师
                 synchronizeService.synchronizeTeacher();
+                //同步学生
+                synchronizeService.synchronizeStudent();
             }
         } catch (Exception e) {
             logger.info("自动同步报错", e);

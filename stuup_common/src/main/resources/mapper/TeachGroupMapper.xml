@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.TeachGroupMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.TeachGroup">
+    <id column="oid" jdbcType="INTEGER" property="oid" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="teacher_id" jdbcType="VARCHAR" property="teacherId" />
+    <result column="faculty_id" jdbcType="INTEGER" property="facultyId" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+    <result column="name" jdbcType="VARCHAR" property="teacherName" />
+    <result column="faculty_name" jdbcType="VARCHAR" property="facultyName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, group_name, teacher_id, faculty_id, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_teach_group
+    where oid = #{oid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_teach_group
+    where oid = #{oid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.TeachGroup">
+    insert into t_teach_group (oid, group_name, teacher_id,
+    faculty_id, create_time)
+    values (#{oid,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR}, #{teacherId,jdbcType=INTEGER},
+    #{facultyId,jdbcType=INTEGER}, #{createTime,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.TeachGroup">
+    insert into t_teach_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="groupName != null">
+        group_name,
+      </if>
+      <if test="teacherId != null">
+        teacher_id,
+      </if>
+      <if test="facultyId != null">
+        faculty_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="facultyId != null">
+        #{facultyId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.TeachGroup">
+    update t_teach_group
+    <set>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherId != null">
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="facultyId != null">
+        faculty_id = #{facultyId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.TeachGroup">
+    update t_teach_group
+    set group_name = #{groupName,jdbcType=VARCHAR},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      faculty_id = #{facultyId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=DATE}
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <select id="findTeachGroupPageResultByCond" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    ttg.oid,
+    ttg.faculty_id AS facultyId,
+    ttg.group_name AS groupName,
+    tt.id as teacherId,
+    tt.`name` AS teacherName,
+    tf.faculty_name AS facultyName
+    from t_teach_group as ttg
+    left join t_teacher as tt on ttg.teacher_id=tt.id
+    left join t_faculty as tf on ttg.faculty_id=tf.oid
+    where 1=1
+    <if test="facultyId != null and facultyId != ''">
+      AND ttg.faculty_id = #{facultyId}
+    </if>
+    <if test="key != null and key != ''">
+      AND ttg.group_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    ORDER BY ttg.oid
+    limit #{start},#{length}
+  </select>
+  <select id="findTotalTeachGroupByCond" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select
+    count(ttg.oid)
+    from t_teach_group as ttg
+    left join t_teacher as tt on ttg.teacher_id=tt.id
+    left join t_faculty as tf on ttg.faculty_id=tf.oid
+    where 1=1
+    <if test="facultyId != null and facultyId != ''">
+      AND ttg.faculty_id = #{facultyId}
+    </if>
+    <if test="key != null and key != ''">
+      AND ttg.group_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="findAllTeachGroup" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_teach_group
+    ORDER BY create_time DESC
+  </select>
+  <select id="checkTeachGroup" parameterType="com.poho.stuup.model.TeachGroup" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_teach_group AS ttg
+    WHERE ttg.group_name = #{groupName}
+    <if test="oid != null and oid != ''">
+      AND ttg.oid != #{oid}
+    </if>
+    limit 1
+  </select>
+  <select id="findTeachGroupByAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+        ttg.*
+    FROM
+        t_teach_group AS ttg
+    where
+        ttg.teacher_id = #{_parameter}
+  </select>
+  <select id="findTeachGroupByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from t_teach_group
+    where group_name = #{_parameter,jdbcType=VARCHAR}
+    limit 1
+  </select>
+  <select id="findTeachGroupByFacultyId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from t_teach_group
+    where faculty_id = #{_parameter}
+  </select>
+</mapper>

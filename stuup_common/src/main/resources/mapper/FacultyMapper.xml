@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.microvan.eva.dao.FacultyMapper">
+<mapper namespace="com.poho.stuup.dao.FacultyMapper">
   <resultMap id="BaseResultMap" type="com.poho.stuup.model.Faculty">
     <id column="oid" jdbcType="INTEGER" property="oid" />
     <result column="faculty_name" jdbcType="VARCHAR" property="facultyName" />

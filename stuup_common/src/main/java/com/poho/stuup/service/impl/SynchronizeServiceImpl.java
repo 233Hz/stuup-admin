@@ -3,22 +3,23 @@ package com.poho.stuup.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.poho.common.constant.CommonConstants;
 import com.poho.common.util.*;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.dao.*;
-import com.poho.stuup.model.*;
 import com.poho.stuup.model.Class;
+import com.poho.stuup.model.*;
 import com.poho.stuup.service.ISynchronizeService;
 import com.poho.stuup.util.HttpJSONUtil;
 import com.poho.stuup.util.ProjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author wupeng
@@ -37,8 +38,6 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
     @Resource
     private UserMapper userMapper;
     @Resource
-    private RoleMapper roleMapper;
-    @Resource
     private UserRoleMapper userRoleMapper;
     @Resource
     private TermMapper termMapper;
@@ -52,6 +51,9 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
     private FacultyMapper facultyMapper;
     @Resource
     private DeptMapper deptMapper;
+    @Resource
+    private TeachGroupMapper teachGroupMapper;
+
 
 
     /**
@@ -170,7 +172,6 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 
     /**
      * 处理同步出来的教师数据
-     *
      * @param jsonArray
      */
     private JSONObject handleTeacherData(JSONArray jsonArray) {
@@ -181,110 +182,139 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
             JSONObject item = (JSONObject) jsonArray.get(i);
             //工号
             String jobNo = item.getString("gh");
-            if (MicrovanUtil.isNotEmpty(jobNo)) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("loginName", jobNo);
-                User user = userMapper.checkUser(map);
-                if (user == null) {
-                    user = new User();
-                    user.setLoginName(jobNo);
+            if (MicrovanUtil.isNotEmpty(jobNo) && !"admin".equals(jobNo)) {
+                Teacher teacher = teacherMapper.findTeacherByJobNo(jobNo);
+                if (teacher == null) {
+                    teacher = new Teacher();
+                    teacher.setJobNo(jobNo);
                 }
                 //姓名
                 String name = item.getString("xm");
                 if (MicrovanUtil.isNotEmpty(name)) {
-                    user.setUserName(name);
+                    teacher.setName(name);
                 }
                 //性别
                 String sex = item.getString("xbmStr");
                 if (MicrovanUtil.isNotEmpty(sex)) {
                     int intSex = ProjectUtil.getSex(sex);
-                    user.setSex(intSex);
+                    teacher.setSex(intSex);
+                }
+                //系部
+//                String facultyName = item.getString("dep");
+//                if (MicrovanUtil.isNotEmpty(facultyName)) {
+//                    Faculty faculty = facultyMapper.findFacultyByName(facultyName);
+//                    if (faculty != null) {
+//                        teacher.setFacultyId(faculty.getOid());
+//                    }
+//                } else {
+//                    teacher.setFacultyId(null);
+//                }
+                //教研组名称
+                String teachGroup = item.getString("groupMc");
+                if (MicrovanUtil.isNotEmpty(teachGroup)) {
+                    TeachGroup tg = teachGroupMapper.findTeachGroupByName(teachGroup);
+                    if (tg != null) {
+                        teacher.setTeachGroup(tg.getOid());
+                        teacher.setFacultyId(tg.getFacultyId());
+                    }
+                } else {
+                    teacher.setTeachGroup(null);
+                    teacher.setFacultyId(null);
                 }
                 //联系方式
                 String phone = item.getString("yddh");
                 if (MicrovanUtil.isNotEmpty(phone)) {
-                    user.setMobile(phone);
+                    teacher.setPhone(phone);
                 }
                 //身份证号
                 String idCard = item.getString("sfzjh");
                 if (MicrovanUtil.isNotEmpty(idCard)) {
-                    user.setIdCard(idCard);
-                    //生日
-                    user.setBirthday(ProjectUtil.obtainBirthdayFromIdCard(idCard));
+                    teacher.setIdCard(idCard);
                 }
-                //部门
-                String deptName = item.getString("dep");
-                if (MicrovanUtil.isNotEmpty(deptName)) {
-                    Map<String, Object> param = new HashMap<>();
-                    param.put("deptName", deptName);
-                    Dept dept = deptMapper.checkDept(param);
-                    if (MicrovanUtil.isNotEmpty(dept)) {
-                        user.setDeptId(dept.getOid());
+                //地址，此字段无内容
+                String address = item.getString("txdz");
+                if (MicrovanUtil.isNotEmpty(address)) {
+                    teacher.setAddress(address);
+                }
+                //状态
+                String stateStr = item.getString("dqztm");
+                int state = 0;
+                if (MicrovanUtil.isNotEmpty(stateStr)) {
+                    state = Integer.valueOf(stateStr).intValue();
+                    if (state == 11) {
+                        teacher.setState(1);
+                    } else if (state == 4) {
+                        teacher.setState(2);
                     }
                 }
-                //教师状态
-                String state = item.getString("dqztm");
-                user.setUserType(ProjectConstants.USER_TYPE_TEACHER);
-                // 11在职，04返聘
-                if ("11".equals(state) || "04".equals(state)) {
+                //教职工类别
+                String type = item.getString("jzglbmStr");
+                if (MicrovanUtil.isNotEmpty(type)) {
+                    teacher.setType(type);
+                }
+                //只保留在职和返聘状态的老师
+                if (state == 11 || state == 4) {
+
                     String typeCode = item.getString("jzglbm");
+                    Integer teacherType = null;
                     //在职在编：专任教师 11 行政人员 13 工勤人员 14（在职）
                     //编外运行：编外运行 17（在职）
                     //行政外聘：外聘行政 15 （在职+返聘）
-                    boolean via = false;
                     if ("11".equals(state) && (
                             "11".equals(typeCode) ||
                                     "13".equals(typeCode) ||
                                     "14".equals(typeCode))) {
-                        user.setTeacherType(ProjectConstants.TEACHER_TYPE_ZZZB);
-                        via = true;
+                        teacherType = ProjectConstants.TEACHER_TYPE_ZZZB;
                     }
                     if ("11".equals(state) && "17".equals(typeCode)) {
-                        user.setTeacherType(ProjectConstants.TEACHER_TYPE_BWYX);
-                        via = true;
+                        teacherType = ProjectConstants.TEACHER_TYPE_BWYX;
                     }
                     if (("11".equals(state) || "04".equals(state)) && "15".equals(typeCode)) {
-                        user.setTeacherType(ProjectConstants.TEACHER_TYPE_XZWP);
-                        via = true;
+                        teacherType = ProjectConstants.TEACHER_TYPE_XZWP;
                     }
-                    if (via) {
-                        if (user.getOid() == null) {
-                            user.setState(ProjectConstants.USER_STATE_COMMON);
-                            String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
-                            user.setPassword(PasswordUtil.generate(password));
-                            int line = userMapper.insertSelective(user);
-                            if (line > 0) {
-                                //判断是否有普通教师角色，没有的话加一个
-                                Map<String, Object> param = new HashMap<>();
-                                param.put("userId", user.getOid());
-                                List<Long> roleIds = userRoleMapper.queryUserRoles(param);
-                                Long roleId = ProjectConstants.ROLE_PTJS;
-                                if (MicrovanUtil.isEmpty(roleIds) || (MicrovanUtil.isNotEmpty(roleIds) && !roleIds.contains(roleId))) {
-                                    UserRole userRole = new UserRole();
-                                    userRole.setUserId(user.getOid());
-                                    userRole.setRoleId(roleId);
-                                    userRole.setCreateTime(new Date());
-                                    userRoleMapper.insertSelective(userRole);
-                                }
-                                addTotal++;
-                            }
-                        } else {
-                            int line = userMapper.updateByPrimaryKeySelective(user);
-                            if (line > 0) {
-                                updateTotal++;
+
+                    if (teacher.getId() == null) {
+                        teacher.setIsValid(1);
+                        if (teacher.getSex() != null) {
+                            if (teacher.getSex().intValue() == 1) {
+                                teacher.setPhotoPath("teacherPhoto/defaultman.png");
+                            } else {
+                                teacher.setPhotoPath("teacherPhoto/defaultwoman.png");
                             }
                         }
-                    } else if (user.getOid() != null) {
-                        User uObj = new User();
-                        uObj.setOid(user.getOid());
-                        uObj.setState(CommonConstants.USER_FORBIDDEN_STATE);
-                        //int line = userMapper.deleteByPrimaryKey(user.getOid());
-                        //数据同步过来数据，不能直接物理删除，只能设置为禁用状态
-                        int line = userMapper.updateByPrimaryKeySelective(uObj);
+                        if (state == 11) {
+                            teacher.setInvigilate(1);
+                        } else if (state == 4) {
+                            teacher.setInvigilate(2);
+                        }
+                        int line = teacherMapper.insertSelective(teacher);
                         if (line > 0) {
-                            userRoleMapper.clearUserAllRole(user.getOid());
-                            deleteTotal++;
+                            this.addOrUpdateUser(item, jobNo, teacher, teacherType);
+                            addTotal++;
                         }
+                    } else {
+                        teacherMapper.updateByPrimaryKey(teacher);
+                        this.addOrUpdateUser(item, jobNo, teacher, teacherType);
+                        updateTotal++;
+                    }
+                } else {
+                    //删除其他状态的教师
+                    if (teacher != null && teacher.getId() != null) {
+                        try {
+                            teacherMapper.deleteByPrimaryKey(teacher.getId());
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("loginName", jobNo);
+                            User user = userMapper.checkUser(map);
+                            if (user != null && user.getOid() != null) {
+                                userMapper.deleteByPrimaryKey(user.getOid());
+                                userRoleMapper.clearUserRole(user.getOid());
+                            }
+                        } catch (Exception e) {
+                            logger.info(e.getMessage());
+                            logger.info("teacherId=" + teacher.getId());
+                            logger.info("teacherName=" + teacher.getName());
+                        }
+                        deleteTotal++;
                     }
                 }
             }
@@ -295,6 +325,56 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
         jsonObject.put("deleteTotal", deleteTotal);
         return jsonObject;
     }
+
+    private void addOrUpdateUser(JSONObject item, String jobNo, Teacher teacher, Integer teacherType) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("loginName", jobNo);
+        User user = userMapper.checkUser(map);
+        if (user == null || (user != null && user.getOid() == null)) {
+            //添加教师角色的用户
+            user = new User();
+            user.setLoginName(teacher.getJobNo());
+            user.setUserName(teacher.getName());
+            user.setState(ProjectConstants.USER_STATE_COMMON);
+            String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
+            user.setPassword(PasswordUtil.generate(password));
+            //部门
+            String deptName = item.getString("dep");
+            if (MicrovanUtil.isNotEmpty(deptName)) {
+                Map<String, Object> param = new HashMap<>();
+                param.put("deptName", deptName);
+                Dept dept = deptMapper.checkDept(param);
+                if (MicrovanUtil.isNotEmpty(dept)) {
+                    user.setDeptId(dept.getOid());
+                }
+            }
+            user.setUserType(ProjectConstants.USER_TYPE_TEACHER);
+            user.setTeacherType(teacherType);
+            userMapper.insertSelective(user);
+
+            Long roleId = ProjectConstants.ROLE_PTJS;
+            UserRole userRole = new UserRole();
+            userRole.setUserId(user.getOid());
+            userRole.setRoleId(roleId);
+            userRoleMapper.insertSelective(userRole);
+        } else {
+            //部门
+            String deptName = item.getString("dep");
+            if (MicrovanUtil.isNotEmpty(deptName)) {
+                Map<String, Object> param = new HashMap<>();
+                param.put("deptName", deptName);
+                Dept dept = deptMapper.checkDept(param);
+                if (MicrovanUtil.isNotEmpty(dept)) {
+                    user.setDeptId(dept.getOid());
+                }
+            }
+            user.setUserType(ProjectConstants.USER_TYPE_TEACHER);
+            user.setTeacherType(teacherType);
+            user.setUserName(teacher.getName());
+            userMapper.updateByPrimaryKeySelective(user);
+        }
+    }
+
 
     @Override
     public void synchronizeClass() {
@@ -537,7 +617,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 
                                         //添加学生用户及角色
                                         User user = new User();
-                                        user.setUserName(student.getStudentNo());
+                                        user.setLoginName(student.getStudentNo());
                                         user.setUserName(student.getName());
                                         user.setState(ProjectConstants.USER_STATE_COMMON);
                                         user.setUserType(ProjectConstants.USER_TYPE_STU);
@@ -576,7 +656,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
                                     } else {
                                         //添加学生用户及角色
                                         user = new User();
-                                        user.setUserName(student.getStudentNo());
+                                        user.setLoginName(student.getStudentNo());
                                         user.setUserName(student.getName());
                                         user.setState(ProjectConstants.USER_STATE_COMMON);
                                         user.setUserType(ProjectConstants.USER_TYPE_STU);
@@ -819,6 +899,64 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
             }
         }
         logger.error("同步系部结束：新增成功" + addTotal + "个，更新" + updateTotal + "个，删除" + delTotal + "个");
+    }
+
+
+    @Override
+    public void synchronizeTeachGroup() {
+        logger.error("同步教研组开始");
+        int addTotal = 0;
+        int updateTotal = 0;
+
+        JSONObject param = new JSONObject();
+        param.put("action", "zzxx.org.find");
+        param.put("pageNum", 1);
+        param.put("pageSize", 2000);
+        param.put("jgyxbs", "1"); //只同步有效的教研组
+        //1系部；2教研组
+        param.put("jglb", 2);
+        JSONArray jsonArray = this.sendPost(param);
+        if (MicrovanUtil.isNotEmpty(jsonArray)) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject item = (JSONObject) jsonArray.get(i);
+                String groupName = item.getString("jgmc");
+                if (MicrovanUtil.isNotEmpty(groupName)) {
+                    TeachGroup checkTeachGroup = new TeachGroup();
+                    checkTeachGroup.setGroupName(groupName);
+                    TeachGroup teachGroup = teachGroupMapper.checkTeachGroup(checkTeachGroup);
+                    if (teachGroup == null || (teachGroup != null && teachGroup.getOid() == null)) {
+                        teachGroup = new TeachGroup();
+                    }
+                    teachGroup.setGroupName(groupName);
+                    //负责人
+                    String adminName = item.getString("fzrh");
+                    if (MicrovanUtil.isNotEmpty(adminName)) {
+                        Teacher teacher = teacherMapper.findTeacherByJobNo(adminName);
+                        if (teacher != null) {
+                            teachGroup.setTeacherId(teacher.getId());
+                        }
+                    }
+                    //系部名称
+                    String facultyName = item.getString("dssjjgh");
+                    Faculty faculty = facultyMapper.findFacultyByName(facultyName);
+                    if (faculty != null) {
+                        teachGroup.setFacultyId(faculty.getOid());
+                    }
+
+                    if (teachGroup.getOid() == null) {
+                        teachGroup.setCreateTime(new Date());
+                        int line = teachGroupMapper.insertSelective(teachGroup);
+                        if (line > 0) {
+                            addTotal++;
+                        }
+                    } else {
+                        teachGroupMapper.updateByPrimaryKeySelective(teachGroup);
+                        updateTotal++;
+                    }
+                }
+            }
+        }
+        logger.error("同步教研组结束：新增成功" + addTotal + "个，更新" + updateTotal + "个");
     }
 
     /*public static void main(String[] args) {

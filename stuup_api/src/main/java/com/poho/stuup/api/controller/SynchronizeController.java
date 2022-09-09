@@ -48,23 +48,22 @@ public class SynchronizeController {
 
                 //同步部门
                 synchronizeService.synchronizeDept();
+                //同步系部
+                synchronizeService.synchronizeFaculty();
+                //同步教研组
+                synchronizeService.synchronizeTeachGroup();
                 //同步年级
                 synchronizeService.synchronizeGrade();
-                //同步班级
-                synchronizeService.synchronizeClass();
                 //同步学期
                 synchronizeService.synchronizeTerm();
                 //同步专业
                 synchronizeService.synchronizeMajor();
-                //同步系部
-                synchronizeService.synchronizeFaculty();
+                //同步班级
+                synchronizeService.synchronizeClass();
                 //同步教师
                 synchronizeService.synchronizeTeacher();
                 //同步学生
                 synchronizeService.synchronizeStudent();
-
-
-
 
                 logger.info("----------------------------手动同步结束----------------------------");
                 model.setCode(CommonConstants.CODE_SUCCESS);
