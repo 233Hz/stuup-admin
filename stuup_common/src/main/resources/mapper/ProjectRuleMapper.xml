@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.td//DTD Mapper 3.0//EN" "http://mybatis.td/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.ProjectRuleMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.ProjectRule">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="type_id" jdbcType="BIGINT" property="typeId" />
+    <result column="item_code" jdbcType="VARCHAR" property="itemCode" />
+    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+    <result column="rule_detail" jdbcType="VARCHAR" property="ruleDetail" />
+    <result column="rule_class" jdbcType="VARCHAR" property="ruleClass" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, type_id, item_code, item_name, rule_detail, rule_class, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_project_rule
+    where oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_project_rule
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.poho.stuup.model.ProjectRule">
+    insert into t_project_rule (oid, type_id, item_code, item_name, rule_detail, rule_class)
+    values (#{oid,jdbcType=BIGINT}
+    , #{typeId,jdbcType=BIGINT}
+    , #{itemCode,jdbcType=VARCHAR}
+    , #{itemName,jdbcType=VARCHAR}
+    , #{ruleDetail,jdbcType=VARCHAR}
+    , #{ruleClass,jdbcType=VARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.ProjectRule">
+    insert into t_project_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="itemCode != null">
+        item_code,
+      </if>
+      <if test="itemName != null">
+        item_name,
+      </if>
+      <if test="ruleDetail != null">
+        rule_detail,
+      </if>
+      <if test="ruleClass != null">
+        rule_class,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=BIGINT},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=BIGINT},
+      </if>
+      <if test="itemCode != null">
+        #{itemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="itemName != null">
+        #{itemName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleDetail != null">
+        #{ruleDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleClass != null">
+        #{ruleClass,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.ProjectRule">
+    update t_project_rule
+    <set>
+      <if test="typeId != null">
+        type_id= #{code,jdbcType=BIGINT},
+      </if>
+      <if test="itemCode != null">
+        item_code = #{itemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="itemName != null">
+        item_name = #{itemName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleDetail != null">
+        rule_detail = #{ruleDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleClass != null">
+        rule_class = #{ruleClass,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.ProjectRule">
+    update t_project_rule
+    set type_id = #{typeId,jdbcType=BIGINT},
+    item_code = #{itemCode,jdbcType=VARCHAR},
+    item_name = #{itemName,jdbcType=VARCHAR},
+    rule_detail = #{ruleDetail,jdbcType=VARCHAR},
+    rule_class = #{ruleClass,jdbcType=VARCHAR},
+    status = #{status,jdbcType=INTEGER},
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+    count(td.oid)
+    from t_project_rule as td
+    where 1=1
+    <if test="typeId != null">
+      AND td.type_id = #{typeId}
+    </if>
+    <if test="key != null and key != ''">
+      AND td.item_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    td.*
+    from t_project_rule as td
+    where 1=1
+    <if test="typeId != null">
+      AND td.type_id = #{typeId}
+    </if>
+    <if test="key != null and key != ''">
+      AND td.item_name LIKE CONCAT(CONCAT('%',#{key}),'%')
+    </if>
+    order by td.oid desc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+  <delete id="deleteBatch">
+    delete from t_project_rule
+    where oid in
+    <foreach collection="array" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+</mapper>

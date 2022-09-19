@@ -29,8 +29,9 @@ import java.util.Map;
 
 @Api(tags = "班级信息相关接口")
 @RestController
-@RequestMapping("/clazz")
+@RequestMapping("/class")
 public class ClassController {
+
     private final static Logger logger = LoggerFactory.getLogger(ClassController.class);
     @Autowired
     private IClassService classService;

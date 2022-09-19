@@ -19,7 +19,7 @@ public interface IClassService {
      */
     List<Class> findAllClass(Map<String, Object> map);
 
-    ResponseModel findDataPageResult( String key, Integer facultyId, Integer gradeId, int page, int pageSize);
+    ResponseModel findDataPageResult( String key, int page, int pageSize, Integer facultyId, Integer gradeId);
 
     /**
      * 新增或修改学期

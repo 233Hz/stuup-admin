@@ -40,7 +40,7 @@ public class ClassServiceImpl implements IClassService {
     }
 
     @Override
-    public ResponseModel findDataPageResult(String key, Integer facultyId, Integer gradeId, int page, int pageSize) {
+    public ResponseModel findDataPageResult(String key, int page, int pageSize, Integer facultyId, Integer gradeId) {
         ResponseModel model = new ResponseModel();
         Map<String, Object> map = new HashMap<>();
         map.put("key", key);
