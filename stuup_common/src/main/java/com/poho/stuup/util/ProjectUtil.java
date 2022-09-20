@@ -292,46 +292,19 @@ public class ProjectUtil {
         return intSex;
     }
 
-    /**
-     * 根据学历码转化学历
-     * @param xlm
-     * @return
-     */
-    public static String convertDegree(String xlm) {
-        String degree = "其他";
-        if (MicrovanUtil.isNotEmpty(xlm) && MicrovanUtil.isNumeric(xlm)) {
-            int code = Integer.parseInt(xlm);
-            if (code == 10) {
-                degree = "研究生教育";
-            }
-            if (code >= 11 && code < 13) {
-                degree = "博士";
-            }
-            if (code >= 14 && code < 17) {
-                degree = "硕士";
-            }
-            if (code >= 17 && code < 20) {
-                degree = "研究生";
-            }
-            if (code >= 20 && code < 30) {
-                degree = "本科";
-            }
-            if (code >= 30 && code < 40) {
-                degree = "专科";
-            }
-            if (code >= 40 && code < 50) {
-                degree = "专科";
-            }
-            if (code >= 60 && code <= 63) {
-                degree = "高中";
-            }
-            if (code >= 70 && code <= 73) {
-                degree = "初中";
-            }
-            if (code >= 80 && code <= 83) {
-                degree = "小学";
-            }
+     public static int getPageNum(String pageNum){
+         int page = 1;
+         if (MicrovanUtil.isNotEmpty(pageNum)) {
+             page = Integer.valueOf(pageNum);
+         }
+         return page;
+     }
+
+    public static int getPageSize(String size){
+        int pageSize = CommonConstants.PAGE_SIZE;
+        if (MicrovanUtil.isNotEmpty(size)) {
+            pageSize = Integer.parseInt(size);
         }
-        return degree;
+        return pageSize;
     }
 }

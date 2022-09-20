@@ -2,7 +2,7 @@ package com.poho.stuup.model;
 
 import java.util.Date;
 
-public class Reward {
+public class Certificate {
 
     private Long oid;
 
@@ -14,11 +14,13 @@ public class Reward {
 
     private String unitName;
 
-    private String rank;
+    private String major;
 
-    private Integer status;
+    private String certNo;
 
     private Date obtainDate;
+
+    private Integer status;
 
     public Long getOid() {
         return oid;
@@ -60,20 +62,20 @@ public class Reward {
         this.unitName = unitName;
     }
 
-    public String getRank() {
-        return rank;
+    public String getMajor() {
+        return major;
     }
 
-    public void setRank(String rank) {
-        this.rank = rank;
+    public void setMajor(String major) {
+        this.major = major;
     }
 
-    public Integer getStatus() {
-        return status;
+    public String getCertNo() {
+        return certNo;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setCertNo(String certNo) {
+        this.certNo = certNo;
     }
 
     public Date getObtainDate() {
@@ -82,5 +84,13 @@ public class Reward {
 
     public void setObtainDate(Date obtainDate) {
         this.obtainDate = obtainDate;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

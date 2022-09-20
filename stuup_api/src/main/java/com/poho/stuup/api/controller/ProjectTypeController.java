@@ -4,6 +4,7 @@ import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.service.IProjectTypeService;
+import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,14 +25,8 @@ public class ProjectTypeController {
     @ApiOperation(value = "获取项目", httpMethod = "GET")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String current, String size) {
-        int page = 1;
-        if (MicrovanUtil.isNotEmpty(current)) {
-            page = Integer.valueOf(current);
-        }
-        int pageSize = CommonConstants.PAGE_SIZE;
-        if (MicrovanUtil.isNotEmpty(size)) {
-            pageSize = Integer.parseInt(size);
-        }
+        int page = ProjectUtil.getPageNum(current);
+        int pageSize = ProjectUtil.getPageSize(size);
         return projectTypeService.findDataPageResult(key, page, pageSize);
     }
 }

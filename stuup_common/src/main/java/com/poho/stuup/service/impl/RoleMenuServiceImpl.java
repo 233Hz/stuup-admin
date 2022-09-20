@@ -1,7 +1,9 @@
 package com.poho.stuup.service.impl;
 
 import com.poho.common.constant.CommonConstants;
+import com.poho.common.custom.MenuTree;
 import com.poho.common.custom.ResponseModel;
+import com.poho.common.util.MenuUtil;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.custom.CusMenu;
 import com.poho.stuup.custom.TreeData;
@@ -141,5 +143,20 @@ public class RoleMenuServiceImpl implements IRoleMenuService {
             }
         }
         return cusMenus;
+    }
+
+    @Override
+    public List<MenuTree> findUserMenuTree(Long userId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        List<Menu> menus = menuMapper.queryUserMenus(param);
+        if (MicrovanUtil.isNotEmpty(menus)) {
+            List<Menu> parentMenus = menuMapper.queryParentMenus();
+            List<MenuTree> menuParents = MenuUtil.parse(parentMenus);
+            List<MenuTree> menuTrees = MenuUtil.parse(menus);
+            MenuUtil.bulid(menuParents, menuTrees);
+            return menuTrees;
+        }
+        return new ArrayList<>();
     }
 }

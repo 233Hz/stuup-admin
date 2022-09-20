@@ -2,7 +2,7 @@ package com.poho.stuup.model;
 
 import java.util.Date;
 
-public class Reward {
+public class Contest {
 
     private Long oid;
 
@@ -16,9 +16,9 @@ public class Reward {
 
     private String rank;
 
-    private Integer status;
-
     private Date obtainDate;
+
+    private Integer status;
 
     public Long getOid() {
         return oid;
@@ -68,19 +68,19 @@ public class Reward {
         this.rank = rank;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public Date getObtainDate() {
         return obtainDate;
     }
 
     public void setObtainDate(Date obtainDate) {
         this.obtainDate = obtainDate;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

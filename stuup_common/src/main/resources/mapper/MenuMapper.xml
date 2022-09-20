@@ -142,4 +142,19 @@
     ORDER BY
       tm.oid ASC
   </select>
+  <select id="queryParentMenus"  resultMap="BaseResultMap">
+    SELECT DISTINCT
+      tm.oid,
+      tm.menu_name,
+      tm.menu_code,
+      tm.link,
+      tm.icon,
+      tm.parent_id
+    FROM
+      t_menu AS tm
+    WHERE
+      tm.parent_id is null
+    ORDER BY
+      tm.oid ASC
+  </select>
 </mapper>

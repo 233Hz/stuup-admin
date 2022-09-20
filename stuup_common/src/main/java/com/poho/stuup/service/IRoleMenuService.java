@@ -1,5 +1,6 @@
 package com.poho.stuup.service;
 
+import com.poho.common.custom.MenuTree;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.custom.CusMenu;
 import com.poho.stuup.model.RoleMenu;
@@ -40,4 +41,7 @@ public interface IRoleMenuService {
      * @return
      */
     List<CusMenu> findUserMenus(Long userId);
+
+    List<MenuTree> findUserMenuTree(Long userId);
+
 }

@@ -2,23 +2,17 @@ package com.poho.stuup.model;
 
 import java.util.Date;
 
-public class Reward {
+public class Military {
 
     private Long oid;
 
     private Integer sutId;
 
-    private String name;
-
     private Integer level;
 
-    private String unitName;
-
-    private String rank;
+    private Integer flag;
 
     private Integer status;
-
-    private Date obtainDate;
 
     public Long getOid() {
         return oid;
@@ -36,14 +30,6 @@ public class Reward {
         this.sutId = sutId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Integer getLevel() {
         return level;
     }
@@ -52,20 +38,12 @@ public class Reward {
         this.level = level;
     }
 
-    public String getUnitName() {
-        return unitName;
+    public Integer getFlag() {
+        return flag;
     }
 
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
-    public String getRank() {
-        return rank;
-    }
-
-    public void setRank(String rank) {
-        this.rank = rank;
+    public void setFlag(Integer flag) {
+        this.flag = flag;
     }
 
     public Integer getStatus() {
@@ -74,13 +52,5 @@ public class Reward {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Date getObtainDate() {
-        return obtainDate;
-    }
-
-    public void setObtainDate(Date obtainDate) {
-        this.obtainDate = obtainDate;
     }
 }

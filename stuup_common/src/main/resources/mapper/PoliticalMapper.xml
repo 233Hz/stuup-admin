@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.PoliticalMapper">
+  <resultMap id="BaseResultMap" type="com.poho.stuup.model.Political">
+    <id column="oid" jdbcType="BIGINT" property="oid" />
+    <result column="stu_id" jdbcType="INTEGER" property="sutId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+    <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, stu_id, name, level, start_date, end_date, role, org_name, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_political
+    where oid = #{oid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_political
+    where oid = #{oid,jdbcType=BIGINT}
+  </delete>
+
+  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+    select
+      count(*)
+    from t_political as tc
+    where 1=1
+    <if test="name != null and name != ''">
+      AND tc.name LIKE CONCAT(CONCAT('%',#{name}),'%')
+    </if>
+  </select>
+  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select
+    tc.*
+    from t_political as tc
+    where 1=1
+    <if test="name != null and name != ''">
+      AND tc.name LIKE CONCAT(CONCAT('%',#{name}),'%')
+    </if>
+    order by tc.oid desc
+    <if test="start != null and length != null">
+      limit #{start},#{length}
+    </if>
+  </select>
+
+  <insert id="insert" parameterType="com.poho.stuup.model.Political">
+    insert into t_political ( oid, stu_id, name, level, start_date,end_date, role, org_name, status)
+    values (
+             #{oid,jdbcType=BIGINT}
+           , #{stuId,jdbcType=INTEGER}
+           , #{name,jdbcType=VARCHAR}
+           , #{level,jdbcType=INTEGER}
+           , #{startDate,jdbcType=TIMESTAMP}
+           , #{endDate,jdbcType=TIMESTAMP}
+           , #{role,jdbcType=VARCHAR}
+           , #{orgName,jdbcType=VARCHAR}
+           , #{status,jdbcType=INTEGER}
+           )
+  </insert>
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Political">
+    insert into t_political
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="stuId != null">
+        stu_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="role != null">
+        role,
+      </if>
+      <if test="orgName != null">
+        org_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="stuId != null">
+        stu_id = #{stuId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null">
+        org_name = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Political">
+    update t_political
+    set stu_id = #{stuId,jdbcType=INTEGER},
+        name = #{name,jdbcType=VARCHAR},
+        level = #{level,jdbcType=INTEGER},
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+        role = #{role,jdbcType=VARCHAR},
+        org_name = #{orgName,jdbcType=VARCHAR},
+        status = #{status,jdbcType=INTEGER}
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Political">
+    update t_political
+    <set>
+      <if test="stuId != null">
+        stu_id = #{stuId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null">
+        org_name = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=BIGINT}
+  </update>
+</mapper>

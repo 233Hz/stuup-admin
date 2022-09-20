@@ -12,4 +12,6 @@ public interface MenuMapper extends BaseDao<Menu> {
      * @return
      */
     List<Menu> queryUserMenus(Map<String, Object> param);
+
+    List<Menu> queryParentMenus();
 }
