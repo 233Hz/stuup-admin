@@ -5,11 +5,15 @@ import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
+import com.poho.stuup.dao.GradeMapper;
 import com.poho.stuup.dao.MilitaryMapper;
 import com.poho.stuup.dao.StudentMapper;
+import com.poho.stuup.model.Grade;
 import com.poho.stuup.model.Military;
 import com.poho.stuup.model.Student;
+import com.poho.stuup.model.dto.MilitaryDTO;
 import com.poho.stuup.model.dto.MilitaryExcelDTO;
+import com.poho.stuup.model.dto.MilitarySearchDTO;
 import com.poho.stuup.service.IMilitaryService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class MilitaryServiceImpl implements IMilitaryService {
@@ -28,17 +33,30 @@ public class MilitaryServiceImpl implements IMilitaryService {
     @Resource
     private StudentMapper studentMapper;
 
+    @Resource
+    private GradeMapper gradeMapper;
+
     @Override
-    public ResponseModel findDataPageResult(String name, int page, int pageSize) {
+    public ResponseModel findDataPageResult(MilitarySearchDTO searchDTO) {
         ResponseModel model = new ResponseModel();
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        int count = militaryMapper.queryTotal(map);
-        PageData pageData = new PageData(page, pageSize, count);
-        map.put("start", pageData.getStart());
-        map.put("length", pageSize);
-        List<Military> list = militaryMapper.queryList(map);
+        int count = militaryMapper.selectTotal(searchDTO);
+        PageData pageData = new PageData(searchDTO.getCurrPage(), searchDTO.getPageSize(), count);
+        List<MilitaryDTO> list = militaryMapper.selectList(pageData, searchDTO);
         if (MicrovanUtil.isNotEmpty(list)) {
+            List<Grade> gradeList = gradeMapper.findGrades();
+            Map<Integer, String> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getOid,Grade::getGradeName));
+            list = list.stream().map( o -> {
+                if(o.getLevel() != null){
+                    o.setLevelName(ProjectUtil.MILITARY_LEVEL_DICT_MAP.get(o.getLevel()));
+                }
+                if(o.getGoodFlag() != null){
+                    o.setGoodFlagName(ProjectUtil.GOOD_FLAG_DICT_MAP.get(o.getGoodFlag()));
+                }
+                if(o.getGradeId() != null){
+                    o.setGradeName(gradeMap.get(o.getGradeId()));
+                }
+                return o;
+            }).collect(Collectors.toList());
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("请求成功");
@@ -62,16 +80,16 @@ public class MilitaryServiceImpl implements IMilitaryService {
             itemMsg.append("第").append(dto.getRowNum()).append("行：");
             //基础验证不空的字段
             boolean isVia = this.verifyBaseInfo(dto, itemMsg);
-            //验证级别字典值
+
             Integer level = null;
             if(isVia){
-                level = ProjectUtil.getDictKeyByValue(ProjectUtil.LEVEL_DICT_MAP, dto.getLevel());
+                level = ProjectUtil.getDictKeyByValue(ProjectUtil.MILITARY_LEVEL_DICT_MAP, dto.getLevel());
                 if(level == null){
                     itemMsg.append("军训级别不合法；");
                     isVia = false;
                 }
             }
-            //验证级别字典值
+
             Integer goodFlag = null;
             if(isVia){
                 goodFlag = ProjectUtil.getDictKeyByValue(ProjectUtil.GOOD_FLAG_DICT_MAP, dto.getGoodFlag());

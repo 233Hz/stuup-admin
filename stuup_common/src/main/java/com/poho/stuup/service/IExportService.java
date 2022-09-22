@@ -2,21 +2,23 @@ package com.poho.stuup.service;
 
 
 
+import com.poho.stuup.model.dto.*;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 
 
 public interface IExportService {
 
-    boolean exportReward(String yearId, String deptId, InputStream inputStream, HttpServletResponse response);
+    boolean exportReward(InputStream inputStream, HttpServletResponse response, RewardSearchDTO searchDTO);
 
-    boolean exportContest(String yearId, String deptId, InputStream inputStream, HttpServletResponse response);
+    boolean exportContest(InputStream inputStream, HttpServletResponse response, ContestSearchDTO searchDTO);
 
-    boolean exportCertificate(String yearId, String deptId, InputStream inputStream, HttpServletResponse response);
+    boolean exportCertificate(InputStream inputStream, HttpServletResponse response, CertificateSearchDTO searchDTO);
 
-    boolean exportMilitary(String yearId, String deptId, InputStream inputStream, HttpServletResponse response);
+    boolean exportMilitary(InputStream inputStream, HttpServletResponse response, MilitarySearchDTO searchDTO);
 
-    boolean exportPolitical(String yearId, String deptId, InputStream inputStream, HttpServletResponse response);
+    boolean exportPolitical(InputStream inputStream, HttpServletResponse response, PoliticalSearchDTO searchDTO);
 
-    boolean exportVolunteer(String yearId, String deptId, InputStream inputStream, HttpServletResponse response);
+    boolean exportVolunteer(InputStream inputStream, HttpServletResponse response, VolunteerSearchDTO searchDTO);
 }

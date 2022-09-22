@@ -9,7 +9,9 @@ import com.poho.stuup.dao.CertificateMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.model.Certificate;
 import com.poho.stuup.model.Student;
+import com.poho.stuup.model.dto.CertificateDTO;
 import com.poho.stuup.model.dto.CertificateExcelDTO;
+import com.poho.stuup.model.dto.CertificateSearchDTO;
 import com.poho.stuup.service.ICertificateService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CertificateServiceImpl implements ICertificateService {
@@ -30,16 +33,16 @@ public class CertificateServiceImpl implements ICertificateService {
     private StudentMapper studentMapper;
 
     @Override
-    public ResponseModel findDataPageResult(String name, int page, int pageSize) {
+    public ResponseModel findDataPageResult(CertificateSearchDTO searchDTO) {
         ResponseModel model = new ResponseModel();
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        int count = certificateMapper.queryTotal(map);
-        PageData pageData = new PageData(page, pageSize, count);
-        map.put("start", pageData.getStart());
-        map.put("length", pageSize);
-        List<Certificate> list = certificateMapper.queryList(map);
+        int count = certificateMapper.selectTotal(searchDTO);
+        PageData pageData = new PageData(searchDTO.getCurrPage(), searchDTO.getPageSize(), count);
+        List<CertificateDTO> list = certificateMapper.selectList(pageData, searchDTO);
         if (MicrovanUtil.isNotEmpty(list)) {
+            list = list.stream().map( o -> {
+                o.setLevelName(ProjectUtil.LEVEL_DICT_MAP.get(o.getLevel()));
+                return o;
+            }).collect(Collectors.toList());
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("请求成功");

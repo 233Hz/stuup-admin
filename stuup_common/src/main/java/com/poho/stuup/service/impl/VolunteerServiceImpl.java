@@ -10,7 +10,9 @@ import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.dao.VolunteerMapper;
 import com.poho.stuup.model.Student;
 import com.poho.stuup.model.Volunteer;
+import com.poho.stuup.model.dto.VolunteerDTO;
 import com.poho.stuup.model.dto.VolunteerExcelDTO;
+import com.poho.stuup.model.dto.VolunteerSearchDTO;
 import com.poho.stuup.service.IVolunteerService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class VolunteerServiceImpl implements IVolunteerService {
@@ -31,16 +34,19 @@ public class VolunteerServiceImpl implements IVolunteerService {
     private StudentMapper studentMapper;
 
     @Override
-    public ResponseModel findDataPageResult(String name, int page, int pageSize) {
+    public ResponseModel findDataPageResult(VolunteerSearchDTO searchDTO) {
         ResponseModel model = new ResponseModel();
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        int count = volunteerMapper.queryTotal(map);
-        PageData pageData = new PageData(page, pageSize, count);
-        map.put("start", pageData.getStart());
-        map.put("length", pageSize);
-        List<Volunteer> list = volunteerMapper.queryList(map);
+        int count = volunteerMapper.selectTotal(searchDTO);
+        PageData pageData = new PageData(searchDTO.getCurrPage(), searchDTO.getPageSize(), count);
+        List<VolunteerDTO> list = volunteerMapper.selectList(pageData, searchDTO);
         if (MicrovanUtil.isNotEmpty(list)) {
+            list = list.stream().map( o -> {
+                o.setDurationName(String.valueOf(o.getDuration()));
+                if(o.getOperDate() != null){
+                    o.setOperDateStr(MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getOperDate()));
+                }
+                return o;
+            }).collect(Collectors.toList());
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("请求成功");

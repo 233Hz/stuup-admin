@@ -9,7 +9,9 @@ import com.poho.stuup.dao.RewardMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.model.Reward;
 import com.poho.stuup.model.Student;
+import com.poho.stuup.model.dto.RewardDTO;
 import com.poho.stuup.model.dto.RewardExcelDTO;
+import com.poho.stuup.model.dto.RewardSearchDTO;
 import com.poho.stuup.service.IRewardService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RewardServiceImpl implements IRewardService {
@@ -30,16 +33,16 @@ public class RewardServiceImpl implements IRewardService {
     private StudentMapper studentMapper;
 
     @Override
-    public ResponseModel findDataPageResult(String name, int page, int pageSize) {
+    public ResponseModel findDataPageResult(RewardSearchDTO searchDTO) {
         ResponseModel model = new ResponseModel();
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        int count = rewardMapper.queryTotal(map);
-        PageData pageData = new PageData(page, pageSize, count);
-        map.put("start", pageData.getStart());
-        map.put("length", pageSize);
-        List<Reward> list = rewardMapper.queryList(map);
+        int count = rewardMapper.selectTotal(searchDTO);
+        PageData pageData = new PageData(searchDTO.getCurrPage(), searchDTO.getPageSize(), count);
+        List<RewardDTO> list = rewardMapper.selectList(pageData, searchDTO);
         if (MicrovanUtil.isNotEmpty(list)) {
+            list = list.stream().map( o -> {
+                o.setLevelName(ProjectUtil.LEVEL_DICT_MAP.get(o.getLevel()));
+                return o;
+            }).collect(Collectors.toList());
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("请求成功");

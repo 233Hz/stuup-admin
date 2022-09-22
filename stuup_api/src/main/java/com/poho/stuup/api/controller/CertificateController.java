@@ -6,22 +6,19 @@ import com.poho.common.exception.ExcelTitleException;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
-import com.poho.stuup.model.Certificate;
-import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.CertificateExcelDTO;
-import com.poho.stuup.model.dto.RewardExcelDTO;
+import com.poho.stuup.model.dto.CertificateSearchDTO;
 import com.poho.stuup.service.ICertificateService;
 import com.poho.stuup.util.ExcelUtil;
 import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -44,14 +41,15 @@ public class CertificateController {
     @Resource
     private ICertificateService certificateService;
 
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @ApiOperation(value = "获取列表", httpMethod = "GET")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ResponseModel list(String name, String current, String size) {
-        int page = ProjectUtil.getPageNum(current);
-        int pageSize = ProjectUtil.getPageSize(size);
-        return certificateService.findDataPageResult(name, page, pageSize);
+    @GetMapping("/list")
+    public ResponseModel list(CertificateSearchDTO searchDTO) {
+
+        return certificateService.findDataPageResult(searchDTO);
     }
 
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @RequestMapping(value = "/import", method = RequestMethod.POST)
     public ResponseModel importData(@RequestParam("importFile") MultipartFile importFile) {
         ResponseModel<Map<String, Object>> model = new ResponseModel<>();

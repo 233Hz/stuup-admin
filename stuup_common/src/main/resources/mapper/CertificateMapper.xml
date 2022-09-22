@@ -48,6 +48,44 @@
     </if>
   </select>
 
+  <select id="selectTotal"  resultType="int">
+    select
+    count(*)
+    from t_certificate as tc
+    left join t_student stu on tc.stu_id = stu.id
+    where 1=1
+    <if test="searchDTO.name != null and searchDTO.name != ''">
+      AND tc.name LIKE CONCAT(CONCAT('%',#{searchDTO.name}),'%')
+    </if>
+    <if test="searchDTO.level != null">
+      AND tc.level = #{searchDTO.level}
+    </if>
+    <if test="searchDTO.stuName != null and searchDTO.stuName != ''">
+      AND stu.name LIKE CONCAT(CONCAT('%',#{searchDTO.stuName}),'%')
+    </if>
+  </select>
+  <select id="selectList"  resultType="com.poho.stuup.model.dto.CertificateDTO">
+    select
+    tc.oid, tc.stu_id as stuId, tc.name,tc.level, tc.obtain_date as obtainDate, tc.unit_name as unitName, tc.cert_no as certNo, tc.status
+    ,stu.name as stuName
+    from t_certificate as tc
+    left join t_student stu on tc.stu_id = stu.id
+    where 1=1
+    <if test="searchDTO.name != null and searchDTO.name != ''">
+      AND tc.name LIKE CONCAT(CONCAT('%',#{searchDTO.name}),'%')
+    </if>
+    <if test="searchDTO.level != null">
+      AND tc.level = #{searchDTO.level}
+    </if>
+    <if test="searchDTO.stuName != null and searchDTO.stuName != ''">
+      AND stu.name LIKE CONCAT(CONCAT('%',#{searchDTO.stuName}),'%')
+    </if>
+    order by tc.oid desc
+    <if test="pageData != null ">
+      limit #{pageData.start},#{pageData.size}
+    </if>
+  </select>
+
   <insert id="insert" parameterType="com.poho.stuup.model.Certificate">
     insert into t_certificate ( oid, stu_id, name, level, obtain_date,unit_name, cert_no, status)
     values (

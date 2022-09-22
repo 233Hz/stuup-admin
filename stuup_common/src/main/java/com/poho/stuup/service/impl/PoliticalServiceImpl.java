@@ -5,11 +5,15 @@ import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
+import com.poho.stuup.dao.GradeMapper;
 import com.poho.stuup.dao.PoliticalMapper;
 import com.poho.stuup.dao.StudentMapper;
+import com.poho.stuup.model.Grade;
 import com.poho.stuup.model.Political;
 import com.poho.stuup.model.Student;
+import com.poho.stuup.model.dto.PoliticalDTO;
 import com.poho.stuup.model.dto.PoliticalExcelDTO;
+import com.poho.stuup.model.dto.PoliticalSearchDTO;
 import com.poho.stuup.service.IPoliticalService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PoliticalServiceImpl implements IPoliticalService {
@@ -29,17 +34,33 @@ public class PoliticalServiceImpl implements IPoliticalService {
     @Resource
     private StudentMapper studentMapper;
 
+    @Resource
+    private GradeMapper gradeMapper;
+
     @Override
-    public ResponseModel findDataPageResult(String name, int page, int pageSize) {
+    public ResponseModel findDataPageResult(PoliticalSearchDTO searchDTO) {
         ResponseModel model = new ResponseModel();
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        int count = politicalMapper.queryTotal(map);
-        PageData pageData = new PageData(page, pageSize, count);
-        map.put("start", pageData.getStart());
-        map.put("length", pageSize);
-        List<Political> list = politicalMapper.queryList(map);
+        int count = politicalMapper.selectTotal(searchDTO);
+        PageData pageData = new PageData(searchDTO.getCurrPage(), searchDTO.getPageSize(), count);
+        List<PoliticalDTO> list = politicalMapper.selectList(pageData, searchDTO);
         if (MicrovanUtil.isNotEmpty(list)) {
+            List<Grade> gradeList = gradeMapper.findGrades();
+            Map<Integer, String> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getOid,Grade::getGradeName));
+            list = list.stream().map( o -> {
+                o.setLevelName(ProjectUtil.POLITICAL_LEVEL_DICT_MAP.get(o.getLevel()));
+                String durationDateStr = "";
+                if(o.getStartDate() != null){
+                    durationDateStr = MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getStartDate());
+                }
+                if(o.getEndDate() != null){
+                    durationDateStr = durationDateStr + " - " + MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getEndDate());
+                }
+                if(o.getGradeId() != null){
+                    o.setGradeName(gradeMap.get(o.getGradeId()));
+                }
+                o.setDurationDateStr(durationDateStr);
+                return o;
+            }).collect(Collectors.toList());
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("请求成功");
@@ -66,7 +87,7 @@ public class PoliticalServiceImpl implements IPoliticalService {
             //验证级别字典值
             Integer level = null;
             if(isVia){
-                level = ProjectUtil.getDictKeyByValue(ProjectUtil.LEVEL_DICT_MAP, dto.getLevel());
+                level = ProjectUtil.getDictKeyByValue(ProjectUtil.POLITICAL_LEVEL_DICT_MAP, dto.getLevel());
                 if(level == null){
                     itemMsg.append("级别字段内容不合法；");
                     isVia = false;

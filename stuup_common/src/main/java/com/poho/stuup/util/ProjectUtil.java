@@ -323,7 +323,10 @@ public class ProjectUtil {
     }
 
     public static Map<Integer, String > LEVEL_DICT_MAP = new HashMap<>();
+    public static Map<Integer, String > MILITARY_LEVEL_DICT_MAP = new HashMap<>();
     public static Map<Integer, String > GOOD_FLAG_DICT_MAP = new HashMap<>();
+    public static Map<Integer, String > POLITICAL_LEVEL_DICT_MAP = new HashMap<>();
+
     static {
         //级别字典
         LEVEL_DICT_MAP.put(1, "国际");
@@ -331,9 +334,18 @@ public class ProjectUtil {
         LEVEL_DICT_MAP.put(3, "省级");
         LEVEL_DICT_MAP.put(4, "市级");
 
+        //军训等级
+        MILITARY_LEVEL_DICT_MAP.put(1, "合格");
+        MILITARY_LEVEL_DICT_MAP.put(0, "不合格");
+
         //是否优秀字典
         GOOD_FLAG_DICT_MAP.put(0, "否");
         GOOD_FLAG_DICT_MAP.put(1, "是");
+
+        //党团活动等级
+        POLITICAL_LEVEL_DICT_MAP.put(1, "一级");
+        POLITICAL_LEVEL_DICT_MAP.put(2, "二级");
+        POLITICAL_LEVEL_DICT_MAP.put(3, "三级");
 
     }
 }

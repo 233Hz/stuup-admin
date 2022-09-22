@@ -2,14 +2,14 @@ package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ExcelExportTemplateEnum;
 import com.poho.common.custom.ExcelImportTemplateEnum;
+import com.poho.stuup.model.dto.*;
 import com.poho.stuup.service.IExportService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
@@ -18,7 +18,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.Map;
 
 
 @Controller
@@ -36,6 +35,7 @@ public class DownloadController {
      *
      * @return
      */
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @ApiOperation(value = "下载接口", httpMethod = "POST")
     @RequestMapping(value = "/template/{param}", method = RequestMethod.POST)
     public void template(@PathVariable String param) throws Exception {
@@ -67,8 +67,9 @@ public class DownloadController {
     }
 
     //奖励信息导出
-    @RequestMapping(value = "/exportReward", method = RequestMethod.POST)
-    public void exportReward(@RequestBody Map<String, String> params) {
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @PostMapping("/exportReward")
+    public void exportReward(@RequestBody RewardSearchDTO searchDTO) {
         String templatePath = ExcelExportTemplateEnum.REWARD.getPath();
         ClassPathResource resource = new ClassPathResource(templatePath);
         InputStream inputStream = null;
@@ -77,14 +78,13 @@ public class DownloadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String yearId = params.get("yearId");
-        String deptId = params.get("deptId");
-        exportService.exportReward(yearId, deptId, inputStream, response);
+        exportService.exportReward( inputStream, response, searchDTO);
     }
 
     //技能大赛信息导出
-    @RequestMapping(value = "/exportContest", method = RequestMethod.POST)
-    public void exportContest(@RequestBody Map<String, String> params) {
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @PostMapping("/exportContest")
+    public void exportContest(@RequestBody ContestSearchDTO searchDTO) {
         String templatePath = ExcelExportTemplateEnum.CONTEST.getPath();
         ClassPathResource resource = new ClassPathResource(templatePath);
         InputStream inputStream = null;
@@ -93,14 +93,13 @@ public class DownloadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String yearId = params.get("yearId");
-        String deptId = params.get("deptId");
-        exportService.exportContest(yearId, deptId, inputStream, response);
+        exportService.exportContest(inputStream, response, searchDTO);
     }
 
     //考证信息导出
-    @RequestMapping(value = "/exportCertificate", method = RequestMethod.POST)
-    public void exportCertificate(@RequestBody Map<String, String> params) {
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @PostMapping("/exportCertificate")
+    public void exportCertificate(@RequestBody CertificateSearchDTO searchDTO) {
         String templatePath = ExcelExportTemplateEnum.CERTIFICATE.getPath();
         ClassPathResource resource = new ClassPathResource(templatePath);
         InputStream inputStream = null;
@@ -109,14 +108,13 @@ public class DownloadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String yearId = params.get("yearId");
-        String deptId = params.get("deptId");
-        exportService.exportCertificate(yearId, deptId, inputStream, response);
+        exportService.exportCertificate(inputStream, response, searchDTO);
     }
 
     //军训信息导出
-    @RequestMapping(value = "/exportMilitary", method = RequestMethod.POST)
-    public void exportMilitary(@RequestBody Map<String, String> params) {
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @PostMapping("/exportMilitary")
+    public void exportMilitary(@RequestBody MilitarySearchDTO searchDTO) {
         String templatePath = ExcelExportTemplateEnum.MILITARY.getPath();
         ClassPathResource resource = new ClassPathResource(templatePath);
         InputStream inputStream = null;
@@ -125,14 +123,13 @@ public class DownloadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String yearId = params.get("yearId");
-        String deptId = params.get("deptId");
-        exportService.exportMilitary(yearId, deptId, inputStream, response);
+        exportService.exportMilitary(inputStream, response, searchDTO);
     }
 
     //党团活动信息导出
-    @RequestMapping(value = "/exportPolitical", method = RequestMethod.POST)
-    public void exportPolitical(@RequestBody Map<String, String> params) {
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @PostMapping("/exportPolitical")
+    public void exportPolitical(@RequestBody PoliticalSearchDTO searchDTO) {
         String templatePath = ExcelExportTemplateEnum.POLITICAL.getPath();
         ClassPathResource resource = new ClassPathResource(templatePath);
         InputStream inputStream = null;
@@ -141,14 +138,13 @@ public class DownloadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String yearId = params.get("yearId");
-        String deptId = params.get("deptId");
-        exportService.exportPolitical(yearId, deptId, inputStream, response);
+        exportService.exportPolitical(inputStream, response, searchDTO);
     }
 
     //志愿者服务信息导出
-    @RequestMapping(value = "/exportVolunteer", method = RequestMethod.POST)
-    public void exportVolunteer(@RequestBody Map<String, String> params) {
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @PostMapping("/exportVolunteer")
+    public void exportVolunteer(@RequestBody VolunteerSearchDTO searchDTO) {
         String templatePath = ExcelExportTemplateEnum.VOLUNTEER.getPath();
         ClassPathResource resource = new ClassPathResource(templatePath);
         InputStream inputStream = null;
@@ -157,9 +153,7 @@ public class DownloadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String yearId = params.get("yearId");
-        String deptId = params.get("deptId");
-        exportService.exportVolunteer(yearId, deptId, inputStream, response);
+        exportService.exportVolunteer(inputStream, response, searchDTO);
     }
 
 }

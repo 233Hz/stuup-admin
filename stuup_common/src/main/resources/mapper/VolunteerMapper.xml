@@ -50,6 +50,39 @@
     </if>
   </select>
 
+  <select id="selectTotal"  resultType="int">
+    select
+    count(*)
+    from t_volunteer as tc
+    left join t_student stu on tc.stu_id = stu.id
+    where 1=1
+    <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
+      AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
+    </if>
+    <if test="searchDTO.stuName != null and searchDTO.stuName != ''">
+      AND stu.name LIKE CONCAT(CONCAT('%',#{searchDTO.stuName}),'%')
+    </if>
+  </select>
+  <select id="selectList"  resultType="com.poho.stuup.model.dto.VolunteerDTO">
+    select
+    tc.oid, tc.stu_id AS stuId, tc.name, tc.address, tc.sub_name AS subName,tc.post, tc.duration
+    , tc.oper_date AS operDate,tc.memo, tc.status
+    ,stu.student_no as stuNo ,stu.name as stuName
+    from t_volunteer as tc
+    left join t_student stu on tc.stu_id = stu.id
+    where 1=1
+    <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
+      AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
+    </if>
+    <if test="searchDTO.stuName != null and searchDTO.stuName != ''">
+      AND stu.name LIKE CONCAT(CONCAT('%',#{searchDTO.stuName}),'%')
+    </if>
+    order by tc.oid desc
+    <if test="pageData != null ">
+      limit #{pageData.start},#{pageData.size}
+    </if>
+  </select>
+
   <insert id="insert" parameterType="com.poho.stuup.model.Volunteer">
     insert into t_volunteer ( oid, stu_id, name, address, sub_name,post, memo, oper_date, duration, status)
     values (
