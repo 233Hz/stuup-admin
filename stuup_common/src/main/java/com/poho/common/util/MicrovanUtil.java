@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
  * Created by wupeng on 2017/3/3.
  */
 public class MicrovanUtil {
+
+    public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     /**
      *
      * @param request

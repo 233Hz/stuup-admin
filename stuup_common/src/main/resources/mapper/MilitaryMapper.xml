@@ -3,13 +3,13 @@
 <mapper namespace="com.poho.stuup.dao.MilitaryMapper">
   <resultMap id="BaseResultMap" type="com.poho.stuup.model.Military">
     <id column="oid" jdbcType="BIGINT" property="oid" />
-    <result column="stu_id" jdbcType="INTEGER" property="sutId" />
+    <result column="stu_id" jdbcType="INTEGER" property="stuId" />
     <result column="level" jdbcType="INTEGER" property="level" />
-    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="good_flag" jdbcType="INTEGER" property="goodFlag" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    oid, stu_id, level,flag, status
+    oid, stu_id, level,good_flag, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -40,12 +40,12 @@
   </select>
 
   <insert id="insert" parameterType="com.poho.stuup.model.Military">
-    insert into t_military ( oid, stu_id, level,flag, status)
+    insert into t_military ( oid, stu_id, level,good_flag, status)
     values (
              #{oid,jdbcType=BIGINT}
            , #{stuId,jdbcType=INTEGER}
            , #{level,jdbcType=INTEGER}
-           , #{flag,jdbcType=INTEGER}
+           , #{goodFlag,jdbcType=INTEGER}
            , #{status,jdbcType=INTEGER}
            )
   </insert>
@@ -58,8 +58,8 @@
       <if test="level != null">
         level,
       </if>
-      <if test="flag != null">
-        flag,
+      <if test="goodFlag != null">
+        good_flag,
       </if>
       <if test="status != null">
         status,
@@ -72,8 +72,8 @@
       <if test="level != null">
         level = #{level,jdbcType=INTEGER},
       </if>
-      <if test="flag != null">
-        flag = #{flag,jdbcType=INTEGER},
+      <if test="goodFlag != null">
+        goodFlag = #{goodFlag,jdbcType=INTEGER},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -85,7 +85,7 @@
     update t_military
     set stu_id = #{stuId,jdbcType=INTEGER},
         level = #{level,jdbcType=INTEGER},
-        flag = #{flag,jdbcType=INTEGER},
+        good_flag = #{goodFlag,jdbcType=INTEGER},
         status = #{status,jdbcType=INTEGER}
     where oid = #{oid,jdbcType=BIGINT}
   </update>
@@ -98,8 +98,8 @@
       <if test="level != null">
         level = #{level,jdbcType=INTEGER},
       </if>
-      <if test="flag != null">
-        flag = #{flag,jdbcType=INTEGER},
+      <if test="goodFlag != null">
+        good_flag = #{goodFlag,jdbcType=INTEGER},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},

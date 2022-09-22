@@ -3,7 +3,7 @@
 <mapper namespace="com.poho.stuup.dao.VolunteerMapper">
   <resultMap id="BaseResultMap" type="com.poho.stuup.model.Volunteer">
     <id column="oid" jdbcType="BIGINT" property="oid" />
-    <result column="stu_id" jdbcType="INTEGER" property="sutId" />
+    <result column="stu_id" jdbcType="INTEGER" property="stuId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="sub_name" jdbcType="VARCHAR" property="subName" />

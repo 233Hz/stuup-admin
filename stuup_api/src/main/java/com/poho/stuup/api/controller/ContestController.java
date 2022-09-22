@@ -2,16 +2,18 @@ package com.poho.stuup.api.controller;
 
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
+import com.poho.common.exception.ExcelTitleException;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
-import com.poho.stuup.model.User;
+import com.poho.stuup.model.dto.ContestExcelDTO;
 import com.poho.stuup.service.IContestService;
-import com.poho.stuup.service.IRewardService;
 import com.poho.stuup.util.ExcelUtil;
 import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +32,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/contest")
 public class ContestController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContestController.class);
 
     @Resource
     private PropertiesConfig config;
@@ -60,12 +64,14 @@ public class ContestController {
                 String fileName = System.currentTimeMillis() + "_contest" + fix;
                 File file = new File(path, fileName);
                 FileCopyUtils.copy(importFile.getBytes(), file);
-                List<User> userList = new ExcelUtil().readUserExcel(file.getPath());
-                if (MicrovanUtil.isNotEmpty(userList)) {
-                   /* Map<String, Object> result = contestService.importList(userList);
+                String[] headNames = {"学籍号", "项目名称", "主办单位", "级别", "获奖日期", "获奖等第"};
+                String[] fieldNames = {"stuNo", "name", "unitName", "level", "obtainDate", "rank"};
+                List<ContestExcelDTO> list = new ExcelUtil().readExcel(file.getPath(), ContestExcelDTO.class, headNames, fieldNames);
+                if (MicrovanUtil.isNotEmpty(list)) {
+                    Map<String, Object> result = contestService.importList(list);
                     model.setCode(CommonConstants.CODE_SUCCESS);
                     model.setMessage("导入成功");
-                    model.setData(result);*/
+                    model.setData(result);
                 } else {
                     model.setMessage("未读取到数据");
                     model.setCode(CommonConstants.CODE_EXCEPTION);
@@ -74,6 +80,9 @@ public class ContestController {
                 model.setMessage("请选择Excel文件");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
             }
+        } catch (ExcelTitleException e ) {
+            model.setMessage(e.getMessage());
+            model.setCode(CommonConstants.CODE_EXCEPTION);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {

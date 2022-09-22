@@ -1,16 +1,16 @@
-package com.poho.stuup.model;
+package com.poho.stuup.model.dto;
 
 import java.util.Date;
 
-public class Certificate {
+public class CertificateExcelDTO {
 
-    private Long oid;
+    private int rowNum;
 
-    private Integer stuId;
+    private String stuNo;
 
     private String name;
 
-    private Integer level;
+    private String level;
 
     private String unitName;
 
@@ -18,24 +18,22 @@ public class Certificate {
 
     private String certNo;
 
-    private Date obtainDate;
+    private String obtainDate;
 
-    private Integer status;
-
-    public Long getOid() {
-        return oid;
+    public int getRowNum() {
+        return rowNum;
     }
 
-    public void setOid(Long oid) {
-        this.oid = oid;
+    public void setRowNum(int rowNum) {
+        this.rowNum = rowNum;
     }
 
-    public Integer getStuId() {
-        return stuId;
+    public String getStuNo() {
+        return stuNo;
     }
 
-    public void setStuId(Integer stuId) {
-        this.stuId = stuId;
+    public void setStuNo(String stuNo) {
+        this.stuNo = stuNo;
     }
 
     public String getName() {
@@ -46,11 +44,11 @@ public class Certificate {
         this.name = name;
     }
 
-    public Integer getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
@@ -78,19 +76,11 @@ public class Certificate {
         this.certNo = certNo;
     }
 
-    public Date getObtainDate() {
+    public String getObtainDate() {
         return obtainDate;
     }
 
-    public void setObtainDate(Date obtainDate) {
+    public void setObtainDate(String obtainDate) {
         this.obtainDate = obtainDate;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.poho.stuup.dao.CertificateMapper">
   <resultMap id="BaseResultMap" type="com.poho.stuup.model.Certificate">
     <id column="oid" jdbcType="BIGINT" property="oid" />
-    <result column="stu_id" jdbcType="INTEGER" property="sutId" />
+    <result column="stu_id" jdbcType="INTEGER" property="stuId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="obtain_date" jdbcType="TIMESTAMP" property="obtainDate" />

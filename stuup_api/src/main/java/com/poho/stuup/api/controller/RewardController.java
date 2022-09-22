@@ -2,15 +2,19 @@ package com.poho.stuup.api.controller;
 
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
+import com.poho.common.exception.ExcelTitleException;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.model.User;
+import com.poho.stuup.model.dto.RewardExcelDTO;
 import com.poho.stuup.service.IRewardService;
 import com.poho.stuup.util.ExcelUtil;
 import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +33,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/reward")
 public class RewardController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RewardController.class);
 
     @Resource
     private PropertiesConfig config;
@@ -59,12 +65,14 @@ public class RewardController {
                 String fileName = System.currentTimeMillis() + "_reward" + fix;
                 File file = new File(path, fileName);
                 FileCopyUtils.copy(importFile.getBytes(), file);
-                List<User> userList = new ExcelUtil().readUserExcel(file.getPath());
-                if (MicrovanUtil.isNotEmpty(userList)) {
-                    /*Map<String, Object> result = rewardService.importList(userList);
+                String[] headNames = {"学籍号", "奖励名称", "奖励级别", "获奖时间", "颁奖单位", "名次或等第"};
+                String[] fieldNames = {"stuNo", "name", "level", "obtainDate", "unitName", "rank"};
+                List<RewardExcelDTO> list = new ExcelUtil().readExcel(file.getPath(), RewardExcelDTO.class, headNames, fieldNames);
+                if (MicrovanUtil.isNotEmpty(list)) {
+                    Map<String, Object> result = rewardService.importList(list);
                     model.setCode(CommonConstants.CODE_SUCCESS);
                     model.setMessage("导入成功");
-                    model.setData(result);*/
+                    model.setData(result);
                 } else {
                     model.setMessage("未读取到数据");
                     model.setCode(CommonConstants.CODE_EXCEPTION);
@@ -73,6 +81,9 @@ public class RewardController {
                 model.setMessage("请选择Excel文件");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
             }
+        } catch (ExcelTitleException e ) {
+            model.setMessage(e.getMessage());
+            model.setCode(CommonConstants.CODE_EXCEPTION);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {

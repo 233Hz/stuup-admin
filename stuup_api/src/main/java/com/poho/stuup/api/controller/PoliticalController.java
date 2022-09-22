@@ -2,15 +2,20 @@ package com.poho.stuup.api.controller;
 
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
+import com.poho.common.exception.ExcelTitleException;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.model.User;
+import com.poho.stuup.model.dto.PoliticalExcelDTO;
+import com.poho.stuup.model.dto.RewardExcelDTO;
 import com.poho.stuup.service.IPoliticalService;
 import com.poho.stuup.util.ExcelUtil;
 import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +34,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/political")
 public class PoliticalController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PoliticalController.class);
 
     @Resource
     private PropertiesConfig config;
@@ -59,12 +66,14 @@ public class PoliticalController {
                 String fileName = System.currentTimeMillis() + "_political" + fix;
                 File file = new File(path, fileName);
                 FileCopyUtils.copy(importFile.getBytes(), file);
-                List<User> userList = new ExcelUtil().readUserExcel(file.getPath());
-                if (MicrovanUtil.isNotEmpty(userList)) {
-                    /*Map<String, Object> result = politicalService.importList(userList);
+                String[] headNames = {"学籍号", "党团活动", "开始时间", "结束时间", "级别", "角色", "组织机构"};
+                String[] fieldNames = {"stuNo", "name", "startDate", "endDate", "level", "role", "orgName"};
+                List<PoliticalExcelDTO> list = new ExcelUtil().readExcel(file.getPath(), PoliticalExcelDTO.class, headNames, fieldNames);
+                if (MicrovanUtil.isNotEmpty(list)) {
+                    Map<String, Object> result = politicalService.importList(list);
                     model.setCode(CommonConstants.CODE_SUCCESS);
                     model.setMessage("导入成功");
-                    model.setData(result);*/
+                    model.setData(result);
                 } else {
                     model.setMessage("未读取到数据");
                     model.setCode(CommonConstants.CODE_EXCEPTION);
@@ -73,6 +82,9 @@ public class PoliticalController {
                 model.setMessage("请选择Excel文件");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
             }
+        } catch (ExcelTitleException e ) {
+            model.setMessage(e.getMessage());
+            model.setCode(CommonConstants.CODE_EXCEPTION);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {

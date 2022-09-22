@@ -6,7 +6,7 @@ public class Political {
 
     private Long oid;
 
-    private Integer sutId;
+    private Integer stuId;
 
     private String name;
 
@@ -30,12 +30,12 @@ public class Political {
         this.oid = oid;
     }
 
-    public Integer getSutId() {
-        return sutId;
+    public Integer getStuId() {
+        return stuId;
     }
 
-    public void setSutId(Integer sutId) {
-        this.sutId = sutId;
+    public void setStuId(Integer stuId) {
+        this.stuId = stuId;
     }
 
     public String getName() {

@@ -8,12 +8,15 @@ import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.User;
 import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: wupeng
@@ -306,5 +309,31 @@ public class ProjectUtil {
             pageSize = Integer.parseInt(size);
         }
         return pageSize;
+    }
+
+    public static Integer getDictKeyByValue (Map<Integer, String > dictMap, String value){
+        if(!CollectionUtils.isEmpty(dictMap) && StringUtils.isNotBlank(value)){
+            for(Map.Entry<Integer, String> entry : dictMap.entrySet()){
+                if(value.equals(entry.getValue())){
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Map<Integer, String > LEVEL_DICT_MAP = new HashMap<>();
+    public static Map<Integer, String > GOOD_FLAG_DICT_MAP = new HashMap<>();
+    static {
+        //级别字典
+        LEVEL_DICT_MAP.put(1, "国际");
+        LEVEL_DICT_MAP.put(2, "国家级");
+        LEVEL_DICT_MAP.put(3, "省级");
+        LEVEL_DICT_MAP.put(4, "市级");
+
+        //是否优秀字典
+        GOOD_FLAG_DICT_MAP.put(0, "否");
+        GOOD_FLAG_DICT_MAP.put(1, "是");
+
     }
 }

@@ -1,43 +1,39 @@
-package com.poho.stuup.model;
+package com.poho.stuup.model.dto;
 
-import java.util.Date;
+public class VolunteerExcelDTO {
 
-public class Volunteer {
+    private int rowNum;
 
-    private Long oid;
-
-    private Integer stuId;
+    private String stuNo;
 
     private String name;
-    
+
     private String address;
 
     private String subName;
 
     private String post;
 
-    private Integer duration;
+    private String duration;
 
-    private Date operDate;
+    private String operDate;
 
     private String memo;
 
-    private Integer status;
-
-    public Long getOid() {
-        return oid;
+    public int getRowNum() {
+        return rowNum;
     }
 
-    public void setOid(Long oid) {
-        this.oid = oid;
+    public void setRowNum(int rowNum) {
+        this.rowNum = rowNum;
     }
 
-    public Integer getStuId() {
-        return stuId;
+    public String getStuNo() {
+        return stuNo;
     }
 
-    public void setStuId(Integer stuId) {
-        this.stuId = stuId;
+    public void setStuNo(String stuNo) {
+        this.stuNo = stuNo;
     }
 
     public String getName() {
@@ -72,19 +68,19 @@ public class Volunteer {
         this.post = post;
     }
 
-    public Integer getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
-    public Date getOperDate() {
+    public String getOperDate() {
         return operDate;
     }
 
-    public void setOperDate(Date operDate) {
+    public void setOperDate(String operDate) {
         this.operDate = operDate;
     }
 
@@ -94,13 +90,5 @@ public class Volunteer {
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

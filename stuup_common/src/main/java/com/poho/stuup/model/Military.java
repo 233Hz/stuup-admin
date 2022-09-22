@@ -1,16 +1,15 @@
 package com.poho.stuup.model;
 
-import java.util.Date;
 
 public class Military {
 
     private Long oid;
 
-    private Integer sutId;
+    private Integer stuId;
 
     private Integer level;
 
-    private Integer flag;
+    private Integer goodFlag;
 
     private Integer status;
 
@@ -22,12 +21,12 @@ public class Military {
         this.oid = oid;
     }
 
-    public Integer getSutId() {
-        return sutId;
+    public Integer getStuId() {
+        return stuId;
     }
 
-    public void setSutId(Integer sutId) {
-        this.sutId = sutId;
+    public void setStuId(Integer stuId) {
+        this.stuId = stuId;
     }
 
     public Integer getLevel() {
@@ -38,12 +37,12 @@ public class Military {
         this.level = level;
     }
 
-    public Integer getFlag() {
-        return flag;
+    public Integer getGoodFlag() {
+        return goodFlag;
     }
 
-    public void setFlag(Integer flag) {
-        this.flag = flag;
+    public void setGoodFlag(Integer goodFlag) {
+        this.goodFlag = goodFlag;
     }
 
     public Integer getStatus() {
