@@ -111,7 +111,7 @@
         address,
       </if>
       <if test="subName != null">
-        subName,
+        sub_name,
       </if>
       <if test="post != null">
         post,
@@ -120,7 +120,7 @@
         memo,
       </if>
       <if test="operDate != null">
-        operDate,
+        oper_date,
       </if>
       <if test="duration != null">
         duration,
@@ -131,31 +131,31 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
      <if test="stuId != null">
-        stu_id = #{stuId,jdbcType=INTEGER},
+        #{stuId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="address != null">
-        address = #{address,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
       </if>
       <if test="subName != null">
-        sub_name = #{subName,jdbcType=VARCHAR},
+        #{subName,jdbcType=VARCHAR},
       </if>
       <if test="post != null">
-        post = #{post,jdbcType=VARCHAR},
+        #{post,jdbcType=VARCHAR},
       </if>
       <if test="memo != null">
-        memo = #{memo,jdbcType=VARCHAR},
+        #{memo,jdbcType=VARCHAR},
       </if>
       <if test="operDate != null">
-        oper_date = #{operDate,jdbcType=TIMESTAMP},
+        #{operDate,jdbcType=TIMESTAMP},
       </if>
       <if test="duration != null">
-        duration = #{duration,jdbcType=INTEGER},
+        #{duration,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>

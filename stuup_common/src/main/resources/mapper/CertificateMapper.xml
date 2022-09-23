@@ -8,11 +8,12 @@
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="obtain_date" jdbcType="TIMESTAMP" property="obtainDate" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="major" jdbcType="VARCHAR" property="major" />
     <result column="cert_no" jdbcType="VARCHAR" property="certNo" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    oid, stu_id, name, level, obtain_date,unit_name, cert_no, status
+    oid, stu_id, name, level, obtain_date,unit_name,major, cert_no, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -66,7 +67,7 @@
   </select>
   <select id="selectList"  resultType="com.poho.stuup.model.dto.CertificateDTO">
     select
-    tc.oid, tc.stu_id as stuId, tc.name,tc.level, tc.obtain_date as obtainDate, tc.unit_name as unitName, tc.cert_no as certNo, tc.status
+    tc.oid, tc.stu_id as stuId, tc.name,tc.level, tc.obtain_date as obtainDate, tc.unit_name as unitName,tc.major, tc.cert_no as certNo, tc.status
     ,stu.name as stuName
     from t_certificate as tc
     left join t_student stu on tc.stu_id = stu.id
@@ -87,7 +88,7 @@
   </select>
 
   <insert id="insert" parameterType="com.poho.stuup.model.Certificate">
-    insert into t_certificate ( oid, stu_id, name, level, obtain_date,unit_name, cert_no, status)
+    insert into t_certificate ( oid, stu_id, name, level, obtain_date,unit_name,major, cert_no, status)
     values (
              #{oid,jdbcType=BIGINT}
            , #{stuId,jdbcType=INTEGER}
@@ -95,6 +96,7 @@
            , #{level,jdbcType=INTEGER}
            , #{obtainDate,jdbcType=TIMESTAMP}
            , #{unitName,jdbcType=VARCHAR}
+           , #{major,jdbcType=VARCHAR}
            , #{certNo,jdbcType=VARCHAR}
            , #{status,jdbcType=INTEGER}
            )
@@ -117,6 +119,9 @@
       <if test="unitName != null">
         unit_name,
       </if>
+      <if test="major != null">
+        major,
+      </if>
       <if test="certNo != null">
         cert_no,
       </if>
@@ -126,25 +131,28 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="stuId != null">
-        stu_id = #{stuId,jdbcType=INTEGER},
+        #{stuId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="level != null">
-        level = #{level,jdbcType=INTEGER},
+        #{level,jdbcType=INTEGER},
       </if>
       <if test="obtainDate != null">
-        obtain_date = #{obtainDate,jdbcType=TIMESTAMP},
+        #{obtainDate,jdbcType=TIMESTAMP},
       </if>
       <if test="unitName != null">
-        unit_name = #{unitName,jdbcType=VARCHAR},
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null">
+        #{major,jdbcType=VARCHAR},
       </if>
       <if test="certNo != null">
-        cert_no = #{certNo,jdbcType=VARCHAR},
+        #{certNo,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -156,6 +164,7 @@
         level = #{level,jdbcType=INTEGER},
         obtain_date = #{obtainDate,jdbcType=TIMESTAMP},
         unit_name = #{unitName,jdbcType=VARCHAR},
+        major = #{major,jdbcType=VARCHAR},
         cert_no = #{certNo,jdbcType=VARCHAR},
         status = #{status,jdbcType=INTEGER}
     where oid = #{oid,jdbcType=BIGINT}
@@ -177,6 +186,9 @@
       </if>
       <if test="unitName != null">
         unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null">
+        major = #{major,jdbcType=VARCHAR},
       </if>
       <if test="certNo != null">
         cert_no = #{certNo,jdbcType=VARCHAR},

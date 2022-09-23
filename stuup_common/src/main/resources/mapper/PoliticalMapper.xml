@@ -54,7 +54,7 @@
     count(*)
     from t_political as tc
     left join t_student stu on tc.stu_id = stu.id
-    left join t_class cl on tc.class_id = cl.id
+    left join t_class cl on stu.class_id = cl.id
     where 1=1
     <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
       AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
@@ -74,7 +74,7 @@
     ,cl.grade_id as gradeId, cl.name as className
     from t_political as tc
     left join t_student stu on tc.stu_id = stu.id
-    left join t_class cl on tc.class_id = cl.id
+    left join t_class cl on stu.class_id = cl.id
     where 1=1
     <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
       AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
@@ -132,28 +132,28 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="stuId != null">
-        stu_id = #{stuId,jdbcType=INTEGER},
+        #{stuId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="level != null">
-        level = #{level,jdbcType=INTEGER},
+        #{level,jdbcType=INTEGER},
       </if>
       <if test="startDate != null">
-        start_date = #{startDate,jdbcType=TIMESTAMP},
+        #{startDate,jdbcType=TIMESTAMP},
       </if>
       <if test="endDate != null">
-        end_date = #{endDate,jdbcType=TIMESTAMP},
+        #{endDate,jdbcType=TIMESTAMP},
       </if>
       <if test="role != null">
-        role = #{role,jdbcType=VARCHAR},
+       #{role,jdbcType=VARCHAR},
       </if>
       <if test="orgName != null">
-        org_name = #{orgName,jdbcType=VARCHAR},
+        #{orgName,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>

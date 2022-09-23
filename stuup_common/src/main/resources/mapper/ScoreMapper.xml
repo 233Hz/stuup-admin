@@ -86,18 +86,13 @@
     count(td.oid)
     from t_score as td
     where 1=1
-    <if test="key != null and key != ''">
-      AND td.name LIKE CONCAT(CONCAT('%',#{key}),'%')
-    </if>
   </select>
   <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     select
     td.*
     from t_score as td
     where 1=1
-   <!-- <if test="key != null and key != ''">
-      AND td.name LIKE CONCAT(CONCAT('%',#{key}),'%')
-    </if>-->
+
     order by td.oid desc
     <if test="start != null and length != null">
       limit #{start},#{length}

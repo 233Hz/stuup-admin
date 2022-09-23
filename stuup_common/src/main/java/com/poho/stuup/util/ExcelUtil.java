@@ -131,17 +131,23 @@ public class ExcelUtil {
         FileInputStream is = new FileInputStream(file);
         Workbook workbook = getWorkbook(is, file);
         Sheet sheet = workbook.getSheetAt(0);
-        // 检验表头数据与模板是否一致，防止老师弄错模板了(新需求)
+        // 检验表头数据与模板是否一致，防止老师弄错模板了
         int rowTotalNum = sheet.getPhysicalNumberOfRows();
         if(rowTotalNum <= 0){
             return  list;
         }
         this.checkHead(workbook, sheet, headNames);
-        for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
+        int lastRowNum = sheet.getLastRowNum();
+        Row row;
+        for (int rowNum = 1; rowNum <= lastRowNum; rowNum++) {
             T obj = ReflectUtil.newInstanceIfPossible(clazz);
+            row = sheet.getRow(rowNum);
+            if(row == null){
+                break;
+            }
             Cell cell;
             for(int i = 0; i < fieldNames.length; i++ ){
-                cell = sheet.getRow(rowNum).getCell(i);
+                cell = row.getCell(i);
                 ReflectUtil.setFieldValue(obj, fieldNames[i], getCellValue(workbook, cell));
             }
             ReflectUtil.setFieldValue(obj, "rowNum", rowNum + 1);

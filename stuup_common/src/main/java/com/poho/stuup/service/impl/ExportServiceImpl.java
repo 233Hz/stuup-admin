@@ -230,7 +230,7 @@ public class ExportServiceImpl implements IExportService {
     private boolean export(InputStream inputStream, HttpServletResponse response
             , ExcelExportTemplateEnum exportTemplateEnum
             , List<List<String>> dataList) {
-        XSSFWorkbook workbook = null;
+        XSSFWorkbook workbook;
         try {
             workbook = new XSSFWorkbook(inputStream);
         } catch (Exception e) {

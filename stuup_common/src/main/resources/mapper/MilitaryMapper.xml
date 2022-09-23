@@ -44,7 +44,7 @@
     count(*)
     from t_military as tc
     left join t_student stu on tc.stu_id = stu.id
-    left join t_class cl on tc.class_id = cl.id
+    left join t_class cl on stu.class_id = cl.id
     where 1=1
     <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
       AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
@@ -60,7 +60,7 @@
     ,cl.grade_id as gradeId, cl.name as className
     from t_military as tc
     left join t_student stu on tc.stu_id = stu.id
-    left join t_class cl on tc.class_id = cl.id
+    left join t_class cl on stu.class_id = cl.id
     where 1=1
     <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
       AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
@@ -102,16 +102,16 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="stuId != null">
-        stu_id = #{stuId,jdbcType=INTEGER},
+        #{stuId,jdbcType=INTEGER},
       </if>
       <if test="level != null">
-        level = #{level,jdbcType=INTEGER},
+        #{level,jdbcType=INTEGER},
       </if>
       <if test="goodFlag != null">
-        goodFlag = #{goodFlag,jdbcType=INTEGER},
+        #{goodFlag,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>

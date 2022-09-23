@@ -41,6 +41,9 @@ public class RewardServiceImpl implements IRewardService {
         if (MicrovanUtil.isNotEmpty(list)) {
             list = list.stream().map( o -> {
                 o.setLevelName(ProjectUtil.LEVEL_DICT_MAP.get(o.getLevel()));
+                if(o.getObtainDate() != null){
+                    o.setObtainDateStr(MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getObtainDate()));
+                }
                 return o;
             }).collect(Collectors.toList());
             pageData.setRecords(list);

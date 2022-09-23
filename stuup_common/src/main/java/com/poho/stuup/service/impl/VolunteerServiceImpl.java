@@ -158,8 +158,8 @@ public class VolunteerServiceImpl implements IVolunteerService {
         volunteer.setAddress(dto.getAddress());
         volunteer.setSubName(dto.getSubName());
         volunteer.setPost(dto.getPost());
-        if(StrUtil.isNotBlank(volunteer.getMemo())){
-            volunteer.setMemo(volunteer.getMemo());
+        if(StrUtil.isNotBlank(dto.getMemo())){
+            volunteer.setMemo(dto.getMemo());
         }
     }
 }
