@@ -20,28 +20,28 @@ public class DictController {
     @ApiOperation(value = "级别字典", httpMethod = "GET")
     @GetMapping("/level")
     public ResponseModel level() {
-        return ResponseModel.newSuccessData(ProjectUtil.LEVEL_DICT_MAP.entrySet());
+        return ResponseModel.newSuccessData(ProjectUtil.convertDictMapToList(ProjectUtil.LEVEL_DICT_MAP));
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @ApiOperation(value = "军训等级字典", httpMethod = "GET")
     @GetMapping("/militaryLevel")
     public ResponseModel militaryLevel() {
-        return ResponseModel.newSuccessData(ProjectUtil.MILITARY_LEVEL_DICT_MAP.entrySet());
+        return ResponseModel.newSuccessData(ProjectUtil.convertDictMapToList(ProjectUtil.MILITARY_LEVEL_DICT_MAP));
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @ApiOperation(value = "党团活动等级字典", httpMethod = "GET")
     @GetMapping("/politicalLevel")
     public ResponseModel politicalLevel() {
-        return ResponseModel.newSuccessData(ProjectUtil.POLITICAL_LEVEL_DICT_MAP.entrySet());
+        return ResponseModel.newSuccessData(ProjectUtil.convertDictMapToList(ProjectUtil.POLITICAL_LEVEL_DICT_MAP));
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @ApiOperation(value = "学生状态字典", httpMethod = "GET")
     @GetMapping("/stuStatus")
     public ResponseModel stuStatus() {
-        return ResponseModel.newSuccessData(ProjectUtil.STU_STATUS_DICT_MAP.entrySet());
+        return ResponseModel.newSuccessData(ProjectUtil.convertDictMapToList(ProjectUtil.STU_STATUS_DICT_MAP));
     }
 
 

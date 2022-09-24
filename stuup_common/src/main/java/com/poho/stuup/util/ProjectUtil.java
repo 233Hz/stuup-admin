@@ -6,6 +6,7 @@ import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusTransfer;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.User;
+import com.poho.stuup.model.dto.KeyValueDTO;
 import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: wupeng
@@ -358,5 +360,11 @@ public class ProjectUtil {
         STU_STATUS_DICT_MAP.put(2, "毕业");
         STU_STATUS_DICT_MAP.put(3, "学籍变更");
 
+    }
+
+    public static List<KeyValueDTO> convertDictMapToList (Map<Integer, String> dictMap){
+        return dictMap.entrySet().stream()
+                .map(entry -> new KeyValueDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }
