@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 
-@Api(tags = "学生积分相关接口")
+@Api(tags = "学生得分相关接口")
 @RestController
 @RequestMapping("/score")
 public class ScoreController {
@@ -23,7 +23,7 @@ public class ScoreController {
     private IScoreService scoreService;
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-    @ApiOperation(value = "获取总积分列表", httpMethod = "GET")
+    @ApiOperation(value = "获取总得分列表", httpMethod = "GET")
     @GetMapping("/listScore")
     public ResponseModel list(ScoreSearchDTO searchDTO) {
 
@@ -31,7 +31,7 @@ public class ScoreController {
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-    @ApiOperation(value = "获取单个学生总积分列表", httpMethod = "GET")
+    @ApiOperation(value = "获取单个学生总得分列表", httpMethod = "GET")
     @GetMapping("/getStuScore")
     public ResponseModel getStuScore(StuScoreSearchDTO searchDTO) {
 
@@ -39,7 +39,7 @@ public class ScoreController {
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-    @ApiOperation(value = "获取TOP学生总积分列表", httpMethod = "GET")
+    @ApiOperation(value = "获取TOP学生总得分列表", httpMethod = "GET")
     @GetMapping("/getStuScoreTopList")
     public ResponseModel getStuScoreTopList(StuScoreTopSearchDTO searchDTO) {
 
@@ -47,7 +47,7 @@ public class ScoreController {
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-    @ApiOperation(value = "获取积分明细列表", httpMethod = "GET")
+    @ApiOperation(value = "获取得分明细列表", httpMethod = "GET")
     @GetMapping("/listScoreDetail")
     public ResponseModel list(ScoreDetailSearchDTO searchDTO) {
 
@@ -55,7 +55,7 @@ public class ScoreController {
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-    @ApiOperation(value = "获取单个学生总积分列表", httpMethod = "GET")
+    @ApiOperation(value = "获取单个学生得分明细列表", httpMethod = "GET")
     @GetMapping("/getStuScoreDetailList")
     public ResponseModel getStuScoreDetailList(StuScoreSearchDTO searchDTO) {
 
