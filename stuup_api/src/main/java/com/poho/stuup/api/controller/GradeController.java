@@ -6,6 +6,9 @@ import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.model.Grade;
 import com.poho.stuup.service.IGradeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,7 @@ public class GradeController {
     @Autowired
     private IGradeService gradeService;
 
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel gradeList(String key, String current, String size) {
         int page = 1;
@@ -65,8 +69,7 @@ public class GradeController {
             }
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("删除成功");
-        }
-        else {
+        } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
             model.setMessage("请选择后点击删除");
         }

@@ -1,5 +1,7 @@
 package com.poho.stuup.model;
 
+import java.util.Date;
+
 public class ScoreDetail {
 
     private Long oid;
@@ -15,6 +17,8 @@ public class ScoreDetail {
    private Long recordId;
 
    private String description;
+
+   private Date createTime;
 
    private Integer status;
 
@@ -72,6 +76,14 @@ public class ScoreDetail {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Integer getStatus() {

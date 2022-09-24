@@ -7,11 +7,57 @@ import java.io.Serializable;
 
 public class ScoreDTO extends Score implements Serializable {
 
+    private Integer gradeId;
+
+    private String gradeName;
+
+    private Integer classId;
+
+    private String className;
+
+    private String stuNo;
+
     private String stuName;
 
-    private String levelName;
+    public Integer getGradeId() {
+        return gradeId;
+    }
 
-    private String obtainDateStr;
+    public void setGradeId(Integer gradeId) {
+        this.gradeId = gradeId;
+    }
+
+    public String getGradeName() {
+        return gradeName;
+    }
+
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
+    }
+
+    public Integer getClassId() {
+        return classId;
+    }
+
+    public void setClassId(Integer classId) {
+        this.classId = classId;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getStuNo() {
+        return stuNo;
+    }
+
+    public void setStuNo(String stuNo) {
+        this.stuNo = stuNo;
+    }
 
     public String getStuName() {
         return stuName;
@@ -19,21 +65,5 @@ public class ScoreDTO extends Score implements Serializable {
 
     public void setStuName(String stuName) {
         this.stuName = stuName;
-    }
-
-    public String getLevelName() {
-        return levelName;
-    }
-
-    public void setLevelName(String levelName) {
-        this.levelName = levelName;
-    }
-
-    public String getObtainDateStr() {
-        return obtainDateStr;
-    }
-
-    public void setObtainDateStr(String obtainDateStr) {
-        this.obtainDateStr = obtainDateStr;
     }
 }

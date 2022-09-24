@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 public class MicrovanUtil {
 
     public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+    public static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
     /**
      *
      * @param request

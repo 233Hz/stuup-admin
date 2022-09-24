@@ -5,18 +5,16 @@ import java.io.Serializable;
 
 public class ScoreDetailSearchDTO extends PageDTO implements Serializable {
 
-    private String name;
+    private String stuNo;
 
     private String stuName;
 
-    private Integer level;
-
-    public String getName() {
-        return name;
+    public String getStuNo() {
+        return stuNo;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStuNo(String stuNo) {
+        this.stuNo = stuNo;
     }
 
     public String getStuName() {
@@ -25,13 +23,5 @@ public class ScoreDetailSearchDTO extends PageDTO implements Serializable {
 
     public void setStuName(String stuName) {
         this.stuName = stuName;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
     }
 }

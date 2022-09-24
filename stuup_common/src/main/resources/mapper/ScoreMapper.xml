@@ -17,6 +17,43 @@
     from t_score
     where oid = #{oid,jdbcType=BIGINT}
   </select>
+
+  <select id="selectTotal"  resultType="int">
+    select
+    count(*)
+    from t_score as ts
+    left join t_student stu on ts.stu_id = stu.id
+    left join t_class cl on stu.class_id = cl.id
+    where 1=1
+    <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
+      AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
+    </if>
+    <if test="searchDTO.stuName != null and searchDTO.stuName != ''">
+      AND stu.name LIKE CONCAT(CONCAT('%',#{searchDTO.stuName}),'%')
+    </if>
+  </select>
+
+  <select id="selectList"  resultType="com.poho.stuup.model.dto.ScoreDTO">
+    select
+    ts.oid, ts.stu_id as stuId,ts.total_score as totalScore, ts.curr_grade_score as currGradeScore, ts.status
+    ,stu.student_no as stuNo ,stu.name as stuName, stu.class_id as classId
+    ,cl.grade_id as gradeId, cl.name as className
+    from t_score as ts
+    left join t_student stu on ts.stu_id = stu.id
+    left join t_class cl on stu.class_id = cl.id
+    where 1=1
+    <if test="searchDTO.stuNo != null and searchDTO.stuNo != ''">
+      AND stu.student_no LIKE CONCAT(CONCAT('%',#{searchDTO.stuNo}),'%')
+    </if>
+    <if test="searchDTO.stuName != null and searchDTO.stuName != ''">
+      AND stu.name LIKE CONCAT(CONCAT('%',#{searchDTO.stuName}),'%')
+    </if>
+    order by ts.oid desc
+    <if test="pageData != null ">
+      limit #{pageData.start},#{pageData.size}
+    </if>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_score
     where oid = #{oid,jdbcType=BIGINT}

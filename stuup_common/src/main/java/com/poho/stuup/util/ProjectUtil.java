@@ -326,6 +326,7 @@ public class ProjectUtil {
     public static Map<Integer, String > MILITARY_LEVEL_DICT_MAP = new HashMap<>();
     public static Map<Integer, String > GOOD_FLAG_DICT_MAP = new HashMap<>();
     public static Map<Integer, String > POLITICAL_LEVEL_DICT_MAP = new HashMap<>();
+    public static Map<Integer, String > SCORE_TYPE_DICT_MAP = new HashMap<>();
 
     static {
         //级别字典
@@ -346,6 +347,10 @@ public class ProjectUtil {
         POLITICAL_LEVEL_DICT_MAP.put(1, "一级");
         POLITICAL_LEVEL_DICT_MAP.put(2, "二级");
         POLITICAL_LEVEL_DICT_MAP.put(3, "三级");
+
+        //加减分字典
+        SCORE_TYPE_DICT_MAP.put(1, "加分");
+        SCORE_TYPE_DICT_MAP.put(2, "减分");
 
     }
 }
