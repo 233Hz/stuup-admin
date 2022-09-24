@@ -7,6 +7,9 @@ import com.poho.stuup.model.Faculty;
 import com.poho.stuup.service.IFacultyService;
 import com.poho.stuup.service.ITeacherService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +30,6 @@ public class FacultyController {
     private final static Logger logger = LoggerFactory.getLogger(FacultyController.class);
     @Autowired
     private IFacultyService facultyService;
-    @Autowired
-    private ITeacherService teacherService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String current, String size) {
@@ -41,6 +42,13 @@ public class FacultyController {
             pageSize = Integer.parseInt(size);
         }
         return facultyService.findDataPageResult(key, page, pageSize);
+    }
+
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiOperation(value = "全部系部信息", httpMethod = "GET")
+    @GetMapping("/all")
+    public ResponseModel all() {
+        return ResponseModel.newSuccessData(facultyService.findAllFaculty());
     }
 
     /**

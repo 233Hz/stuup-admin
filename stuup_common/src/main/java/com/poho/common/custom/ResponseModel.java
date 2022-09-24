@@ -1,6 +1,7 @@
 package com.poho.common.custom;
 
 import com.alibaba.fastjson.JSON;
+import com.poho.common.constant.CommonConstants;
 
 /**
  *  响应对象
@@ -87,5 +88,9 @@ public class ResponseModel<T> {
      */
     public String general() {
         return JSON.toJSONString(this);
+    }
+
+    public static <T> ResponseModel<T>  newSuccessData(T data){
+        return new ResponseModel(CommonConstants.CODE_SUCCESS, data, "请求成功");
     }
 }

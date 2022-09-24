@@ -7,13 +7,13 @@ import com.poho.stuup.model.Major;
 import com.poho.stuup.service.IFacultyService;
 import com.poho.stuup.service.IMajorService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -31,6 +31,7 @@ public class MajorController {
     @Autowired
     private IMajorService majorService;
 
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String current, String size){
         int page = 1;
@@ -42,6 +43,13 @@ public class MajorController {
             pageSize = Integer.parseInt(size);
         }
         return majorService.findPageResult(key, page, pageSize);
+    }
+
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiOperation(value = "全部专业信息", httpMethod = "GET")
+    @GetMapping("/all")
+    public ResponseModel all() {
+        return ResponseModel.newSuccessData(majorService.findMajors());
     }
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)

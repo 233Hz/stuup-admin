@@ -5,6 +5,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.model.Grade;
 import com.poho.stuup.service.IGradeService;
+import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -45,6 +46,13 @@ public class GradeController {
             pageSize = Integer.parseInt(size);
         }
         return gradeService.findDataPageResult(key, page, pageSize);
+    }
+
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiOperation(value = "全部年级信息", httpMethod = "GET")
+    @GetMapping("/all")
+    public ResponseModel all() {
+        return ResponseModel.newSuccessData(gradeService.findGrades());
     }
 
     /**

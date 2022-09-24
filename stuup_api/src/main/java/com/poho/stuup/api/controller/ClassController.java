@@ -6,15 +6,16 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.common.util.TeachEvaUtil;
 import com.poho.stuup.model.Class;
-import com.poho.stuup.service.*;
+import com.poho.stuup.service.IClassService;
+import com.poho.stuup.service.IMajorService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,13 +37,7 @@ public class ClassController {
     @Autowired
     private IClassService classService;
     @Autowired
-    private ITeacherService teacherService;
-    @Autowired
-    private IFacultyService facultyService;
-    @Autowired
     private IMajorService majorService;
-    @Autowired
-    private IGradeService gradeService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String current, String size, Integer facultyId, Integer gradeId) {
@@ -58,6 +53,12 @@ public class ClassController {
         return classService.findDataPageResult(key, page, pageSize, facultyId, gradeId);
     }
 
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiOperation(value = "全部班级信息", httpMethod = "GET")
+    @GetMapping("/all")
+    public ResponseModel all() {
+        return ResponseModel.newSuccessData(classService.findAllClass(null));
+    }
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     public ResponseModel saveOrUpdate(@RequestBody Class clazz) {
