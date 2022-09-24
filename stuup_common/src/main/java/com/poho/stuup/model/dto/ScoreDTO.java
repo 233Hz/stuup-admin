@@ -19,6 +19,13 @@ public class ScoreDTO extends Score implements Serializable {
 
     private String stuName;
 
+    private Integer tomatoNum = 0; //西红花数量
+
+    private Integer wintersweetNum = 0; //梅花数量
+
+    private Integer daisyNum = 0; //小雏菊数量
+
+
     public Integer getGradeId() {
         return gradeId;
     }
@@ -65,5 +72,29 @@ public class ScoreDTO extends Score implements Serializable {
 
     public void setStuName(String stuName) {
         this.stuName = stuName;
+    }
+
+    public Integer getTomatoNum() {
+        return tomatoNum;
+    }
+
+    public void setTomatoNum(Integer tomatoNum) {
+        this.tomatoNum = tomatoNum;
+    }
+
+    public Integer getWintersweetNum() {
+        return wintersweetNum;
+    }
+
+    public void setWintersweetNum(Integer wintersweetNum) {
+        this.wintersweetNum = wintersweetNum;
+    }
+
+    public Integer getDaisyNum() {
+        return daisyNum;
+    }
+
+    public void setDaisyNum(Integer daisyNum) {
+        this.daisyNum = daisyNum;
     }
 }

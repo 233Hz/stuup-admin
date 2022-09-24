@@ -124,4 +124,6 @@ public class ProjectConstants {
      * 系统参数：同步开关
      */
     public static final String PARAM_SYNC_SWITCH = "sync_switch";
+
+    public static final int STU_SCORE_TOP_DEFAULT = 5;
 }

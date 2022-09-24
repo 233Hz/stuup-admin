@@ -1,9 +1,7 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.model.dto.ContestSearchDTO;
-import com.poho.stuup.model.dto.ScoreDetailSearchDTO;
-import com.poho.stuup.model.dto.ScoreSearchDTO;
+import com.poho.stuup.model.dto.*;
 import com.poho.stuup.service.IScoreService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,10 +31,34 @@ public class ScoreController {
     }
 
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiOperation(value = "获取单个学生总积分列表", httpMethod = "GET")
+    @GetMapping("/getStuScore")
+    public ResponseModel getStuScore(StuScoreSearchDTO searchDTO) {
+
+        return scoreService.getStuScore(searchDTO);
+    }
+
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiOperation(value = "获取TOP学生总积分列表", httpMethod = "GET")
+    @GetMapping("/getStuScoreTopList")
+    public ResponseModel getStuScoreTopList(StuScoreTopSearchDTO searchDTO) {
+
+        return scoreService.getStuScoreTopList(searchDTO);
+    }
+
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
     @ApiOperation(value = "获取积分明细列表", httpMethod = "GET")
     @GetMapping("/listScoreDetail")
     public ResponseModel list(ScoreDetailSearchDTO searchDTO) {
 
         return scoreService.findScoreDetailPageResult(searchDTO);
+    }
+
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiOperation(value = "获取单个学生总积分列表", httpMethod = "GET")
+    @GetMapping("/getStuScoreDetailList")
+    public ResponseModel getStuScoreDetailList(StuScoreSearchDTO searchDTO) {
+
+        return scoreService.getStuScoreDetailList(searchDTO);
     }
 }
