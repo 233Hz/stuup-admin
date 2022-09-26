@@ -3,6 +3,7 @@ package com.poho.stuup.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
+import com.poho.common.custom.ProjectRuleEnum;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.CertificateMapper;
@@ -13,6 +14,7 @@ import com.poho.stuup.model.dto.CertificateDTO;
 import com.poho.stuup.model.dto.CertificateExcelDTO;
 import com.poho.stuup.model.dto.CertificateSearchDTO;
 import com.poho.stuup.service.ICertificateService;
+import com.poho.stuup.service.IScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,9 @@ public class CertificateServiceImpl implements ICertificateService {
 
     @Resource
     private StudentMapper studentMapper;
+
+    @Resource
+    IScoreService scoreService;
 
     @Override
     public ResponseModel findDataPageResult(CertificateSearchDTO searchDTO) {
@@ -102,6 +107,8 @@ public class CertificateServiceImpl implements ICertificateService {
                 certificate.setObtainDate(date);
                 this.convertExcelObjToEntity(dto, certificate);
                 int line = certificateMapper.insertSelective(certificate);
+                //TODO 以后优化移到同步流程
+                scoreService.saveScoreDetail(ProjectRuleEnum.CERTIFICATE_RULE.getProjectRule().handler(certificate));
                 if (line > 0) {
                     j++;
                 } else {

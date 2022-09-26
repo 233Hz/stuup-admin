@@ -46,4 +46,6 @@ public interface ISynchronizeService {
      */
     void synchronizeTeachGroup();
 
+    String syncStuInfoInitStuScore();
+
 }

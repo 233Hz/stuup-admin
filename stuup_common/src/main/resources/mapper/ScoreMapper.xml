@@ -33,6 +33,10 @@
     </if>
   </select>
 
+  <select id="selectMaxStuId"  resultType="java.lang.Integer">
+    SELECT MAX(stu_id) FROM t_score
+  </select>
+
   <select id="selectList"  resultType="com.poho.stuup.model.dto.ScoreDTO">
     select
     ts.oid, ts.stu_id as stuId,ts.total_score as totalScore, ts.curr_grade_score as currGradeScore, ts.status
@@ -136,6 +140,11 @@
       </if>
     </trim>
   </insert>
+  <insert id="insertScoreFromStu">
+    INSERT INTO t_score(stu_id) SELECT id FROM t_student stu
+    WHERE stu.id > #{maxStuId}
+  </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Score">
     update t_score
     <set>
@@ -151,14 +160,13 @@
     </set>
     where oid = #{oid,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Score">
+  <update id="updateScoreByStuId">
     update t_score
-    set stu_id = #{stuId,jdbcType=INTEGER},
-    total_score = #{totalScore,jdbcType=INTEGER},
-    curr_grade_score = #{currGradeScore,jdbcType=INTEGER},
-    status = #{status,jdbcType=INTEGER},
-    where oid = #{oid,jdbcType=BIGINT}
+    set total_score = total_score + #{score},
+    curr_grade_score = curr_grade_score + #{score}
+    where stu_id = #{stuId,jdbcType=INTEGER}
   </update>
+
   <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
     select
     count(td.oid)

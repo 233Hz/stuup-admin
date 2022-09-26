@@ -18,6 +18,8 @@ public class MenuTree implements Serializable {
 
     private Long parentId;
 
+    private Integer sourceFlag;
+
     private List<MenuTree> children;
 
     public MenuTree() {
@@ -66,6 +68,14 @@ public class MenuTree implements Serializable {
 
     public Long getParentId() {
         return parentId;
+    }
+
+    public Integer getSourceFlag() {
+        return sourceFlag;
+    }
+
+    public void setSourceFlag(Integer sourceFlag) {
+        this.sourceFlag = sourceFlag;
     }
 
     public void setParentId(Long parentId) {

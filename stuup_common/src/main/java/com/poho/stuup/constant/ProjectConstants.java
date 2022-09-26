@@ -126,4 +126,7 @@ public class ProjectConstants {
     public static final String PARAM_SYNC_SWITCH = "sync_switch";
 
     public static final int STU_SCORE_TOP_DEFAULT = 5;
+
+    public static final int SCORE_TYPE_ADD = 1;
+    public static final int SCORE_TYPE_SUBTRACT = 2;
 }

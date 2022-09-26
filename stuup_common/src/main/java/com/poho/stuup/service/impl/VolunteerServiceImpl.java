@@ -4,6 +4,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
+import com.poho.common.custom.ProjectRuleEnum;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.StudentMapper;
@@ -13,6 +14,7 @@ import com.poho.stuup.model.Volunteer;
 import com.poho.stuup.model.dto.VolunteerDTO;
 import com.poho.stuup.model.dto.VolunteerExcelDTO;
 import com.poho.stuup.model.dto.VolunteerSearchDTO;
+import com.poho.stuup.service.IScoreService;
 import com.poho.stuup.service.IVolunteerService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,9 @@ public class VolunteerServiceImpl implements IVolunteerService {
 
     @Resource
     private StudentMapper studentMapper;
+
+    @Resource
+    IScoreService scoreService;
 
     @Override
     public ResponseModel findDataPageResult(VolunteerSearchDTO searchDTO) {
@@ -102,6 +107,8 @@ public class VolunteerServiceImpl implements IVolunteerService {
                 volunteer.setOperDate(date);
                 this.convertExcelObjToEntity(dto, volunteer);
                 int line = volunteerMapper.insertSelective(volunteer);
+                //TODO 以后优化移到同步流程
+                scoreService.saveScoreDetail(ProjectRuleEnum.VOLUNTEER_RULE.getProjectRule().handler(volunteer));
                 if (line > 0) {
                     j++;
                 } else {

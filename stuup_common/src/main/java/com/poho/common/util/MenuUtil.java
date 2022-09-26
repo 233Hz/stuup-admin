@@ -16,6 +16,7 @@ public class MenuUtil {
             menuTree.setMenuCode(menu.getMenuCode());
             menuTree.setIcon(menu.getIcon());
             menuTree.setParentId(menu.getParentId());
+            menuTree.setSourceFlag(menu.getSourceFlag());
             menuTree.setLink(menu.getLink());
             menuTree.setChildren(null);
             return menuTree;

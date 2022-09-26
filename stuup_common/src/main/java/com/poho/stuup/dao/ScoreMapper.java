@@ -12,11 +12,19 @@ import java.util.List;
 
 public interface ScoreMapper extends BaseDao<Score> {
 
+    int updateScoreByStuId (@Param("stuId") Integer stuId, @Param("score") Integer score);
+
     int selectTotal(@Param("searchDTO") ScoreSearchDTO searchDTO);
+
+    Integer selectMaxStuId();
 
     List<ScoreDTO> selectList(@Param("pageData") PageData pageData, @Param("searchDTO") ScoreSearchDTO searchDTO);
 
     List<ScoreDTO> selectStuScoreTopList(@Param("searchDTO") StuScoreTopSearchDTO searchDTO);
 
     ScoreDTO selectStuScore( @Param("searchDTO") StuScoreSearchDTO searchDTO);
+
+    int insertScoreFromStu(@Param("maxStuId") Integer maxStuId);
+
+
 }

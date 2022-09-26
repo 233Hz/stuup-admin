@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.poho.stuup.model.ScoreDetail">
     <id column="oid" jdbcType="BIGINT" property="oid" />
     <result column="stu_id" jdbcType="INTEGER" property="stuId" />
+    <result column="score" jdbcType="INTEGER" property="score" />
     <result column="score_type" jdbcType="INTEGER" property="scoreType" />
     <result column="rule_class" jdbcType="VARCHAR" property="ruleClass" />
     <result column="record_id" jdbcType="INTEGER" property="recordId" />
@@ -12,7 +13,7 @@
 
   </resultMap>
   <sql id="Base_Column_List">
-    oid, stu_id, score_type, rule_class, record_id, description, status
+    oid, stu_id, score,score_type, rule_class, record_id, description, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -81,8 +82,8 @@
     where oid = #{oid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.poho.stuup.model.ScoreDetail">
-    insert into t_score_detail (oid, stu_id, score_type, rule_class, record_id, description)
-    values (#{oid,jdbcType=BIGINT}, #{stuId,jdbcType=INTEGER}, #{scoreType,jdbcType=INTEGER}
+    insert into t_score_detail (oid, stu_id, score, score_type, rule_class, record_id, description)
+    values (#{oid,jdbcType=BIGINT}, #{stuId,jdbcType=INTEGER}, #{score,jdbcType=INTEGER}, #{scoreType,jdbcType=INTEGER}
     , #{ruleClass,jdbcType=VARCHAR}
     , #{recordId,jdbcType=INTEGER}
     , #{description,jdbcType=VARCHAR}
@@ -96,6 +97,9 @@
       </if>
       <if test="stuId != null">
         stu_id,
+      </if>
+      <if test="score != null">
+        score,
       </if>
       <if test="scoreType != null">
         score_type,
@@ -117,6 +121,9 @@
       <if test="stuId != null">
         #{stuId,jdbcType=INTEGER},
       </if>
+      <if test="score != null">
+        #{score,jdbcType=INTEGER},
+      </if>
       <if test="scoreType != null">
         #{scoreType,jdbcType=INTEGER},
       </if>
@@ -136,6 +143,9 @@
     <set>
       <if test="stuId != null">
         stu_id = #{stuId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=INTEGER},
       </if>
       <if test="scoreType != null">
         score_type = #{scoreType,jdbcType=INTEGER},
@@ -160,6 +170,7 @@
     update t_score_detail
     set
     stu_id = #{stuId,jdbcType=INTEGER},
+    score = #{score,jdbcType=INTEGER},
     score_type = #{scoreType,jdbcType=INTEGER},
     rule_class = #{ruleClass,jdbcType=VARCHAR},
     record_id = #{recordId,jdbcType=INTEGER},

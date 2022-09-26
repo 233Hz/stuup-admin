@@ -13,6 +13,8 @@ public class Menu {
 
     private Long parentId;
 
+    private Integer sourceFlag;
+
     public Long getOid() {
         return oid;
     }
@@ -59,5 +61,13 @@ public class Menu {
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+
+    public Integer getSourceFlag() {
+        return sourceFlag;
+    }
+
+    public void setSourceFlag(Integer sourceFlag) {
+        this.sourceFlag = sourceFlag;
     }
 }

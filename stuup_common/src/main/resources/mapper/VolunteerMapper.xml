@@ -98,7 +98,7 @@
            , #{status,jdbcType=INTEGER}
            )
   </insert>
-  <insert id="insertSelective" parameterType="com.poho.stuup.model.Volunteer">
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Volunteer" useGeneratedKeys="true" keyProperty="oid">
     insert into t_volunteer
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="stuId != null">

@@ -3,6 +3,7 @@ package com.poho.stuup.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
+import com.poho.common.custom.ProjectRuleEnum;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.GradeMapper;
@@ -15,6 +16,7 @@ import com.poho.stuup.model.dto.MilitaryDTO;
 import com.poho.stuup.model.dto.MilitaryExcelDTO;
 import com.poho.stuup.model.dto.MilitarySearchDTO;
 import com.poho.stuup.service.IMilitaryService;
+import com.poho.stuup.service.IScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,9 @@ public class MilitaryServiceImpl implements IMilitaryService {
 
     @Resource
     private GradeMapper gradeMapper;
+
+    @Resource
+    IScoreService scoreService;
 
     @Override
     public ResponseModel findDataPageResult(MilitarySearchDTO searchDTO) {
@@ -112,6 +117,8 @@ public class MilitaryServiceImpl implements IMilitaryService {
                 military.setLevel(level);
                 military.setGoodFlag(goodFlag);
                 int line = militaryMapper.insertSelective(military);
+                //TODO 以后优化移到同步流程
+                scoreService.saveScoreDetail(ProjectRuleEnum.MILITARY_RULE.getProjectRule().handler(military));
                 if (line > 0) {
                     j++;
                 } else {

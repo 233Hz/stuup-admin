@@ -2,6 +2,7 @@ package com.poho.stuup.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
+import com.poho.common.custom.ModelRuleEnum;
 import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
@@ -9,10 +10,12 @@ import com.poho.stuup.dao.GradeMapper;
 import com.poho.stuup.dao.ScoreDetailMapper;
 import com.poho.stuup.dao.ScoreMapper;
 import com.poho.stuup.model.Grade;
+import com.poho.stuup.model.ScoreDetail;
 import com.poho.stuup.model.dto.*;
 import com.poho.stuup.service.IScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -44,10 +47,7 @@ public class ScoreServiceImpl implements IScoreService {
                 if(o.getGradeId() != null){
                     o.setGradeName(gradeMap.get(o.getGradeId()));
                 }
-                //TODO 处理花数量逻辑 先测试用
-                o.setTomatoNum(3);
-                o.setWintersweetNum(2);
-                o.setDaisyNum(1);
+                this.handlerModelRuleToScoreDTO(o);
                 return o;
             }).collect(Collectors.toList());
             pageData.setRecords(list);
@@ -72,10 +72,7 @@ public class ScoreServiceImpl implements IScoreService {
                 if(o.getGradeId() != null){
                     o.setGradeName(gradeMap.get(o.getGradeId()));
                 }
-                //TODO 处理花数量逻辑 先测试用
-                o.setTomatoNum(3);
-                o.setWintersweetNum(2);
-                o.setDaisyNum(1);
+                this.handlerModelRuleToScoreDTO(o);
                 return o;
             }).collect(Collectors.toList());
             model.setCode(CommonConstants.CODE_SUCCESS);
@@ -98,10 +95,7 @@ public class ScoreServiceImpl implements IScoreService {
         }
         ScoreDTO scoreDTO = scoreMapper.selectStuScore(searchDTO);
         if (scoreDTO != null) {
-            //TODO 处理花数量逻辑 先测试用
-            scoreDTO.setTomatoNum(3);
-            scoreDTO.setWintersweetNum(2);
-            scoreDTO.setDaisyNum(1);
+            this.handlerModelRuleToScoreDTO(scoreDTO);
             if(scoreDTO.getGradeId() != null){
                 List<Grade> gradeList = gradeMapper.findGrades();
                 Map<Integer, String> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getOid,Grade::getGradeName));
@@ -177,5 +171,34 @@ public class ScoreServiceImpl implements IScoreService {
         }
         model.setData(list);
         return model;
+    }
+
+    @Transactional
+    @Override
+    public boolean saveScoreDetail(ScoreDetail scoreDetail){
+        int num = scoreDetailMapper.insertSelective(scoreDetail);
+        if(num > 0){
+            int score = scoreDetail.getScore();
+            this.scoreMapper.updateScoreByStuId(scoreDetail.getStuId(), score);
+        }
+        return true;
+    }
+    //处理模型规则转换逻辑
+    private void handlerModelRuleToScoreDTO (ScoreDTO scoreDTO){
+        int totalScore = scoreDTO.getTotalScore();
+        int num = totalScore/ModelRuleEnum.TOMATO.getSeedScore();
+        if(num >= 1){
+            totalScore = totalScore - ModelRuleEnum.TOMATO.getSeedScore()*num;
+        }
+        scoreDTO.setTomatoNum(num);
+
+        num = totalScore/ModelRuleEnum.WINTERSWEET.getSeedScore();
+        if(num >= 1){
+            totalScore = totalScore - ModelRuleEnum.WINTERSWEET.getSeedScore()*num;
+        }
+        scoreDTO.setWintersweetNum(num);
+
+        num = totalScore/ModelRuleEnum.DAISY.getSeedScore();
+        scoreDTO.setDaisyNum(num);
     }
 }

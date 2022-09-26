@@ -1,6 +1,7 @@
 package com.poho.stuup.service;
 
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.model.ScoreDetail;
 import com.poho.stuup.model.dto.ScoreDetailSearchDTO;
 import com.poho.stuup.model.dto.ScoreSearchDTO;
 import com.poho.stuup.model.dto.StuScoreSearchDTO;
@@ -17,4 +18,6 @@ public interface IScoreService {
     ResponseModel findScoreDetailPageResult(ScoreDetailSearchDTO searchDTO);
 
     ResponseModel getStuScoreDetailList(StuScoreSearchDTO searchDTO);
+
+    boolean saveScoreDetail(ScoreDetail scoreDetail);
 }

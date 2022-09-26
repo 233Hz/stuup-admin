@@ -3,6 +3,7 @@ package com.poho.stuup.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
+import com.poho.common.custom.ProjectRuleEnum;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.RewardMapper;
@@ -13,6 +14,7 @@ import com.poho.stuup.model.dto.RewardDTO;
 import com.poho.stuup.model.dto.RewardExcelDTO;
 import com.poho.stuup.model.dto.RewardSearchDTO;
 import com.poho.stuup.service.IRewardService;
+import com.poho.stuup.service.IScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,9 @@ public class RewardServiceImpl implements IRewardService {
 
     @Resource
     private StudentMapper studentMapper;
+
+    @Resource
+    IScoreService scoreService;
 
     @Override
     public ResponseModel findDataPageResult(RewardSearchDTO searchDTO) {
@@ -102,6 +107,8 @@ public class RewardServiceImpl implements IRewardService {
                 reward.setObtainDate(date);
                 this.convertExcelObjToEntity(dto, reward);
                 int line = rewardMapper.insertSelective(reward);
+                //TODO 以后优化移到同步流程
+                scoreService.saveScoreDetail(ProjectRuleEnum.REWARD_RULE.getProjectRule().handler(reward));
                 if (line > 0) {
                     j++;
                 } else {

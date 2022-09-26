@@ -3,6 +3,7 @@ package com.poho.stuup.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
+import com.poho.common.custom.ProjectRuleEnum;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.ContestMapper;
@@ -14,6 +15,7 @@ import com.poho.stuup.model.dto.ContestExcelDTO;
 import com.poho.stuup.model.dto.ContestSearchDTO;
 import com.poho.stuup.model.dto.RewardDTO;
 import com.poho.stuup.service.IContestService;
+import com.poho.stuup.service.IScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,9 @@ public class ContestServiceImpl implements IContestService {
 
     @Resource
     private StudentMapper studentMapper;
+
+    @Resource
+    IScoreService scoreService;
 
     @Override
     public ResponseModel findDataPageResult(ContestSearchDTO searchDTO) {
@@ -103,6 +108,8 @@ public class ContestServiceImpl implements IContestService {
                 contest.setObtainDate(date);
                 this.convertExcelObjToEntity(dto, contest);
                 int line = contestMapper.insertSelective(contest);
+                //TODO 以后优化移到同步流程
+                scoreService.saveScoreDetail(ProjectRuleEnum.CONTEST_RULE.getProjectRule().handler(contest));
                 if (line > 0) {
                     j++;
                 } else {

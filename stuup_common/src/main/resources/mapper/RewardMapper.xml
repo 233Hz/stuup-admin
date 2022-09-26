@@ -99,7 +99,7 @@
            , #{status,jdbcType=INTEGER}
            )
   </insert>
-  <insert id="insertSelective" parameterType="com.poho.stuup.model.Reward">
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Reward" useGeneratedKeys="true" keyProperty="oid">
     insert into t_reward
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="stuId != null">

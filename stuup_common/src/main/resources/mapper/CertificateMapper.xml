@@ -101,7 +101,7 @@
            , #{status,jdbcType=INTEGER}
            )
   </insert>
-  <insert id="insertSelective" parameterType="com.poho.stuup.model.Certificate">
+  <insert id="insertSelective" parameterType="com.poho.stuup.model.Certificate" useGeneratedKeys="true" keyProperty="oid">
     insert into t_certificate
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="stuId != null">

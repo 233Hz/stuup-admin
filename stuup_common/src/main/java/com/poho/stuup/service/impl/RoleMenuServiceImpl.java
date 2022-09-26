@@ -139,6 +139,7 @@ public class RoleMenuServiceImpl implements IRoleMenuService {
                 cusMenu.setLink(menu.getLink());
                 cusMenu.setIcon(menu.getIcon());
                 cusMenu.setParentMenu(menu.getParentId());
+                cusMenu.setSourceFlag(menu.getSourceFlag());
                 cusMenus.add(cusMenu);
             }
         }

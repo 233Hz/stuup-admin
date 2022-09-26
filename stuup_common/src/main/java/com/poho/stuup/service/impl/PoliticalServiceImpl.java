@@ -3,6 +3,7 @@ package com.poho.stuup.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
+import com.poho.common.custom.ProjectRuleEnum;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.GradeMapper;
@@ -15,6 +16,7 @@ import com.poho.stuup.model.dto.PoliticalDTO;
 import com.poho.stuup.model.dto.PoliticalExcelDTO;
 import com.poho.stuup.model.dto.PoliticalSearchDTO;
 import com.poho.stuup.service.IPoliticalService;
+import com.poho.stuup.service.IScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,9 @@ public class PoliticalServiceImpl implements IPoliticalService {
 
     @Resource
     private GradeMapper gradeMapper;
+
+    @Resource
+    IScoreService scoreService;
 
     @Override
     public ResponseModel findDataPageResult(PoliticalSearchDTO searchDTO) {
@@ -127,6 +132,8 @@ public class PoliticalServiceImpl implements IPoliticalService {
                 political.setEndDate(endDate);
                 this.convertExcelObjToEntity(dto, political);
                 int line = politicalMapper.insertSelective(political);
+                //TODO 以后优化移到同步流程
+                scoreService.saveScoreDetail(ProjectRuleEnum.POLITICAL_RULE.getProjectRule().handler(political));
                 if (line > 0) {
                     j++;
                 } else {

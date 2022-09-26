@@ -7,8 +7,10 @@ import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.model.Config;
 import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.service.ISynchronizeService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -78,6 +80,26 @@ public class SynchronizeController {
             model.setCode(CommonConstants.CODE_EXCEPTION);
             model.setMessage("同步失败，请稍后重试");
         }
+        return model;
+    }
+
+    @ApiOperation(value = "手动同步学生得分信息", httpMethod = "GET")
+    @GetMapping("/syncStuScore")
+    public ResponseModel syncStuScore (){
+        ResponseModel model = new ResponseModel();
+       StringBuilder sb = new StringBuilder();
+        //同步学生信息初始化学生得分表信息
+        sb.append(synchronizeService.syncStuInfoInitStuScore());
+        //同步奖励信息
+
+        //技能大赛信息
+        //考证信息
+        //军训信息
+        //党团活动信息
+        //志愿者服务信息
+        model.setCode(CommonConstants.CODE_SUCCESS);
+        model.setData(sb.toString());
+        model.setMessage("同步成功");
         return model;
     }
 }

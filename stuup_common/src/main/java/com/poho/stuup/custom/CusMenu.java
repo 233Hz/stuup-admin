@@ -13,6 +13,7 @@ public class CusMenu {
     private String link;
     private String icon;
     private Long parentMenu;
+    private Integer sourceFlag;
 
     public CusMenu() {
 
@@ -64,5 +65,13 @@ public class CusMenu {
 
     public void setParentMenu(Long parentMenu) {
         this.parentMenu = parentMenu;
+    }
+
+    public Integer getSourceFlag() {
+        return sourceFlag;
+    }
+
+    public void setSourceFlag(Integer sourceFlag) {
+        this.sourceFlag = sourceFlag;
     }
 }
