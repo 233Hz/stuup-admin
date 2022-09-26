@@ -186,6 +186,7 @@ public class ScoreServiceImpl implements IScoreService {
     //处理模型规则转换逻辑
     private void handlerModelRuleToScoreDTO (ScoreDTO scoreDTO){
         int totalScore = scoreDTO.getTotalScore();
+        //TODO 目前1积分兑换1水滴 以后优化：积分与水滴兑换规则放到配置中
         int num = totalScore/ModelRuleEnum.TOMATO.getSeedScore();
         if(num >= 1){
             totalScore = totalScore - ModelRuleEnum.TOMATO.getSeedScore()*num;
