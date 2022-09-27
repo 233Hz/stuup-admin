@@ -1,5 +1,6 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.CusMap;
 import com.poho.common.custom.PageData;
@@ -73,6 +74,9 @@ public class UserServiceImpl implements IUserService {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
         model.setMessage("账号或密码错误");
+        if(StrUtil.isBlank(loginName)){
+           return model;
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("loginName", loginName);
         User user = userMapper.checkUser(map);
