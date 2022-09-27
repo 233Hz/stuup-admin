@@ -89,6 +89,7 @@ public class UserServiceImpl implements IUserService {
                     if (MicrovanUtil.isNotEmpty(roleIds)) {
                         CusUser cusUser = new CusUser();
                         cusUser.setUserId(user.getOid());
+                        cusUser.setLoginName(user.getLoginName());
                         cusUser.setUserName(user.getUserName());
                         cusUser.setMobile(user.getMobile());
                         cusUser.setDeptId(user.getDeptId());

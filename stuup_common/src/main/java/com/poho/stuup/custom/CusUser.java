@@ -9,6 +9,7 @@ package com.poho.stuup.custom;
 public class CusUser {
     private Long userId;
     private String userName;
+    private String loginName;
     private Integer sex;
     private String mobile;
     private String idCard;
@@ -29,6 +30,14 @@ public class CusUser {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
     }
 
     public String getUserName() {

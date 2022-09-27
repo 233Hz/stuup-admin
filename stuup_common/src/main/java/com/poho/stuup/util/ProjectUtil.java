@@ -107,6 +107,7 @@ public class ProjectUtil {
     public static CusUser convertCusUser(User user) {
         CusUser cusUser = new CusUser();
         cusUser.setUserId(user.getOid());
+        cusUser.setLoginName(user.getLoginName());
         cusUser.setUserName(user.getUserName());
         cusUser.setMobile(user.getMobile());
         cusUser.setIdCard(user.getIdCard());
