@@ -1,4 +1,4 @@
 
-#安装到服务中
+#瀹夎鍒版湇鍔′腑
 cd D:\stuup
 stuup_api.exe install
