@@ -1,6 +1,7 @@
 package com.poho.stuup.dao;
 
 import com.poho.stuup.model.UserRole;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -32,5 +33,13 @@ public interface UserRoleMapper extends BaseDao<UserRole> {
      * @return
      */
     int clearUserRoleId(Map<String, Object> param);
+
+
+    /**
+     * 查询用户角色
+     * @param userId
+     * @return
+     */
+    List<Long> queryUserRoleId(@Param("userId") Long userId);
 
 }

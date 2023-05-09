@@ -49,6 +49,34 @@ public class ResponseModel<T> {
         this.token = token;
     }
 
+    public static <T> ResponseModel<T> ok() {
+        return restResult(null, CommonConstants.CODE_SUCCESS, null);
+    }
+
+    public static <T> ResponseModel<T> ok(T data) {
+        return restResult(data, CommonConstants.CODE_SUCCESS, null);
+    }
+
+    public static <T> ResponseModel<T> ok(T data, String msg) {
+        return restResult(data, CommonConstants.CODE_SUCCESS, msg);
+    }
+
+    public static <T> ResponseModel<T> failed() {
+        return restResult(null, CommonConstants.CODE_FAIL, null);
+    }
+
+    public static <T> ResponseModel<T> failed(String msg) {
+        return restResult(null, CommonConstants.CODE_FAIL, msg);
+    }
+
+    public static <T> ResponseModel<T> failed(T data) {
+        return restResult(data, CommonConstants.CODE_FAIL, null);
+    }
+
+    public static <T> ResponseModel<T> failed(T data, String msg) {
+        return restResult(data, CommonConstants.CODE_FAIL, msg);
+    }
+
     public int getCode() {
         return code;
     }
@@ -92,5 +120,13 @@ public class ResponseModel<T> {
 
     public static <T> ResponseModel<T>  newSuccessData(T data){
         return new ResponseModel(CommonConstants.CODE_SUCCESS, data, "请求成功");
+    }
+
+    private static <T> ResponseModel<T> restResult(T data, int code, String msg) {
+        ResponseModel<T> apiResult = new ResponseModel<>();
+        apiResult.setCode(code);
+        apiResult.setData(data);
+        apiResult.setMessage(msg);
+        return apiResult;
     }
 }

@@ -74,32 +74,32 @@ public class RoleController {
         return roleService.saveOrUpdate(role);
     }
 
-    /**
-     * 获取修改角色权限的数据
-     * @param params
-     * @return
-     */
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-    @ApiOperation(value = "获取修改角色权限的数据", httpMethod = "POST")
-    @RequestMapping(value = "/findMenuData", method = RequestMethod.POST)
-    public ResponseModel findMenuData(@RequestBody Map params) {
-        Integer roleId = (Integer) params.get("roleId");
-        return roleMenuService.findRoleMenuData(roleId.longValue());
-    }
-
-    /**
-     * 修改角色权限
-     * @param params
-     * @return
-     */
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-    @ApiOperation(value = "修改角色权限", httpMethod = "POST")
-    @RequestMapping(value = "/saveAuth", method = RequestMethod.POST)
-    public ResponseModel saveAuth(@RequestBody Map params) {
-        Integer roleId = (Integer) params.get("roleId");
-        String ids = (java.lang.String) params.get("ids");
-        return roleMenuService.updateRoleMenu(roleId.longValue(), ids);
-    }
+//    /**
+//     * 获取修改角色权限的数据
+//     * @param params
+//     * @return
+//     */
+//    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+//    @ApiOperation(value = "获取修改角色权限的数据", httpMethod = "POST")
+//    @RequestMapping(value = "/findMenuData", method = RequestMethod.POST)
+//    public ResponseModel findMenuData(@RequestBody Map params) {
+//        Integer roleId = (Integer) params.get("roleId");
+//        return roleMenuService.findRoleMenuData(roleId.longValue());
+//    }
+//
+//    /**
+//     * 修改角色权限
+//     * @param params
+//     * @return
+//     */
+//    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+//    @ApiOperation(value = "修改角色权限", httpMethod = "POST")
+//    @RequestMapping(value = "/saveAuth", method = RequestMethod.POST)
+//    public ResponseModel saveAuth(@RequestBody Map params) {
+//        Integer roleId = (Integer) params.get("roleId");
+//        String ids = (java.lang.String) params.get("ids");
+//        return roleMenuService.updateRoleMenu(roleId.longValue(), ids);
+//    }
 
     /**
      * @param params

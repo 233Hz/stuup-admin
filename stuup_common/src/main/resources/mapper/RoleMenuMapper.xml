@@ -6,6 +6,21 @@
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="menu_id" jdbcType="BIGINT" property="menuId" />
   </resultMap>
+
+  <resultMap id="MenuMap" type="com.poho.stuup.model.Menu">
+    <id column="oid" property="oid" />
+    <id column="pid" property="pid" />
+    <result column="name" property="name" />
+    <result column="code" property="code" />
+    <result column="path" property="path" />
+    <result column="icon" property="icon" />
+    <result column="component_path" property="componentPath" />
+    <result column="flag" property="flag" />
+    <result column="flag" property="flag" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     oid, role_id, menu_id
   </sql>
@@ -97,5 +112,27 @@
       trm.role_id = #{roleId,jdbcType=BIGINT}
     ORDER BY
       tm.oid ASC
+  </select>
+
+
+  <select id="queryUserMenus" resultMap="MenuMap">
+    select
+    m.oid,
+    m.pid,
+    m.name,
+    m.code,
+    m.path,
+    m.icon,
+    m.component_path,
+    m.flag,
+    m.flag,
+    m.create_time,
+    m.update_time
+    from t_role_menu rm
+    left join t_menu m on m.oid = rm.menu_id
+    where role_id in
+    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+      #{roleId}
+    </foreach>
   </select>
 </mapper>

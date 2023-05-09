@@ -14,6 +14,11 @@ public class CommonConstants {
     /**
      * 失败
      */
+    public static final int CODE_FAIL = 1;
+
+    /**
+     * 失败
+     */
     public static final int CODE_EXCEPTION = 1001;      //请求抛出异常
     public static final int CODE_NO_LOGIN = 1002;        //未登陆状态
     public static final int CODE_NO_AUTH = 1003;         //无操作权限

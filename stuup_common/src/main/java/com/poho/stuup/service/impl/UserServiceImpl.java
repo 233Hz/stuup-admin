@@ -37,6 +37,8 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private RoleMapper roleMapper;
     @Resource
+    private RoleMenuMapper roleMenuMapper;
+    @Resource
     private DeptMapper deptMapper;
 
     @Override
@@ -376,5 +378,12 @@ public class UserServiceImpl implements IUserService {
         resultMap.put("failNum", k);
         resultMap.put("msg", msg.toString());
         return resultMap;
+    }
+
+    @Override
+    public ResponseModel<List<Menu>> queryUserAuthority(long userId) {
+        List<Long> roleIds = userRoleMapper.queryUserRoleId(userId);
+        List<Menu> menus = roleMenuMapper.queryUserMenus(roleIds);
+        return ResponseModel.ok(menus);
     }
 }

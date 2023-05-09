@@ -145,11 +145,11 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.seer.api</groupId>
-            <artifactId>seer-api</artifactId>
-            <version>1.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.seer.api</groupId>-->
+<!--            <artifactId>seer-api</artifactId>-->
+<!--            <version>1.0</version>-->
+<!--        </dependency>-->
         <!-- pdf样式 -->
         <dependency>
             <groupId>com.itextpdf</groupId>

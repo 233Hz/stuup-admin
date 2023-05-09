@@ -1,6 +1,7 @@
 package com.poho.stuup.service;
 
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
 
 import java.util.List;
@@ -82,4 +83,10 @@ public interface IUserService {
      */
     Map<String, Object> importUserList(List<User> userList);
 
+    /**
+     * 查询用户菜单权限
+     * @param userId 用户id
+     * @return
+     */
+    ResponseModel<List<Menu>> queryUserAuthority(long userId);
 }

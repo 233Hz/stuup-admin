@@ -1,19 +1,61 @@
 package com.poho.stuup.model;
 
+import javax.annotation.sql.DataSourceDefinition;
+import java.util.Date;
+
+
 public class Menu {
+
+    /**
+     * id
+     */
     private Long oid;
 
-    private String menuName;
+    /**
+     * 父节点id
+     */
+    private Long pid;
 
-    private String menuCode;
+    /**
+     * 菜单名称
+     */
+    private String name;
 
-    private String link;
+    /**
+     * 菜单编号
+     */
+    private String code;
 
+    /**
+     * 菜单路径
+     */
+    private String path;
+
+    /**
+     * 菜单图标
+     */
     private String icon;
 
-    private Long parentId;
+    /**
+     * 菜单组件路径
+     */
+    private String componentPath;
 
-    private Integer sourceFlag;
+    /**
+     * 前后台标识（1.前台 2.后台）
+     */
+    private Integer flag;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+
 
     public Long getOid() {
         return oid;
@@ -23,28 +65,36 @@ public class Menu {
         this.oid = oid;
     }
 
-    public String getMenuName() {
-        return menuName;
+    public Long getPid() {
+        return pid;
     }
 
-    public void setMenuName(String menuName) {
-        this.menuName = menuName == null ? null : menuName.trim();
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 
-    public String getMenuCode() {
-        return menuCode;
+    public String getName() {
+        return name;
     }
 
-    public void setMenuCode(String menuCode) {
-        this.menuCode = menuCode == null ? null : menuCode.trim();
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getLink() {
-        return link;
+    public String getCode() {
+        return code;
     }
 
-    public void setLink(String link) {
-        this.link = link == null ? null : link.trim();
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getIcon() {
@@ -52,22 +102,38 @@ public class Menu {
     }
 
     public void setIcon(String icon) {
-        this.icon = icon == null ? null : icon.trim();
+        this.icon = icon;
     }
 
-    public Long getParentId() {
-        return parentId;
+    public String getComponentPath() {
+        return componentPath;
     }
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
+    public void setComponentPath(String componentPath) {
+        this.componentPath = componentPath;
     }
 
-    public Integer getSourceFlag() {
-        return sourceFlag;
+    public Integer getFlag() {
+        return flag;
     }
 
-    public void setSourceFlag(Integer sourceFlag) {
-        this.sourceFlag = sourceFlag;
+    public void setFlag(Integer flag) {
+        this.flag = flag;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

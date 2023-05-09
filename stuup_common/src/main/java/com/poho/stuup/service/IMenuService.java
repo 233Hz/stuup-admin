@@ -9,15 +9,15 @@ import com.poho.stuup.model.Menu;
  * @return
  */
 public interface IMenuService {
-    int deleteByPrimaryKey(Long oid);
-
-    int insert(Menu record);
-
-    int insertSelective(Menu record);
-
-    Menu selectByPrimaryKey(Long oid);
-
-    int updateByPrimaryKeySelective(Menu record);
-
-    int updateByPrimaryKey(Menu record);
+//    int deleteByPrimaryKey(Long oid);
+//
+//    int insert(Menu record);
+//
+//    int insertSelective(Menu record);
+//
+//    Menu selectByPrimaryKey(Long oid);
+//
+//    int updateByPrimaryKeySelective(Menu record);
+//
+//    int updateByPrimaryKey(Menu record);
 }

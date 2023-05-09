@@ -107,7 +107,7 @@ public class RewardServiceImpl implements IRewardService {
                 reward.setObtainDate(date);
                 this.convertExcelObjToEntity(dto, reward);
                 int line = rewardMapper.insertSelective(reward);
-                //TODO 以后优化移到同步流程
+                //TODO 以后优化移到同步流程z
                 scoreService.saveScoreDetail(ProjectRuleEnum.REWARD_RULE.getProjectRule().handler(reward));
                 if (line > 0) {
                     j++;

@@ -15,36 +15,36 @@ import javax.annotation.Resource;
  */
 @Service
 public class MenuServiceImpl implements IMenuService {
-    @Resource
-    private MenuMapper menuMapper;
-
-    @Override
-    public int deleteByPrimaryKey(Long oid) {
-        return menuMapper.deleteByPrimaryKey(oid);
-    }
-
-    @Override
-    public int insert(Menu record) {
-        return menuMapper.insert(record);
-    }
-
-    @Override
-    public int insertSelective(Menu record) {
-        return menuMapper.insertSelective(record);
-    }
-
-    @Override
-    public Menu selectByPrimaryKey(Long oid) {
-        return menuMapper.selectByPrimaryKey(oid);
-    }
-
-    @Override
-    public int updateByPrimaryKeySelective(Menu record) {
-        return menuMapper.updateByPrimaryKeySelective(record);
-    }
-
-    @Override
-    public int updateByPrimaryKey(Menu record) {
-        return menuMapper.updateByPrimaryKey(record);
-    }
+//    @Resource
+//    private MenuMapper menuMapper;
+//
+//    @Override
+//    public int deleteByPrimaryKey(Long oid) {
+//        return menuMapper.deleteByPrimaryKey(oid);
+//    }
+//
+//    @Override
+//    public int insert(Menu record) {
+//        return menuMapper.insert(record);
+//    }
+//
+//    @Override
+//    public int insertSelective(Menu record) {
+//        return menuMapper.insertSelective(record);
+//    }
+//
+//    @Override
+//    public Menu selectByPrimaryKey(Long oid) {
+//        return menuMapper.selectByPrimaryKey(oid);
+//    }
+//
+//    @Override
+//    public int updateByPrimaryKeySelective(Menu record) {
+//        return menuMapper.updateByPrimaryKeySelective(record);
+//    }
+//
+//    @Override
+//    public int updateByPrimaryKey(Menu record) {
+//        return menuMapper.updateByPrimaryKey(record);
+//    }
 }

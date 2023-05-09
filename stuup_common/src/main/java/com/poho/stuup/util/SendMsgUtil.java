@@ -1,8 +1,7 @@
 package com.poho.stuup.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.seer.api.SeerClientService;
-import com.seer.api.exception.ApiException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ public class SendMsgUtil {
      */
     public static boolean send(String mobile, String content) {
         boolean result = false;
-        String serverUrl = "http://api.msg.vip";
+      /*  String serverUrl = "http://api.msg.vip";
         String authToken = "e16fea998ea64e83b21cb2aa4af15cff";
         String appid = "ff808081638c600b0163dd38cc1a0005";
         String appSecret = "e1de6ec2e951403abbfc577e98a73cf2";
@@ -41,7 +40,7 @@ public class SendMsgUtil {
             }
         } catch (ApiException e) {
             result = false;
-        }
+        }*/
         return result;
     }
 

@@ -7,6 +7,7 @@ import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusMenu;
+import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
 import com.poho.stuup.service.IRoleMenuService;
 import com.poho.stuup.service.IUserService;
@@ -79,42 +80,29 @@ public class UserController {
         return userService.queryList();
     }
 
-
-    @RequestMapping(value = "/queryUserAuthority", method = RequestMethod.POST)
-    public ResponseModel queryUserAuthority() {
-        ResponseModel model = new ResponseModel();
+    @PostMapping("/queryUserAuthority")
+    public ResponseModel<List<Menu>> queryUserAuthority(){
         String userId = ProjectUtil.obtainLoginUser(request);
-        User user = userService.selectByPrimaryKey(Long.valueOf(userId));
-        if (MicrovanUtil.isNotEmpty(user)) {
-            model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("获取成功");
-            Map<String, Object> data = new HashMap<>();
-            List<CusMenu> menus = roleMenuService.findUserMenus(Long.valueOf(userId));
-            data.put("menus", menus);
-            model.setData(data);
-        }  else {
-            model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("获取失败，请稍后重试");
-        }
-        return model;
+        return userService.queryUserAuthority(Long.parseLong(userId));
     }
 
-    @RequestMapping(value = "/queryUserMenuTree", method = RequestMethod.POST)
-    public ResponseModel queryUserMenuTree() {
-        ResponseModel model = new ResponseModel();
-        String userId = ProjectUtil.obtainLoginUser(request);
-        User user = userService.selectByPrimaryKey(Long.valueOf(userId));
-        if (MicrovanUtil.isNotEmpty(user)) {
-            model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("获取成功");
-            List<MenuTree> menuTrees = roleMenuService.findUserMenuTree(Long.valueOf(userId));
-            model.setData(menuTrees);
-        }  else {
-            model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("获取失败，请稍后重试");
-        }
-        return model;
-    }
+
+//    @RequestMapping(value = "/queryUserMenuTree", method = RequestMethod.POST)
+//    public ResponseModel queryUserMenuTree() {
+//        ResponseModel model = new ResponseModel();
+//        String userId = ProjectUtil.obtainLoginUser(request);
+//        User user = userService.selectByPrimaryKey(Long.valueOf(userId));
+//        if (MicrovanUtil.isNotEmpty(user)) {
+//            model.setCode(CommonConstants.CODE_SUCCESS);
+//            model.setMessage("获取成功");
+//            List<MenuTree> menuTrees = roleMenuService.findUserMenuTree(Long.valueOf(userId));
+//            model.setData(menuTrees);
+//        }  else {
+//            model.setCode(CommonConstants.CODE_EXCEPTION);
+//            model.setMessage("获取失败，请稍后重试");
+//        }
+//        return model;
+//    }
 
     /**
      *
