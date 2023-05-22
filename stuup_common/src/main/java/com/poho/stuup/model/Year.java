@@ -82,4 +82,30 @@ public class Year {
     public void setDateRange(String dateRange) {
         this.dateRange = dateRange;
     }
+
+
+    /**
+     * 上学期结束时间
+     */
+    private Date lastSemester;
+    /**
+     * 下学期开始时间
+     */
+    private Date nextSemester;
+
+    public Date getLastSemester() {
+        return lastSemester;
+    }
+
+    public void setLastSemester(Date lastSemester) {
+        this.lastSemester = lastSemester;
+    }
+
+    public Date getNextSemester() {
+        return nextSemester;
+    }
+
+    public void setNextSemester(Date nextSemester) {
+        this.nextSemester = nextSemester;
+    }
 }

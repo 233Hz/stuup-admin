@@ -55,10 +55,10 @@ public class YearServiceImpl implements IYearService {
     }
 
     @Override
-    public ResponseModel findDataPageResult(String key, int page, int pageSize) {
+    public ResponseModel findDataPageResult(String yearName, int page, int pageSize) {
         ResponseModel model = new ResponseModel();
         Map<String, Object> map = new HashMap<>();
-        map.put("key", key);
+        map.put("key", yearName);
         int count = yearMapper.queryTotal(map);
         PageData<Year> pageData = new PageData(page, pageSize, count);
         map.put("start", pageData.getStart());

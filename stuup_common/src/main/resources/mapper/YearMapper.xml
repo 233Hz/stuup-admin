@@ -6,12 +6,14 @@
     <result column="year_name" jdbcType="VARCHAR" property="yearName" />
     <result column="year_start" jdbcType="TIMESTAMP" property="yearStart" />
     <result column="year_end" jdbcType="TIMESTAMP" property="yearEnd" />
+    <result column="last_semester" jdbcType="TIMESTAMP" property="lastSemester" />
+    <result column="next_semester" jdbcType="TIMESTAMP" property="nextSemester" />
     <result column="curr" jdbcType="INTEGER" property="curr" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_user" jdbcType="BIGINT" property="createUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    oid, year_name, year_start, year_end, curr, create_time, create_user
+    oid, year_name, year_start, year_end,last_semester,next_semester, curr, create_time, create_user
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -24,11 +26,27 @@
     where oid = #{oid,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.poho.stuup.model.Year">
-    insert into t_year (oid, year_name, year_start, 
-      year_end, curr, create_time, create_user
+    insert into t_year (oid,
+                        year_name,
+                        year_start,
+                        year_end,
+                        last_semester,
+                        next_semester,
+                        curr,
+                        create_time,
+                        create_user
       )
-    values (#{oid,jdbcType=BIGINT}, #{yearName,jdbcType=VARCHAR}, #{yearStart,jdbcType=TIMESTAMP}, 
-      #{yearEnd,jdbcType=TIMESTAMP}, #{curr,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}
+    values (
+            #{oid,jdbcType=BIGINT},
+            #{yearName,jdbcType=VARCHAR},
+            #{yearStart,jdbcType=TIMESTAMP},
+            #{yearEnd,jdbcType=TIMESTAMP},
+            #{lastSemester,jdbcType=TIMESTAMP},
+            #{nextSemester,jdbcType=TIMESTAMP},
+            #{yearEnd,jdbcType=TIMESTAMP},
+            #{curr,jdbcType=INTEGER},
+            #{createTime,jdbcType=TIMESTAMP},
+            #{createUser,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.poho.stuup.model.Year">
@@ -45,6 +63,12 @@
       </if>
       <if test="yearEnd != null">
         year_end,
+      </if>
+      <if test="lastSemester != null">
+        last_semester,
+      </if>
+      <if test="nextSemester != null">
+        next_semester,
       </if>
       <if test="curr != null">
         curr,
@@ -69,6 +93,12 @@
       <if test="yearEnd != null">
         #{yearEnd,jdbcType=TIMESTAMP},
       </if>
+      <if test="lastSemester != null">
+        #{lastSemester,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextSemester != null">
+        #{nextSemester,jdbcType=TIMESTAMP},
+      </if>
       <if test="curr != null">
         #{curr,jdbcType=INTEGER},
       </if>
@@ -92,6 +122,12 @@
       <if test="yearEnd != null">
         year_end = #{yearEnd,jdbcType=TIMESTAMP},
       </if>
+      <if test="lastSemester != null">
+        last_semester = #{lastSemester,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextSemester != null">
+        next_semester = #{nextSemester,jdbcType=TIMESTAMP},
+      </if>
       <if test="curr != null">
         curr = #{curr,jdbcType=INTEGER},
       </if>
@@ -109,6 +145,8 @@
     set year_name = #{yearName,jdbcType=VARCHAR},
       year_start = #{yearStart,jdbcType=TIMESTAMP},
       year_end = #{yearEnd,jdbcType=TIMESTAMP},
+      last_semester = #{lastSemester,jdbcType=TIMESTAMP},
+      next_semester = #{nextSemester,jdbcType=TIMESTAMP},
       curr = #{curr,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_user = #{createUser,jdbcType=BIGINT}
