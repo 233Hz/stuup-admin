@@ -3,11 +3,19 @@ package com.poho.stuup.service;
 import com.poho.common.custom.MenuTree;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.custom.CusMenu;
+import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.RoleMenu;
 
 import java.util.List;
 
 public interface IRoleMenuService {
+
+    /**
+     * 查询角色菜单
+     * @param roleId
+     * @return
+     */
+    List<Menu> getRoleMenu(Long roleId);
 //    int deleteByPrimaryKey(Long oid);
 //
 //    int insert(RoleMenu record);

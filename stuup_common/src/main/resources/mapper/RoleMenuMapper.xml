@@ -14,7 +14,6 @@
     <result column="code" property="code" />
     <result column="path" property="path" />
     <result column="icon" property="icon" />
-    <result column="component_path" property="componentPath" />
     <result column="flag" property="flag" />
     <result column="flag" property="flag" />
     <result column="create_time" property="createTime" />
@@ -123,7 +122,6 @@
     m.code,
     m.path,
     m.icon,
-    m.component_path,
     m.flag,
     m.flag,
     m.create_time,
@@ -134,5 +132,22 @@
     <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
       #{roleId}
     </foreach>
+  </select>
+
+  <select id="getRoleMenu" resultMap="MenuMap">
+    select
+    m.oid,
+    m.pid,
+    m.name,
+    m.code,
+    m.path,
+    m.icon,
+    m.flag,
+    m.flag,
+    m.create_time,
+    m.update_time
+    from t_role_menu rm
+    left join t_menu m on m.oid = rm.menu_id
+    where role_id = #{roleId}
   </select>
 </mapper>

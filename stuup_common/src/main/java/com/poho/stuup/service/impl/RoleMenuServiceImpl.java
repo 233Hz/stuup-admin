@@ -25,6 +25,15 @@ import java.util.*;
  */
 @Service
 public class RoleMenuServiceImpl implements IRoleMenuService {
+
+    @Resource
+    private RoleMenuMapper roleMenuMapper;
+
+    @Override
+    public List<Menu> getRoleMenu(Long roleId) {
+        return roleMenuMapper.getRoleMenu(roleId);
+    }
+
 //    @Resource
 //    private RoleMenuMapper roleMenuMapper;
 //    @Resource

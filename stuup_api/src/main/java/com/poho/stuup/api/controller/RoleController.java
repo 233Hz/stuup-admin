@@ -110,4 +110,14 @@ public class RoleController {
         String ids = params.get("ids").toString();
         return roleService.del(ids);
     }
+
+    /**
+     * 查询角色菜单
+     * @param roleId
+     * @return
+     */
+    @GetMapping("/getRoleMenu/{roleId}")
+    public ResponseModel getRoleMenu(@PathVariable("roleId") Long roleId){
+        return ResponseModel.ok(roleMenuService.getRoleMenu(roleId));
+    }
 }

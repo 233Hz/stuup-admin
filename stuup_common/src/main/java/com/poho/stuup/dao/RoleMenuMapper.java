@@ -38,4 +38,11 @@ public interface RoleMenuMapper extends BaseDao<RoleMenu> {
      * @date: 2023/5/9 16:01
      */
     List<Menu> queryUserMenus(@Param("roleIds") List<Long> roleIds);
+
+    /**
+     * 查询角色菜单
+     * @param roleId
+     * @return
+     */
+    List<Menu> getRoleMenu(@Param("roleId") Long roleId);
 }

@@ -37,11 +37,6 @@ public class Menu {
     private String icon;
 
     /**
-     * 菜单组件路径
-     */
-    private String componentPath;
-
-    /**
      * 前后台标识（1.前台 2.后台）
      */
     private Integer flag;
@@ -103,14 +98,6 @@ public class Menu {
 
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    public String getComponentPath() {
-        return componentPath;
-    }
-
-    public void setComponentPath(String componentPath) {
-        this.componentPath = componentPath;
     }
 
     public Integer getFlag() {
