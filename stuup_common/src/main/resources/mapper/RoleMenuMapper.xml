@@ -1,153 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.poho.stuup.dao.RoleMenuMapper">
-  <resultMap id="BaseResultMap" type="com.poho.stuup.model.RoleMenu">
-    <id column="oid" jdbcType="BIGINT" property="oid" />
-    <result column="role_id" jdbcType="BIGINT" property="roleId" />
-    <result column="menu_id" jdbcType="BIGINT" property="menuId" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.RoleMenu">
+        <id column="oid" jdbcType="BIGINT" property="oid"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="menu_id" jdbcType="BIGINT" property="menuId"/>
+    </resultMap>
 
-  <resultMap id="MenuMap" type="com.poho.stuup.model.Menu">
-    <id column="oid" property="oid" />
-    <id column="pid" property="pid" />
-    <result column="name" property="name" />
-    <result column="code" property="code" />
-    <result column="path" property="path" />
-    <result column="icon" property="icon" />
-    <result column="flag" property="flag" />
-    <result column="flag" property="flag" />
-    <result column="create_time" property="createTime" />
-    <result column="update_time" property="updateTime" />
-  </resultMap>
+    <resultMap id="MenuMap" type="com.poho.stuup.model.Menu">
+        <id column="oid" property="oid"/>
+        <id column="pid" property="pid"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="path" property="path"/>
+        <result column="icon" property="icon"/>
+        <result column="flag" property="flag"/>
+        <result column="flag" property="flag"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
 
-  <sql id="Base_Column_List">
-    oid, role_id, menu_id
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_role_menu
-    where oid = #{oid,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_role_menu
-    where oid = #{oid,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.poho.stuup.model.RoleMenu">
-    insert into t_role_menu (oid, role_id, menu_id
-      )
-    values (#{oid,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.poho.stuup.model.RoleMenu">
-    insert into t_role_menu
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        oid,
-      </if>
-      <if test="roleId != null">
-        role_id,
-      </if>
-      <if test="menuId != null">
-        menu_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        #{oid,jdbcType=BIGINT},
-      </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=BIGINT},
-      </if>
-      <if test="menuId != null">
-        #{menuId,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.RoleMenu">
-    update t_role_menu
-    <set>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=BIGINT},
-      </if>
-      <if test="menuId != null">
-        menu_id = #{menuId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where oid = #{oid,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.RoleMenu">
-    update t_role_menu
-    set role_id = #{roleId,jdbcType=BIGINT},
-      menu_id = #{menuId,jdbcType=BIGINT}
-    where oid = #{oid,jdbcType=BIGINT}
-  </update>
-  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
-    select
-      count(trm.oid)
-    from t_role_menu as trm
-    where 1=1
-  </select>
-  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select
-    trm.*
-    from t_role_menu as trm
-    where 1=1
-    order by trm.oid asc
-    <if test="start != null and length != null">
-      limit #{start},#{length}
-    </if>
-  </select>
-  <delete id="clearRoleMenu" parameterType="java.lang.Long">
-    delete from t_role_menu where role_id = #{_parameter,jdbcType=BIGINT}
-  </delete>
-  <select id="queryRoleMenuIds" parameterType="java.util.HashMap" resultType="Long">
-    SELECT
-      tm.oid
-    FROM
-      t_role_menu AS trm
-        LEFT JOIN t_menu AS tm ON tm.oid = trm.menu_id
-    WHERE
-      trm.role_id = #{roleId,jdbcType=BIGINT}
-    ORDER BY
-      tm.oid ASC
-  </select>
+    <sql id="Base_Column_List">
+        oid, role_id, menu_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_role_menu
+        where oid = #{oid,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from t_role_menu
+        where oid = #{oid,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.poho.stuup.model.RoleMenu">
+        insert into t_role_menu (oid, role_id, menu_id)
+        values (#{oid,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.poho.stuup.model.RoleMenu">
+        insert into t_role_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="oid != null">
+                oid,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="oid != null">
+                #{oid,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.RoleMenu">
+        update t_role_menu
+        <set>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where oid = #{oid,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.RoleMenu">
+        update t_role_menu
+        set role_id = #{roleId,jdbcType=BIGINT},
+            menu_id = #{menuId,jdbcType=BIGINT}
+        where oid = #{oid,jdbcType=BIGINT}
+    </update>
+    <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+        select count(trm.oid)
+        from t_role_menu as trm
+        where 1 = 1
+    </select>
+    <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        select
+        trm.*
+        from t_role_menu as trm
+        where 1=1
+        order by trm.oid asc
+        <if test="start != null and length != null">
+            limit #{start},#{length}
+        </if>
+    </select>
+    <delete id="clearRoleMenu" parameterType="java.lang.Long">
+        delete
+        from t_role_menu
+        where role_id = #{_parameter,jdbcType=BIGINT}
+    </delete>
+    <select id="queryRoleMenuIds" parameterType="java.util.HashMap" resultType="Long">
+        SELECT tm.oid
+        FROM t_role_menu AS trm
+                 LEFT JOIN t_menu AS tm ON tm.oid = trm.menu_id
+        WHERE trm.role_id = #{roleId,jdbcType=BIGINT}
+        ORDER BY tm.oid ASC
+    </select>
 
 
-  <select id="queryUserMenus" resultMap="MenuMap">
-    select
-    m.oid,
-    m.pid,
-    m.name,
-    m.code,
-    m.path,
-    m.icon,
-    m.flag,
-    m.flag,
-    m.create_time,
-    m.update_time
-    from t_role_menu rm
-    left join t_menu m on m.oid = rm.menu_id
-    where role_id in
-    <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
-      #{roleId}
-    </foreach>
-  </select>
+    <select id="queryUserMenus" resultMap="MenuMap">
+        select
+        m.oid,
+        m.pid,
+        m.name,
+        m.code,
+        m.path,
+        m.icon,
+        m.flag,
+        m.flag,
+        m.create_time,
+        m.update_time
+        from t_role_menu rm
+        left join t_menu m on m.oid = rm.menu_id
+        where role_id in
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
 
-  <select id="getRoleMenu" resultMap="MenuMap">
-    select
-    m.oid,
-    m.pid,
-    m.name,
-    m.code,
-    m.path,
-    m.icon,
-    m.flag,
-    m.flag,
-    m.create_time,
-    m.update_time
-    from t_role_menu rm
-    left join t_menu m on m.oid = rm.menu_id
-    where role_id = #{roleId}
-  </select>
+    <select id="getRoleMenu" resultType="Long">
+        select menu_id
+        from t_role_menu
+        where role_id = #{roleId}
+    </select>
+
+    <delete id="removerRoleMenu">
+        delete
+        from t_role_menu
+        where role_id = #{roleId}
+    </delete>
+
+    <insert id="setRoleMenu">
+        insert into t_role_menu(role_id, menu_id) value ()
+    </insert>
 </mapper>

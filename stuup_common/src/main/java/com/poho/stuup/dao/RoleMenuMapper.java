@@ -1,6 +1,5 @@
 package com.poho.stuup.dao;
 
-import com.poho.stuup.custom.CusMenu;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.RoleMenu;
 import org.apache.ibatis.annotations.Param;
@@ -10,25 +9,16 @@ import java.util.Map;
 
 public interface RoleMenuMapper extends BaseDao<RoleMenu> {
     /**
-     *
      * @param roleId
      * @return
      */
     int clearRoleMenu(Long roleId);
 
     /**
-     *
      * @param param
      * @return
      */
     List<Long> queryRoleMenuIds(Map<String, Object> param);
-
-    /**
-     *
-     * @param param
-     * @return
-     */
-    List<CusMenu> findUserMenus(Map<String, Object> param);
 
     /**
      * @description: 查询角色权限
@@ -41,8 +31,17 @@ public interface RoleMenuMapper extends BaseDao<RoleMenu> {
 
     /**
      * 查询角色菜单
+     *
      * @param roleId
      * @return
      */
-    List<Menu> getRoleMenu(@Param("roleId") Long roleId);
+    List<Long> getRoleMenu(@Param("roleId") Long roleId);
+
+    /**
+     * 移除角色所有菜单
+     *
+     * @param roleId
+     * @return
+     */
+    int removerRoleMenu(@Param("roleId") Long roleId);
 }

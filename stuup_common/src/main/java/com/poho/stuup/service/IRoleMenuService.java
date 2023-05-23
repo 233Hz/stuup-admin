@@ -1,55 +1,18 @@
 package com.poho.stuup.service;
 
-import com.poho.common.custom.MenuTree;
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.custom.CusMenu;
-import com.poho.stuup.model.Menu;
-import com.poho.stuup.model.RoleMenu;
+import com.poho.stuup.model.dto.RoleMenuDTO;
 
 import java.util.List;
 
 public interface IRoleMenuService {
+    List<Long> getRoleMenu(Long roleId);
 
     /**
-     * 查询角色菜单
-     * @param roleId
+     * 设置角色菜单
+     *
+     * @param roleMenuDTO
      * @return
      */
-    List<Menu> getRoleMenu(Long roleId);
-//    int deleteByPrimaryKey(Long oid);
-//
-//    int insert(RoleMenu record);
-//
-//    int insertSelective(RoleMenu record);
-//
-//    RoleMenu selectByPrimaryKey(Long oid);
-//
-//    int updateByPrimaryKeySelective(RoleMenu record);
-//
-//    int updateByPrimaryKey(RoleMenu record);
-//
-//    /**
-//     *
-//     * @param roleId
-//     * @return
-//     */
-//    ResponseModel findRoleMenuData(Long roleId);
-//
-//    /**
-//     *
-//     * @param roleId
-//     * @param ids
-//     * @return
-//     */
-//    ResponseModel updateRoleMenu(Long roleId, String ids);
-//
-//    /**
-//     *
-//     * @param userId
-//     * @return
-//     */
-////    List<CusMenu> findUserMenus(Long userId);
-//
-//    List<MenuTree> findUserMenuTree(Long userId);
-
+    ResponseModel setRoleMenu(RoleMenuDTO roleMenuDTO);
 }

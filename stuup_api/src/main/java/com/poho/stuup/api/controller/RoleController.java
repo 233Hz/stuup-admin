@@ -4,6 +4,7 @@ import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.model.Role;
+import com.poho.stuup.model.dto.RoleMenuDTO;
 import com.poho.stuup.service.IRoleMenuService;
 import com.poho.stuup.service.IRoleService;
 import com.poho.stuup.util.ProjectUtil;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,9 +39,10 @@ public class RoleController {
 
     /**
      * 获取所有角色
+     *
      * @return
      */
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取所有角色", httpMethod = "GET")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String current, String size) {
@@ -54,7 +58,6 @@ public class RoleController {
     }
 
     /**
-     *
      * @return
      */
     @RequestMapping(value = "/all", method = RequestMethod.GET)
@@ -63,7 +66,6 @@ public class RoleController {
     }
 
     /**
-     *
      * @param role
      * @return
      */
@@ -73,33 +75,6 @@ public class RoleController {
         role.setCreateUser(Long.valueOf(sesUser));
         return roleService.saveOrUpdate(role);
     }
-
-//    /**
-//     * 获取修改角色权限的数据
-//     * @param params
-//     * @return
-//     */
-//    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-//    @ApiOperation(value = "获取修改角色权限的数据", httpMethod = "POST")
-//    @RequestMapping(value = "/findMenuData", method = RequestMethod.POST)
-//    public ResponseModel findMenuData(@RequestBody Map params) {
-//        Integer roleId = (Integer) params.get("roleId");
-//        return roleMenuService.findRoleMenuData(roleId.longValue());
-//    }
-//
-//    /**
-//     * 修改角色权限
-//     * @param params
-//     * @return
-//     */
-//    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
-//    @ApiOperation(value = "修改角色权限", httpMethod = "POST")
-//    @RequestMapping(value = "/saveAuth", method = RequestMethod.POST)
-//    public ResponseModel saveAuth(@RequestBody Map params) {
-//        Integer roleId = (Integer) params.get("roleId");
-//        String ids = (java.lang.String) params.get("ids");
-//        return roleMenuService.updateRoleMenu(roleId.longValue(), ids);
-//    }
 
     /**
      * @param params
@@ -113,11 +88,17 @@ public class RoleController {
 
     /**
      * 查询角色菜单
+     *
      * @param roleId
      * @return
      */
     @GetMapping("/getRoleMenu/{roleId}")
-    public ResponseModel getRoleMenu(@PathVariable("roleId") Long roleId){
+    public ResponseModel<List<Long>> getRoleMenu(@PathVariable("roleId") Long roleId) {
         return ResponseModel.ok(roleMenuService.getRoleMenu(roleId));
+    }
+
+    @PostMapping("/setRoleMenu")
+    public ResponseModel setRoleMenu(@RequestBody @Valid RoleMenuDTO roleMenuDTO) {
+        return roleMenuService.setRoleMenu(roleMenuDTO);
     }
 }

@@ -147,11 +147,11 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.seer.api</groupId>-->
-<!--            <artifactId>seer-api</artifactId>-->
-<!--            <version>1.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.seer.api</groupId>-->
+        <!--            <artifactId>seer-api</artifactId>-->
+        <!--            <version>1.0</version>-->
+        <!--        </dependency>-->
         <!-- pdf样式 -->
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -168,6 +168,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
+        </dependency>
+        <!-- javax.validation -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

@@ -1,12 +1,11 @@
 package com.poho.stuup.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.poho.stuup.model.Menu;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
-import java.util.Map;
-
-public interface MenuMapper extends BaseDao<Menu> {
+@Mapper
+public interface MenuMapper extends BaseMapper<Menu> {
 
 
 }
