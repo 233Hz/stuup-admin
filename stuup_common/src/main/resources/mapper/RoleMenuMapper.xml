@@ -143,6 +143,9 @@
     </delete>
 
     <insert id="setRoleMenu">
-        insert into t_role_menu(role_id, menu_id) value ()
+        insert into t_role_menu(role_id, menu_id) values
+        <foreach collection="menuIds" item="menuId" separator=",">
+            (#{roleId}, #{menuId})
+        </foreach>
     </insert>
 </mapper>
