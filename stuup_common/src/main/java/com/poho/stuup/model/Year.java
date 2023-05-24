@@ -17,8 +17,6 @@ public class Year {
 
     private Long createUser;
 
-    private String dateRange;
-
     public Long getOid() {
         return oid;
     }
@@ -73,14 +71,6 @@ public class Year {
 
     public void setCreateUser(Long createUser) {
         this.createUser = createUser;
-    }
-
-    public String getDateRange() {
-        return dateRange;
-    }
-
-    public void setDateRange(String dateRange) {
-        this.dateRange = dateRange;
     }
 
 

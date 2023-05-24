@@ -91,11 +91,6 @@ public class YearServiceImpl implements IYearService {
             model.setMessage("学年已存在");
             return model;
         } else {
-            if (MicrovanUtil.isNotEmpty(year.getDateRange())) {
-                String[] dateArr = year.getDateRange().split(",");
-                year.setYearStart(MicrovanUtil.formatDate("yyyy-MM-dd HH:mm:ss", dateArr[0]));
-                year.setYearEnd(MicrovanUtil.formatDate("yyyy-MM-dd HH:mm:ss", dateArr[1]));
-            }
             if (MicrovanUtil.isNotEmpty(year.getOid())) {
                 year.setCreateUser(null);
                 line = yearMapper.updateByPrimaryKeySelective(year);

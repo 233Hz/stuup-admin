@@ -112,6 +112,7 @@
 
     <select id="queryUserMenus" resultMap="MenuMap">
         select
+        distinct
         m.oid,
         m.pid,
         m.name,
@@ -148,4 +149,5 @@
             (#{roleId}, #{menuId})
         </foreach>
     </insert>
+
 </mapper>

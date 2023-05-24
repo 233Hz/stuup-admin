@@ -17,7 +17,7 @@
         <result column="teacher_name" property="teacherName"/>
         <result column="grade_name" property="gradeName"/>
         <result column="major_name" property="majorName"/>
-        <result column="faculty_name" property="facultyName" />
+        <result column="faculty_name" property="facultyName"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, num, code, name, faculty_id, grade_id, teacher_id, admin_id, major_id, count, is_valid, join_exam
@@ -29,7 +29,8 @@
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        delete from t_class
+        delete
+        from t_class
         where id = #{id,jdbcType=INTEGER}
     </delete>
     <delete id="deleteClass" parameterType="java.util.HashMap">
@@ -37,16 +38,16 @@
         set is_valid = 2
         where id in
         <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
-          #{item}
+            #{item}
         </foreach>
     </delete>
     <insert id="insert" parameterType="com.poho.stuup.model.Class">
-      insert into t_class (id, num, code, name,
-        faculty_id, grade_id, teacher_id, admin_id, count, major_id, is_valid, join_exam)
-      values (#{id,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
-        #{facultyId,jdbcType=INTEGER}, #{gradeId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER},
-        #{adminId, jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{majorId,jdbcType=INTEGER},
-        #{isValid,jdbcType=INTEGER}, #{joinExam,jdbcType=INTEGER})
+        insert into t_class (id, num, code, name,
+                             faculty_id, grade_id, teacher_id, admin_id, count, major_id, is_valid, join_exam)
+        values (#{id,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{facultyId,jdbcType=INTEGER}, #{gradeId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER},
+                #{adminId, jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{majorId,jdbcType=INTEGER},
+                #{isValid,jdbcType=INTEGER}, #{joinExam,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.poho.stuup.model.Class">
         insert into t_class
@@ -111,7 +112,7 @@
                 #{teacherId,jdbcType=INTEGER},
             </if>
             <if test="adminId != null">
-                #{adminId,jdbc=INTEGER},
+                #{adminId,jdbcType=INTEGER},
             </if>
             <if test="count != null">
                 #{count,jdbcType=INTEGER},
@@ -167,19 +168,19 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Class">
-      update t_class
-          set num = #{num,jdbcType=INTEGER},
-          code = #{code,jdbcType=VARCHAR},
-          name = #{name,jdbcType=VARCHAR},
-          faculty_id = #{facultyId,jdbcType=INTEGER},
-          grade_id = #{gradeId,jdbcType=INTEGER},
-          teacher_id = #{teacherId,jdbcType=INTEGER},
-          admin_id = #{adminId,jdbcType=INTEGER},
-          count = #{count,jdbcType=INTEGER},
-          major_id = #{majorId,jdbcType=INTEGER},
-          is_valid = #{isValid,jdbcType=INTEGER},
-          join_exam = #{joinExam,jdbcType=INTEGER}
-      where id = #{id,jdbcType=INTEGER}
+        update t_class
+        set num        = #{num,jdbcType=INTEGER},
+            code       = #{code,jdbcType=VARCHAR},
+            name       = #{name,jdbcType=VARCHAR},
+            faculty_id = #{facultyId,jdbcType=INTEGER},
+            grade_id   = #{gradeId,jdbcType=INTEGER},
+            teacher_id = #{teacherId,jdbcType=INTEGER},
+            admin_id   = #{adminId,jdbcType=INTEGER},
+            count      = #{count,jdbcType=INTEGER},
+            major_id   = #{majorId,jdbcType=INTEGER},
+            is_valid   = #{isValid,jdbcType=INTEGER},
+            join_exam  = #{joinExam,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
     </update>
     <select id="findClassByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT
@@ -253,42 +254,36 @@
         limit #{start},#{length}
     </select>
     <select id="findClassByGrade" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT
-          tc.*
-        FROM
-          t_class AS tc
-        WHERE
-          tc.is_valid = 1 AND tc.grade_id = #{_parameter}
+        SELECT tc.*
+        FROM t_class AS tc
+        WHERE tc.is_valid = 1
+          AND tc.grade_id = #{_parameter}
         ORDER BY tc.id
     </select>
     <select id="findClass" parameterType="java.util.HashMap" resultType="java.lang.Integer">
         SELECT
-          count(tc.id)
+        count(tc.id)
         FROM
-          t_class as tc
+        t_class as tc
         WHERE
-          tc.is_valid = 1 AND tc.num = #{num} AND tc.grade_id = #{grade}
+        tc.is_valid = 1 AND tc.num = #{num} AND tc.grade_id = #{grade}
         <if test="id != null and id != ''">
             AND tc.id != #{id}
         </if>
     </select>
     <select id="checkClass" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-        SELECT
-            tc.*
-        FROM
-            t_class AS tc
-        WHERE
-            tc. NAME = #{name} AND tc.grade_id = #{grade}
+        SELECT tc.*
+        FROM t_class AS tc
+        WHERE tc.NAME = #{name}
+          AND tc.grade_id = #{grade}
     </select>
     <select id="findClassByAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select
-        tc.*,
-        tg.grade_name as gradeName,
-        tm.major_name as majorName
+        select tc.*,
+               tg.grade_name as gradeName,
+               tm.major_name as majorName
         from t_class as tc
-        left join t_grade as tg on tc.grade_id=tg.oid
-        left join t_major as tm on tc.major_id=tm.oid
-        where
-            tc.teacher_id = #{_parameter,jdbcType=INTEGER}
+                 left join t_grade as tg on tc.grade_id = tg.oid
+                 left join t_major as tm on tc.major_id = tm.oid
+        where tc.teacher_id = #{_parameter,jdbcType=INTEGER}
     </select>
 </mapper>

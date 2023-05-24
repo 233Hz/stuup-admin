@@ -1,12 +1,10 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.constant.CommonConstants;
-import com.poho.common.custom.MenuTree;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
-import com.poho.stuup.custom.CusMenu;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
 import com.poho.stuup.service.IRoleMenuService;
@@ -25,7 +23,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,13 +47,14 @@ public class UserController {
 
     /**
      * 分页查询用户
+     *
      * @param key
      * @param state
      * @param current
      * @param size
      * @return
      */
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取所有用户", httpMethod = "GET")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String state, String current, String size) {
@@ -73,6 +71,7 @@ public class UserController {
 
     /**
      * 查询所有的数据
+     *
      * @return
      */
     @RequestMapping(value = "/all", method = RequestMethod.GET)
@@ -81,31 +80,13 @@ public class UserController {
     }
 
     @PostMapping("/queryUserAuthority")
-    public ResponseModel<List<Menu>> queryUserAuthority(){
+    public ResponseModel<List<Menu>> queryUserAuthority() {
         String userId = ProjectUtil.obtainLoginUser(request);
         return userService.queryUserAuthority(Long.parseLong(userId));
     }
 
 
-//    @RequestMapping(value = "/queryUserMenuTree", method = RequestMethod.POST)
-//    public ResponseModel queryUserMenuTree() {
-//        ResponseModel model = new ResponseModel();
-//        String userId = ProjectUtil.obtainLoginUser(request);
-//        User user = userService.selectByPrimaryKey(Long.valueOf(userId));
-//        if (MicrovanUtil.isNotEmpty(user)) {
-//            model.setCode(CommonConstants.CODE_SUCCESS);
-//            model.setMessage("获取成功");
-//            List<MenuTree> menuTrees = roleMenuService.findUserMenuTree(Long.valueOf(userId));
-//            model.setData(menuTrees);
-//        }  else {
-//            model.setCode(CommonConstants.CODE_EXCEPTION);
-//            model.setMessage("获取失败，请稍后重试");
-//        }
-//        return model;
-//    }
-
     /**
-     *
      * @return
      */
     @RequestMapping(value = "/data", method = RequestMethod.POST)
@@ -117,7 +98,7 @@ public class UserController {
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("获取成功");
             model.setData(ProjectUtil.convertCusUser(user));
-        }  else {
+        } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
             model.setMessage("获取失败，请稍后重试");
         }
@@ -125,7 +106,6 @@ public class UserController {
     }
 
     /**
-     *
      * @return
      */
     @RequestMapping(value = "/userData", method = RequestMethod.GET)
@@ -134,7 +114,6 @@ public class UserController {
     }
 
     /**
-     *
      * @param user
      * @return
      */
@@ -154,7 +133,6 @@ public class UserController {
     }
 
     /**
-     *
      * @param params
      * @return
      */

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
@@ -20,30 +21,30 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     public List<Tree> getMenuTree() {
         List<Menu> menus = baseMapper.selectList(Wrappers.<Menu>lambdaQuery()
                 .select(Menu::getOid, Menu::getPid, Menu::getName));
-        HashMap<Long, Tree> map = new HashMap<>();
+        Map<Long, Tree> map = new HashMap<>();
         for (Menu menu : menus) {
             Tree tree = new Tree();
             tree.setKey(menu.getName());
             tree.setValue(menu.getOid());
             map.put(menu.getOid(), tree);
         }
-        List<Tree> menuTree = new ArrayList<>();
+        List<Tree> menuTreeList = new ArrayList<>();
         for (Menu menu : menus) {
-            Tree tree = map.get(menu.getOid());
+            Tree menuTree = map.get(menu.getOid());
             Tree parentTree = map.get(menu.getPid());
             if (parentTree != null) {
                 List<Tree> children = parentTree.getChildren();
                 if (CollUtil.isEmpty(children)) {
-                    ArrayList<Tree> trees = new ArrayList<>();
-                    trees.add(tree);
-                    parentTree.setChildren(trees);
-                }else {
-                    children.add(tree);
+                    List<Tree> treeChildren = new ArrayList<>();
+                    treeChildren.add(menuTree);
+                    parentTree.setChildren(treeChildren);
+                } else {
+                    children.add(menuTree);
                 }
-            }else {
-                menuTree.add(tree);
+            } else {
+                menuTreeList.add(menuTree);
             }
         }
-        return menuTree;
+        return menuTreeList;
     }
 }
