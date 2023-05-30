@@ -2,10 +2,13 @@ package com.poho.stuup.dao;
 
 
 import com.poho.stuup.model.Student;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
 
+@Mapper
 public interface StudentMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -20,32 +23,38 @@ public interface StudentMapper {
     int updateByPrimaryKey(Student record);
 
     /**
-     *
      * @param map
      * @return
      */
     Student selectByStudentNo(Map<String, Object> map);
 
     /**
-     *
      * @param classId
      * @return
      */
     int findTotalStudentByClass(Integer classId);
 
     /**
-     *
      * @param map
      * @return
      */
     int findTotalStudentByCond(Map<String, Object> map);
 
     /**
-     *
      * @param map
      * @return
      */
     List<Student> findStudentPageResultByCond(Map<String, Object> map);
 
     List<Student> findAllStudent(Map<String, Object> map);
+
+    /**
+     * 查找学时id
+     *
+     * @param studentNo
+     * @return
+     */
+    Long findStudentId(@Param("studentNo") String studentNo);
+
+    List<Long> selectIdList();
 }

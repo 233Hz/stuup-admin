@@ -1,7 +1,7 @@
 package com.poho.stuup.dao;
 
-import com.poho.stuup.model.GrowthItem;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.poho.stuup.model.GrowthItem;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
