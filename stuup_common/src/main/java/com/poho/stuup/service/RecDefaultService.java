@@ -1,9 +1,13 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecDefault;
+import com.poho.stuup.model.dto.GrowSearchDTO;
 import com.poho.stuup.model.excel.RecDefaultExcel;
+import com.poho.stuup.model.vo.GrowRecordVO;
 
 import java.util.List;
 import java.util.Map;
@@ -28,4 +32,14 @@ public interface RecDefaultService extends IService<RecDefault> {
      * @date: 2023/5/29 10:42
      */
     void saveRecDefault(long batchCode, GrowthItem growthItem, List<RecDefaultExcel> excels, Map<String, Object> params);
+
+    /**
+     * @description: 分页查询导入的项目
+     * @param: page
+     * @param: query
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.dto.GrowSearchDTO>
+     * @author BUNGA
+     * @date: 2023/5/31 13:26
+     */
+    IPage<GrowRecordVO> growthRecordPage(Page page, GrowSearchDTO query);
 }

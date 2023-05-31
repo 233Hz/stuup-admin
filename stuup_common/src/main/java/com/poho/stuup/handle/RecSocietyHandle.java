@@ -34,7 +34,7 @@ public class RecSocietyHandle implements RecExcelHandle {
             long end = System.currentTimeMillis();
             log.info("耗时:" + (end - start) / 1000 + "s");
             if (CollUtil.isNotEmpty(recSocietyListener.errors)) {
-                return ResponseModel.failed(recSocietyListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recSocietyListener.total, recSocietyListener.success, recSocietyListener.fail));
+                return ResponseModel.ok(recSocietyListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recSocietyListener.total, recSocietyListener.success, recSocietyListener.fail));
             }
             return ResponseModel.ok("导入成功");
         } catch (IOException e) {

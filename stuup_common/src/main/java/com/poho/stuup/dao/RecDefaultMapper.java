@@ -1,8 +1,13 @@
 package com.poho.stuup.dao;
 
-import com.poho.stuup.model.RecDefault;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.poho.stuup.model.RecDefault;
+import com.poho.stuup.model.dto.GrowSearchDTO;
+import com.poho.stuup.model.vo.GrowRecordVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -15,4 +20,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RecDefaultMapper extends BaseMapper<RecDefault> {
 
+    IPage<GrowRecordVO> growthRecordPage(Page page, @Param("query") GrowSearchDTO query);
 }

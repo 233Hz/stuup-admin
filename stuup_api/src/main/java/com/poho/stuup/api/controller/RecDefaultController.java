@@ -1,7 +1,16 @@
-package com.poho.stuup.controller;
+package com.poho.stuup.api.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.model.dto.GrowSearchDTO;
+import com.poho.stuup.model.vo.GrowRecordVO;
+import com.poho.stuup.service.RecDefaultService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -11,8 +20,16 @@ import org.springframework.stereotype.Controller;
  * @author BUNGA
  * @since 2023-05-26
  */
-@Controller
-@RequestMapping("/stuup/recDefault")
+@RestController
+@RequestMapping("/recDefault")
 public class RecDefaultController {
+
+    @Resource
+    private RecDefaultService recDefaultService;
+
+    @GetMapping("/page")
+    public ResponseModel<IPage<GrowRecordVO>> growthRecordPage(Page page, GrowSearchDTO query) {
+        return ResponseModel.ok(recDefaultService.growthRecordPage(page, query));
+    }
 
 }

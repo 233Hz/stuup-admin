@@ -61,8 +61,14 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
     public List<GrowthItem> getUserGrowthItems(Long userId) {
         List<Long> growIds = growUserMapper.findUserGrow(userId);
         return this.list(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getScore)
+                .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)
                 .in(!Utils.isSuperAdmin(userId), GrowthItem::getId, growIds));
+    }
+
+    @Override
+    public boolean verifyRemainingFillNum(Long userId, String growCode) {
+        //TODO
+        return true;
     }
 
 }

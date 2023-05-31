@@ -35,7 +35,7 @@ public class RecCaucusHandle implements RecExcelHandle {
             long end = System.currentTimeMillis();
             log.info("耗时:" + (end - start) / 1000 + "s");
             if (CollUtil.isNotEmpty(recCaucusListener.errors)) {
-                return ResponseModel.failed(recCaucusListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recCaucusListener.total, recCaucusListener.success, recCaucusListener.fail));
+                return ResponseModel.ok(recCaucusListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recCaucusListener.total, recCaucusListener.success, recCaucusListener.fail));
             }
             return ResponseModel.ok("导入成功");
         } catch (IOException e) {

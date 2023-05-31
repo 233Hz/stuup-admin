@@ -34,7 +34,7 @@ public class RecVolunteerHandle implements RecExcelHandle {
             long end = System.currentTimeMillis();
             log.info("耗时:" + (end - start) / 1000 + "s");
             if (CollUtil.isNotEmpty(recVolunteerListener.errors)) {
-                return ResponseModel.failed(recVolunteerListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recVolunteerListener.total, recVolunteerListener.success, recVolunteerListener.fail));
+                return ResponseModel.ok(recVolunteerListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recVolunteerListener.total, recVolunteerListener.success, recVolunteerListener.fail));
             }
             return ResponseModel.ok("导入成功");
         } catch (IOException e) {

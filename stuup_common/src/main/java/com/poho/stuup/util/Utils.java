@@ -1,6 +1,7 @@
 package com.poho.stuup.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.dao.RoleMapper;
 import com.poho.stuup.dao.UserRoleMapper;
@@ -22,6 +23,7 @@ public class Utils {
 
     // 验证字符串日期格式为yyyy-MM-dd
     public boolean isDate(String date) {
+        if (StrUtil.isBlank(date)) return false;
         String regex = "\\d{4}-\\d{2}-\\d{2}";
 
         if (!date.matches(regex)) {
@@ -38,6 +40,7 @@ public class Utils {
 
     // 验证字符串是否为数字
     public boolean isNumber(String number) {
+        if (StrUtil.isBlank(number)) return false;
         return number.matches("\\d+");
     }
 

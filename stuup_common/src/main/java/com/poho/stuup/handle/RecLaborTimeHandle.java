@@ -34,7 +34,7 @@ public class RecLaborTimeHandle implements RecExcelHandle {
             long end = System.currentTimeMillis();
             log.info("耗时:" + (end - start) / 1000 + "s");
             if (CollUtil.isNotEmpty(recLaborTimeListener.errors)) {
-                return ResponseModel.failed(recLaborTimeListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recLaborTimeListener.total, recLaborTimeListener.success, recLaborTimeListener.fail));
+                return ResponseModel.ok(recLaborTimeListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recLaborTimeListener.total, recLaborTimeListener.success, recLaborTimeListener.fail));
             }
             return ResponseModel.ok("导入成功");
         } catch (IOException e) {

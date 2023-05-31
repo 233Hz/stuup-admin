@@ -63,4 +63,14 @@ public interface GrowthItemService extends IService<GrowthItem> {
      * @date: 2023/5/30 18:44
      */
     List<GrowthItem> getUserGrowthItems(Long userId);
+
+    /**
+     * @description: 校验该用户可导入次数
+     * @param: userId
+     * @param: growCode
+     * @return: boolean
+     * @author BUNGA
+     * @date: 2023/5/31 8:48
+     */
+    boolean verifyRemainingFillNum(Long userId, String growCode);
 }

@@ -47,8 +47,8 @@ public interface RecExcelHandle {
             String recCode = (String) params.get("rec_code");
             GrowthItem growthItem = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
                     .eq(GrowthItem::getCode, recCode));
+            if (growthItem == null) return ResponseModel.failed("导入项目不存在");
             Long growId = growthItem.getId();
-            if (growId == null) return ResponseModel.failed("导入项目不存在");
             // 查询项目负责人
             String userId = (String) params.get("userId");
             boolean isGrowUser = growUserService.isGrowUser(Long.parseLong(userId), growId);
