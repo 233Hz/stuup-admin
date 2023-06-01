@@ -1,8 +1,12 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecScore;
+import com.poho.stuup.model.dto.RecScoreDTO;
+import com.poho.stuup.model.vo.RecScoreVO;
 
 import java.util.Date;
 import java.util.List;
@@ -19,14 +23,24 @@ import java.util.Map;
 public interface RecScoreService extends IService<RecScore> {
 
     /**
+     * @description: 分页查询
+     * @param: page
+     * @param: query
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.RecScoreVO>
+     * @author BUNGA
+     * @date: 2023/6/1 18:07
+     */
+    IPage<RecScoreVO> getRecScorePage(Page<RecScoreVO> page, RecScoreDTO query);
+
+    /**
      * @description: 计算成长积分
      * @param: studentIds
-     * @param: growId
+     * @param: batchCode
      * @return: void
      * @author BUNGA
      * @date: 2023/5/29 13:08
      */
-    void calculateScore(List<Long> studentIds, GrowthItem growthItem, Map<String, Object> params);
+    void calculateScore(List<Long> studentIds, GrowthItem growthItem);
 
     /**
      * 查找该时间段内学生获取的分数
@@ -37,4 +51,5 @@ public interface RecScoreService extends IService<RecScore> {
      * @return Map<学生id, 学生获得的分数>
      */
     Map<Long, Integer> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime);
+
 }

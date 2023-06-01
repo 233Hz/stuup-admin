@@ -1,8 +1,12 @@
 package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecMilitary;
 import com.poho.stuup.model.excel.RecMilitaryExcel;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,10 +20,13 @@ public interface RecMilitaryService extends IService<RecMilitary> {
 
     /**
      * @description: 保存导入数据
-     * @param: data
-     * @return: boolean
+     * @param: batchCode
+     * @param: growthItem
+     * @param: excels
+     * @param: params
+     * @return: void
      * @author BUNGA
-     * @date: 2023/5/26 8:35
+     * @date: 2023/6/1 14:28
      */
-    boolean saveData(RecMilitaryExcel data);
+    void saveRecMilitaryExcel(long batchCode, GrowthItem growthItem, List<RecMilitaryExcel> excels, Map<String, Object> params);
 }

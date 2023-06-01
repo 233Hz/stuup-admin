@@ -6,6 +6,7 @@ import com.alibaba.excel.EasyExcel;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecCaucusListener;
+import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.RecCaucusExcel;
 import com.poho.stuup.service.RecCaucusService;
 import com.poho.stuup.util.SpringContextHolder;
@@ -24,16 +25,20 @@ import java.util.Map;
 public class RecCaucusHandle implements RecExcelHandle {
 
     @Override
-    public ResponseModel recImport(MultipartFile file, Map<String, Object> params) {
+    public ResponseModel recImport(MultipartFile file, GrowthItem growthItem, Map<String, Object> params) {
         try {
             StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
             RecCaucusService recCaucusService = SpringContextHolder.getBean(RecCaucusService.class);
             log.info("开始导入");
             long start = System.currentTimeMillis();
-            RecCaucusListener recCaucusListener = new RecCaucusListener(studentMapper, recCaucusService, start);
+            RecCaucusListener recCaucusListener = new RecCaucusListener(start, params, growthItem, studentMapper, recCaucusService);
             EasyExcel.read(file.getInputStream(), RecCaucusExcel.class, recCaucusListener).sheet().doRead();
             long end = System.currentTimeMillis();
-            log.info("耗时:" + (end - start) / 1000 + "s");
+            log.info("耗时:{}ms", end - start);
+            log.info("耗时:{}分{}秒", (end - start) / 1000 / 60, (end - start) / 1000 % 60);
+            if (recCaucusListener.total == 0) {
+                return ResponseModel.failed("Excel为空！");
+            }
             if (CollUtil.isNotEmpty(recCaucusListener.errors)) {
                 return ResponseModel.ok(recCaucusListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recCaucusListener.total, recCaucusListener.success, recCaucusListener.fail));
             }

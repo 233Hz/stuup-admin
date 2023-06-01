@@ -6,6 +6,7 @@ import com.alibaba.excel.EasyExcel;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecVolunteerListener;
+import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.RecVolunteerExcel;
 import com.poho.stuup.service.RecVolunteerService;
 import com.poho.stuup.util.SpringContextHolder;
@@ -24,15 +25,20 @@ import java.util.Map;
 public class RecVolunteerHandle implements RecExcelHandle {
 
     @Override
-    public ResponseModel recImport(MultipartFile file, Map<String, Object> params) {
+    public ResponseModel recImport(MultipartFile file, GrowthItem growthItem, Map<String, Object> params) {
         try {
             StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
             RecVolunteerService recVolunteerService = SpringContextHolder.getBean(RecVolunteerService.class);
+            log.info("开始导入");
             long start = System.currentTimeMillis();
-            RecVolunteerListener recVolunteerListener = new RecVolunteerListener(studentMapper, recVolunteerService, start);
+            RecVolunteerListener recVolunteerListener = new RecVolunteerListener(start, params, growthItem, studentMapper, recVolunteerService);
             EasyExcel.read(file.getInputStream(), RecVolunteerExcel.class, recVolunteerListener).sheet().doRead();
             long end = System.currentTimeMillis();
-            log.info("耗时:" + (end - start) / 1000 + "s");
+            log.info("耗时:{}ms", end - start);
+            log.info("耗时:{}分{}秒", (end - start) / 1000 / 60, (end - start) / 1000 % 60);
+            if (recVolunteerListener.total == 0) {
+                return ResponseModel.failed("Excel为空！");
+            }
             if (CollUtil.isNotEmpty(recVolunteerListener.errors)) {
                 return ResponseModel.ok(recVolunteerListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recVolunteerListener.total, recVolunteerListener.success, recVolunteerListener.fail));
             }

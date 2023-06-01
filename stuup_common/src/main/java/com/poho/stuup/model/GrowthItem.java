@@ -32,12 +32,6 @@ public class GrowthItem implements Serializable {
     private Long id;
 
     /**
-     * 成长项目id
-     */
-    @NotNull(message = "请选择所属项目")
-    private Long growthId;
-
-    /**
      * 项目名称
      */
     @NotBlank(message = "请输入项目名称")
@@ -104,6 +98,24 @@ public class GrowthItem implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+
+
+    /**
+     * 一级项目id
+     */
+    @NotNull(message = "请选择所属项目")
+    private Long firstLevelId;
+
+
+    /**
+     * 二级项目id
+     */
+    private Long secondLevelId;
+
+    /**
+     * 成长项目id
+     */
+    private Long threeLevelId;
 
 
 }

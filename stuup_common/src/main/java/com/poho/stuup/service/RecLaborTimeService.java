@@ -1,8 +1,12 @@
 package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecLaborTime;
 import com.poho.stuup.model.excel.RecLaborTimeExcel;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,10 +20,13 @@ public interface RecLaborTimeService extends IService<RecLaborTime> {
 
     /**
      * @description: 保存导入数据
-     * @param: data
-     * @return: boolean
+     * @param: batchCode
+     * @param: growthItem
+     * @param: excels
+     * @param: params
+     * @return: void
      * @author BUNGA
-     * @date: 2023/5/25 15:49
+     * @date: 2023/6/1 14:15
      */
-    boolean saveData(RecLaborTimeExcel data);
+    void saveRecLaborTimeExcel(long batchCode, GrowthItem growthItem, List<RecLaborTimeExcel> excels, Map<String, Object> params);
 }

@@ -1,7 +1,11 @@
 package com.poho.stuup.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecScore;
+import com.poho.stuup.model.dto.RecScoreDTO;
+import com.poho.stuup.model.vo.RecScoreVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,6 +23,8 @@ import java.util.List;
 @Mapper
 public interface RecScoreMapper extends BaseMapper<RecScore> {
 
+    IPage<RecScoreVO> getRecScorePage(Page<RecScoreVO> page, @Param("query") RecScoreDTO query);
+
     /**
      * @description: 查找时间段内的记录
      * @param: timePeriod
@@ -27,4 +33,5 @@ public interface RecScoreMapper extends BaseMapper<RecScore> {
      * @date: 2023/5/30 14:31
      */
     List<RecScore> findTimePeriodRecord(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
 }

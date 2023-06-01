@@ -36,7 +36,7 @@ public class GrowthItemController {
     @GetMapping("/page")
     public ResponseModel<Page<GrowthItem>> getPage(Page<GrowthItem> page, GrowthItem growthItem) {
         return ResponseModel.ok(growthItemService.page(page, Wrappers.<GrowthItem>lambdaQuery()
-                .eq(growthItem.getGrowthId() != null, GrowthItem::getGrowthId, growthItem.getGrowthId())
+                .eq(growthItem.getThreeLevelId() != null, GrowthItem::getThreeLevelId, growthItem.getThreeLevelId())
                 .like(StrUtil.isNotEmpty(growthItem.getName()), GrowthItem::getName, growthItem.getName())
                 .eq(growthItem.getCalculateType() != null, GrowthItem::getCalculateType, growthItem.getCalculateType())));
     }

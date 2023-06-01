@@ -5,7 +5,6 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.GrowthItem">
         <id column="id" property="id"/>
-        <result column="growth_id" property="growthId"/>
         <result column="name" property="name"/>
         <result column="description" property="description"/>
         <result column="fill_period" property="fillPeriod"/>
@@ -17,6 +16,9 @@
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
+        <result column="first_level_id" property="firstLevelId"/>
+        <result column="second_level_id" property="secondLevelId"/>
+        <result column="three_level_id" property="threeLevelId"/>
     </resultMap>
 
 </mapper>

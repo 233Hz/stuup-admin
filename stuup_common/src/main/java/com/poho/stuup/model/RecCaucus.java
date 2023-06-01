@@ -31,6 +31,11 @@ public class RecCaucus implements Serializable {
     private Long id;
 
     /**
+     * 项目id
+     */
+    private Long growId;
+
+    /**
      * 年份id
      */
     private Long yearId;

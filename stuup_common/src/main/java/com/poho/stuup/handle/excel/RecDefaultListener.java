@@ -31,13 +31,12 @@ public class RecDefaultListener implements ReadListener<RecDefaultExcel> {
     private final StudentMapper studentMapper;
     private final RecDefaultService recDefaultService;
 
+    //===============================================================
 
     public int total, success, fail;
-
     public List<ExcelError> errors = new ArrayList<>();
-
     private final Map<String, Long> studentMap = new HashMap<>();
-    private final List<RecDefaultExcel> excels = new ArrayList<>();
+    private final List<RecDefaultExcel> recDefaultExcels = new ArrayList<>();
 
     public RecDefaultListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecDefaultService recDefaultService) {
         this.batchCode = batchCode;
@@ -65,13 +64,14 @@ public class RecDefaultListener implements ReadListener<RecDefaultExcel> {
         }
         if (studentId == null) {
             errorMessages.add("该学生不存在");
+        } else {
+            studentMap.put(studentNo, studentId);
+            data.setStudentId(studentId);
         }
         if (CollUtil.isEmpty(errorMessages)) {
             log.info("==========解析到一条数据:{}", JSON.toJSONString(data));
             success++;
-            studentMap.put(studentNo, studentId);
-            data.setStudentId(studentId);
-            excels.add(data);
+            recDefaultExcels.add(data);
         } else {
             fail++;
             this.errors.add(ExcelError.builder().lineNum(rowIndex).errors(JSON.toJSONString(errorMessages)).build());
@@ -80,7 +80,7 @@ public class RecDefaultListener implements ReadListener<RecDefaultExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recDefaultService.saveRecDefault(batchCode, growthItem, excels, params);
+        recDefaultService.saveRecDefaultExcel(batchCode, growthItem, recDefaultExcels, params);
         log.info("==========导入已完成！==========");
     }
 }

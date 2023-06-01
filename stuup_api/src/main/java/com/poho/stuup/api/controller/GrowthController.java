@@ -51,4 +51,5 @@ public class GrowthController {
         return growthService.removeById(id) ? ResponseModel.ok("删除成功！") : ResponseModel.failed("删除失败！");
     }
 
+
 }

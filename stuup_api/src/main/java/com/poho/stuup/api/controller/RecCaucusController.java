@@ -28,7 +28,7 @@ public class RecCaucusController {
     private RecCaucusService recCaucusService;
 
     @GetMapping("/page")
-    public ResponseModel<Page<RecCaucus>> getPage(Page<RecCaucus> page, RecCaucus query) {
+    public ResponseModel<Page<RecCaucus>> getRecCaucusPage(Page<RecCaucus> page, RecCaucus query) {
         return ResponseModel.ok(
                 recCaucusService.page(page, Wrappers.<RecCaucus>lambdaQuery()
                         .eq(query.getYearId() != null, RecCaucus::getYearId, query.getYearId())

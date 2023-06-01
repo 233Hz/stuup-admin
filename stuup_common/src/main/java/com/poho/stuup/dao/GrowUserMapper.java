@@ -20,7 +20,7 @@ public interface GrowUserMapper extends BaseMapper<GrowUser> {
 
     /**
      * @description: 查找项目负责人
-     * @param: growId
+     * @param: batchCode
      * @return: java.util.List<java.lang.Long>
      * @author BUNGA
      * @date: 2023/5/29 15:52

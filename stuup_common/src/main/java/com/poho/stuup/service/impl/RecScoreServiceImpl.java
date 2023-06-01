@@ -1,5 +1,7 @@
 package com.poho.stuup.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.CalculateTypeEnum;
 import com.poho.stuup.constant.PeriodEnum;
@@ -9,7 +11,9 @@ import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.Year;
+import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.dto.TimePeriod;
+import com.poho.stuup.model.vo.RecScoreVO;
 import com.poho.stuup.service.RecScoreService;
 import com.poho.stuup.service.StuScoreService;
 import com.poho.stuup.util.Utils;
@@ -42,7 +46,12 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
     private StuScoreService stuScoreService;
 
     @Override
-    public void calculateScore(List<Long> studentIds, GrowthItem growthItem, Map<String, Object> params) {
+    public IPage<RecScoreVO> getRecScorePage(Page<RecScoreVO> page, RecScoreDTO query) {
+        return baseMapper.getRecScorePage(page, query);
+    }
+
+    @Override
+    public void calculateScore(List<Long> studentIds, GrowthItem growthItem) {
         Year currYear = yearMapper.findCurrYear();
         List<Long> allStudentIds = studentMapper.selectIdList();
         Integer calculateType = growthItem.getCalculateType();

@@ -27,12 +27,4 @@ public class RecDefaultExcel {
     @JsonIgnore
     private Long studentId;
 
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
-
 }

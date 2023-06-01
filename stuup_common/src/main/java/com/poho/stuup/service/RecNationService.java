@@ -1,8 +1,12 @@
 package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecNation;
 import com.poho.stuup.model.excel.RecNationExcel;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -15,10 +19,14 @@ import com.poho.stuup.model.excel.RecNationExcel;
 public interface RecNationService extends IService<RecNation> {
 
     /**
-     * 保存导入数据
-     *
-     * @param data
-     * @return
+     * @description: 保存导入数据
+     * @param: batchCode
+     * @param: growthItem
+     * @param: recNationExcels
+     * @param: params
+     * @return: void
+     * @author BUNGA
+     * @date: 2023/6/1 14:32
      */
-    boolean saveData(RecNationExcel data);
+    void saveRecNationExcel(long batchCode, GrowthItem growthItem, List<RecNationExcel> excels, Map<String, Object> params);
 }

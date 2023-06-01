@@ -15,7 +15,7 @@
 
     <resultMap id="GrowRecordVOMap" type="com.poho.stuup.model.vo.GrowRecordVO">
         <id column="id" property="id"/>
-        <result column="first_level_name" property="firstLeveName"/>
+        <result column="first_level_name" property="firstLevelName"/>
         <result column="second_level_name" property="secondLevelName"/>
         <result column="three_level_name" property="threeLevelName"/>
         <result column="grow_name" property="growName"/>
@@ -23,35 +23,80 @@
         <result column="create_user" property="createUser"/>
     </resultMap>
 
+    <resultMap id="RecDefaultVOMap" type="com.poho.stuup.model.vo.RecDefaultVO">
+        <id column="id" property="id"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="class_name" property="className"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="id_card" property="idCard"/>
+        <result column="grow_name" property="growName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+
     <select id="growthRecordPage" resultMap="GrowRecordVOMap">
         select
         rd.batch_code as id,
-        first.name as first_leve_name,
+        first.name as first_level_name,
         second.name as second_level_name,
         three.name as three_level_name,
         gi.name as grow_name,
         rd.create_time,
-        u.user_name
+        u.user_name as create_user
         from t_rec_default rd
         left join t_growth_item gi
         on gi.id = rd.grow_id
-        left join t_growth first on first.id = second.id
-        left join t_growth second on second.pid = three.id
-        left join t_growth three on three.id = gi.growth_id
+        left join t_growth first on first.id = gi.first_level_id
+        left join t_growth second on second.id = gi.second_level_id
+        left join t_growth three on three.id = gi.three_level_id
         left join t_user u on u.oid = rd.create_user
         group by rd.batch_code
         <where>
             <if test="query.firstLevelId != null and query.firstLevelId != ''">
-                and first.id = #{query.firstLevelId}
+                and gi.first_level_id = #{query.firstLevelId}
             </if>
             <if test="query.secondLevelId != null and query.secondLevelId != ''">
-                and second.id = #{query.secondLevelId}
+                and gi.second_level_id = #{query.secondLevelId}
             </if>
             <if test="query.threeLevelId != null and query.threeLevelId != ''">
-                and three.id = #{query.threeLevelId}
+                and gi.three_level_id = #{query.threeLevelId}
             </if>
             <if test="query.growName != null and query.growName != ''">
                 and gi.name like concat('%',#{query.growName},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="growthRecordDetails" resultMap="RecDefaultVOMap">
+        select rd.id,
+        g.grade_name,
+        c.name as class_name,
+        s.name as student_name,
+        s.student_no,
+        s.id_card,
+        gi.name as grow_name,
+        rd.create_time,
+        rd.remark
+        from t_rec_default rd
+        left join t_student s on s.id = rd.student_id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_class c on c.id = s.class_id
+        left join t_growth_item gi on gi.id = rd.grow_id
+        <where>
+            rd.batch_code = #{query.batchCode}
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.classId != null and query.classId != ''">
+                and c.id = #{query.classId}
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%',#{query.studentName},'%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%',#{query.studentNo},'%')
             </if>
         </where>
     </select>

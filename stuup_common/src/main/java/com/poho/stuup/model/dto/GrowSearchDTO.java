@@ -13,7 +13,7 @@ public class GrowSearchDTO {
     /**
      * 一级名称
      */
-    private Long firstLeveId;
+    private Long firstLevelId;
 
     /**
      * 二级名称

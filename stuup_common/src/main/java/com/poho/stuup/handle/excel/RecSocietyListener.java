@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.constant.RecRoleEnum;
 import com.poho.stuup.dao.StudentMapper;
+import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.ExcelError;
 import com.poho.stuup.model.excel.RecSocietyExcel;
 import com.poho.stuup.service.RecSocietyService;
@@ -15,7 +16,9 @@ import com.poho.stuup.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author BUNGA
@@ -25,18 +28,25 @@ import java.util.List;
 @Slf4j
 public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
 
+    private final long batchCode;
+    private final Map<String, Object> params;
+    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecSocietyService recSocietyService;
-    private final long batchCode;
 
-    public List<ExcelError> errors = new ArrayList<>();
+    //================================================================
 
     public int total, success, fail;
+    public List<ExcelError> errors = new ArrayList<>();
+    private final Map<String, Long> studentMap = new HashMap<>();
+    private final List<RecSocietyExcel> recSocietyExcels = new ArrayList<>();
 
-    public RecSocietyListener(StudentMapper studentMapper, RecSocietyService recSocietyService, long batchCode) {
+    public RecSocietyListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecSocietyService recSocietyService) {
+        this.batchCode = batchCode;
+        this.params = params;
+        this.growthItem = growthItem;
         this.studentMapper = studentMapper;
         this.recSocietyService = recSocietyService;
-        this.batchCode = batchCode;
     }
 
     @Override
@@ -44,16 +54,21 @@ public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
         total++;
         Integer rowIndex = context.readRowHolder().getRowIndex();
         List<String> errorMessages = new ArrayList<>();
-        if (StrUtil.isBlank(data.getStudentNo())) {
+        String studentNo = data.getStudentNo();
+        if (StrUtil.isBlank(studentNo)) {
             errorMessages.add("学号不能为空");
         }
         if (StrUtil.isBlank(data.getStudentName())) {
             errorMessages.add("姓名不能为空");
         }
-        Long studentId = studentMapper.findStudentId(data.getStudentNo());
+        Long studentId = studentMap.get(studentNo);
+        if (studentId == null) {
+            studentId = studentMapper.findStudentId(studentNo);
+        }
         if (studentId == null) {
             errorMessages.add("该学生不存在");
         } else {
+            studentMap.put(studentNo, studentId);
             data.setStudentId(studentId);
         }
         if (StrUtil.isBlank(data.getName())) {
@@ -87,20 +102,17 @@ public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
 
         if (CollUtil.isEmpty(errorMessages)) {
             log.info("==========解析到一条数据:{}", JSON.toJSONString(data));
-            data.setBatchCode(batchCode);
-            boolean flag = recSocietyService.saveData(data);
-            if (flag) {
-                success++;
-            } else {
-                fail++;
-            }
+            success++;
+            recSocietyExcels.add(data);
         } else {
+            fail++;
             this.errors.add(ExcelError.builder().lineNum(rowIndex).errors(JSON.toJSONString(errorMessages)).build());
         }
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
+        recSocietyService.saveRecSocietyExcel(batchCode, growthItem, recSocietyExcels, params);
         log.info("==========导入已完成！==========");
     }
 }

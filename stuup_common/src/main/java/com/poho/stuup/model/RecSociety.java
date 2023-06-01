@@ -36,6 +36,11 @@ public class RecSociety implements Serializable {
     private Long yearId;
 
     /**
+     * 项目id
+     */
+    private Long growId;
+
+    /**
      * 学生id
      */
     private Long studentId;

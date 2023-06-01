@@ -4,13 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.RecMilitary">
-        <id column="id" property="id" />
-        <result column="year_id" property="yearId" />
-        <result column="student_id" property="studentId" />
-        <result column="level" property="level" />
-        <result column="excellent" property="excellent" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <id column="id" property="id"/>
+        <result column="year_id" property="yearId"/>
+        <result column="grow_id" property="growId"/>
+        <result column="student_id" property="studentId"/>
+        <result column="level" property="level"/>
+        <result column="excellent" property="excellent"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
 </mapper>

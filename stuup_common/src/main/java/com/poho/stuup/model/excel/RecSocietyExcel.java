@@ -35,12 +35,4 @@ public class RecSocietyExcel {
     @JsonIgnore
     private Long studentId;
 
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
-
 }

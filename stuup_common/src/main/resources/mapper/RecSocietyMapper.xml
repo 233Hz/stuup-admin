@@ -4,16 +4,81 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.RecSociety">
-        <id column="id" property="id" />
-        <result column="year_id" property="yearId" />
-        <result column="student_id" property="studentId" />
-        <result column="name" property="name" />
-        <result column="level" property="level" />
-        <result column="start_time" property="startTime" />
-        <result column="end_time" property="endTime" />
-        <result column="role" property="role" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <id column="id" property="id"/>
+        <result column="year_id" property="yearId"/>
+        <result column="grow_id" property="growId"/>
+        <result column="student_id" property="studentId"/>
+        <result column="name" property="name"/>
+        <result column="level" property="level"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="role" property="role"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
+    <resultMap id="RecSocietyVOMap" type="com.poho.stuup.model.vo.RecSocietyVO">
+        <id column="id" property="id"/>
+        <result column="year_name" property="yearName"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="class_name" property="className"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="id_card" property="idCard"/>
+        <result column="student_id" property="studentId"/>
+        <result column="name" property="name"/>
+        <result column="level" property="level"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="role" property="role"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="getRecSocietyPage" resultMap="RecSocietyVOMap">
+        select rs.id,
+        y.year_name,
+        g.grade_name,
+        c.name as class_name,
+        s.name as student_name,
+        s.student_no,
+        s.id_card,
+        s.id as student_id,
+        rs.name,
+        rs.level,
+        rs.start_time,
+        rs.end_time,
+        rs.role,
+        rs.create_time
+        from t_rec_society rs
+        left join t_student s on s.id = rs.student_id
+        left join t_year y on y.oid = rs.year_id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_class c on c.id = s.class_id
+        <where>
+            <if test="query.yearId != null and query.yearId != ''">
+                and y.oid = #{query.yearId}
+            </if>
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                and c.name like concat('%',#{query.className},'%')
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%',#{query.studentName},'%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%',#{query.studentNo},'%')
+            </if>
+            <if test="query.name != null and query.name != ''">
+                and rs.name like concat('%',#{query.name},'%')
+            </if>
+            <if test="query.level != null and query.level != ''">
+                and rs.level = #{query.level}
+            </if>
+            <if test="query.role != null and query.role != ''">
+                and rs.role = #{query.role}
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -11,16 +11,16 @@ import java.util.Date;
 
 /**
  * <p>
- * 参加国防民防项目记录填报
+ * 项目记录日志
  * </p>
  *
  * @author BUNGA
- * @since 2023-05-25
+ * @since 2023-06-01
  */
 @Getter
 @Setter
-@TableName("t_rec_nation")
-public class RecNation implements Serializable {
+@TableName("t_rec_log")
+public class RecLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,34 +36,14 @@ public class RecNation implements Serializable {
     private Long yearId;
 
     /**
-     * 项目id
+     * 成长项目id
      */
     private Long growId;
 
     /**
-     * 学生id
+     * 创建人
      */
-    private Long studentId;
-
-    /**
-     * 项目名称
-     */
-    private String name;
-
-    /**
-     * 获奖级别
-     */
-    private Integer level;
-
-    /**
-     * 组织机构（主办方）
-     */
-    private String org;
-
-    /**
-     * 累计时间（课时）
-     */
-    private Integer hour;
+    private Long createUser;
 
     /**
      * 创建时间
@@ -79,5 +59,6 @@ public class RecNation implements Serializable {
      * 每次导入的code（当前导入的时间戳）
      */
     private Long batchCode;
+
 
 }
