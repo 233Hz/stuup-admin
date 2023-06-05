@@ -36,6 +36,8 @@ public class GrowthItemController {
     @GetMapping("/page")
     public ResponseModel<Page<GrowthItem>> getPage(Page<GrowthItem> page, GrowthItem growthItem) {
         return ResponseModel.ok(growthItemService.page(page, Wrappers.<GrowthItem>lambdaQuery()
+                .eq(growthItem.getFirstLevelId() != null, GrowthItem::getFirstLevelId, growthItem.getFirstLevelId())
+                .eq(growthItem.getSecondLevelId() != null, GrowthItem::getSecondLevelId, growthItem.getSecondLevelId())
                 .eq(growthItem.getThreeLevelId() != null, GrowthItem::getThreeLevelId, growthItem.getThreeLevelId())
                 .like(StrUtil.isNotEmpty(growthItem.getName()), GrowthItem::getName, growthItem.getName())
                 .eq(growthItem.getCalculateType() != null, GrowthItem::getCalculateType, growthItem.getCalculateType())));
@@ -44,15 +46,14 @@ public class GrowthItemController {
     @PostMapping("/saveOrUpdate")
     public ResponseModel<Long> saveOrUpdateGrowthItem(@Valid @RequestBody GrowthItem data) {
         Long id = data.getId();
-        String name = data.getName();
         String code = data.getCode();
         if (id == null) {
-            boolean exist = growthItemService.isExist(name, code);
+            boolean exist = growthItemService.isExist(code);
             if (exist) return ResponseModel.failed("该成长项名称或者编号已存在，请修改后重试！");
             String userId = ProjectUtil.obtainLoginUser(request);
             data.setCreateUser(Long.parseLong(userId));
         } else {
-            boolean exist = growthItemService.isExist(id, name, data.getCode());
+            boolean exist = growthItemService.isExist(id, code);
             if (exist) return ResponseModel.failed("该成长项名称或者编号已存在，请修改后重试！");
         }
         if (PeriodEnum.UNLIMITED.getValue() != data.getFillPeriod()) {

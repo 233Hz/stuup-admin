@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.constant.RecRoleEnum;
+import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecSocietyMapper;
 import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.RecLog;
 import com.poho.stuup.model.RecSociety;
 import com.poho.stuup.model.Year;
 import com.poho.stuup.model.dto.RecSocietyDTO;
@@ -41,14 +43,18 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
     @Resource
     private RecScoreService recScoreService;
 
+    @Resource
+    private RecLogMapper recLogMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveRecSocietyExcel(long batchCode, GrowthItem growthItem, List<RecSocietyExcel> excels, Map<String, Object> params) {
-        Year year = yearMapper.findCurrYear();
+        String userId = (String) params.get("userId");
+        Year currYear = yearMapper.findCurrYear();
         //=================保存数据=================
         List<RecSociety> recSocieties = excels.stream().map(excel -> {
             RecSociety recSociety = new RecSociety();
-            recSociety.setYearId(year.getOid());
+            recSociety.setYearId(currYear.getOid());
             recSociety.setGrowId(growthItem.getId());
             recSociety.setStudentId(excel.getStudentId());
             recSociety.setName(excel.getName());
@@ -60,9 +66,16 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
             return recSociety;
         }).collect(Collectors.toList());
         this.saveBatch(recSocieties);
+        // 插入一条导入日志
+        RecLog recLog = new RecLog();
+        recLog.setGrowId(growthItem.getId());
+        recLog.setYearId(currYear.getOid());
+        recLog.setCreateUser(Long.valueOf(userId));
+        recLog.setBatchCode(batchCode);
+        recLogMapper.insert(recLog);
         // 计算学生成长积分
         List<Long> studentIds = recSocieties.stream().map(RecSociety::getStudentId).collect(Collectors.toList());
-        recScoreService.calculateScore(studentIds, growthItem);
+        recScoreService.calculateScore(studentIds, currYear.getOid(), growthItem);
     }
 
     @Override

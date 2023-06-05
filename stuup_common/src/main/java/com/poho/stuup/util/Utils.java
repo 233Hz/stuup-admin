@@ -9,39 +9,52 @@ import com.poho.stuup.model.dto.TimePeriod;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Slf4j
 @UtilityClass
 public class Utils {
 
+    private static final String NUMBER_PATTERN = "\\d+";
+    private static final String DATE_PATTERN = "^\\d{4}-\\d{2}-\\d{2}$";
+    private static final String DATE_TIME_PATTERN = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$";
+
+
     // 验证字符串日期格式为yyyy-MM-dd
     public boolean isDate(String date) {
-        if (StrUtil.isBlank(date)) return false;
-        String regex = "\\d{4}-\\d{2}-\\d{2}";
-
-        if (!date.matches(regex)) {
-            return false; // 格式不正确
-        }
-
         try {
-            LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
-            return true; // 日期有效
-        } catch (DateTimeParseException e) {
-            return false; // 日期无效
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            formatter.setLenient(false);
+            formatter.parse(date);
+            Pattern pattern = Pattern.compile(DATE_PATTERN);
+            return pattern.matcher(date).matches();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // 验证字符串日期格式为yyyy-MM-dd HH:mm:ss
+    public boolean isDateTime(String dateTime) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            formatter.setLenient(false);
+            formatter.parse(dateTime);
+            Pattern pattern = Pattern.compile(DATE_TIME_PATTERN);
+            return pattern.matcher(dateTime).matches();
+        } catch (Exception e) {
+            return false;
         }
     }
 
     // 验证字符串是否为数字
     public boolean isNumber(String number) {
         if (StrUtil.isBlank(number)) return false;
-        return number.matches("\\d+");
+        return number.matches(NUMBER_PATTERN);
     }
 
     /**

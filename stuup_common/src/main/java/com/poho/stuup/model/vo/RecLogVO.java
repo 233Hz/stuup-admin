@@ -11,12 +11,17 @@ import java.util.Date;
  */
 
 @Data
-public class GrowRecordVO {
+public class RecLogVO {
 
     /**
      * 标记
      */
     private Long id;
+
+    /**
+     * 学年
+     */
+    private String yearName;
 
     /**
      * 一级名称
@@ -39,13 +44,15 @@ public class GrowRecordVO {
     private String growName;
 
     /**
+     * 创建人
+     */
+    private String createUser;
+
+    /**
      * 导入时间
      */
     private Date createTime;
 
-    /**
-     * 创建人
-     */
-    private String createUser;
+    private Long batchCode;
 
 }

@@ -33,7 +33,7 @@ public interface GrowthItemService extends IService<GrowthItem> {
      * @author BUNGA
      * @date: 2023/5/29 16:27
      */
-    boolean isExist(String name, String code);
+    boolean isExist(String code);
 
     /**
      * @description: 判断名称和编号是否重复
@@ -44,7 +44,7 @@ public interface GrowthItemService extends IService<GrowthItem> {
      * @author BUNGA
      * @date: 2023/5/29 17:48
      */
-    boolean isExist(Long id, String name, String code);
+    boolean isExist(Long id, String code);
 
     /**
      * @description: 通过code查询成长项

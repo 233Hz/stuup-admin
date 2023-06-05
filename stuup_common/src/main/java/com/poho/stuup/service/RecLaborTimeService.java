@@ -1,9 +1,13 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecLaborTime;
+import com.poho.stuup.model.dto.RecLaborTimeDTO;
 import com.poho.stuup.model.excel.RecLaborTimeExcel;
+import com.poho.stuup.model.vo.RecLaborTimeVO;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +33,14 @@ public interface RecLaborTimeService extends IService<RecLaborTime> {
      * @date: 2023/6/1 14:15
      */
     void saveRecLaborTimeExcel(long batchCode, GrowthItem growthItem, List<RecLaborTimeExcel> excels, Map<String, Object> params);
+
+    /**
+     * @description: 分页查询
+     * @param: page
+     * @param: query
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.RecLaborTimeVO>
+     * @author BUNGA
+     * @date: 2023/6/2 13:59
+     */
+    IPage<RecLaborTimeVO> getRecLaborTimePage(Page<RecLaborTimeVO> page, RecLaborTimeDTO query);
 }

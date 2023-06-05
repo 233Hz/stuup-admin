@@ -1,8 +1,7 @@
 package com.poho.stuup.model.dto;
 
-import lombok.Data;
 
-import java.time.LocalDate;
+import lombok.Data;
 
 /**
  * @author BUNGA
@@ -60,10 +59,10 @@ public class RecScoreDTO {
     /**
      * 开始时间
      */
-    private LocalDate startTime;
+    private String startTime;
 
     /**
      * 结束时间
      */
-    private LocalDate endTime;
+    private String endTime;
 }

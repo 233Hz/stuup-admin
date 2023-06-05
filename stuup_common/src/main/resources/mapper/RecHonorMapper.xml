@@ -43,7 +43,6 @@
         s.id as student_id,
         rh.name,
         rh.level,
-        rh.level,
         rh.time,
         rh.create_time
         from t_rec_honor rh

@@ -1,9 +1,13 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecCaucus;
+import com.poho.stuup.model.dto.RecCaucusDTO;
 import com.poho.stuup.model.excel.RecCaucusExcel;
+import com.poho.stuup.model.vo.RecCaucusVO;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +33,14 @@ public interface RecCaucusService extends IService<RecCaucus> {
      * @date: 2023/6/1 14:08
      */
     void saveRecCaucusExcel(long batchCode, GrowthItem growthItem, List<RecCaucusExcel> excels, Map<String, Object> params);
+
+    /**
+     * @description: 分页查询
+     * @param: page
+     * @param: query
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.RecCaucusVO>
+     * @author BUNGA
+     * @date: 2023/6/2 13:33
+     */
+    IPage<RecCaucusVO> getRecCaucusPage(Page<RecCaucusVO> page, RecCaucusDTO query);
 }

@@ -8,6 +8,7 @@ import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecHonorListener;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.RecHonorExcel;
+import com.poho.stuup.model.vo.RecLogDetailsVO;
 import com.poho.stuup.service.RecHonorService;
 import com.poho.stuup.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +43,14 @@ public class RecHonorHandle implements RecExcelHandle {
             if (CollUtil.isNotEmpty(recHonorListener.errors)) {
                 return ResponseModel.ok(recHonorListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recHonorListener.total, recHonorListener.success, recHonorListener.fail));
             }
-            return ResponseModel.ok("导入成功");
+            return ResponseModel.ok(null, "导入成功");
         } catch (IOException e) {
             return ResponseModel.failed("导入失败");
         }
+    }
+
+    @Override
+    public <T, K> RecLogDetailsVO<T, K> getImportRec(Long batchCode) {
+        return null;
     }
 }

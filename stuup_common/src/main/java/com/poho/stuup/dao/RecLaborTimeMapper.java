@@ -1,8 +1,13 @@
 package com.poho.stuup.dao;
 
-import com.poho.stuup.model.RecLaborTime;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.poho.stuup.model.RecLaborTime;
+import com.poho.stuup.model.dto.RecLaborTimeDTO;
+import com.poho.stuup.model.vo.RecLaborTimeVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -15,4 +20,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RecLaborTimeMapper extends BaseMapper<RecLaborTime> {
 
+    IPage<RecLaborTimeVO> getRecLaborTimePage(Page<RecLaborTimeVO> page, @Param("query") RecLaborTimeDTO query);
 }

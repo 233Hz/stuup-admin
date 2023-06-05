@@ -1,16 +1,14 @@
 package com.poho.stuup.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.dao.RecDefaultMapper;
+import com.poho.stuup.dao.RecLogMapper;
+import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecDefault;
-import com.poho.stuup.model.dto.GrowSearchDTO;
-import com.poho.stuup.model.dto.RecDefaultDTO;
+import com.poho.stuup.model.RecLog;
+import com.poho.stuup.model.Year;
 import com.poho.stuup.model.excel.RecDefaultExcel;
-import com.poho.stuup.model.vo.GrowRecordVO;
-import com.poho.stuup.model.vo.RecDefaultVO;
 import com.poho.stuup.service.RecDefaultService;
 import com.poho.stuup.service.RecScoreService;
 import org.springframework.stereotype.Service;
@@ -32,38 +30,42 @@ import java.util.stream.Collectors;
 @Service
 public class RecDefaultServiceImpl extends ServiceImpl<RecDefaultMapper, RecDefault> implements RecDefaultService {
 
+    @Resource
+    private YearMapper yearMapper;
 
     @Resource
     private RecScoreService recScoreService;
+
+    @Resource
+    private RecLogMapper recLogMapper;
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveRecDefaultExcel(long batchCode, GrowthItem growthItem, List<RecDefaultExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
+        Year currYear = yearMapper.findCurrYear();
         // 保存导入记录
         List<RecDefault> recDefaults = excels.stream().map(excel -> {
             RecDefault recDefault = new RecDefault();
             recDefault.setStudentId(excel.getStudentId());
+            recDefault.setYearId(currYear.getOid());
             recDefault.setGrowId(growthItem.getId());
             recDefault.setRemark(excel.getRemark());
-            recDefault.setCreateUser(Long.valueOf(userId));
             recDefault.setBatchCode(batchCode);
             return recDefault;
         }).collect(Collectors.toList());
         this.saveBatch(recDefaults);
+        // 插入一条导入日志
+        RecLog recLog = new RecLog();
+        recLog.setGrowId(growthItem.getId());
+        recLog.setYearId(currYear.getOid());
+        recLog.setCreateUser(Long.valueOf(userId));
+        recLog.setBatchCode(batchCode);
+        recLogMapper.insert(recLog);
         // 计算学生成长积分
         List<Long> studentIds = recDefaults.stream().map(RecDefault::getStudentId).collect(Collectors.toList());
-        recScoreService.calculateScore(studentIds, growthItem);
+        recScoreService.calculateScore(studentIds, currYear.getOid(), growthItem);
     }
 
-    @Override
-    public IPage<GrowRecordVO> growthRecordPage(Page page, GrowSearchDTO query) {
-        return baseMapper.growthRecordPage(page, query);
-    }
-
-    @Override
-    public List<RecDefaultVO> growthRecordDetails(RecDefaultDTO query) {
-        return baseMapper.growthRecordDetails(query);
-    }
 }

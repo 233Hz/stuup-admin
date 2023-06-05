@@ -31,6 +31,11 @@ public class RecDefault implements Serializable {
     private Long id;
 
     /**
+     * 年份id
+     */
+    private Long yearId;
+
+    /**
      * 成长项目id（t_growth_item表）
      */
     private Long growId;
@@ -44,11 +49,6 @@ public class RecDefault implements Serializable {
      * 备注
      */
     private String remark;
-
-    /**
-     * 创建人
-     */
-    private Long createUser;
 
     /**
      * 创建时间

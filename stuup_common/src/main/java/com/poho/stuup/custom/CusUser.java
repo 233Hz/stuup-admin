@@ -20,6 +20,8 @@ public class CusUser {
     private String degree;
     private String roleIds;
 
+    private Long yearId;
+
     public CusUser() {
 
     }
@@ -121,5 +123,11 @@ public class CusUser {
         this.roleIds = roleIds;
     }
 
+    public Long getYearId() {
+        return yearId;
+    }
 
+    public void setYearId(Long yearId) {
+        this.yearId = yearId;
+    }
 }

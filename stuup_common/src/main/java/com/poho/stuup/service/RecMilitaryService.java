@@ -1,9 +1,13 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecMilitary;
+import com.poho.stuup.model.dto.RecMilitaryDTO;
 import com.poho.stuup.model.excel.RecMilitaryExcel;
+import com.poho.stuup.model.vo.RecMilitaryVO;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +33,14 @@ public interface RecMilitaryService extends IService<RecMilitary> {
      * @date: 2023/6/1 14:28
      */
     void saveRecMilitaryExcel(long batchCode, GrowthItem growthItem, List<RecMilitaryExcel> excels, Map<String, Object> params);
+
+    /**
+     * @description: 分页查询
+     * @param: page
+     * @param: query
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.RecMilitaryVO>
+     * @author BUNGA
+     * @date: 2023/6/2 13:47
+     */
+    IPage<RecMilitaryVO> getRecMilitaryPage(Page<RecMilitaryVO> page, RecMilitaryDTO query);
 }

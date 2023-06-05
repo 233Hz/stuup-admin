@@ -106,7 +106,6 @@ public class GrowthItem implements Serializable {
     @NotNull(message = "请选择所属项目")
     private Long firstLevelId;
 
-
     /**
      * 二级项目id
      */

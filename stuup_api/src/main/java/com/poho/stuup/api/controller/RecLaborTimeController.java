@@ -1,10 +1,10 @@
 package com.poho.stuup.api.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.model.RecLaborTime;
+import com.poho.stuup.model.dto.RecLaborTimeDTO;
+import com.poho.stuup.model.vo.RecLaborTimeVO;
 import com.poho.stuup.service.RecLaborTimeService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +27,9 @@ public class RecLaborTimeController {
     @Resource
     private RecLaborTimeService recLaborTimeService;
 
-
     @GetMapping("/page")
-    public ResponseModel<IPage<RecLaborTime>> getRecLaborTimePage(Page<RecLaborTime> page, RecLaborTime query) {
-        return ResponseModel.ok(recLaborTimeService.page(page, Wrappers.<RecLaborTime>lambdaQuery()
-                .gt(query.getHours() != null, RecLaborTime::getHours, query.getHours())));
+    public ResponseModel<IPage<RecLaborTimeVO>> getRecLaborTimePage(Page<RecLaborTimeVO> page, RecLaborTimeDTO query) {
+        return ResponseModel.ok(recLaborTimeService.getRecLaborTimePage(page, query));
     }
 
 }

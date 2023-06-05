@@ -37,18 +37,16 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
     }
 
     @Override
-    public boolean isExist(String name, String code) {
+    public boolean isExist(String code) {
         return baseMapper.exists(Wrappers.<GrowthItem>lambdaQuery()
-                .eq(GrowthItem::getName, name)
-                .or()
                 .eq(GrowthItem::getCode, code));
     }
 
     @Override
-    public boolean isExist(Long id, String name, String code) {
+    public boolean isExist(Long id, String code) {
         return baseMapper.exists(Wrappers.<GrowthItem>lambdaQuery()
                 .ne(GrowthItem::getId, id)
-                .and(queryWrapper -> queryWrapper.eq(GrowthItem::getName, name).or().eq(GrowthItem::getCode, code)));
+                .eq(GrowthItem::getCode, code));
     }
 
     @Override

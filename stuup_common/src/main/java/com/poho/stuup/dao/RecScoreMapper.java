@@ -5,7 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.dto.RecScoreDTO;
+import com.poho.stuup.model.dto.SchoolClaRankDTO;
+import com.poho.stuup.model.dto.SchoolStuRankDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
+import com.poho.stuup.model.vo.SchoolClaRankVO;
+import com.poho.stuup.model.vo.SchoolStuRankVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,4 +38,7 @@ public interface RecScoreMapper extends BaseMapper<RecScore> {
      */
     List<RecScore> findTimePeriodRecord(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
+    IPage<SchoolStuRankVO> getSchoolStuRank(Page<SchoolStuRankVO> page, @Param("query") SchoolStuRankDTO query);
+
+    IPage<SchoolClaRankVO> getSchoolClaRank(Page<SchoolClaRankVO> page, SchoolClaRankDTO query);
 }

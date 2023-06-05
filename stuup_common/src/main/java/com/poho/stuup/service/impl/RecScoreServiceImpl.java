@@ -12,8 +12,12 @@ import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.Year;
 import com.poho.stuup.model.dto.RecScoreDTO;
+import com.poho.stuup.model.dto.SchoolClaRankDTO;
+import com.poho.stuup.model.dto.SchoolStuRankDTO;
 import com.poho.stuup.model.dto.TimePeriod;
 import com.poho.stuup.model.vo.RecScoreVO;
+import com.poho.stuup.model.vo.SchoolClaRankVO;
+import com.poho.stuup.model.vo.SchoolStuRankVO;
 import com.poho.stuup.service.RecScoreService;
 import com.poho.stuup.service.StuScoreService;
 import com.poho.stuup.util.Utils;
@@ -51,8 +55,7 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
     }
 
     @Override
-    public void calculateScore(List<Long> studentIds, GrowthItem growthItem) {
-        Year currYear = yearMapper.findCurrYear();
+    public void calculateScore(List<Long> studentIds, Long yearId, GrowthItem growthItem) {
         List<Long> allStudentIds = studentMapper.selectIdList();
         Integer calculateType = growthItem.getCalculateType();
         List<Long> recordStudentIds;
@@ -80,7 +83,7 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
                 recScore.setStudentId(studentId);
                 recScore.setGrowId(growthItem.getId());
                 recScore.setScore(score);
-                recScore.setYearId(currYear.getOid());
+                recScore.setYearId(yearId);
                 // 溢出积分 = （学生当前项目总积分 + 项目单次可获得积分） - 项目积分上限
                 int overflowScore = Math.max((currentScore + score) - scoreUpperLimit, 0); //计算溢出分数
                 // 有效积分
@@ -109,7 +112,7 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
                 recScore.setStudentId(studentId);
                 recScore.setGrowId(growthItem.getId());
                 recScore.setScore(growthItem.getScore());
-                recScore.setYearId(currYear.getOid());
+                recScore.setYearId(yearId);
                 this.save(recScore);
                 stuScoreService.updateTotalScore(studentId, growthItem.getScore());
             });
@@ -120,6 +123,28 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
     public Map<Long, Integer> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime) {
         List<RecScore> recScores = baseMapper.findTimePeriodRecord(growthId, startTime, endTime);
         return recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.summingInt(RecScore::getScore)));
+    }
+
+    @Override
+    public IPage<SchoolStuRankVO> getSchoolStuRank(Page<SchoolStuRankVO> page, SchoolStuRankDTO query) {
+        Year year = yearMapper.selectByPrimaryKey(query.getYearId());
+        IPage<SchoolStuRankVO> schoolStuRankPage = baseMapper.getSchoolStuRank(page, query);
+        List<SchoolStuRankVO> records = schoolStuRankPage.getRecords();
+        records.forEach(record -> {
+            record.setYearName(year.getYearName());
+        });
+        return schoolStuRankPage;
+    }
+
+    @Override
+    public IPage<SchoolClaRankVO> getSchoolClaRank(Page<SchoolClaRankVO> page, SchoolClaRankDTO query) {
+        Year year = yearMapper.selectByPrimaryKey(query.getYearId());
+        IPage<SchoolClaRankVO> schoolClaRankPage = baseMapper.getSchoolClaRank(page, query);
+        List<SchoolClaRankVO> records = schoolClaRankPage.getRecords();
+        records.forEach(record -> {
+            record.setYearName(year.getYearName());
+        });
+        return schoolClaRankPage;
     }
 
 

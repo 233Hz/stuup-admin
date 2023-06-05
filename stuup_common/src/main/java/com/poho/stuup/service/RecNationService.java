@@ -1,9 +1,13 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecNation;
+import com.poho.stuup.model.dto.RecNationDTO;
 import com.poho.stuup.model.excel.RecNationExcel;
+import com.poho.stuup.model.vo.RecNationVO;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +33,14 @@ public interface RecNationService extends IService<RecNation> {
      * @date: 2023/6/1 14:32
      */
     void saveRecNationExcel(long batchCode, GrowthItem growthItem, List<RecNationExcel> excels, Map<String, Object> params);
+
+    /**
+     * @description: 分页查询
+     * @param: page
+     * @param: query
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.RecNationVO>
+     * @author BUNGA
+     * @date: 2023/6/2 13:41
+     */
+    IPage<RecNationVO> getRecNationPage(Page<RecNationVO> page, RecNationDTO query);
 }

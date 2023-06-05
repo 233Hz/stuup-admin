@@ -4,13 +4,65 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.RecLog">
-        <id column="id" property="id" />
-        <result column="year_id" property="yearId" />
-        <result column="grow_id" property="growId" />
-        <result column="create_user" property="createUser" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="batch_code" property="batchCode" />
+        <id column="id" property="id"/>
+        <result column="year_id" property="yearId"/>
+        <result column="grow_id" property="growId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="batch_code" property="batchCode"/>
     </resultMap>
+
+    <resultMap id="RecLogVOMap" type="com.poho.stuup.model.vo.RecLogVO">
+        <id column="id" property="id"/>
+        <result column="first_level_name" property="firstLevelName"/>
+        <result column="second_level_name" property="secondLevelName"/>
+        <result column="three_level_name" property="threeLevelName"/>
+        <result column="grow_name" property="growName"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="batch_code" property="batchCode"/>
+    </resultMap>
+
+
+    <select id="getRecLogPage" resultMap="RecLogVOMap">
+        select rl.id,
+        y.year_name,
+        first.name as first_level_name,
+        second.name as second_level_name,
+        three.name as three_level_name,
+        gi.name as grow_name,
+        u.user_name as create_user,
+        rl.create_time,
+        rl.batch_code
+        from t_rec_log rl
+        left join t_growth_item gi on gi.id = rl.grow_id
+        left join t_growth first on first.id = gi.first_level_id
+        left join t_growth second on second.id = gi.second_level_id
+        left join t_growth three on three.id = gi.three_level_id
+        left join t_year y on y.oid = rl.year_id
+        left join t_user u on u.oid = rl.create_user
+        <where>
+            <if test="query.yearId != null and query.yearId != ''">
+                and y.oid = #{query.yearId}
+            </if>
+            <if test="query.firstLevelId != null and query.firstLevelId != ''">
+                and gi.first_level_id = #{query.firstLevelId}
+            </if>
+            <if test="query.secondLevelId != null and query.secondLevelId != ''">
+                and gi.second_level_id = #{query.secondLevelId}
+            </if>
+            <if test="query.threeLevelId != null and query.threeLevelId != ''">
+                and gi.three_level_id = #{query.threeLevelId}
+            </if>
+            <if test="query.growName != null and query.growName != ''">
+                and gi.name like concat('%',#{query.growName},'%')
+            </if>
+            <if test="query.userId != null and query.userId != ''">
+                and rl.create_user = #{query.userId}
+            </if>
+        </where>
+        order by rl.create_time
+    </select>
 
 </mapper>

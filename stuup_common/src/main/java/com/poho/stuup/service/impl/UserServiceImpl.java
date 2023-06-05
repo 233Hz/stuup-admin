@@ -41,6 +41,9 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private DeptMapper deptMapper;
 
+    @Resource
+    private YearMapper yearMapper;
+
     @Override
     public int deleteByPrimaryKey(Long oid) {
         return userMapper.deleteByPrimaryKey(oid);
@@ -76,8 +79,8 @@ public class UserServiceImpl implements IUserService {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
         model.setMessage("账号或密码错误");
-        if(StrUtil.isBlank(loginName)){
-           return model;
+        if (StrUtil.isBlank(loginName)) {
+            return model;
         }
         Map<String, Object> map = new HashMap<>();
         map.put("loginName", loginName);
@@ -89,6 +92,7 @@ public class UserServiceImpl implements IUserService {
                     map.put("userId", user.getOid());
                     List<Long> roleIds = userRoleMapper.queryUserRoles(map);
                     if (MicrovanUtil.isNotEmpty(roleIds)) {
+                        Year currYear = yearMapper.findCurrYear();
                         CusUser cusUser = new CusUser();
                         cusUser.setUserId(user.getOid());
                         cusUser.setLoginName(user.getLoginName());
@@ -97,6 +101,7 @@ public class UserServiceImpl implements IUserService {
                         cusUser.setDeptId(user.getDeptId());
                         cusUser.setUserType(user.getUserType());
                         cusUser.setRoleIds(ProjectUtil.splitListUseComma(roleIds));
+                        cusUser.setYearId(currYear.getOid());
                         model.setCode(CommonConstants.CODE_SUCCESS);
                         model.setMessage("登录成功");
                         model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));
@@ -270,7 +275,7 @@ public class UserServiceImpl implements IUserService {
             model.setMessage("获取成功");
             CusUser cusUser = ProjectUtil.convertCusUser(user);
             model.setData(cusUser);
-        }  else {
+        } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
             model.setMessage("获取失败，请稍后重试");
         }

@@ -4,13 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.EasyExcel;
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.StudentMapper;
-import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.handle.excel.RecDefaultListener;
 import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.Year;
 import com.poho.stuup.model.excel.RecDefaultExcel;
+import com.poho.stuup.model.vo.RecLogDetailsVO;
 import com.poho.stuup.service.RecDefaultService;
 import com.poho.stuup.util.SpringContextHolder;
 import org.slf4j.Logger;
@@ -42,8 +40,6 @@ public interface RecExcelHandle {
         try {
             StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
             RecDefaultService recDefaultService = SpringContextHolder.getBean(RecDefaultService.class);
-            RecLogMapper recLogMapper = SpringContextHolder.getBean(RecLogMapper.class);
-            YearMapper yearMapper = SpringContextHolder.getBean(YearMapper.class);
             log.info("开始导入");
             long start = System.currentTimeMillis();
             RecDefaultListener recDefaultListener = new RecDefaultListener(start, params, growthItem, studentMapper, recDefaultService);
@@ -54,19 +50,10 @@ public interface RecExcelHandle {
             if (recDefaultListener.total == 0) {
                 return ResponseModel.failed("Excel为空！");
             }
-            Year currYear = yearMapper.findCurrYear();
-            // TODO
-            // 插入一条导入日志
-//            RecLog recLog = new RecLog();
-//            recLog.setGrowId(growId);
-//            recLog.setYearId(currYear.getOid());
-//            recLog.setCreateUser(Long.valueOf(userId));
-//            recLog.setBatchCode(start);
-//            recLogMapper.insert(recLog);
             if (CollUtil.isNotEmpty(recDefaultListener.errors)) {
                 return ResponseModel.ok(recDefaultListener.errors, StrUtil.format("导入成功[总条数：{}，成功：{}，失败：{}]", recDefaultListener.total, recDefaultListener.success, recDefaultListener.fail));
             }
-            return ResponseModel.ok("导入成功");
+            return ResponseModel.ok(null, "导入成功");
         } catch (IOException e) {
             return ResponseModel.failed("导入失败");
         }
@@ -83,4 +70,13 @@ public interface RecExcelHandle {
     default void recExport(HttpServletResponse response, Map<String, Object> params) {
 
     }
+
+    /**
+     * @description: 获取导入记录
+     * @param: batchCode
+     * @return: com.poho.stuup.model.vo.RecLogDetailsVO
+     * @author BUNGA
+     * @date: 2023/6/2 16:40
+     */
+    <T, K> RecLogDetailsVO<T, K> getImportRec(Long batchCode);
 }
