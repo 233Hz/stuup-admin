@@ -128,9 +128,9 @@
         c.name as class_name,
         t.name as class_teacher,
         f.faculty_name,
-        ifnull(sum(rs.score), 0) as score
+        ifnull(sum(trs.score), 0) as score
         from t_student s
-        left join (select * from t_rec_score where year_id = #{query.yearId}) rs ON rs.student_id = s.id
+        left join (select * from t_rec_score where year_id = #{query.yearId}) trs ON trs.student_id = s.id
         left join t_grade g on g.oid = s.grade_id
         left join t_class c on c.id = s.class_id
         left join t_teacher t on t.id = c.teacher_id
@@ -152,7 +152,7 @@
                 and f.oid = #{query.facultyId}
             </if>
         </where>
-        group by id
+        group by s.id
         order by score desc
     </select>
 
@@ -162,10 +162,10 @@
         c.name as class_name,
         t.name as class_teacher,
         f.faculty_name,
-        ifnull(sum(rs.score), 0) as score
+        ifnull(sum(trs.score), 0) as score
         from t_class c
         left join t_student s on s.class_id = c.id
-        left join (select * from t_rec_score where year_id = #{query.yearId}) rs ON rs.student_id = s.id
+        left join (select * from t_rec_score where year_id = #{query.yearId}) trs ON trs.student_id = s.id
         left join t_grade g on g.oid = s.grade_id
         left join t_teacher t on t.id = c.teacher_id
         left join t_faculty f on f.oid = c.faculty_id
@@ -180,7 +180,7 @@
                 and f.oid = #{query.facultyId}
             </if>
         </where>
-        group by id
+        group by s.id
         order by score desc
     </select>
 
