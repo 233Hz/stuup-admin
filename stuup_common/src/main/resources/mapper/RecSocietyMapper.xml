@@ -35,7 +35,7 @@
     </resultMap>
 
     <select id="getRecSocietyPage" resultMap="RecSocietyVOMap">
-        select rs.id,
+        select trs.id,
         y.year_name,
         g.grade_name,
         c.name as class_name,
@@ -43,15 +43,15 @@
         s.student_no,
         s.id_card,
         s.id as student_id,
-        rs.name,
-        rs.level,
-        rs.start_time,
-        rs.end_time,
-        rs.role,
-        rs.create_time
-        from t_rec_society rs
-        left join t_student s on s.id = rs.student_id
-        left join t_year y on y.oid = rs.year_id
+        trs.name,
+        trs.level,
+        trs.start_time,
+        trs.end_time,
+        trs.role,
+        trs.create_time
+        from t_rec_society trs
+        left join t_student s on s.id = trs.student_id
+        left join t_year y on y.oid = trs.year_id
         left join t_grade g on g.oid = s.grade_id
         left join t_class c on c.id = s.class_id
         <where>
@@ -71,13 +71,13 @@
                 and s.student_no like concat('%',#{query.studentNo},'%')
             </if>
             <if test="query.name != null and query.name != ''">
-                and rs.name like concat('%',#{query.name},'%')
+                and trs.name like concat('%',#{query.name},'%')
             </if>
             <if test="query.level != null and query.level != ''">
-                and rs.level = #{query.level}
+                and trs.level = #{query.level}
             </if>
             <if test="query.role != null and query.role != ''">
-                and rs.role = #{query.role}
+                and trs.role = #{query.role}
             </if>
         </where>
     </select>

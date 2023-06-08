@@ -8,10 +8,7 @@ import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecMilitaryMapper;
 import com.poho.stuup.dao.YearMapper;
-import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.RecLog;
-import com.poho.stuup.model.RecMilitary;
-import com.poho.stuup.model.Year;
+import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.RecMilitaryDTO;
 import com.poho.stuup.model.excel.RecMilitaryExcel;
 import com.poho.stuup.model.vo.RecMilitaryVO;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,8 +48,17 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
     public void saveRecMilitaryExcel(long batchCode, GrowthItem growthItem, List<RecMilitaryExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
+        List<RecDefault> recDefaults = new ArrayList<>();
         //=================保存数据=================
         List<RecMilitary> recMilitaries = excels.stream().map(excel -> {
+            RecDefault recDefault = new RecDefault();
+            recDefault.setYearId(currYear.getOid());
+            recDefault.setGrowId(growthItem.getId());
+            recDefault.setStudentId(excel.getStudentId());
+            recDefault.setBatchCode(batchCode);
+            recDefault.setRemark(excel.getRemark());
+            recDefaults.add(recDefault);
+            //===================================================================
             RecMilitary recMilitary = new RecMilitary();
             recMilitary.setYearId(currYear.getOid());
             recMilitary.setGrowId(growthItem.getId());
@@ -70,8 +77,7 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
         // 计算学生成长积分
-        List<Long> studentIds = recMilitaries.stream().map(RecMilitary::getStudentId).collect(Collectors.toList());
-        recScoreService.calculateScore(studentIds, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
     }
 
     @Override

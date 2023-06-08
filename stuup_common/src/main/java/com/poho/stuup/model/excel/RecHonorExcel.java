@@ -28,16 +28,11 @@ public class RecHonorExcel {
     @ExcelProperty(value = "评选时间")
     private String time;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
 
 }

@@ -19,16 +19,11 @@ public class RecLaborTimeExcel {
     @ExcelProperty(value = "累计课时")
     private String hours;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
 
 }

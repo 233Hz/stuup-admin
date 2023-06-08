@@ -30,7 +30,6 @@ public interface IUserService {
     ResponseModel checkLogin(String loginName, String password);
 
     /**
-     *
      * @param key
      * @param state
      * @param pageInt
@@ -40,27 +39,23 @@ public interface IUserService {
     ResponseModel findDataPageResult(String key, String state, int pageInt, int pageSize);
 
     /**
-     *
      * @param user
      * @return
      */
     ResponseModel saveOrUpdate(User user);
 
     /**
-     *
      * @param ids
      * @return
      */
     ResponseModel del(String ids);
 
     /**
-     *
      * @return
      */
     ResponseModel queryList();
 
     /**
-     *
      * @param userId
      * @param params
      * @return
@@ -69,7 +64,6 @@ public interface IUserService {
 
 
     /**
-     *
      * @param oid
      * @param yearId
      * @return
@@ -77,7 +71,6 @@ public interface IUserService {
     ResponseModel findUserData(Long oid, Long yearId);
 
     /**
-     *
      * @param userList
      * @return
      */
@@ -85,8 +78,10 @@ public interface IUserService {
 
     /**
      * 查询用户菜单权限
+     *
      * @param userId 用户id
      * @return
      */
     ResponseModel<List<Menu>> queryUserAuthority(long userId);
+
 }

@@ -8,7 +8,6 @@ import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecSocietyListener;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.RecSocietyExcel;
-import com.poho.stuup.model.vo.RecLogDetailsVO;
 import com.poho.stuup.service.RecSocietyService;
 import com.poho.stuup.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +48,5 @@ public class RecSocietyHandle implements RecExcelHandle {
         }
     }
 
-    @Override
-    public <T, K> RecLogDetailsVO<T, K> getImportRec(Long batchCode) {
-        return null;
-    }
+
 }

@@ -8,10 +8,7 @@ import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.dao.RecCaucusMapper;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.YearMapper;
-import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.RecCaucus;
-import com.poho.stuup.model.RecLog;
-import com.poho.stuup.model.Year;
+import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.RecCaucusDTO;
 import com.poho.stuup.model.excel.RecCaucusExcel;
 import com.poho.stuup.model.vo.RecCaucusVO;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,8 +47,17 @@ public class RecCaucusServiceImpl extends ServiceImpl<RecCaucusMapper, RecCaucus
     public void saveRecCaucusExcel(long batchCode, GrowthItem growthItem, List<RecCaucusExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
+        List<RecDefault> recDefaults = new ArrayList<>();
         //=================保存数据=================
         List<RecCaucus> recCaucuses = excels.stream().map(excel -> {
+            RecDefault recDefault = new RecDefault();
+            recDefault.setYearId(currYear.getOid());
+            recDefault.setGrowId(growthItem.getId());
+            recDefault.setStudentId(excel.getStudentId());
+            recDefault.setBatchCode(batchCode);
+            recDefault.setRemark(excel.getRemark());
+            recDefaults.add(recDefault);
+            //===================================================================
             RecCaucus recCaucus = new RecCaucus();
             recCaucus.setYearId(currYear.getOid());
             recCaucus.setGrowId(growthItem.getId());
@@ -71,8 +78,7 @@ public class RecCaucusServiceImpl extends ServiceImpl<RecCaucusMapper, RecCaucus
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
         // 计算学生成长积分
-        List<Long> studentIds = recCaucuses.stream().map(RecCaucus::getStudentId).collect(Collectors.toList());
-        recScoreService.calculateScore(studentIds, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
     }
 
     @Override

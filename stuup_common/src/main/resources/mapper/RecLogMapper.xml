@@ -15,6 +15,7 @@
 
     <resultMap id="RecLogVOMap" type="com.poho.stuup.model.vo.RecLogVO">
         <id column="id" property="id"/>
+        <result column="year_name" property="yearName"/>
         <result column="first_level_name" property="firstLevelName"/>
         <result column="second_level_name" property="secondLevelName"/>
         <result column="three_level_name" property="threeLevelName"/>
@@ -62,7 +63,7 @@
                 and rl.create_user = #{query.userId}
             </if>
         </where>
-        order by rl.create_time
+        order by rl.create_time desc
     </select>
 
 </mapper>

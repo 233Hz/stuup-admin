@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -95,6 +96,16 @@ public class Utils {
             return false;
         }
         return roleIds.contains(roleId);
+    }
+
+    /**
+     * 判断给定日期是否为月末的一天 * * @param date * @return true:是|false:不是
+     */
+    public static boolean isLastDayOfMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DATE, (calendar.get(Calendar.DATE) + 1));
+        return calendar.get(Calendar.DAY_OF_MONTH) == 1;
     }
 
 }

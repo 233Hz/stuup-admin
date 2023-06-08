@@ -1,8 +1,13 @@
 package com.poho.stuup.model;
 
+import javax.validation.constraints.NotBlank;
+
 public class Config {
+
+    @NotBlank(message = "配置键不能为空")
     private String configKey;
 
+    @NotBlank(message = "配置值不能为空")
     private String configValue;
 
     private String configNote;

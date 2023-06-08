@@ -28,16 +28,12 @@ public class RecNationExcel {
     @ExcelProperty(value = "累计时间（课时）")
     private String hour;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
+    
 
 }

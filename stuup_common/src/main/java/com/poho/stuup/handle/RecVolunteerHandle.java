@@ -8,7 +8,6 @@ import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecVolunteerListener;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.RecVolunteerExcel;
-import com.poho.stuup.model.vo.RecLogDetailsVO;
 import com.poho.stuup.service.RecVolunteerService;
 import com.poho.stuup.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +48,4 @@ public class RecVolunteerHandle implements RecExcelHandle {
         }
     }
 
-    @Override
-    public <T, K> RecLogDetailsVO<T, K> getImportRec(Long batchCode) {
-        return null;
-    }
 }

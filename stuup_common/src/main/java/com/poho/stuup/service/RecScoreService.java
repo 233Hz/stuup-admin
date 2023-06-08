@@ -3,7 +3,9 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.dto.SchoolClaRankDTO;
@@ -44,7 +46,7 @@ public interface RecScoreService extends IService<RecScore> {
      * @author BUNGA
      * @date: 2023/5/29 13:08
      */
-    void calculateScore(List<Long> studentIds, Long yearId, GrowthItem growthItem);
+    void calculateScore(List<RecDefault> recDefaults, Long yearId, GrowthItem growthItem);
 
     /**
      * 查找该时间段内学生获取的分数
@@ -67,4 +69,13 @@ public interface RecScoreService extends IService<RecScore> {
     IPage<SchoolStuRankVO> getSchoolStuRank(Page<SchoolStuRankVO> page, SchoolStuRankDTO query);
 
     IPage<SchoolClaRankVO> getSchoolClaRank(Page<SchoolClaRankVO> page, SchoolClaRankDTO query);
+
+    /**
+     * @description: 计算成长积分
+     * @param: periodEnum
+     * @return: void
+     * @author BUNGA
+     * @date: 2023/6/6 10:30
+     */
+    void calculateScore(PeriodEnum periodEnum);
 }

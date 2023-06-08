@@ -21,10 +21,6 @@ public class RecDefaultExcel {
 
     @ExcelIgnore
     @JsonIgnore
-    private Long growId;
-
-    @ExcelIgnore
-    @JsonIgnore
     private Long studentId;
 
 }

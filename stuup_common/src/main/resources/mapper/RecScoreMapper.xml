@@ -55,7 +55,7 @@
 
     <select id="getRecScorePage" resultMap="RecScoreVOMap">
         select
-        rs.id,
+        trs.id,
         y.year_name,
         first.name as first_level_name,
         second.name as second_level_name,
@@ -66,16 +66,16 @@
         s.name as student_name,
         s.student_no,
         s.id_card,
-        rs.student_id,
-        rs.score,
-        rs.create_time
-        from t_rec_score rs
-        left join t_growth_item gi on gi.id = rs.grow_id
+        trs.student_id,
+        trs.score,
+        trs.create_time
+        from t_rec_score trs
+        left join t_growth_item gi on gi.id = trs.grow_id
         left join t_growth first on first.id = gi.first_level_id
         left join t_growth second on second.id = gi.second_level_id
         left join t_growth three on three.id = gi.three_level_id
-        left join t_student s on s.id = rs.student_id
-        left join t_year y on y.oid = rs.year_id
+        left join t_student s on s.id = trs.student_id
+        left join t_year y on y.oid = trs.year_id
         left join t_grade g on g.oid = s.grade_id
         left join t_class c on c.id = s.class_id
         <where>
@@ -107,10 +107,10 @@
                 and s.student_no like concat('%',#{query.studentNo},'%')
             </if>
             <if test="query.startTime != null and query.endTime != null and query.startTime != '' and query.endTime != '' ">
-                and rs.create_time between #{query.startTime} and #{query.endTime}
+                and trs.create_time between #{query.startTime} and #{query.endTime}
             </if>
         </where>
-        order by rs.create_time
+        order by trs.create_time
     </select>
 
     <select id="findTimePeriodRecord" resultMap="BaseResultMap">
@@ -180,7 +180,7 @@
                 and f.oid = #{query.facultyId}
             </if>
         </where>
-        group by s.id
+        group by c.id
         order by score desc
     </select>
 

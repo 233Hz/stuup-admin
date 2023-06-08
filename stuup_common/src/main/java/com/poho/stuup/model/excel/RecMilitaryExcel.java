@@ -22,16 +22,11 @@ public class RecMilitaryExcel {
     @ExcelProperty(value = "是否优秀")
     private String excellent;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
 
 }

@@ -2,7 +2,12 @@ package com.poho.stuup.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.poho.stuup.model.RecDefault;
+import com.poho.stuup.model.vo.RecLogDetailsVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +20,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RecDefaultMapper extends BaseMapper<RecDefault> {
 
+    List<Long> findGrowStudentRecForTimePeriod(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    List<RecLogDetailsVO> getRecLogDetails(@Param("batchCode") Long batchCode);
 }

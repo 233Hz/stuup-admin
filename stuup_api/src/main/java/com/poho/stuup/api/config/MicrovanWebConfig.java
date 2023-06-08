@@ -32,6 +32,7 @@ public class MicrovanWebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/swagger-resources/**")
                 .excludePathPatterns("/v2/**")
                 .excludePathPatterns("/sync/**")
-                .excludePathPatterns("/csrf");
+                .excludePathPatterns("/csrf")
+                .excludePathPatterns("/manualTask/**");
     }
 }

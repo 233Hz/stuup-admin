@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -42,7 +43,7 @@ public class RecLogController {
     }
 
     @GetMapping("/details/{id}")
-    public ResponseModel<RecLogDetailsVO> getRecLogDetails(@PathVariable("id") Long id) {
+    public ResponseModel<List<RecLogDetailsVO>> getRecLogDetails(@PathVariable("id") Long id) {
         return ResponseModel.ok(recLogService.getRecLogDetails(id));
     }
 

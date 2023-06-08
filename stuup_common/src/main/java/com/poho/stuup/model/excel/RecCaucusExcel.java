@@ -31,16 +31,11 @@ public class RecCaucusExcel {
     @ExcelProperty(value = "角色")
     private String role;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
 
 }

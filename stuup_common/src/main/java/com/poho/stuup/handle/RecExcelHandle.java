@@ -8,7 +8,6 @@ import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecDefaultListener;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.RecDefaultExcel;
-import com.poho.stuup.model.vo.RecLogDetailsVO;
 import com.poho.stuup.service.RecDefaultService;
 import com.poho.stuup.util.SpringContextHolder;
 import org.slf4j.Logger;
@@ -71,12 +70,4 @@ public interface RecExcelHandle {
 
     }
 
-    /**
-     * @description: 获取导入记录
-     * @param: batchCode
-     * @return: com.poho.stuup.model.vo.RecLogDetailsVO
-     * @author BUNGA
-     * @date: 2023/6/2 16:40
-     */
-    <T, K> RecLogDetailsVO<T, K> getImportRec(Long batchCode);
 }

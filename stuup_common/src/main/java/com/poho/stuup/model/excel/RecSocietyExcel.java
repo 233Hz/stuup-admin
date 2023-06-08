@@ -31,6 +31,9 @@ public class RecSocietyExcel {
     @ExcelProperty(value = "角色")
     private String role;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;

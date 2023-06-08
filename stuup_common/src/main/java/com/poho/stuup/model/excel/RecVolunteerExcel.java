@@ -37,16 +37,11 @@ public class RecVolunteerExcel {
     @ExcelProperty(value = "晚填理由")
     private String reason;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Long batchCode;
-
-    @ExcelIgnore
-    @JsonIgnore
-    private Integer rowIndex;
 
 }

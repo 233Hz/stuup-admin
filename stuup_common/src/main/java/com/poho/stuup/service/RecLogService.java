@@ -8,6 +8,8 @@ import com.poho.stuup.model.dto.RecLogDTO;
 import com.poho.stuup.model.vo.RecLogDetailsVO;
 import com.poho.stuup.model.vo.RecLogVO;
 
+import java.util.List;
+
 /**
  * <p>
  * 项目记录日志 服务类
@@ -35,5 +37,5 @@ public interface RecLogService extends IService<RecLog> {
      * @author BUNGA
      * @date: 2023/6/2 16:33
      */
-    RecLogDetailsVO getRecLogDetails(Long id);
+    List<RecLogDetailsVO> getRecLogDetails(Long id);
 }

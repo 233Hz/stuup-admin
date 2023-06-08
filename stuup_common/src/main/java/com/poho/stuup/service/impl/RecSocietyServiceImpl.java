@@ -9,10 +9,7 @@ import com.poho.stuup.constant.RecRoleEnum;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecSocietyMapper;
 import com.poho.stuup.dao.YearMapper;
-import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.RecLog;
-import com.poho.stuup.model.RecSociety;
-import com.poho.stuup.model.Year;
+import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.RecSocietyDTO;
 import com.poho.stuup.model.excel.RecSocietyExcel;
 import com.poho.stuup.model.vo.RecSocietyVO;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,8 +49,17 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
     public void saveRecSocietyExcel(long batchCode, GrowthItem growthItem, List<RecSocietyExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
+        List<RecDefault> recDefaults = new ArrayList<>();
         //=================保存数据=================
         List<RecSociety> recSocieties = excels.stream().map(excel -> {
+            RecDefault recDefault = new RecDefault();
+            recDefault.setYearId(currYear.getOid());
+            recDefault.setGrowId(growthItem.getId());
+            recDefault.setStudentId(excel.getStudentId());
+            recDefault.setBatchCode(batchCode);
+            recDefault.setRemark(excel.getRemark());
+            recDefaults.add(recDefault);
+            //===================================================================
             RecSociety recSociety = new RecSociety();
             recSociety.setYearId(currYear.getOid());
             recSociety.setGrowId(growthItem.getId());
@@ -74,8 +81,7 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
         // 计算学生成长积分
-        List<Long> studentIds = recSocieties.stream().map(RecSociety::getStudentId).collect(Collectors.toList());
-        recScoreService.calculateScore(studentIds, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
     }
 
     @Override
