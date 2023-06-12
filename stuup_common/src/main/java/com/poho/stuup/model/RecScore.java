@@ -51,11 +51,6 @@ public class RecScore implements Serializable {
     private Long yearId;
 
     /**
-     * 获得时所属年级
-     */
-    private Long gradeId;
-
-    /**
      * 获取状态（0.未获取 1.已获取）
      */
     private Integer state;

@@ -29,4 +29,5 @@ public interface RoleMapper extends BaseDao<Role> {
      * @date: 2023/5/30 18:55
      */
     Long findRoleIdByName(@Param("roleName") String roleName);
+
 }

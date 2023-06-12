@@ -11,7 +11,7 @@ import lombok.Getter;
 public enum AnnouncementScopeEnum {
 
     ALL("全体用户", 1),
-    DESIGNATED("指定用户", 2);
+    ALL_TEACHER("全体教师", 2);
 
     private final String scope;
     private final int value;

@@ -47,6 +47,12 @@ public class Announcement implements Serializable {
     private Integer type;
 
     /**
+     * 公告范围
+     */
+    @NotNull(message = "公告范围不能为空")
+    private Integer scope;
+
+    /**
      * 文本类容
      */
     private String content;

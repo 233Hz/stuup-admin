@@ -2,21 +2,23 @@ package com.poho.stuup.model.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * @author BUNGA
  * @description: 全校个人排行榜搜索对象
  * @date 2023/6/2 13:21
  */
 @Data
-public class SchoolStuRankDTO {
+public class ProgressRankDTO {
 
     /**
-     * 学年
+     * 年份
      */
-    @NotNull(message = "学年不能为空")
-    private Long yearId;
+    private Integer year;
+
+    /**
+     * 月份
+     */
+    private Integer month;
 
     /**
      * 学生姓名
@@ -41,6 +43,11 @@ public class SchoolStuRankDTO {
     /**
      * 所属系部
      */
-    private String facultyId;
+    private Long facultyId;
+
+    /**
+     * 所属专业
+     */
+    private Long majorId;
 
 }

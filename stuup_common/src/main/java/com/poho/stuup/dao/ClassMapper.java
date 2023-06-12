@@ -1,8 +1,10 @@
 package com.poho.stuup.dao;
 
+import com.poho.stuup.model.Class;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
-import com.poho.stuup.model.Class;
 
 public interface ClassMapper {
     int deleteByPrimaryKey(Integer id);
@@ -62,21 +64,18 @@ public interface ClassMapper {
     int deleteClass(Map<String, Object> map);
 
     /**
-     *
      * @param map
      * @return
      */
     Class findClassByName(Map<String, Object> map);
 
     /**
-     *
      * @param map
      * @return
      */
     Class checkClass(Map<String, Object> map);
 
     /**
-     *
      * @param classNo
      * @return
      */
@@ -84,8 +83,18 @@ public interface ClassMapper {
 
     /**
      * 根据班主任查询班级
+     *
      * @param teacherId
      * @return
      */
     List<Class> findClassByAdmin(Integer teacherId);
+
+    /**
+     * @description: 获取老师所属的班级id
+     * @param: teacherId    教师id
+     * @return: java.lang.Integer
+     * @author BUNGA
+     * @date: 2023/6/9 10:50
+     */
+    Integer getClassIdForTeacher(@Param("teacherId") Long teacherId);
 }

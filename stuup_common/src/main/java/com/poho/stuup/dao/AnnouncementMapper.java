@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.Announcement;
 import com.poho.stuup.model.dto.AnnouncementDTO;
+import com.poho.stuup.model.vo.AnnouncementVO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -18,5 +19,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AnnouncementMapper extends BaseMapper<Announcement> {
 
-    IPage<Announcement> getAnnouncementMyPage(Page<Announcement> page, AnnouncementDTO query);
+    IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
 }

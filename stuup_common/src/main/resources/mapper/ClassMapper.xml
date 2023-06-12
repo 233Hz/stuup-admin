@@ -286,4 +286,10 @@
                  left join t_major as tm on tc.major_id = tm.oid
         where tc.teacher_id = #{_parameter,jdbcType=INTEGER}
     </select>
+
+    <select id="getClassIdForTeacher" resultType="integer">
+        select id
+        from t_class
+        where teacher_id = #{teacherId}
+    </select>
 </mapper>

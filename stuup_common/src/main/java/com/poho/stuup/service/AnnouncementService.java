@@ -8,6 +8,7 @@ import com.poho.stuup.model.Announcement;
 import com.poho.stuup.model.dto.AnnouncementDTO;
 import com.poho.stuup.model.dto.AnnouncementPremUserDTO;
 import com.poho.stuup.model.vo.AnnouncementPremUserVO;
+import com.poho.stuup.model.vo.AnnouncementVO;
 
 /**
  * <p>
@@ -19,9 +20,10 @@ import com.poho.stuup.model.vo.AnnouncementPremUserVO;
  */
 public interface AnnouncementService extends IService<Announcement> {
 
+    IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
+
     ResponseModel<Boolean> saveOrUpdateAnnouncement(Announcement announcement);
 
     IPage<AnnouncementPremUserVO> getAnnouncementPremUserVO(Page<AnnouncementPremUserVO> page, AnnouncementPremUserDTO query);
 
-    IPage<Announcement> getAnnouncementMyPage(Page<Announcement> page, AnnouncementDTO query);
 }

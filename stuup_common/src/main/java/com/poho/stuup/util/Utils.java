@@ -3,6 +3,7 @@ package com.poho.stuup.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.poho.stuup.constant.PeriodEnum;
+import com.poho.stuup.constant.RoleEnum;
 import com.poho.stuup.dao.RoleMapper;
 import com.poho.stuup.dao.UserRoleMapper;
 import com.poho.stuup.model.dto.TimePeriod;
@@ -82,7 +83,7 @@ public class Utils {
      * @date: 2023/5/30 18:52
      */
     public boolean isSuperAdmin(Long userId) {
-        String superAdminName = "系统管理员";
+        String superAdminName = RoleEnum.ADMIN.getRoleName();
         RoleMapper roleMapper = SpringContextHolder.getBean(RoleMapper.class);
         UserRoleMapper userRoleMapper = SpringContextHolder.getBean(UserRoleMapper.class);
         Long roleId = roleMapper.findRoleIdByName(superAdminName);
@@ -92,10 +93,40 @@ public class Utils {
         }
         List<Long> roleIds = userRoleMapper.queryUserRoleId(userId);
         if (CollUtil.isEmpty(roleIds)) {
-            log.error("当前角色未设置角色");
+            log.error("当前用户未设置角色");
             return false;
         }
         return roleIds.contains(roleId);
+    }
+
+    /**
+     * @description: 判断某个用户是否拥有某些权限
+     * @param: userId
+     * @param: roleEnums
+     * @return: boolean
+     * @author BUNGA
+     * @date: 2023/6/9 10:34
+     */
+    public boolean hasRole(Long userId, RoleEnum... roleEnums) {
+        RoleMapper roleMapper = SpringContextHolder.getBean(RoleMapper.class);
+        UserRoleMapper userRoleMapper = SpringContextHolder.getBean(UserRoleMapper.class);
+        List<Long> roleIds = userRoleMapper.queryUserRoleId(userId);
+        if (CollUtil.isEmpty(roleIds)) {
+            log.error("当前用户未设置角色");
+            return false;
+        }
+
+        for (RoleEnum roleEnum : roleEnums) {
+            Long roleId = roleMapper.findRoleIdByName(roleEnum.getRoleName());
+            if (roleId != null) {
+                if (roleIds.contains(roleId)) {
+                    return true;
+                }
+            } else {
+                log.error("{}角色不存在", roleEnum.getRoleName());
+            }
+        }
+        return false;
     }
 
     /**

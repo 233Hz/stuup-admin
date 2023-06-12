@@ -15,6 +15,7 @@ import com.poho.stuup.model.AnnouncementUser;
 import com.poho.stuup.model.dto.AnnouncementDTO;
 import com.poho.stuup.model.dto.AnnouncementPremUserDTO;
 import com.poho.stuup.model.vo.AnnouncementPremUserVO;
+import com.poho.stuup.model.vo.AnnouncementVO;
 import com.poho.stuup.service.AnnouncementService;
 import com.poho.stuup.util.Utils;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,11 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
     private AnnouncementUserMapper announcementUserMapper;
 
     @Override
+    public IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        return baseMapper.getAnnouncementPage(page, query);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseModel<Boolean> saveOrUpdateAnnouncement(Announcement announcement) {
         boolean hasId = (announcement.getId() != null);
@@ -51,7 +57,7 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
         } else {
             Integer type = announcement.getType();
             List<Long> userIds = announcement.getUserIds();
-            if (type == AnnouncementScopeEnum.DESIGNATED.getValue() && CollUtil.isEmpty(userIds))
+            if (type == AnnouncementScopeEnum.ALL_TEACHER.getValue() && CollUtil.isEmpty(userIds))
                 return ResponseModel.failed("请选择要发布公告的指定用户");
             result = this.save(announcement);
             if (CollUtil.isNotEmpty(userIds)) {
@@ -73,10 +79,5 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
             query.setCurrUser(null);
         }
         return userMapper.getPremUser(page, query);
-    }
-
-    @Override
-    public IPage<Announcement> getAnnouncementMyPage(Page<Announcement> page, AnnouncementDTO query) {
-        return baseMapper.getAnnouncementMyPage(page, query);
     }
 }

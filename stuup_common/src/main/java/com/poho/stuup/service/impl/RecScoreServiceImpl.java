@@ -9,17 +9,16 @@ import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.dao.RecScoreMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.dao.YearMapper;
+import com.poho.stuup.event.EventPublish;
+import com.poho.stuup.event.MonthRankingEvent;
+import com.poho.stuup.event.YearRankingEvent;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.Year;
 import com.poho.stuup.model.dto.RecScoreDTO;
-import com.poho.stuup.model.dto.SchoolClaRankDTO;
-import com.poho.stuup.model.dto.SchoolStuRankDTO;
 import com.poho.stuup.model.dto.TimePeriod;
 import com.poho.stuup.model.vo.RecScoreVO;
-import com.poho.stuup.model.vo.SchoolClaRankVO;
-import com.poho.stuup.model.vo.SchoolStuRankVO;
 import com.poho.stuup.service.GrowthItemService;
 import com.poho.stuup.service.RecDefaultService;
 import com.poho.stuup.service.RecScoreService;
@@ -47,6 +46,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> implements RecScoreService {
+
+    @Resource
+    private EventPublish eventPublish;
 
     @Resource
     private YearMapper yearMapper;
@@ -145,32 +147,24 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
     }
 
     @Override
-    public Map<Long, Integer> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime) {
-        List<RecScore> recScores = baseMapper.findTimePeriodRecord(growthId, startTime, endTime);
+    public Map<Long, Integer> findTimePeriodScoreMap(Date startTime, Date endTime) {
+        List<RecScore> recScores = baseMapper.findTimePeriodRecord(startTime, endTime);
         return recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.summingInt(RecScore::getScore)));
     }
 
     @Override
-    public IPage<SchoolStuRankVO> getSchoolStuRank(Page<SchoolStuRankVO> page, SchoolStuRankDTO query) {
-        Year year = yearMapper.selectByPrimaryKey(query.getYearId());
-        IPage<SchoolStuRankVO> schoolStuRankPage = baseMapper.getSchoolStuRank(page, query);
-        List<SchoolStuRankVO> records = schoolStuRankPage.getRecords();
-        records.forEach(record -> record.setYearName(year.getYearName()));
-        return schoolStuRankPage;
-    }
-
-    @Override
-    public IPage<SchoolClaRankVO> getSchoolClaRank(Page<SchoolClaRankVO> page, SchoolClaRankDTO query) {
-        Year year = yearMapper.selectByPrimaryKey(query.getYearId());
-        IPage<SchoolClaRankVO> schoolClaRankPage = baseMapper.getSchoolClaRank(page, query);
-        List<SchoolClaRankVO> records = schoolClaRankPage.getRecords();
-        records.forEach(record -> record.setYearName(year.getYearName()));
-        return schoolClaRankPage;
+    public Map<Long, Integer> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime) {
+        List<RecScore> recScores = baseMapper.findTimePeriodRecordForGrow(growthId, startTime, endTime);
+        return recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.summingInt(RecScore::getScore)));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void calculateScore(PeriodEnum periodEnum) {
+        Date nowData = new Date();
+        log.info("========================开始计算学生积分========================");
+        long start = System.currentTimeMillis();
+
         int periodEnumValue = periodEnum.getValue();
         Year currYear = yearMapper.findCurrYear();
         Long yearId = currYear.getOid();
@@ -224,6 +218,19 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
             } else {
                 log.error("项目积分计算类型不存在：”{}“，请检查项目”{}“配置", calculateType, growthItem.getName());
             }
+        }
+
+        long end = System.currentTimeMillis();
+        log.info("========================计算学生积分已完成========================");
+        log.info("耗时:{}ms", end - start);
+        log.info("耗时:{}分{}秒", (end - start) / 1000 / 60, (end - start) / 1000 % 60);
+
+        // 统计排行榜
+        if (periodEnum == PeriodEnum.YEAR) {
+            eventPublish.publishEvent(new YearRankingEvent(yearId));
+        }
+        if (periodEnum == PeriodEnum.MONTH) {
+            eventPublish.publishEvent(new MonthRankingEvent(nowData));
         }
     }
 

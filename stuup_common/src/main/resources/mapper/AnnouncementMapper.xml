@@ -7,30 +7,41 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="type" property="type"/>
+        <result column="scope" property="scope"/>
         <result column="content" property="content"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
-    <select id="getAnnouncementMyPage" resultMap="BaseResultMap">
+    <resultMap id="AnnouncementVOMap" type="com.poho.stuup.model.vo.AnnouncementVO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="type" property="type"/>
+        <result column="content" property="content"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="getAnnouncementPage" resultMap="AnnouncementVOMap">
         select
         a.id,
         a.title,
         a.type,
         a.content,
         a.create_time,
-        u.user_name as createUser
+        u.user_name as create_user
         from t_announcement a
-        left join t_announcement_user au on au.announcement_id = a.id
         left join t_user u on a.create_user = u.oid
         <where>
-            au.user_id = #{query.userId}
             <if test="query.title != null and query.title != ''">
                 and a.title like concat('%',#{query.title},'%')
             </if>
             <if test="query.type != null and query.type != ''">
                 and a.type = #{query.type}
+            </if>
+            <if test="query.scope != null and query.scope != ''">
+                and a.scope = #{query.scope}
             </if>
         </where>
     </select>

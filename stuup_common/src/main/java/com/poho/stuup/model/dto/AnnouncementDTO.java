@@ -1,5 +1,6 @@
 package com.poho.stuup.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -19,4 +20,11 @@ public class AnnouncementDTO {
      * 公告类型
      */
     private Integer type;
+
+    /**
+     * 用户id
+     */
+    @JsonIgnore
+    private Integer scope;
+
 }

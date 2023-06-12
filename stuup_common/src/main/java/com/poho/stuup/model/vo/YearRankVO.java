@@ -4,11 +4,11 @@ import lombok.Data;
 
 /**
  * @author BUNGA
- * @description: 全校学生排名对象
+ * @description: 全校年度排名对象
  * @date 2023/6/2 13:20
  */
 @Data
-public class SchoolStuRankVO {
+public class YearRankVO {
 
     /**
      * 学生id
@@ -51,9 +51,13 @@ public class SchoolStuRankVO {
     private String facultyName;
 
     /**
+     * 所属专业
+     */
+    private String majorName;
+
+    /**
      * 成长值
      */
-    private Integer score;
-
+    private int score;
 
 }

@@ -4,14 +4,14 @@ import lombok.Data;
 
 /**
  * @author BUNGA
- * @description: 全校学生排名对象
+ * @description: 全校年度排名对象
  * @date 2023/6/2 13:20
  */
 @Data
-public class SchoolClaRankVO {
+public class ProgressRankVO {
 
     /**
-     * 班级id
+     * 学生id
      */
     private Long id;
 
@@ -19,6 +19,16 @@ public class SchoolClaRankVO {
      * 学年
      */
     private String yearName;
+
+    /**
+     * 学生姓名
+     */
+    private String studentName;
+
+    /**
+     * 学号
+     */
+    private String studentNo;
 
     /**
      * 年级
@@ -41,9 +51,23 @@ public class SchoolClaRankVO {
     private String facultyName;
 
     /**
+     * 所属专业
+     */
+    private String majorName;
+
+    /**
      * 成长值
      */
-    private Integer score;
+    private int score;
 
+    /**
+     * 进步/退步/不变
+     */
+    private int progressState;
+
+    /**
+     * 进步/退步 名称
+     */
+    private int progressRanking;
 
 }

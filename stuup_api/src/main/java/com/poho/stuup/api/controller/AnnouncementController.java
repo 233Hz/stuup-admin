@@ -1,16 +1,21 @@
 package com.poho.stuup.api.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.AnnouncementScopeEnum;
 import com.poho.stuup.constant.AnnouncementStateEnum;
+import com.poho.stuup.constant.UserTypeEnum;
 import com.poho.stuup.model.Announcement;
+import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.AnnouncementDTO;
 import com.poho.stuup.model.dto.AnnouncementPremUserDTO;
 import com.poho.stuup.model.vo.AnnouncementPremUserVO;
+import com.poho.stuup.model.vo.AnnouncementVO;
 import com.poho.stuup.service.AnnouncementService;
+import com.poho.stuup.service.IStudentService;
+import com.poho.stuup.service.IUserService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,20 +39,24 @@ public class AnnouncementController {
     private HttpServletRequest request;
 
     @Resource
+    private IUserService userService;
+
+    @Resource
+    private IStudentService studentService;
+
+    @Resource
     private AnnouncementService announcementService;
 
     @GetMapping("/page")
-    public ResponseModel<IPage<Announcement>> getAnnouncementPage(Page<Announcement> page, AnnouncementDTO query) {
-        return ResponseModel.ok(announcementService.page(page, Wrappers.<Announcement>lambdaQuery()
-                .like(StrUtil.isNotEmpty(query.getTitle()), Announcement::getTitle, query.getTitle())
-                .eq(query.getType() != null, Announcement::getType, query.getType())));
+    public ResponseModel<IPage<AnnouncementVO>> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        return ResponseModel.ok(announcementService.getAnnouncementPage(page, query));
     }
 
     @PostMapping("/save_update")
     public ResponseModel<Boolean> saveOrUpdateAnnouncement(@Valid @RequestBody Announcement announcement) {
         String userId = ProjectUtil.obtainLoginUser(request);
         announcement.setCreateUser(Long.valueOf(userId));
-        return announcementService.saveOrUpdateAnnouncement(announcement);
+        return ResponseModel.ok(announcementService.saveOrUpdate(announcement));
     }
 
     @GetMapping("/publish/{id}")
@@ -81,8 +90,16 @@ public class AnnouncementController {
     }
 
     @GetMapping("/myPage")
-    public ResponseModel<IPage<Announcement>> getAnnouncementMyPage(Page<Announcement> page, AnnouncementDTO query) {
-        return ResponseModel.ok(announcementService.getAnnouncementMyPage(page, query));
+    public ResponseModel<IPage<AnnouncementVO>> getAnnouncementMyPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        String userId = ProjectUtil.obtainLoginUser(request);
+        User user = userService.selectByPrimaryKey(Long.valueOf(userId));
+        Integer userType = user.getUserType();
+        Integer scope = null;
+        if (userType == UserTypeEnum.STUDENT.getValue()) {
+            scope = AnnouncementScopeEnum.ALL_TEACHER.getValue();
+        }
+        query.setScope(scope);
+        return ResponseModel.ok(announcementService.getAnnouncementPage(page, query));
     }
 
 }

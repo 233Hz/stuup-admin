@@ -57,4 +57,15 @@ public interface StudentMapper {
     Long findStudentId(@Param("studentNo") String studentNo);
 
     List<Long> selectIdList();
+
+    /**
+     * @description: 通过学号获取学生信息
+     * @param: loginName
+     * @return: com.poho.stuup.model.Student
+     * @author BUNGA
+     * @date: 2023/6/9 10:45
+     */
+    Student getStudentForStudentNO(@Param("studentNo") String studentNo);
+
+    List<Integer> getAllStudentId();
 }

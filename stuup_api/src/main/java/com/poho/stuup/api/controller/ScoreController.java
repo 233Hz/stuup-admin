@@ -1,7 +1,10 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.model.dto.*;
+import com.poho.stuup.model.dto.ScoreDetailSearchDTO;
+import com.poho.stuup.model.dto.ScoreSearchDTO;
+import com.poho.stuup.model.dto.StuScoreSearchDTO;
+import com.poho.stuup.model.dto.StuScoreTopSearchDTO;
 import com.poho.stuup.service.IScoreService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,7 +25,7 @@ public class ScoreController {
     @Resource
     private IScoreService scoreService;
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取总得分列表", httpMethod = "GET")
     @GetMapping("/listScore")
     public ResponseModel list(ScoreSearchDTO searchDTO) {
@@ -30,7 +33,7 @@ public class ScoreController {
         return scoreService.findScorePageResult(searchDTO);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取单个学生总得分列表", httpMethod = "GET")
     @GetMapping("/getStuScore")
     public ResponseModel getStuScore(StuScoreSearchDTO searchDTO) {
@@ -38,7 +41,7 @@ public class ScoreController {
         return scoreService.getStuScore(searchDTO);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取TOP学生总得分列表", httpMethod = "GET")
     @GetMapping("/getStuScoreTopList")
     public ResponseModel getStuScoreTopList(StuScoreTopSearchDTO searchDTO) {
@@ -46,7 +49,7 @@ public class ScoreController {
         return scoreService.getStuScoreTopList(searchDTO);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取得分明细列表", httpMethod = "GET")
     @GetMapping("/listScoreDetail")
     public ResponseModel list(ScoreDetailSearchDTO searchDTO) {
@@ -54,7 +57,7 @@ public class ScoreController {
         return scoreService.findScoreDetailPageResult(searchDTO);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取单个学生得分明细列表", httpMethod = "GET")
     @GetMapping("/getStuScoreDetailList")
     public ResponseModel getStuScoreDetailList(StuScoreSearchDTO searchDTO) {

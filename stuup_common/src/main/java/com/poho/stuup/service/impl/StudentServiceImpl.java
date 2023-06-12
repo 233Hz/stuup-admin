@@ -4,7 +4,7 @@ import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
-import com.poho.stuup.dao.*;
+import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.model.Student;
 import com.poho.stuup.service.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +41,15 @@ public class StudentServiceImpl implements IStudentService {
         }
         model.setData(pageData);
         return model;
+    }
+
+    @Override
+    public Student getStudentForStudentNO(String studentNo) {
+        return studentMapper.getStudentForStudentNO(studentNo);
+    }
+
+    @Override
+    public List<Integer> getAllStudentId() {
+        return studentMapper.getAllStudentId();
     }
 }

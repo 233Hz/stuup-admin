@@ -2,6 +2,7 @@ package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.vo.FlowerVO;
 
 import java.util.List;
 import java.util.Map;
@@ -74,4 +75,12 @@ public interface GrowthItemService extends IService<GrowthItem> {
      */
     boolean verifyRemainingFillNum(Long userId, String growCode);
 
+    /**
+     * @description: 获取成长模型配置
+     * @param:
+     * @return: com.poho.stuup.model.vo.FlowerVO
+     * @author BUNGA
+     * @date: 2023/6/9 11:23
+     */
+    FlowerVO getFlowerConfig();
 }

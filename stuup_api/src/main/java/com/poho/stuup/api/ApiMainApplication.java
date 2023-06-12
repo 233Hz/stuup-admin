@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * @author wupeng
  */
+//@EnableAsync
 @EnableScheduling
 @SpringBootApplication(scanBasePackages = "com.poho.stuup")
 @MapperScan("com.poho.stuup.dao")

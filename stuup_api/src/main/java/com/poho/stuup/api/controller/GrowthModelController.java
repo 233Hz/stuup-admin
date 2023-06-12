@@ -1,12 +1,10 @@
 package com.poho.stuup.api.controller;
 
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.FloweringStageEnum;
-import com.poho.stuup.model.Config;
 import com.poho.stuup.model.dto.FlowerDTO;
 import com.poho.stuup.model.vo.FlowerVO;
+import com.poho.stuup.service.GrowthItemService;
 import com.poho.stuup.service.IConfigService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +23,12 @@ public class GrowthModelController {
     @Resource
     private IConfigService configService;
 
+    @Resource
+    private GrowthItemService growthItemService;
+
     @GetMapping("/flowers")
     public ResponseModel<FlowerVO> getFlowerConfig() {
-        FlowerVO flowerVO = new FlowerVO();
-        for (FloweringStageEnum floweringStageEnum : FloweringStageEnum.values()) {
-            Config config = configService.selectByPrimaryKey(floweringStageEnum.getConfigKey());
-            try {
-                int configValue = Integer.parseInt(config.getConfigValue());
-                ReflectUtil.setFieldValue(flowerVO, floweringStageEnum.getFieldName(), configValue);
-            } catch (Exception e) {
-                return ResponseModel.failed(StrUtil.format("系统配置：{}设置错误，请输入数字", floweringStageEnum.getDescription()));
-            }
-        }
-        return ResponseModel.ok(flowerVO);
+        return ResponseModel.ok(growthItemService.getFlowerConfig());
     }
 
     @PostMapping("/setFlowerConfig")

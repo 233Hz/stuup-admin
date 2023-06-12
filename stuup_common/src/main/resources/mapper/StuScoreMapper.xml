@@ -4,10 +4,186 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.StuScore">
-        <id column="id" property="id" />
-        <result column="student_id" property="studentId" />
-        <result column="score" property="score" />
-        <result column="update_time" property="updateTime" />
+        <id column="id" property="id"/>
+        <result column="student_id" property="studentId"/>
+        <result column="score" property="score"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
+
+    <resultMap id="GrowGardenVOMap" type="com.poho.stuup.model.vo.GrowGardenVO">
+        <id column="student_id" property="studentId"/>
+        <result column="student_name" property="studentName"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="class_name" property="className"/>
+        <result column="class_teacher" property="classTeacher"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getGrowGardenForStudent" resultMap="GrowGardenVOMap">
+        select ss.student_id,
+        s.name as student_name,
+        g.grade_name,
+        c.name as class_name,
+        t.name as class_teacher,
+        ss.score
+        from t_stu_score ss
+        left join t_student s on s.id = ss.student_id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_class c on s.class_id = c.id
+        left join t_teacher t on t.id = c.teacher_id
+        <where>
+            <if test="startScore != null">
+                ss.score &gt;= #{startScore} and
+            </if>
+            <if test="startScore == null">
+                ss.score &gt; 0 and
+            </if>
+            <if test="endScore != null">
+                ss.score &lt;= #{endScore}
+            </if>
+            <if test="userClassId != null and userClassId != ''">
+                c.id = #{userClassId}
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%', #{query.studentName}, '%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%', #{query.studentNo}, '%')
+            </if>
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                and c.name like concat('%', #{query.className}, '%')
+            </if>
+        </where>
+        order by score
+    </select>
+
+    <resultMap id="SchoolStuRankVOMap" type="com.poho.stuup.model.vo.SchoolRankVO">
+        <id column="id" property="id"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="class_name" property="className"/>
+        <result column="class_teacher" property="classTeacher"/>
+        <result column="faculty_name" property="facultyName"/>
+        <result column="major_name" property="majorName"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getSchoolRanking" resultMap="SchoolStuRankVOMap">
+        select
+        s.id,
+        s.name as student_name,
+        s.student_no,
+        g.grade_name,
+        c.name as class_name,
+        t.name as class_teacher,
+        f.faculty_name,
+        m.major_name,
+        ss.score
+        from t_student s
+        left join t_stu_score ss on ss.student_id = s.id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_class c on c.id = s.class_id
+        left join t_teacher t on t.id = c.teacher_id
+        left join t_faculty f on f.oid = c.faculty_id
+        left join t_major m on m.oid = s.major_id
+        <where>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%',#{query.studentName},'%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%',#{query.studentNo},'%')
+            </if>
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                and c.name like concat('%',#{query.className},'%')
+            </if>
+            <if test="query.facultyId != null and query.facultyId != ''">
+                and f.oid = #{query.facultyId}
+            </if>
+            <if test="query.majorId != null and query.majorId != ''">
+                and m.oid = #{query.majorId}
+            </if>
+        </where>
+        order by score desc
+    </select>
+
+    <resultMap id="SchoolClaRankVOMap" type="com.poho.stuup.model.vo.ClassRankVO">
+        <id column="id" property="id"/>
+        <result column="class_name" property="className"/>
+        <result column="class_teacher" property="classTeacher"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="faculty_name" property="facultyName"/>
+        <result column="major_name" property="majorName"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getClassRanking" resultMap="SchoolClaRankVOMap">
+        select
+        c.id,
+        c.name as class_name,
+        t.name as class_teacher,
+        g.grade_name,
+        f.faculty_name,
+        m.major_name,
+        sum(ss.score) as score
+        from t_class c
+        left join t_student s on s.class_id = c.id
+        left join t_stu_score ss on ss.student_id = s.id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_teacher t on t.id = c.teacher_id
+        left join t_faculty f on f.oid = c.faculty_id
+        left join t_major m on m.oid = s.major_id
+        <where>
+            <if test="query.className != null and query.className != ''">
+                and c.name like concat('%',#{query.className},'%')
+            </if>
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.facultyId != null and query.facultyId != ''">
+                and f.oid = #{query.facultyId}
+            </if>
+            <if test="query.majorId != null and query.majorId != ''">
+                and m.oid = #{query.majorId}
+            </if>
+        </where>
+        group by c.id
+        order by score desc
+    </select>
+
+    <resultMap id="MajorRankVOMap" type="com.poho.stuup.model.vo.MajorRankVO">
+        <id column="id" property="id"/>
+        <result column="major_name" property="majorName"/>
+        <result column="faculty_name" property="facultyName"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getMajorRanking" resultMap="MajorRankVOMap">
+        select
+        m.oid,
+        m.major_name,
+        f.faculty_name,
+        sum(ss.score) as score
+        from t_major m
+        left join t_student s on s.major_id = m.oid
+        left join t_faculty f on f.oid = m.faculty_id
+        left join t_stu_score ss on ss.student_id = s.id
+        <where>
+            <if test="query.majorName != null and query.majorName != ''">
+                and m.major_name like concat('%',#{query.majorName},'%')
+            </if>
+            <if test="query.facultyId != null and query.facultyId != ''">
+                and f.oid = #{query.facultyId}
+            </if>
+        </where>
+        group by f.oid
+        order by score desc
+    </select>
 
 </mapper>

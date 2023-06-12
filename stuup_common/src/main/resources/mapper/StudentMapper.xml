@@ -246,4 +246,17 @@
         select id
         from t_student
     </select>
+
+    <select id="getStudentForStudentNO" resultMap="BaseResultMap">
+        select *
+        from t_student
+        where student_no = #{studentNo}
+    </select>
+
+    <select id="getAllStudentId" resultType="integer">
+        select id
+        from t_student
+        where status = 1
+          and is_valid = 1
+    </select>
 </mapper>

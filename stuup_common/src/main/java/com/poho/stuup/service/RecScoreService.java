@@ -8,11 +8,7 @@ import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.dto.RecScoreDTO;
-import com.poho.stuup.model.dto.SchoolClaRankDTO;
-import com.poho.stuup.model.dto.SchoolStuRankDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
-import com.poho.stuup.model.vo.SchoolClaRankVO;
-import com.poho.stuup.model.vo.SchoolStuRankVO;
 
 import java.util.Date;
 import java.util.List;
@@ -49,6 +45,16 @@ public interface RecScoreService extends IService<RecScore> {
     void calculateScore(List<RecDefault> recDefaults, Long yearId, GrowthItem growthItem);
 
     /**
+     * @description: 查找该时间段内学生获取的分数
+     * @param: startTime
+     * @param: endTime
+     * @return: java.util.Map<java.lang.Long, java.lang.Integer>
+     * @author BUNGA
+     * @date: 2023/6/12 18:49
+     */
+    Map<Long, Integer> findTimePeriodScoreMap(Date startTime, Date endTime);
+
+    /**
      * 查找该时间段内学生获取的分数
      *
      * @param growthId  成长项id
@@ -58,17 +64,6 @@ public interface RecScoreService extends IService<RecScore> {
      */
     Map<Long, Integer> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime);
 
-    /**
-     * @description: 分页查询全校学生排名
-     * @param: page
-     * @param: query
-     * @return: com.baomidou.mybatisplus.core.metadata.IPage
-     * @author BUNGA
-     * @date: 2023/6/2 13:22
-     */
-    IPage<SchoolStuRankVO> getSchoolStuRank(Page<SchoolStuRankVO> page, SchoolStuRankDTO query);
-
-    IPage<SchoolClaRankVO> getSchoolClaRank(Page<SchoolClaRankVO> page, SchoolClaRankDTO query);
 
     /**
      * @description: 计算成长积分
@@ -78,4 +73,5 @@ public interface RecScoreService extends IService<RecScore> {
      * @date: 2023/6/6 10:30
      */
     void calculateScore(PeriodEnum periodEnum);
+
 }

@@ -5,11 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.dto.RecScoreDTO;
-import com.poho.stuup.model.dto.SchoolClaRankDTO;
-import com.poho.stuup.model.dto.SchoolStuRankDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
-import com.poho.stuup.model.vo.SchoolClaRankVO;
-import com.poho.stuup.model.vo.SchoolStuRankVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,14 +27,23 @@ public interface RecScoreMapper extends BaseMapper<RecScore> {
 
     /**
      * @description: 查找时间段内的记录
-     * @param: timePeriod
+     * @param: startTime
+     * @param: endTime
      * @return: java.util.List<com.poho.stuup.model.RecScore>
      * @author BUNGA
-     * @date: 2023/5/30 14:31
+     * @date: 2023/6/12 18:51
      */
-    List<RecScore> findTimePeriodRecord(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+    List<RecScore> findTimePeriodRecord(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
-    IPage<SchoolStuRankVO> getSchoolStuRank(Page<SchoolStuRankVO> page, @Param("query") SchoolStuRankDTO query);
+    /**
+     * @description: 查找时间段内的记录
+     * @param: growId
+     * @param: startTime
+     * @param: endTime
+     * @return: java.util.List<com.poho.stuup.model.RecScore>
+     * @author BUNGA
+     * @date: 2023/6/12 19:08
+     */
+    List<RecScore> findTimePeriodRecordForGrow(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
-    IPage<SchoolClaRankVO> getSchoolClaRank(Page<SchoolClaRankVO> page, SchoolClaRankDTO query);
 }
