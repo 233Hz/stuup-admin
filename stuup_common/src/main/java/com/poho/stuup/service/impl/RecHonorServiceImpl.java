@@ -64,7 +64,7 @@ public class RecHonorServiceImpl extends ServiceImpl<RecHonorMapper, RecHonor> i
             recHonor.setGrowId(growthItem.getId());
             recHonor.setStudentId(excel.getStudentId());
             recHonor.setName(excel.getName());
-            recHonor.setLevel(RecLevelEnum.getLabelValue(excel.getLevel()));
+            recHonor.setLevel(RecLevelEnum.getValueForLabel(excel.getLevel()));
             recHonor.setUnit(excel.getUnit());
             recHonor.setTime(DateUtil.parseDate(excel.getTime()));
             recHonor.setBatchCode(batchCode);

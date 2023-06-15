@@ -76,7 +76,7 @@ public class RecNationListener implements ReadListener<RecNationExcel> {
         if (StrUtil.isBlank(data.getLevel())) {
             errorMessages.add("获奖级别不能为空");
         }
-        if (RecLevelEnum.getLabelValue(data.getLevel()) == null) {
+        if (RecLevelEnum.getValueForLabel(data.getLevel()) == null) {
             errorMessages.add("获奖级别不存在");
         }
         if (StrUtil.isBlank(data.getOrg())) {

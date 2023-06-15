@@ -1,7 +1,5 @@
 package com.poho.stuup.api.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.dto.ProgressRankDTO;
 import com.poho.stuup.model.vo.ProgressRankVO;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -28,8 +27,8 @@ public class RankingMonthController {
     private RankingMonthService rankingMonthService;
 
     @GetMapping("/progressRanking")
-    public ResponseModel<IPage<ProgressRankVO>> getProgressRanking(Page<ProgressRankVO> page, ProgressRankDTO query) {
-        return ResponseModel.ok(rankingMonthService.getProgressRanking(page, query));
+    public ResponseModel<List<ProgressRankVO>> getProgressRanking(ProgressRankDTO query) {
+        return ResponseModel.ok(rankingMonthService.getProgressRanking(query));
     }
 
 }

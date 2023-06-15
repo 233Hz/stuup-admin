@@ -1,6 +1,8 @@
 package com.poho.stuup.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.CusMap;
 import com.poho.common.custom.PageData;
@@ -10,6 +12,8 @@ import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
+import com.poho.stuup.model.dto.SimpleUserDTO;
+import com.poho.stuup.model.vo.SimpleUserVO;
 import com.poho.stuup.service.IUserService;
 import com.poho.stuup.util.ProjectUtil;
 import org.slf4j.Logger;
@@ -375,7 +379,7 @@ public class UserServiceImpl implements IUserService {
                     k++;
                 }
             } else {
-                msg.append(itemMsg.toString()).append("。");
+                msg.append(itemMsg).append("。");
                 k++;
             }
         }
@@ -390,5 +394,18 @@ public class UserServiceImpl implements IUserService {
         List<Long> roleIds = userRoleMapper.queryUserRoleId(userId);
         List<Menu> menus = roleMenuMapper.queryUserMenus(roleIds);
         return ResponseModel.ok(menus);
+    }
+
+    @Override
+    public IPage<SimpleUserVO> getSimpleUserPage(Page<SimpleUserVO> page, SimpleUserDTO query) {
+        Map<String, Object> queryMap = new HashMap<>();
+        queryMap.put("userType", 2);
+        queryMap.put("state", 1);
+        int total = userMapper.queryTotal(queryMap);
+        long start = page.getCurrent() == 1 ? 1 : page.getCurrent() * page.getSize();
+        List<SimpleUserVO> simpleUserPage = userMapper.getSimpleUserPage(start, page.getSize(), query);
+        page.setTotal(total);
+        page.setRecords(simpleUserPage);
+        return page;
     }
 }

@@ -1,13 +1,13 @@
 package com.poho.stuup.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RankingMonth;
 import com.poho.stuup.model.dto.ProgressRankDTO;
 import com.poho.stuup.model.vo.ProgressRankVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -20,5 +20,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface RankingMonthMapper extends BaseMapper<RankingMonth> {
 
-    IPage<ProgressRankVO> getProgressRanking(Page<ProgressRankVO> page, @Param("query") ProgressRankDTO query);
+    List<ProgressRankVO> getProgressRanking(@Param("query") ProgressRankDTO query);
 }

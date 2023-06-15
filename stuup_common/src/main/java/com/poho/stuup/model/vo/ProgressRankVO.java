@@ -1,6 +1,9 @@
 package com.poho.stuup.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @author BUNGA
@@ -16,9 +19,14 @@ public class ProgressRankVO {
     private Long id;
 
     /**
-     * 学年
+     * 年份
      */
-    private String yearName;
+    private Integer year;
+
+    /**
+     * 月份
+     */
+    private Integer month;
 
     /**
      * 学生姓名
@@ -58,7 +66,7 @@ public class ProgressRankVO {
     /**
      * 成长值
      */
-    private int score;
+    private BigDecimal score;
 
     /**
      * 进步/退步/不变
@@ -69,5 +77,11 @@ public class ProgressRankVO {
      * 进步/退步 名称
      */
     private int progressRanking;
+
+    /**
+     * 排名
+     */
+    @JsonIgnore
+    private Integer ranking;
 
 }

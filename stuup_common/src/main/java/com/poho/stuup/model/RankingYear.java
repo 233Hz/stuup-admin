@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -48,7 +49,7 @@ public class RankingYear implements Serializable {
     /**
      * 积分
      */
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 创建时间

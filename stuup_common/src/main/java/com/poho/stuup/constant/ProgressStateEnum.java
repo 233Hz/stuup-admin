@@ -4,21 +4,22 @@ import lombok.Getter;
 
 /**
  * @author BUNGA
- * @description: TODO
- * @date 2023/5/29 13:16
+ * @description: 进步状态枚举类
+ * @date 2023/6/9 9:57
  */
 @Getter
-public enum CalculateTypeEnum {
+public enum ProgressStateEnum {
 
-    PLUS("+", 1),
-    MINUS("-", 2);
+    UP("上升", 1),
+    DOWN("下降", 2),
+    SAME("不变", 3);
 
     private final String type;
     private final int value;
 
-    CalculateTypeEnum(String type, int value) {
+
+    ProgressStateEnum(String type, int value) {
         this.type = type;
         this.value = value;
     }
-
 }

@@ -3,6 +3,7 @@ package com.poho.stuup.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.dao.GrowUserMapper;
 import com.poho.stuup.model.GrowUser;
+import com.poho.stuup.model.vo.SimpleUserVO;
 import com.poho.stuup.service.GrowUserService;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,11 @@ public class GrowUserServiceImpl extends ServiceImpl<GrowUserMapper, GrowUser> i
     public boolean isGrowUser(Long userId, Long growId) {
         List<Long> userIds = baseMapper.findGrowUser(growId);
         return userIds.contains(userId);
+    }
+
+
+    @Override
+    public List<SimpleUserVO> getGrowItemUser(Long growId) {
+        return baseMapper.getGrowItemUser(growId);
     }
 }

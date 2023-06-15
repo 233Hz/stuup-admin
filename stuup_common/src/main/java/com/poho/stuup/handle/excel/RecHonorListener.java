@@ -77,7 +77,7 @@ public class RecHonorListener implements ReadListener<RecHonorExcel> {
         if (StrUtil.isBlank(data.getLevel())) {
             errorMessages.add("级别不能为空");
         }
-        if (RecLevelEnum.getLabelValue(data.getLevel()) == null) {
+        if (RecLevelEnum.getValueForLabel(data.getLevel()) == null) {
             errorMessages.add("级别不存在");
         }
         if (StrUtil.isBlank(data.getUnit())) {

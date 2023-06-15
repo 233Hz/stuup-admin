@@ -18,10 +18,10 @@ public enum MilitaryLevelEnum {
     }
 
     //根据label获取对应的枚举值
-    public static Integer getLabelValue(String label) {
-        for (RecLevelEnum recLevelEnum : RecLevelEnum.values()) {
-            if (recLevelEnum.getLabel().equals(label)) {
-                return recLevelEnum.getValue();
+    public static Integer getValueForLabel(String label) {
+        for (MilitaryLevelEnum militaryLevelEnum : MilitaryLevelEnum.values()) {
+            if (militaryLevelEnum.getLabel().equals(label)) {
+                return militaryLevelEnum.getValue();
             }
         }
         return null;

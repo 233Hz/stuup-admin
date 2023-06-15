@@ -20,4 +20,22 @@
         where user_id = #{userId}
     </select>
 
+    <resultMap id="SimpleUserVOMap" type="com.poho.stuup.model.vo.SimpleUserVO">
+        <id column="oid" property="id"/>
+        <result column="user_name" property="username"/>
+        <result column="teacher_no" property="teacherNo"/>
+        <result column="dept_name" property="deptName"/>
+    </resultMap>
+
+    <select id="getGrowItemUser" resultMap="SimpleUserVOMap">
+        select u.oid,
+               u.user_name,
+               u.login_name as teacher_no,
+               d.dept_name
+        from t_grow_user gu
+                 left join t_user u on u.oid = gu.user_id
+                 left join t_dept d on d.oid = u.dept_id
+        where gu.grow_id = #{growId}
+    </select>
+
 </mapper>

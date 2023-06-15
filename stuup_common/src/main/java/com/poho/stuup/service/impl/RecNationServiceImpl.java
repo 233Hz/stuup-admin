@@ -63,7 +63,7 @@ public class RecNationServiceImpl extends ServiceImpl<RecNationMapper, RecNation
             recNation.setGrowId(growthItem.getId());
             recNation.setStudentId(excel.getStudentId());
             recNation.setName(excel.getName());
-            recNation.setLevel(RecLevelEnum.getLabelValue(excel.getLevel()));
+            recNation.setLevel(RecLevelEnum.getValueForLabel(excel.getLevel()));
             recNation.setOrg(excel.getOrg());
             recNation.setHour(Integer.valueOf(excel.getHour()));
             recNation.setBatchCode(batchCode);

@@ -7,6 +7,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecDefaultListener;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.excel.ExcelError;
 import com.poho.stuup.model.excel.RecDefaultExcel;
 import com.poho.stuup.service.RecDefaultService;
 import com.poho.stuup.util.SpringContextHolder;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +37,7 @@ public interface RecExcelHandle {
      * @author BUNGA
      * @date: 2023/5/26 11:01
      */
-    default ResponseModel recImport(MultipartFile file, GrowthItem growthItem, Map<String, Object> params) {
+    default ResponseModel<List<ExcelError>> recImport(MultipartFile file, GrowthItem growthItem, Map<String, Object> params) {
         try {
             StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
             RecDefaultService recDefaultService = SpringContextHolder.getBean(RecDefaultService.class);

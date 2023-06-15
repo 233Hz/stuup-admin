@@ -8,6 +8,7 @@ import org.apache.ibatis.type.JdbcType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -70,7 +71,7 @@ public class GrowthItem implements Serializable {
      * 每个周期内分值的上限
      */
     @TableField(updateStrategy = FieldStrategy.IGNORED, jdbcType = JdbcType.NVARCHAR)
-    private Integer scoreUpperLimit;
+    private BigDecimal scoreUpperLimit;
 
     /**
      * 分值计算类型（1.录入为加分 2.录入为扣分）
@@ -82,7 +83,12 @@ public class GrowthItem implements Serializable {
      * 项目可获得分值
      */
     @NotNull(message = "请选择项目可获得分值")
-    private Integer score;
+    private BigDecimal score;
+
+    /**
+     * 类型（1.自定义 2.系统类）
+     */
+    private Integer type;
 
     /**
      * 创建人

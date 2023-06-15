@@ -36,7 +36,7 @@
         f.faculty_name,
         m.major_name,
         y.year_name,
-        ry.score, 0
+        ry.score
         from t_ranking_year ry
         left join t_student s on s.id = ry.student_id
         left join t_grade g on g.oid = s.grade_id

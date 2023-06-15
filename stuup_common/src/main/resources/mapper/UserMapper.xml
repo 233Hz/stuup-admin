@@ -205,6 +205,9 @@
         <if test="key != null and key != ''">
             AND (tu.user_name LIKE CONCAT(CONCAT('%',#{key}),'%') or tu.mobile LIKE CONCAT(CONCAT('%',#{key}),'%'))
         </if>
+        <if test="userType != null">
+            AND tu.user_type = #{userType,jdbcType=INTEGER}
+        </if>
         <if test="state != null">
             AND tu.state = #{state,jdbcType=INTEGER}
         </if>
@@ -276,6 +279,41 @@
                 and u.user_type = #{userType}
             </if>
         </where>
+    </select>
+
+    <resultMap id="SimpleUserVOMap" type="com.poho.stuup.model.vo.SimpleUserVO">
+        <id column="oid" property="id"/>
+        <result column="user_name" property="username"/>
+        <result column="teacher_no" property="teacherNo"/>
+        <result column="dept_name" property="deptName"/>
+    </resultMap>
+
+    <select id="getSimpleUserPage" resultMap="SimpleUserVOMap">
+        select
+        u.oid,
+        u.user_name,
+        u.login_name as teacher_no,
+        d.dept_name
+        from t_user u
+        left join t_dept d on d.oid = u.dept_id
+        <where>
+            u.user_type = 2
+            and
+            u.state = 1
+            <if test="query.username != null and query.username != ''">
+                and u.user_name like concat('%',#{query.username},'%')
+            </if>
+            <if test="query.teacherNo != null and query.teacherNo != ''">
+                and u.login_name like concat('%',#{query.teacherNo},'%')
+            </if>
+            <if test="query.deptId != null and query.deptId != ''">
+                and d.oid = #{query.deptId}
+            </if>
+        </where>
+        order by u.oid
+        <if test="current != null and size != null">
+            limit #{current},#{size}
+        </if>
     </select>
 
 </mapper>

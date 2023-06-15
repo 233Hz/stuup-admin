@@ -13,6 +13,7 @@
         <result column="score_upper_limit" property="scoreUpperLimit"/>
         <result column="calculate_type" property="calculateType"/>
         <result column="score" property="score"/>
+        <result column="type" property="type"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>

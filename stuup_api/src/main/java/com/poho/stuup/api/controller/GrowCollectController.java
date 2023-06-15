@@ -1,21 +1,24 @@
 package com.poho.stuup.api.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.api.config.MinioConfig;
 import com.poho.stuup.constant.RecEnum;
-import com.poho.stuup.handle.RecDefaultHandle;
+import com.poho.stuup.handle.RecExcelHandle;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.excel.ExcelError;
 import com.poho.stuup.service.GrowUserService;
 import com.poho.stuup.service.GrowthItemService;
+import com.poho.stuup.util.MinioUtils;
 import com.poho.stuup.util.ProjectUtil;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,13 +34,16 @@ public class GrowCollectController {
     private HttpServletRequest request;
 
     @Resource
+    private MinioConfig prop;
+
+    @Resource
     private GrowthItemService growthItemService;
 
     @Resource
     private GrowUserService growUserService;
 
     @PostMapping("/import")
-    public ResponseModel recImport(MultipartFile file, @RequestParam(required = false) Map<String, Object> params) {
+    public ResponseModel<List<ExcelError>> recImport(MultipartFile file, @RequestParam(required = false) Map<String, Object> params) {
         String userId = ProjectUtil.obtainLoginUser(request);
         String recCode = (String) params.get("rec_code");
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
@@ -51,10 +57,29 @@ public class GrowCollectController {
         boolean canImport = growthItemService.verifyRemainingFillNum(Long.valueOf(userId), recCode);
         if (!canImport) return ResponseModel.failed("导入次数已使用完");
         params.put("userId", userId);
-        RecEnum recEnum = RecEnum.getByCode(recCode);
-        if (recEnum == null) {
-            return new RecDefaultHandle().recImport(file, growthItem, params);
+        RecExcelHandle handle = RecEnum.getHandle(recCode);
+        return handle.recImport(file, growthItem, params);
+    }
+
+    /**
+     * @description: 下载模板
+     * @param: recCode
+     * @param: response
+     * @return: void
+     * @author BUNGA
+     * @date: 2023/6/14 17:07
+     */
+    @GetMapping("/downTemp")
+    public void downTemp(@RequestParam("rec_code") String recCode, HttpServletResponse res) {
+        RecEnum recEnum = RecEnum.getEnumByCode(recCode);
+        if (recEnum == null) recCode = "CZ_DEFAULT";
+        String growthItemName = growthItemService.getObj(Wrappers.<GrowthItem>lambdaQuery().select(GrowthItem::getName).eq(GrowthItem::getCode, recCode), Object::toString);
+        String fileName, suffix = ".xlsx";
+        if (StrUtil.isBlank(growthItemName)) {
+            fileName = StrUtil.format("默认导入模板{}", suffix);
+        } else {
+            fileName = StrUtil.format("{}_导入模板{}", growthItemName, suffix);
         }
-        return recEnum.getHandle().recImport(file, growthItem, params);
+        MinioUtils.download(prop.getTempBucketName(), recCode + suffix, fileName, res);
     }
 }

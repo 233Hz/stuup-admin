@@ -1,11 +1,11 @@
 package com.poho.stuup.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.RankingMonth;
 import com.poho.stuup.model.dto.ProgressRankDTO;
 import com.poho.stuup.model.vo.ProgressRankVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,12 +18,11 @@ import com.poho.stuup.model.vo.ProgressRankVO;
 public interface RankingMonthService extends IService<RankingMonth> {
 
     /**
-     * @description: 分页查询进步榜
-     * @param: page
+     * @description: 查询进步榜
      * @param: query
-     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.ProgressRankVO>
+     * @return: java.util.List<com.poho.stuup.model.vo.ProgressRankVO>
      * @author BUNGA
-     * @date: 2023/6/12 19:22
+     * @date: 2023/6/12 22:59
      */
-    IPage<ProgressRankVO> getProgressRanking(Page<ProgressRankVO> page, ProgressRankDTO query);
+    List<ProgressRankVO> getProgressRanking(ProgressRankDTO query);
 }

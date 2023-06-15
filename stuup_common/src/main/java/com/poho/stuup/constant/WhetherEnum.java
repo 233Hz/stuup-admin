@@ -18,7 +18,7 @@ public enum WhetherEnum {
     }
 
     //根据label获取对应的枚举值
-    public static Integer getLabelValue(String label) {
+    public static Integer getValueForLabel(String label) {
         for (WhetherEnum whetherEnum : WhetherEnum.values()) {
             if (whetherEnum.getLabel().equals(label)) {
                 return whetherEnum.getValue();

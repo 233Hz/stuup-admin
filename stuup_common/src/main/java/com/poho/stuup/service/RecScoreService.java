@@ -10,6 +10,7 @@ import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -48,21 +49,22 @@ public interface RecScoreService extends IService<RecScore> {
      * @description: 查找该时间段内学生获取的分数
      * @param: startTime
      * @param: endTime
-     * @return: java.util.Map<java.lang.Long, java.lang.Integer>
+     * @return: java.util.Map<java.lang.Long, java.math.BigDecimal>
      * @author BUNGA
-     * @date: 2023/6/12 18:49
+     * @date: 2023/6/13 14:55
      */
-    Map<Long, Integer> findTimePeriodScoreMap(Date startTime, Date endTime);
+    Map<Long, BigDecimal> findTimePeriodScoreMap(Date startTime, Date endTime);
 
     /**
-     * 查找该时间段内学生获取的分数
-     *
-     * @param growthId  成长项id
-     * @param startTime 开始时间
-     * @param endTime   结束时间
-     * @return Map<学生id, 学生获得的分数>
+     * @description: 查找该时间段内学生获取的分数
+     * @param: growthId
+     * @param: startTime
+     * @param: endTime
+     * @return: java.util.Map<java.lang.Long, java.math.BigDecimal>
+     * @author BUNGA
+     * @date: 2023/6/13 14:55
      */
-    Map<Long, Integer> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime);
+    Map<Long, BigDecimal> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime);
 
 
     /**

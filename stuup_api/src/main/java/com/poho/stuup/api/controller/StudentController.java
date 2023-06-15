@@ -8,7 +8,9 @@ import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 学生信息维护
@@ -25,7 +27,7 @@ public class StudentController {
     private IStudentService studentService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ResponseModel studentList(String gradeId, String majorId, String key, String current, String size){
+    public ResponseModel studentList(String gradeId, String majorId, String key, String current, String size) {
         int page = 1;
         if (MicrovanUtil.isNotEmpty(current)) {
             page = Integer.valueOf(current);
@@ -34,7 +36,7 @@ public class StudentController {
         if (MicrovanUtil.isNotEmpty(size)) {
             pageSize = Integer.parseInt(size);
         }
-        return studentService.findDataPageResult( gradeId, majorId, key, page, pageSize);
+        return studentService.findDataPageResult(gradeId, majorId, key, page, pageSize);
 
     }
 

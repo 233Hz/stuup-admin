@@ -83,4 +83,5 @@ public interface GrowthItemService extends IService<GrowthItem> {
      * @date: 2023/6/9 11:23
      */
     FlowerVO getFlowerConfig();
+
 }

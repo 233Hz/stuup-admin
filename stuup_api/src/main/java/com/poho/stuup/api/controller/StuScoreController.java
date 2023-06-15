@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 /**
@@ -51,14 +52,14 @@ public class StuScoreController {
     private StuScoreService stuScoreService;
 
     @GetMapping("/getStudentScore")
-    public ResponseModel<Integer> getStudentScore() {
+    public ResponseModel<BigDecimal> getStudentScore() {
         String userId = ProjectUtil.obtainLoginUser(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         Integer userType = user.getUserType();
         if (userType == UserTypeEnum.STUDENT.getValue()) {
             Student student = studentService.getStudentForStudentNO(user.getLoginName());
             StuScore stuScore = stuScoreService.getOne(Wrappers.<StuScore>lambdaQuery().select(StuScore::getScore).eq(StuScore::getStudentId, student.getId()));
-            return ResponseModel.ok(Optional.ofNullable(stuScore.getScore()).orElse(0));
+            return ResponseModel.ok(Optional.ofNullable(stuScore.getScore()).orElse(BigDecimal.ZERO));
         } else {
             return ResponseModel.ok();
         }

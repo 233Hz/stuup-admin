@@ -2,6 +2,7 @@ package com.poho.stuup.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.poho.stuup.model.GrowUser;
+import com.poho.stuup.model.vo.SimpleUserVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,4 +36,13 @@ public interface GrowUserMapper extends BaseMapper<GrowUser> {
      * @date: 2023/5/30 18:45
      */
     List<Long> findUserGrow(@Param("userId") Long userId);
+
+    /**
+     * @description: 查询项目负责人
+     * @param: growId
+     * @return: java.util.List<com.poho.stuup.model.vo.SimpleUserVO>
+     * @author BUNGA
+     * @date: 2023/6/15 11:11
+     */
+    List<SimpleUserVO> getGrowItemUser(@Param("growId") Long growId);
 }

@@ -2,6 +2,8 @@ package com.poho.stuup.model.vo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author BUNGA
  * @description: 全校学生排名对象
@@ -53,7 +55,7 @@ public class SchoolRankVO {
     /**
      * 成长值
      */
-    private int score;
+    private BigDecimal score;
 
 
 }

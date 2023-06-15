@@ -245,6 +245,8 @@
     <select id="selectIdList" resultType="Long">
         select id
         from t_student
+        where status = 1
+          and is_valid = 1
     </select>
 
     <select id="getStudentForStudentNO" resultMap="BaseResultMap">

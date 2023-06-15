@@ -64,7 +64,7 @@ public class RecVolunteerServiceImpl extends ServiceImpl<RecVolunteerMapper, Rec
             recVolunteer.setGrowId(growthItem.getId());
             recVolunteer.setStudentId(excel.getStudentId());
             recVolunteer.setName(excel.getName());
-            recVolunteer.setLevel(RecLevelEnum.getLabelValue(excel.getLevel()));
+            recVolunteer.setLevel(RecLevelEnum.getValueForLabel(excel.getLevel()));
             recVolunteer.setChild(excel.getChild());
             recVolunteer.setPost(excel.getPost());
             recVolunteer.setStudyTime(Integer.valueOf(excel.getStudyTime()));

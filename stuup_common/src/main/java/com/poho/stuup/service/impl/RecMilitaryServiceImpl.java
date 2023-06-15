@@ -48,7 +48,8 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
     public void saveRecMilitaryExcel(long batchCode, GrowthItem growthItem, List<RecMilitaryExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
-        List<RecDefault> recDefaults = new ArrayList<>();
+        List<RecDefault> qualifiedRecDefaults = new ArrayList<>();  // 合格学员记录
+        List<RecDefault> excellentRecDefaults = new ArrayList<>();  // 优秀学员记录
         //=================保存数据=================
         List<RecMilitary> recMilitaries = excels.stream().map(excel -> {
             RecDefault recDefault = new RecDefault();
@@ -57,14 +58,25 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
             recDefault.setStudentId(excel.getStudentId());
             recDefault.setBatchCode(batchCode);
             recDefault.setRemark(excel.getRemark());
-            recDefaults.add(recDefault);
+
+            //过滤出合格学员
+            String level = excel.getLevel();
+            if (MilitaryLevelEnum.QUALIFIED.getValue() == MilitaryLevelEnum.getValueForLabel(level)) {
+                qualifiedRecDefaults.add(recDefault);
+            }
+            // 过滤出优秀学员
+            String excellent = excel.getExcellent();
+            if (WhetherEnum.YES.getValue() == WhetherEnum.getValueForLabel(excellent)) {
+                excellentRecDefaults.add(recDefault);
+            }
+
             //===================================================================
             RecMilitary recMilitary = new RecMilitary();
             recMilitary.setYearId(currYear.getOid());
             recMilitary.setGrowId(growthItem.getId());
             recMilitary.setStudentId(excel.getStudentId());
-            recMilitary.setLevel(MilitaryLevelEnum.getLabelValue(excel.getLevel()));
-            recMilitary.setExcellent(WhetherEnum.getLabelValue(excel.getExcellent()));
+            recMilitary.setLevel(MilitaryLevelEnum.getValueForLabel(excel.getLevel()));
+            recMilitary.setExcellent(WhetherEnum.getValueForLabel(excel.getExcellent()));
             recMilitary.setBatchCode(batchCode);
             return recMilitary;
         }).collect(Collectors.toList());
@@ -76,8 +88,11 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
         recLog.setCreateUser(Long.valueOf(userId));
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
+
         // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(excellentRecDefaults, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(qualifiedRecDefaults, currYear.getOid(), growthItem);
+
     }
 
     @Override

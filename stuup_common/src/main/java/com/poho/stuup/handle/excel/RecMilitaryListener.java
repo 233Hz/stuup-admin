@@ -73,13 +73,13 @@ public class RecMilitaryListener implements ReadListener<RecMilitaryExcel> {
         if (StrUtil.isBlank(data.getLevel())) {
             errorMessages.add("等级不能为空");
         }
-        if (MilitaryLevelEnum.getLabelValue(data.getLevel()) == null) {
+        if (MilitaryLevelEnum.getValueForLabel(data.getLevel()) == null) {
             errorMessages.add("等级不存在");
         }
         if (StrUtil.isBlank(data.getExcellent())) {
             errorMessages.add("是否优秀不能为空");
         }
-        if (WhetherEnum.getLabelValue(data.getExcellent()) == null) {
+        if (WhetherEnum.getValueForLabel(data.getExcellent()) == null) {
             errorMessages.add("请输入是/否");
         }
 

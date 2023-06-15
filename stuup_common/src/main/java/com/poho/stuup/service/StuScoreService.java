@@ -14,6 +14,8 @@ import com.poho.stuup.model.vo.GrowGardenVO;
 import com.poho.stuup.model.vo.MajorRankVO;
 import com.poho.stuup.model.vo.SchoolRankVO;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 学生积分表 服务类
@@ -30,7 +32,7 @@ public interface StuScoreService extends IService<StuScore> {
      * @param studentId
      * @param score
      */
-    void updateTotalScore(Long studentId, Integer score);
+    void updateTotalScore(Long studentId, BigDecimal score);
 
     /**
      * @description: 查询各花园名单

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,15 +56,15 @@ public class EventListenerHandle {
                 .eq(RecScore::getYearId, yearId));
 
         // 按学生分组求和排序
-        Map<Long, Integer> scoresByStudentId = recScores.stream()
-                .collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.summingInt(RecScore::getScore)));
+        Map<Long, BigDecimal> scoresByStudentId = recScores.stream()
+                .collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecScore::getScore, BigDecimal::add)));
 
-        List<Map.Entry<Long, Integer>> sortedScores = scoresByStudentId.entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry<Long, Integer>::getValue).reversed())
+        List<Map.Entry<Long, BigDecimal>> sortedScores = scoresByStudentId.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry<Long, BigDecimal>::getValue).reversed())
                 .collect(Collectors.toList());
 
         int ranking = 1;
-        for (Map.Entry<Long, Integer> sortedScore : sortedScores) {
+        for (Map.Entry<Long, BigDecimal> sortedScore : sortedScores) {
             RankingYear rankingYear = new RankingYear();
             rankingYear.setYearId(yearId);
             rankingYear.setRanking(ranking);
@@ -81,7 +82,7 @@ public class EventListenerHandle {
             rankingYear.setYearId(yearId);
             rankingYear.setRanking(ranking);
             rankingYear.setStudentId(Long.valueOf(studentId));
-            rankingYear.setScore(0);
+            rankingYear.setScore(BigDecimal.ZERO);
             rankingYearService.save(rankingYear);
             ranking++;
         }
@@ -101,13 +102,13 @@ public class EventListenerHandle {
         int year = DateUtil.year(now);
         int month = DateUtil.month(now);
         TimePeriod timePeriod = Utils.getCurrentTimePeriod(PeriodEnum.MONTH);
-        Map<Long, Integer> timePeriodScoreMap = recScoreService.findTimePeriodScoreMap(timePeriod.getStartTime(), timePeriod.getEndTime());
-        Map<Long, Integer> sortedMap = timePeriodScoreMap.entrySet()
+        Map<Long, BigDecimal> timePeriodScoreMap = recScoreService.findTimePeriodScoreMap(timePeriod.getStartTime(), timePeriod.getEndTime());
+        Map<Long, BigDecimal> sortedMap = timePeriodScoreMap.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         int ranking = 1;
-        for (Map.Entry<Long, Integer> entry : sortedMap.entrySet()) {
+        for (Map.Entry<Long, BigDecimal> entry : sortedMap.entrySet()) {
             RankingMonth rankingMonth = new RankingMonth();
             rankingMonth.setRanking(ranking);
             rankingMonth.setYear(year);

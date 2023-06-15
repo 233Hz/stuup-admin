@@ -1,8 +1,12 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
+import com.poho.stuup.model.dto.SimpleUserDTO;
+import com.poho.stuup.model.vo.SimpleUserVO;
 
 import java.util.List;
 import java.util.Map;
@@ -84,4 +88,13 @@ public interface IUserService {
      */
     ResponseModel<List<Menu>> queryUserAuthority(long userId);
 
+    /**
+     * @description: 简单的用户列表查询
+     * @param: page
+     * @param: query
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.SimpleUserVO>
+     * @author BUNGA
+     * @date: 2023/6/14 19:18
+     */
+    IPage<SimpleUserVO> getSimpleUserPage(Page<SimpleUserVO> page, SimpleUserDTO query);
 }

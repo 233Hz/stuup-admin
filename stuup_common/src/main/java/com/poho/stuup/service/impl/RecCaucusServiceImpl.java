@@ -63,7 +63,7 @@ public class RecCaucusServiceImpl extends ServiceImpl<RecCaucusMapper, RecCaucus
             recCaucus.setGrowId(growthItem.getId());
             recCaucus.setStudentId(excel.getStudentId());
             recCaucus.setName(excel.getName());
-            recCaucus.setLevel(RecLevelEnum.getLabelValue(excel.getLevel()));
+            recCaucus.setLevel(RecLevelEnum.getValueForLabel(excel.getLevel()));
             recCaucus.setStartTime(DateUtil.parseDate(excel.getStartTime()));
             recCaucus.setEndTime(DateUtil.parseDate(excel.getEndTime()));
             recCaucus.setBatchCode(batchCode);

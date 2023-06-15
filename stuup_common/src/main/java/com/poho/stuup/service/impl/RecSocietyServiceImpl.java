@@ -65,10 +65,10 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
             recSociety.setGrowId(growthItem.getId());
             recSociety.setStudentId(excel.getStudentId());
             recSociety.setName(excel.getName());
-            recSociety.setLevel(RecLevelEnum.getLabelValue(excel.getLevel()));
+            recSociety.setLevel(RecLevelEnum.getValueForLabel(excel.getLevel()));
             recSociety.setStartTime(DateUtil.parseDate(excel.getStartTime()));
             recSociety.setEndTime(DateUtil.parseDate(excel.getEndTime()));
-            recSociety.setRole(RecRoleEnum.getRoleValue(excel.getRole()));
+            recSociety.setRole(RecRoleEnum.getValueForRole(excel.getRole()));
             recSociety.setBatchCode(batchCode);
             return recSociety;
         }).collect(Collectors.toList());

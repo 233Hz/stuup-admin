@@ -1,5 +1,6 @@
 package com.poho.stuup.api.controller;
 
+import com.poho.common.custom.ResponseModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,28 +20,33 @@ public class ManualTaskController {
     private GrowScheduledTaskController growScheduledTaskController;
 
     @GetMapping("/task1")
-    public void task1() {
+    public ResponseModel task1() {
         growScheduledTaskController.calculateScoreForDay();
+        return ResponseModel.ok();
     }
 
     @GetMapping("/task2")
-    public void task2() {
+    public ResponseModel task2() {
         growScheduledTaskController.calculateScoreForWeek();
+        return ResponseModel.ok();
     }
 
     @GetMapping("/task3")
-    public void task3() {
+    public ResponseModel task3() {
         growScheduledTaskController.calculateScoreForMonth();
+        return ResponseModel.ok();
     }
 
     @GetMapping("/task4")
-    public void task4() {
+    public ResponseModel task4() {
         growScheduledTaskController.calculateScoreForSemester();
+        return ResponseModel.ok();
     }
 
     @GetMapping("/task5")
-    public void task5() {
+    public ResponseModel task5() {
         growScheduledTaskController.calculateScoreForYear();
+        return ResponseModel.ok();
     }
 
 

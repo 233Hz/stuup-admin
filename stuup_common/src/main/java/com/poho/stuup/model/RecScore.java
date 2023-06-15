@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -43,7 +44,7 @@ public class RecScore implements Serializable {
     /**
      * 得分
      */
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 获得所属学年

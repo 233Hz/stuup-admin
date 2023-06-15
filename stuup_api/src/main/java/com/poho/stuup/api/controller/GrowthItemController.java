@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.GrowItemTypeEnum;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.service.GrowthItemService;
@@ -55,6 +56,12 @@ public class GrowthItemController {
         } else {
             boolean exist = growthItemService.isExist(id, code);
             if (exist) return ResponseModel.failed("该成长项名称或者编号已存在，请修改后重试！");
+
+            if (StrUtil.isNotBlank(data.getCode())) {
+                GrowthItem growthItem = growthItemService.getById(id);
+                if (growthItem.getType() == GrowItemTypeEnum.SYSTEM.getCode() && !growthItem.getCode().equals(code))
+                    return ResponseModel.failed("无法修改系统内置项目编号");
+            }
         }
         if (PeriodEnum.UNLIMITED.getValue() != data.getFillPeriod()) {
             if (data.getFillPeriodNum() == null) {

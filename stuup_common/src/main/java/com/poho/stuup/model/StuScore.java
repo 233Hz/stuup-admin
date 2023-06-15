@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -38,7 +39,7 @@ public class StuScore implements Serializable {
     /**
      * 拥有积分
      */
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 更新时间

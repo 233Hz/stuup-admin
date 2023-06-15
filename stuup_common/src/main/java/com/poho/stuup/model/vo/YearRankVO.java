@@ -2,6 +2,8 @@ package com.poho.stuup.model.vo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author BUNGA
  * @description: 全校年度排名对象
@@ -58,6 +60,6 @@ public class YearRankVO {
     /**
      * 成长值
      */
-    private int score;
+    private BigDecimal score;
 
 }

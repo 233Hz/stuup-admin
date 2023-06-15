@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -53,11 +54,11 @@ public class StuScoreServiceImpl extends ServiceImpl<StuScoreMapper, StuScore> i
 
 
     @Override
-    public void updateTotalScore(Long studentId, Integer score) {
+    public void updateTotalScore(Long studentId, BigDecimal score) {
         StuScore stuScore = this.getOne(Wrappers.<StuScore>lambdaQuery().eq(StuScore::getStudentId, studentId));
         if (stuScore != null) {
-            Integer totalScore = stuScore.getScore();
-            totalScore += score;
+            BigDecimal totalScore = stuScore.getScore();
+            totalScore = totalScore.add(score);
             this.update(Wrappers.<StuScore>lambdaUpdate()
                     .set(StuScore::getScore, totalScore)
                     .eq(StuScore::getStudentId, studentId));
