@@ -1,4 +1,4 @@
-package com.poho.stuup.model;
+package com.poho.stuup.model.dto;
 
 import lombok.Data;
 

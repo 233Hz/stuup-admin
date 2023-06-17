@@ -261,4 +261,13 @@
         where status = 1
           and is_valid = 1
     </select>
+
+    <select id="findStudentUserIdByClassId" resultType="Long">
+        select u.oid from t_student s
+        left join t_user u on u.login_name = s.student_no
+        where class_id in
+        <foreach collection="classIds" item="classId" open="(" separator="," close=")" index="index">
+            #{classId}
+        </foreach>
+    </select>
 </mapper>

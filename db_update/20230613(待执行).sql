@@ -38,3 +38,42 @@ where name = '成长积分记录';
 
 alter table t_rec_military
     modify grow_id bigint(20) null;
+
+-- 成长项目添加字段
+alter table t_growth_item
+    add column gatherer int(1) not null comment '采集者类型（1.指定负责人 2.学生）';
+
+-- 设置默认值
+alter table t_aud_grow
+    alter column state set default 0;
+
+-- 成长项目审核添加字段
+alter table t_aud_grow
+    add column applicant bigint(20) not null comment '申请人';
+
+alter table t_aud_grow
+    modify column file_ids varchar(64) null;
+
+alter table t_aud_grow
+    alter column state set default 1;
+
+
+-- 成长项目日志添加字段
+alter table t_aud_log
+    add column aud_id bigint(20) not null comment '审核记录id';
+alter table t_aud_log
+    add column grow_id bigint(20) not null comment '成长项目id';
+alter table t_aud_log
+    add column reason varchar(100) null comment '原因';
+
+-- 测试学生账号
+-- 2210001
+-- 773034209a0ef80339697319760581c1d19b64f787323319
+-- 测试老师账号
+-- 6018
+-- d9f99082fd85b3511911b486d8794189f660504c5cb0bb85
+
+
+-- 新增加t_file表
+
+

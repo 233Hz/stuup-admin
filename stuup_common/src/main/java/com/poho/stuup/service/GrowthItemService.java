@@ -1,8 +1,10 @@
 package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.vo.FlowerVO;
+import com.poho.stuup.model.vo.GrowthItemSelectVO;
 
 import java.util.List;
 import java.util.Map;
@@ -63,7 +65,7 @@ public interface GrowthItemService extends IService<GrowthItem> {
      * @author BUNGA
      * @date: 2023/5/30 18:44
      */
-    List<GrowthItem> getUserGrowthItems(Long userId);
+    ResponseModel<List<GrowthItem>> getUserGrowthItems(Long userId);
 
     /**
      * @description: 校验该用户可导入次数
@@ -84,4 +86,12 @@ public interface GrowthItemService extends IService<GrowthItem> {
      */
     FlowerVO getFlowerConfig();
 
+    /**
+     * @description: 获取学生可申请的成长项
+     * @param:
+     * @return: java.util.List<com.poho.stuup.model.vo.GrowthItemSelectVO>
+     * @author BUNGA
+     * @date: 2023/6/15 15:09
+     */
+    List<GrowthItemSelectVO> getStudentGrowthItems();
 }

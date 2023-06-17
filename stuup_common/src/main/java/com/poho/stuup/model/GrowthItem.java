@@ -85,6 +85,9 @@ public class GrowthItem implements Serializable {
     @NotNull(message = "请选择项目可获得分值")
     private BigDecimal score;
 
+    @NotNull(message = "请选择采集者类型")
+    private Integer gatherer;
+
     /**
      * 类型（1.自定义 2.系统类）
      */

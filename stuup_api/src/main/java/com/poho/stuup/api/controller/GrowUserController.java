@@ -2,10 +2,13 @@ package com.poho.stuup.api.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.model.GrowUser;
-import com.poho.stuup.model.GrowthItemUserDTO;
+import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.dto.GrowthItemUserDTO;
 import com.poho.stuup.model.vo.SimpleUserVO;
 import com.poho.stuup.service.GrowUserService;
+import com.poho.stuup.service.GrowthItemService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +32,9 @@ public class GrowUserController {
     @Resource
     private GrowUserService growUserService;
 
+    @Resource
+    private GrowthItemService growthItemService;
+
     /**
      * @description: 设置项目负责人
      * @param:
@@ -39,12 +45,17 @@ public class GrowUserController {
     @PostMapping("/setGrowthItemUser")
     @Transactional(rollbackFor = Exception.class)
     public ResponseModel<Boolean> setGrowthItemUser(@Valid @RequestBody GrowthItemUserDTO data) {
+        Long growId = data.getGrowId();
+        GrowthItem growthItem = growthItemService.getById(growId);
+        Integer growType = growthItem.getType();
+        if (growType == GrowGathererEnum.STUDENT.getValue())
+            return ResponseModel.failed("学生申请的项目无法设置指定负责人");
         growUserService.remove(Wrappers.<GrowUser>lambdaQuery()
                 .eq(GrowUser::getGrowId, data.getGrowId()));
         List<Long> userIds = data.getUserIds();
         List<GrowUser> growUsers = userIds.stream().map(userId -> {
             GrowUser growUser = new GrowUser();
-            growUser.setGrowId(data.getGrowId());
+            growUser.setGrowId(growId);
             growUser.setUserId(userId);
             return growUser;
         }).collect(Collectors.toList());
@@ -57,7 +68,7 @@ public class GrowUserController {
      * @param: growId
      * @return: com.poho.common.custom.ResponseModel<java.util.List < com.poho.stuup.model.vo.SimpleUserVO>>
      * @author BUNGA
-     * @date: 2023/6/15 11:18
+     * @date: 2023/6/15 14:33
      */
     @GetMapping("/getGrowItemUser/{growId}")
     public ResponseModel<List<SimpleUserVO>> getGrowItemUser(@PathVariable("growId") Long growId) {

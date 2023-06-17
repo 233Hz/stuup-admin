@@ -7,6 +7,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.GrowItemTypeEnum;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.vo.GrowthItemSelectVO;
 import com.poho.stuup.service.GrowthItemService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.web.bind.annotation.*;
@@ -85,14 +86,19 @@ public class GrowthItemController {
     }
 
     @DeleteMapping("/del/{id}")
-    public ResponseModel delGrowthItemById(@PathVariable("id") Long id) {
-        return growthItemService.removeById(id) ? ResponseModel.ok("删除成功！") : ResponseModel.failed("删除失败！");
+    public ResponseModel<Boolean> delGrowthItemById(@PathVariable("id") Long id) {
+        return growthItemService.removeById(id) ? ResponseModel.ok(true, "删除成功！") : ResponseModel.failed("删除失败！");
     }
 
     @GetMapping("/myGrowthItems")
     public ResponseModel<List<GrowthItem>> getUserGrowthItems() {
         String userId = ProjectUtil.obtainLoginUser(request);
-        return ResponseModel.ok(growthItemService.getUserGrowthItems(Long.valueOf(userId)));
+        return growthItemService.getUserGrowthItems(Long.valueOf(userId));
+    }
+
+    @GetMapping("/studentGrowthItems")
+    public ResponseModel<List<GrowthItemSelectVO>> getStudentGrowthItems() {
+        return ResponseModel.ok(growthItemService.getStudentGrowthItems());
     }
 
 }

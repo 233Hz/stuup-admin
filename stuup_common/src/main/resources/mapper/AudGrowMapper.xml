@@ -4,16 +4,143 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.AudGrow">
-        <id column="id" property="id" />
-        <result column="grow_id" property="growId" />
-        <result column="state" property="state" />
-        <result column="
-auditor" property="
-auditor" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="reason" property="reason" />
-        <result column="file_ids" property="fileIds" />
+        <id column="id" property="id"/>
+        <result column="grow_id" property="growId"/>
+        <result column="state" property="state"/>
+        <result column="applicant" property="applicant"/>
+        <result column="auditor" property="auditor"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="reason" property="reason"/>
+        <result column="file_ids" property="fileIds"/>
     </resultMap>
+
+    <resultMap id="GrowApplyRecordVOMap" type="com.poho.stuup.model.vo.GrowApplyRecordVO">
+        <id column="id" property="id"/>
+        <result column="grow_id" property="growId"/>
+        <result column="first_level_name" property="firstLevelName"/>
+        <result column="second_level_name" property="secondLevelName"/>
+        <result column="third_level_name" property="thirdLevelName"/>
+        <result column="grow_name" property="growName"/>
+        <result column="auditor" property="auditor"/>
+        <result column="reason" property="reason"/>
+        <result column="file_ids" property="fileIds"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="pageGrowApplyRecord" resultMap="GrowApplyRecordVOMap">
+        select
+        ag.id,
+        ag.grow_id,
+        first.name as first_level_name,
+        second.name as second_level_name,
+        three.name as third_level_name,
+        gi.name as grow_name,
+        u.user_name as auditor,
+        ag.reason,
+        ag.file_ids,
+        ag.state,
+        ag.create_time
+        from t_aud_grow ag
+        left join t_growth_item gi on gi.id = ag.grow_id
+        left join t_user u on u.oid = ag.auditor
+        left join t_growth first on first.id = gi.first_level_id
+        left join t_growth second on second.id = gi.second_level_id
+        left join t_growth three on three.id = gi.three_level_id
+        <where>
+            ag.applicant = #{query.userId}
+            <if test="query.firstLevelId != null and query.firstLevelId != '' ">
+                and gi.first_level_id = #{query.firstLevelId}
+            </if>
+            <if test="query.secondLevelId != null and query.secondLevelId != '' ">
+                and gi.second_level_id = #{query.secondLevelId}
+            </if>
+            <if test="query.thirdLevelId != null and query.thirdLevelId != '' ">
+                and gi.three_level_id = #{query.thirdLevelId}
+            </if>
+            <if test="query.growName != null and query.growName != '' ">
+                and gi.name like concat('%', #{query.growName}, '%')
+            </if>
+            <if test="query.state != null and query.state != '' ">
+                and ag.state = #{query.state}
+            </if>
+        </where>
+        order by ag.create_time desc
+    </select>
+
+    <resultMap id="GrowAuditRecordVOMap" type="com.poho.stuup.model.vo.GrowAuditRecordVO">
+        <id column="id" property="id"/>
+        <result column="grow_id" property="growId"/>
+        <result column="first_level_name" property="firstLevelName"/>
+        <result column="second_level_name" property="secondLevelName"/>
+        <result column="third_level_name" property="thirdLevelName"/>
+        <result column="grow_name" property="growName"/>
+        <result column="applicant" property="applicant"/>
+        <result column="reason" property="reason"/>
+        <result column="file_ids" property="fileIds"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+
+    <select id="pageGrowAuditRecord" resultMap="GrowAuditRecordVOMap">
+        select
+        ag.id,
+        ag.grow_id,
+        first.name as first_level_name,
+        second.name as second_level_name,
+        three.name as third_level_name,
+        gi.name as grow_name,
+        u.user_name as applicant,
+        ag.reason,
+        ag.file_ids,
+        ag.state,
+        ag.create_time
+        from t_aud_grow ag
+        left join t_growth_item gi on gi.id = ag.grow_id
+        left join t_user u on u.oid = ag.applicant
+        left join t_growth first on first.id = gi.first_level_id
+        left join t_growth second on second.id = gi.second_level_id
+        left join t_growth three on three.id = gi.three_level_id
+        <where>
+            ag.state = 2
+            <if test="userIds != null and userIds.size > 0">
+                and ag.applicant in
+                <foreach collection="userIds" item="userId" open="(" separator="," close=")" index="index">
+                    #{userId}
+                </foreach>
+            </if>
+            <if test="query.firstLevelId != null and query.firstLevelId != '' ">
+                and gi.first_level_id = #{query.firstLevelId}
+            </if>
+            <if test="query.secondLevelId != null and query.secondLevelId != '' ">
+                and gi.second_level_id = #{query.secondLevelId}
+            </if>
+            <if test="query.thirdLevelId != null and query.thirdLevelId != '' ">
+                and gi.three_level_id = #{query.thirdLevelId}
+            </if>
+            <if test="query.growName != null and query.growName != '' ">
+                and gi.name like concat('%', #{query.growName}, '%')
+            </if>
+            <if test="query.state != null and query.state != '' ">
+                and ag.state = #{query.state}
+            </if>
+        </where>
+        order by ag.create_time desc
+    </select>
+
+    <resultMap id="AudGrowVOMap" type="com.poho.stuup.model.vo.AudGrowVO">
+        <id column="id" property="id"/>
+        <result column="first_level_name" property="firstLevelName"/>
+        <result column="second_level_name" property="secondLevelName"/>
+        <result column="third_level_name" property="thirdLevelName"/>
+        <result column="grow_name" property="growName"/>
+        <result column="reason" property="reason"/>
+        <result column="file_ids" property="fileIds"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
 
 </mapper>

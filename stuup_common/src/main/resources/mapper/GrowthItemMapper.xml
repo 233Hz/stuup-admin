@@ -13,6 +13,7 @@
         <result column="score_upper_limit" property="scoreUpperLimit"/>
         <result column="calculate_type" property="calculateType"/>
         <result column="score" property="score"/>
+        <result column="gatherer" property="gatherer"/>
         <result column="type" property="type"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
@@ -21,5 +22,26 @@
         <result column="second_level_id" property="secondLevelId"/>
         <result column="three_level_id" property="threeLevelId"/>
     </resultMap>
+
+    <resultMap id="GrowthItemSelectVOMap" type="com.poho.stuup.model.vo.GrowthItemSelectVO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="first_level_name" property="firstLevelName"/>
+        <result column="second_level_name" property="secondLevelName"/>
+        <result column="third_level_name" property="thirdLevelName"/>
+    </resultMap>
+
+    <select id="getStudentGrowthItems" resultMap="GrowthItemSelectVOMap">
+        select gi.id,
+               gi.name,
+               first.name  as first_level_name,
+               second.name as second_level_name,
+               third.name  as third_level_name
+        from t_growth_item gi
+                 left join t_growth first on first.id = gi.first_level_id
+                 left join t_growth second on second.id = gi.second_level_id
+                 left join t_growth third on third.id = gi.three_level_id
+        where gi.gatherer = 2
+    </select>
 
 </mapper>

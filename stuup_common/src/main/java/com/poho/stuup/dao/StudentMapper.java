@@ -68,4 +68,6 @@ public interface StudentMapper {
     Student getStudentForStudentNO(@Param("studentNo") String studentNo);
 
     List<Integer> getAllStudentId();
+
+    List<Long> findStudentUserIdByClassId(@Param("classIds") List<Integer> classIds);
 }

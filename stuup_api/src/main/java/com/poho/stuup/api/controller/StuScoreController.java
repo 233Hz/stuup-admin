@@ -56,13 +56,12 @@ public class StuScoreController {
         String userId = ProjectUtil.obtainLoginUser(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         Integer userType = user.getUserType();
-        if (userType == UserTypeEnum.STUDENT.getValue()) {
-            Student student = studentService.getStudentForStudentNO(user.getLoginName());
-            StuScore stuScore = stuScoreService.getOne(Wrappers.<StuScore>lambdaQuery().select(StuScore::getScore).eq(StuScore::getStudentId, student.getId()));
-            return ResponseModel.ok(Optional.ofNullable(stuScore.getScore()).orElse(BigDecimal.ZERO));
-        } else {
-            return ResponseModel.ok();
-        }
+        if (userType != UserTypeEnum.STUDENT.getValue()) return ResponseModel.ok();
+        Student student = studentService.getStudentForStudentNO(user.getLoginName());
+        if (student == null) return ResponseModel.ok();
+        StuScore stuScore = stuScoreService.getOne(Wrappers.<StuScore>lambdaQuery().select(StuScore::getScore).eq(StuScore::getStudentId, student.getId()));
+        if (stuScore == null) return ResponseModel.ok();
+        return ResponseModel.ok(Optional.ofNullable(stuScore.getScore()).orElse(BigDecimal.ZERO));
     }
 
     @GetMapping("/schoolRanking")

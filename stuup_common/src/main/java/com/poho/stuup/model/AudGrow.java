@@ -3,9 +3,12 @@ package com.poho.stuup.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.poho.stuup.constant.ValidationGroups;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,11 +31,13 @@ public class AudGrow implements Serializable {
      * id
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @NotNull(message = "id不能为空", groups = ValidationGroups.Update.class)
     private Long id;
 
     /**
      * 项目id
      */
+    @NotNull(message = "申请项目不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
     private Long growId;
 
     /**
@@ -41,10 +46,14 @@ public class AudGrow implements Serializable {
     private Integer state;
 
     /**
+     * 申请人
+     */
+    private Long applicant;
+
+    /**
      * 审核人
      */
-    private Long
-            auditor;
+    private Long auditor;
 
     /**
      * 创建时间
@@ -59,6 +68,7 @@ public class AudGrow implements Serializable {
     /**
      * 申请原因
      */
+    @NotBlank(message = "申请原因不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
     private String reason;
 
     /**

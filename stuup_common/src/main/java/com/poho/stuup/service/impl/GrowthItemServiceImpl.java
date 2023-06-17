@@ -1,15 +1,18 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.FloweringStageEnum;
 import com.poho.stuup.dao.GrowUserMapper;
 import com.poho.stuup.dao.GrowthItemMapper;
 import com.poho.stuup.model.Config;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.vo.FlowerVO;
+import com.poho.stuup.model.vo.GrowthItemSelectVO;
 import com.poho.stuup.service.GrowthItemService;
 import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.util.Utils;
@@ -64,11 +67,14 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
     }
 
     @Override
-    public List<GrowthItem> getUserGrowthItems(Long userId) {
+    public ResponseModel<List<GrowthItem>> getUserGrowthItems(Long userId) {
+        if (Utils.isSuperAdmin(userId))
+            return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery().select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)));
         List<Long> growIds = growUserMapper.findUserGrow(userId);
-        return this.list(Wrappers.<GrowthItem>lambdaQuery()
+        if (CollUtil.isEmpty(growIds)) return ResponseModel.failed("您没有可导入的项目");
+        return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery()
                 .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)
-                .in(!Utils.isSuperAdmin(userId), GrowthItem::getId, growIds));
+                .in(GrowthItem::getId, growIds)));
     }
 
     @Override
@@ -90,6 +96,11 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
             }
         }
         return flowerVO;
+    }
+
+    @Override
+    public List<GrowthItemSelectVO> getStudentGrowthItems() {
+        return baseMapper.getStudentGrowthItems();
     }
 
 }

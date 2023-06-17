@@ -31,6 +31,16 @@ public class AudLog implements Serializable {
     private Long id;
 
     /**
+     * 审核记录id
+     */
+    private Long audId;
+
+    /**
+     * 成长项id
+     */
+    private Long growId;
+
+    /**
      * 用户id
      */
     private Long userId;
@@ -39,6 +49,11 @@ public class AudLog implements Serializable {
      * 状态（1.提交 2.通过 3.拒绝 4.退回）
      */
     private Integer state;
+
+    /**
+     * 原因
+     */
+    private String reason;
 
     /**
      * 创建时间
