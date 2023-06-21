@@ -342,8 +342,9 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
             user.setLoginName(teacher.getJobNo());
             user.setUserName(teacher.getName());
             user.setState(ProjectConstants.USER_STATE_COMMON);
-            String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
-            user.setPassword(PasswordUtil.generate(password));
+            /*String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
+            user.setPassword(PasswordUtil.generate(password));*/
+            user.setPassword(PasswordUtil.generate(ProjectConstants.DEFAULT_PASSWORD));
             //部门
             String deptName = item.getString("dep");
             if (MicrovanUtil.isNotEmpty(deptName)) {
@@ -632,7 +633,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
                                         if (MicrovanUtil.isNotEmpty(birthday)) {
                                             password = birthday;
                                         }
-                                        password = MD5Utils.GetMD5Code(password + ProjectConstants.TEAM_SIGN);
+                                        //password = MD5Utils.GetMD5Code(password + ProjectConstants.TEAM_SIGN);
                                         user.setPassword(PasswordUtil.generate(password));
                                         userMapper.insertSelective(user);
 
@@ -654,7 +655,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
                                             if (MicrovanUtil.isNotEmpty(birthday)) {
                                                 password = birthday;
                                             }
-                                            password = MD5Utils.GetMD5Code(password + ProjectConstants.TEAM_SIGN);
+                                            //password = MD5Utils.GetMD5Code(password + ProjectConstants.TEAM_SIGN);
                                             user.setPassword(PasswordUtil.generate(password));
                                             user.setUserName(student.getName());
                                             userMapper.updateByPrimaryKeySelective(user);
@@ -671,7 +672,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
                                         if (MicrovanUtil.isNotEmpty(birthday)) {
                                             password = birthday;
                                         }
-                                        password = MD5Utils.GetMD5Code(password + ProjectConstants.TEAM_SIGN);
+                                        //password = MD5Utils.GetMD5Code(password + ProjectConstants.TEAM_SIGN);
                                         user.setPassword(PasswordUtil.generate(password));
                                         userMapper.insertSelective(user);
 

@@ -1,6 +1,5 @@
 package com.poho.common.util;
 
-import com.poho.stuup.constant.ProjectConstants;
 
 import java.util.Random;
 
@@ -57,13 +56,18 @@ public class PasswordUtil {
     }
 
     public static void main(String[] args) {
-        String pass = "123456";
+          /*String pass = "123456";
         String password = MD5Utils.GetMD5Code(pass + ProjectConstants.TEAM_SIGN);
         // 获取加盐后的密码
         String npassword = generate(password);
         System.out.println("加盐后MD5码：" + npassword);
         System.out.println("是否是同一字符串:" + verify(password, npassword));
+        System.out.println(generate(pass)); */
+        String pass = "123456";
+        String encrPwd = generate(pass);
+        System.out.println("pwd:" + pass + " encrPwd:" + encrPwd);
+        System.out.println("是否是同一字符串:" + verify(pass, encrPwd));
 
-        System.out.println(generate(pass));
+
     }
 }

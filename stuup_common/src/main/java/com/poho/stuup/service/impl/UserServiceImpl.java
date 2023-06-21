@@ -177,8 +177,8 @@ public class UserServiceImpl implements IUserService {
                 line = userMapper.updateByPrimaryKeySelective(user);
             } else {
                 user.setCreateTime(new Date());
-                String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
-                user.setPassword(PasswordUtil.generate(password));
+                //String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
+                user.setPassword(PasswordUtil.generate(ProjectConstants.DEFAULT_PASSWORD));
                 line = userMapper.insertSelective(user);
             }
         }
@@ -354,8 +354,8 @@ public class UserServiceImpl implements IUserService {
                 } else {
                     user.setCreateTime(new Date());
                     user.setState(ProjectConstants.USER_STATE_COMMON);
-                    String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
-                    user.setPassword(PasswordUtil.generate(password));
+                    //String password = MD5Utils.GetMD5Code(ProjectConstants.DEFAULT_PASSWORD + ProjectConstants.TEAM_SIGN);
+                    user.setPassword(PasswordUtil.generate(ProjectConstants.DEFAULT_PASSWORD));
                     line = userMapper.insertSelective(user);
                     if (line > 0) {
                         param.clear();
