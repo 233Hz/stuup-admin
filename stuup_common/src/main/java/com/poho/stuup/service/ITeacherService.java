@@ -20,21 +20,20 @@ public interface ITeacherService {
     int updateByPrimaryKey(Teacher record);
 
     /**
-     *
      * @param facultyId
      * @return
      */
     List<Teacher> findTeachers(Integer facultyId);
 
-    ResponseModel findDataPageResult( Integer facultyId, String key, int page, int pageSize);
+    ResponseModel findDataPageResult(Integer facultyId, String key, int page, int pageSize);
 
 
     /**
-     *
      * @param key
      * @return
      */
-    List<Map<String,Object>> searchTeacher(String key);
+    List<Map<String, Object>> searchTeacher(String key);
 
 
+    Map<Integer, Teacher> teacherMap();
 }

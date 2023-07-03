@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecScore;
 import com.poho.stuup.model.dto.RecScoreDTO;
+import com.poho.stuup.model.dto.RecScoreYearRankDTO;
 import com.poho.stuup.model.dto.StudentRecScoreDTO;
-import com.poho.stuup.model.vo.RecScoreVO;
-import com.poho.stuup.model.vo.StudentRecScoreVO;
+import com.poho.stuup.model.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -49,4 +49,12 @@ public interface RecScoreMapper extends BaseMapper<RecScore> {
      * @date: 2023/6/12 19:08
      */
     List<RecScore> findTimePeriodRecordForGrow(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    List<RecScoreYearRankDTO> findRecScoreForYear(@Param("yearId") Long yearId);
+
+    List<ClassRankVO> getClassRank(@Param("yearId") Long yearId);
+
+    List<MajorRankVO> getMajorRank(@Param("yearId") Long oid);
+
+    List<FacultyRankVO> getFacultyRank(@Param("yearId") Long oid);
 }

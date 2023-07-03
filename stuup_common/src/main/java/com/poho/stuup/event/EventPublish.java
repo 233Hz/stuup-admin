@@ -20,21 +20,17 @@ public class EventPublish {
     private ApplicationContext applicationContext;
 
     public void publishEvent(ApplicationEvent event) {
-        if (event instanceof YearRankingEvent) {
-            applicationContext.publishEvent((YearRankingEvent) event);
-        } else if (event instanceof MonthRankingEvent) {
-            applicationContext.publishEvent((MonthRankingEvent) event);
+        if (event instanceof StatisticsYearRankEvent) {
+            applicationContext.publishEvent(event);
+        } else if (event instanceof StatisticsMonthRankEvent) {
+            applicationContext.publishEvent(event);
+        } else if (event instanceof StatisticsSemesterRankEvent) {
+            applicationContext.publishEvent(event);
+        } else if (event instanceof SystemMsgEvent) {
+            applicationContext.publishEvent(event);
         } else {
             //发布失败
             log.error("事件发布失败");
         }
-    }
-
-    public void yearRankingEventPublish(YearRankingEvent event) {
-        applicationContext.publishEvent(event);
-    }
-
-    public void monthRankingEventPublish(MonthRankingEvent event) {
-        applicationContext.publishEvent(event);
     }
 }

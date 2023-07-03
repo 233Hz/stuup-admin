@@ -15,7 +15,12 @@ public class YearRankVO {
     /**
      * 学生id
      */
-    private Long id;
+    private Integer studentId;
+
+    /**
+     * 排名
+     */
+    private Integer rank;
 
     /**
      * 学年

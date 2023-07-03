@@ -4,6 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.EasyExcel;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.RecLevelEnum;
+import com.poho.stuup.constant.RecRoleEnum;
+import com.poho.stuup.dao.RecSocietyMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecSocietyListener;
 import com.poho.stuup.model.GrowthItem;
@@ -14,6 +17,7 @@ import com.poho.stuup.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,19 @@ public class RecSocietyHandle implements RecExcelHandle {
         } catch (IOException e) {
             return ResponseModel.failed("导入失败");
         }
+    }
+
+    @Override
+    public void recExport(HttpServletResponse response, Map<String, Object> params) throws IOException {
+        RecSocietyMapper recSocietyMapper = SpringContextHolder.getBean(RecSocietyMapper.class);
+        List<RecSocietyExcel> recSocietyExcels = recSocietyMapper.queryExcelList(params);
+        recSocietyExcels.forEach(recSocietyExcel -> {
+            Integer level = recSocietyExcel.getLevelValue();
+            Integer role = recSocietyExcel.getRoleValue();
+            recSocietyExcel.setLevel(RecLevelEnum.getLabelForValue(level));
+            recSocietyExcel.setRole(RecRoleEnum.getRoleForValue(role));
+        });
+        EasyExcel.write(response.getOutputStream(), RecSocietyExcel.class).sheet().doWrite(recSocietyExcels);
     }
 
 

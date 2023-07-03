@@ -41,10 +41,10 @@ public class TermController {
         if (MicrovanUtil.isNotEmpty(size)) {
             pageSize = Integer.parseInt(size);
         }
-        return  termService.findDataPageResult(key, page, pageSize);
+        return termService.findDataPageResult(key, page, pageSize);
     }
 
-   /* */
+    /* */
 
     /*
     @ResponseBody
@@ -86,8 +86,7 @@ public class TermController {
             }
             model.setCode(CommonConstants.CODE_SUCCESS);
             model.setMessage("删除成功");
-        }
-        else {
+        } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
             model.setMessage("请选择后点击删除");
         }

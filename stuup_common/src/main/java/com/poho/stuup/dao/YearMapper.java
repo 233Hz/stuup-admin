@@ -1,12 +1,13 @@
 package com.poho.stuup.dao;
 
 import com.poho.stuup.model.Year;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.Map;
 
 public interface YearMapper extends BaseDao<Year> {
     /**
-     *
      * @param param
      * @return
      */
@@ -14,14 +15,24 @@ public interface YearMapper extends BaseDao<Year> {
 
     /**
      * 查询当前年份
+     *
      * @return
      */
     Year findCurrYear();
 
+    Long findCurrYearId();
+
     /**
-     *
      * @param oid
      * @return
      */
     int updateSetCurrYear(Long oid);
+
+    Year findYearForStartAndEndTime(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    Year findTimeBelongYear(@Param("date") Date date);
+
+    void setAllYearNotCurr();
+
+    void setCurrentYear(@Param("oid") Long oid);
 }

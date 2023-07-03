@@ -1,14 +1,13 @@
 package com.poho.stuup.service;
 
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.model.Class;
 
 import java.util.List;
 import java.util.Map;
-import com.poho.stuup.model.Class;
 
 public interface IClassService {
     /**
-     *
      * @param clazz
      */
     int updateByPrimaryKeySelective(Class clazz);
@@ -19,7 +18,7 @@ public interface IClassService {
      */
     List<Class> findAllClass(Map<String, Object> map);
 
-    ResponseModel findDataPageResult( String key, int page, int pageSize, Integer facultyId, Integer gradeId);
+    ResponseModel findDataPageResult(String key, int page, int pageSize, Integer facultyId, Integer gradeId);
 
     /**
      * 新增或修改学期
@@ -45,25 +44,25 @@ public interface IClassService {
     boolean deleteClass(String ids);
 
     /**
-     *
      * @param classes
      * @return
      */
-    Map<String,Object> addImportClasses(List<Class> classes);
+    Map<String, Object> addImportClasses(List<Class> classes);
 
     /**
-     *
      * @param classId
      * @return
      */
     Class findClassById(Integer classId);
 
     /**
-     *
      * @param ids
      * @return
      */
     String findClassNamesByIds(String ids);
 
     List<Class> findClassByAdminTeacher(Integer id);
+
+    Map<Integer, Class> classMap();
+
 }

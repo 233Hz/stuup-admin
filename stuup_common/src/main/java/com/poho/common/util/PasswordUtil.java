@@ -11,7 +11,6 @@ import java.util.Random;
  */
 public class PasswordUtil {
     /**
-     *
      * @param password
      * @return
      */
@@ -38,7 +37,6 @@ public class PasswordUtil {
     }
 
     /**
-     *
      * @param password
      * @param md5
      * @return

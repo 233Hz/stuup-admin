@@ -10,11 +10,20 @@ import lombok.Setter;
 @Setter
 public class RecVolunteerExcel {
 
+    @ExcelProperty(value = "年级")
+    private String gradeName;
+
+    @ExcelProperty(value = "班级")
+    private String className;
+
     @ExcelProperty(value = "学号")
     private String studentNo;
 
     @ExcelProperty(value = "学生姓名")
     private String studentName;
+
+    @ExcelProperty(value = "证件号")
+    private String idCard;
 
     @ExcelProperty(value = "基地/项目名称")
     private String name;
@@ -43,5 +52,9 @@ public class RecVolunteerExcel {
     @ExcelIgnore
     @JsonIgnore
     private Long studentId;
+
+    @ExcelIgnore
+    @JsonIgnore
+    private Integer levelValue;
 
 }

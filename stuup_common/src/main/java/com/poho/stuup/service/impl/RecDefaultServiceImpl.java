@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,11 +64,6 @@ public class RecDefaultServiceImpl extends ServiceImpl<RecDefaultMapper, RecDefa
         recLogMapper.insert(recLog);
         // 计算学生成长积分
         recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
-    }
-
-    @Override
-    public List<Long> findGrowStudentRecForTimePeriod(Long growId, Date startTime, Date endTime) {
-        return baseMapper.findGrowStudentRecForTimePeriod(growId, startTime, endTime);
     }
 
 }

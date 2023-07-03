@@ -4,6 +4,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Major;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IMajorService {
     int deleteByPrimaryKey(Integer oid);
@@ -38,8 +39,9 @@ public interface IMajorService {
     ResponseModel saveOrUpdate(Major major);
 
     /**
-     *
      * @return
      */
     List<Major> findMajors();
+
+    Map<Integer, Major> majorMap();
 }

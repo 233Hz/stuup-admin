@@ -5,6 +5,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Grade;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IGradeService {
     int deleteByPrimaryKey(Integer oid);
@@ -20,7 +21,6 @@ public interface IGradeService {
     int updateByPrimaryKey(Grade record);
 
     /**
-     *
      * @return
      */
     List<Grade> findGrades();
@@ -35,4 +35,6 @@ public interface IGradeService {
      * @return
      */
     ResponseModel saveOrUpdateGrade(Grade grade);
+
+    Map<Integer, Grade> gradeMap();
 }

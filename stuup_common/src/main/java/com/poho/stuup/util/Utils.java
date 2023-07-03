@@ -1,18 +1,20 @@
 package com.poho.stuup.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.poho.stuup.constant.CommonConstants;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.constant.RoleEnum;
 import com.poho.stuup.dao.RoleMapper;
 import com.poho.stuup.dao.UserRoleMapper;
+import com.poho.stuup.model.Config;
 import com.poho.stuup.model.dto.TimePeriod;
+import com.poho.stuup.service.IConfigService;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -60,19 +62,78 @@ public class Utils {
     }
 
     /**
-     * @description: 获取当前时间周期范围
+     * @description: 获得该周期的起止时间
      * @param: periodEnum
+     * @param: date
      * @return: com.poho.stuup.model.dto.TimePeriod
      * @author BUNGA
-     * @date: 2023/5/30 14:12
+     * @date: 2023/6/30 13:21
      */
-    public TimePeriod getCurrentTimePeriod(PeriodEnum periodEnum) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startTime = periodEnum.getStartTime(now, periodEnum);
-        LocalDateTime endTime = periodEnum.getEndTime(now, periodEnum);
-        if (startTime == null) return null;
-        if (endTime == null) return null;
-        return TimePeriod.builder().startTime(Date.from(startTime.atZone(ZoneId.systemDefault()).toInstant())).endTime(Date.from(endTime.atZone(ZoneId.systemDefault()).toInstant())).build();
+    public TimePeriod getDateTimePeriod(PeriodEnum periodEnum, Date date) {
+        Date startTime = null, endTime = null;
+        int year = DateUtil.year(date);
+        IConfigService configService = SpringContextHolder.getBean(IConfigService.class);
+        Config config1 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.LAST_SEMESTER_START_TIME.getKey());
+        Config config2 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.LAST_SEMESTER_END_TIME.getKey());
+        Config config3 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.NEXT_SEMESTER_START_TIME.getKey());
+        Config config4 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.NEXT_SEMESTER_END_TIME.getKey());
+
+        switch (periodEnum) {
+            case DAY:
+                startTime = DateUtil.beginOfDay(date);
+                endTime = DateUtil.endOfDay(date);
+                break;
+            case WEEK:
+                startTime = DateUtil.beginOfWeek(date);
+                endTime = DateUtil.endOfWeek(date);
+                break;
+            case MONTH:
+                startTime = DateUtil.beginOfMonth(date);
+                endTime = DateUtil.endOfMonth(date);
+                break;
+            case SEMESTER:
+                if (config1 == null || config2 == null || config3 == null || config4 == null) return null;
+                Date time1 = DateUtil.parseDate(StrUtil.format("{}-{}", year - 1, config1.getConfigValue()));
+                Date time2 = DateUtil.parseDate(StrUtil.format("{}-{}", year, config2.getConfigValue()));
+                if (date.compareTo(time1) < 0) {
+                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year - 1, config1.getConfigValue()));
+                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config2.getConfigValue()));
+                } else if (date.compareTo(time2) < 0) {
+                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config3.getConfigValue()));
+                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config4.getConfigValue()));
+                } else {
+                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
+                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year + 1, config2.getConfigValue()));
+                }
+                break;
+            case YEAR:
+                if (config1 == null || config4 == null) return null;
+                // 当前年上学期开学时间
+                Date termBeginsTime1 = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
+                if (date.compareTo(termBeginsTime1) < 0) {
+                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year - 1, config1.getConfigValue()));
+                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config4.getConfigValue()));
+                } else {
+                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
+                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year + 1, config4.getConfigValue()));
+                }
+                break;
+            case THREE_YEAR:
+                if (config1 == null || config4 == null) return null;
+                // 当前年上学期开学时间
+                Date termBeginsTime2 = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
+                if (date.compareTo(termBeginsTime2) < 0) {
+                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year - 3, config1.getConfigValue()));
+                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config4.getConfigValue()));
+                } else {
+                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
+                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year + 3, config4.getConfigValue()));
+                }
+                break;
+            default:
+                break;
+        }
+        return TimePeriod.builder().startTime(startTime).endTime(endTime).build();
     }
 
     /**

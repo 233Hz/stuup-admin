@@ -10,7 +10,6 @@ import com.poho.stuup.model.dto.VolunteerExcelDTO;
 import com.poho.stuup.model.dto.VolunteerSearchDTO;
 import com.poho.stuup.service.IVolunteerService;
 import com.poho.stuup.util.ExcelUtil;
-import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,14 +40,14 @@ public class VolunteerController {
     @Resource
     private IVolunteerService volunteerService;
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取列表", httpMethod = "GET")
     @GetMapping("/list")
     public ResponseModel list(VolunteerSearchDTO searchDTO) {
         return volunteerService.findDataPageResult(searchDTO);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "导入", httpMethod = "POST")
     @RequestMapping(value = "/import", method = RequestMethod.POST)
     public ResponseModel importData(@RequestParam("importFile") MultipartFile importFile) {
@@ -65,7 +64,7 @@ public class VolunteerController {
                 File file = new File(path, fileName);
                 FileCopyUtils.copy(importFile.getBytes(), file);
                 String[] headNames = {"学籍号", "基地/项目名称", "基地/项目地址", "子项目", "岗位", "服务总时间长(学时)", "服务日期", "晚填理由"};
-                String[] fieldNames = {"stuNo", "name", "address", "subName", "post", "duration", "operDate", "memo"};
+                String[] fieldNames = {"stuNo", "title", "address", "subName", "post", "duration", "operDate", "memo"};
                 List<VolunteerExcelDTO> list = new ExcelUtil().readExcel(file.getPath(), VolunteerExcelDTO.class, headNames, fieldNames);
                 if (MicrovanUtil.isNotEmpty(list)) {
                     Map<String, Object> result = volunteerService.importList(list);
@@ -80,7 +79,7 @@ public class VolunteerController {
                 model.setMessage("请选择Excel文件");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
             }
-        } catch (ExcelTitleException e ) {
+        } catch (ExcelTitleException e) {
             model.setMessage(e.getMessage());
             model.setCode(CommonConstants.CODE_EXCEPTION);
         } catch (IOException e) {

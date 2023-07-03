@@ -79,12 +79,6 @@
             <if test="yearEnd != null">
                 #{yearEnd,jdbcType=TIMESTAMP},
             </if>
-            <if test="lastSemester != null">
-                #{lastSemester,jdbcType=TIMESTAMP},
-            </if>
-            <if test="nextSemester != null">
-                #{nextSemester,jdbcType=TIMESTAMP},
-            </if>
             <if test="curr != null">
                 #{curr,jdbcType=INTEGER},
             </if>
@@ -177,11 +171,14 @@
         </foreach>
     </delete>
     <select id="findCurrYear" resultMap="BaseResultMap">
-        SELECT ty.*
+        select *
+        from t_year y
+        where curr = 1
+    </select>
+    <select id="findCurrYearId" resultType="Long">
+        SELECT ty.oid
         FROM t_year AS ty
         WHERE ty.curr = 1
-        order by ty.year_start asc
-        limit 1
     </select>
     <update id="updateSetCurrYear" parameterType="java.lang.Long">
         update t_year
@@ -191,4 +188,29 @@
         set curr = 2
         where oid != #{oid,jdbcType=BIGINT};
     </update>
+
+    <select id="findYearForStartAndEndTime" resultMap="BaseResultMap">
+        select *
+        from t_year
+        where year_start = #{startTime}
+          and year_end = #{endTime}
+    </select>
+
+    <select id="findTimeBelongYear" resultMap="BaseResultMap">
+        select *
+        from t_year
+        where #{date} between year_start and year_end
+    </select>
+
+    <update id="setAllYearNotCurr">
+        update t_year
+        set curr = 2
+    </update>
+
+    <update id="setCurrentYear">
+        update t_year
+        set curr = 1
+        where oid = #{oid}
+    </update>
+
 </mapper>

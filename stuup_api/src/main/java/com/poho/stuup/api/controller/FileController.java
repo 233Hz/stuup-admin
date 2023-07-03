@@ -128,6 +128,8 @@ public class FileController {
     @GetMapping("/delFile")
     public ResponseModel<Boolean> delFile(@RequestParam("fileName") String fileName) {
         MinioUtils.removeFile(prop.getBucketName(), fileName);
+        fileService.remove(Wrappers.<File>lambdaQuery()
+                .eq(File::getStorageName, fileName));
         return ResponseModel.ok(null, "删除成功");
 
     }
@@ -146,6 +148,13 @@ public class FileController {
         return ResponseModel.ok(url, "获取成功");
     }
 
+    /**
+     * @description: 通过文件ids获取文件信息列表
+     * @param: ids
+     * @return: com.poho.common.custom.ResponseModel<java.util.List < com.poho.stuup.model.File>>
+     * @author BUNGA
+     * @date: 2023/6/19 9:21
+     */
     @GetMapping("/files/{ids}")
     public ResponseModel<List<File>> getFileListForIds(@PathVariable("ids") String ids) {
         List<Long> fileIds = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());

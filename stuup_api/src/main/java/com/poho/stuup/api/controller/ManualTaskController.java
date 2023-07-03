@@ -1,11 +1,16 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.PeriodEnum;
+import com.poho.stuup.event.EventPublish;
+import com.poho.stuup.event.StatisticsMonthRankEvent;
+import com.poho.stuup.model.dto.StatisticsRankEventDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author BUNGA
@@ -15,6 +20,9 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/manualTask")
 public class ManualTaskController {
+
+    @Resource
+    private EventPublish eventPublish;
 
     @Resource
     private GrowScheduledTaskController growScheduledTaskController;
@@ -46,6 +54,21 @@ public class ManualTaskController {
     @GetMapping("/task5")
     public ResponseModel task5() {
         growScheduledTaskController.calculateScoreForYear();
+        return ResponseModel.ok();
+    }
+
+    @GetMapping("/task6")
+    public ResponseModel task6() {
+        growScheduledTaskController.generateYearAndSemester();
+        return ResponseModel.ok();
+    }
+
+    @GetMapping("/task7")
+    public ResponseModel task7() {
+        StatisticsRankEventDTO statisticsRankEventDTO = new StatisticsRankEventDTO();
+        statisticsRankEventDTO.setPeriodEnum(PeriodEnum.MONTH);
+        statisticsRankEventDTO.setStartTime(new Date());
+        eventPublish.publishEvent(new StatisticsMonthRankEvent(statisticsRankEventDTO));
         return ResponseModel.ok();
     }
 

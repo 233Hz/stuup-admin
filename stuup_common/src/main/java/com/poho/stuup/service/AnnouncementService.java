@@ -22,7 +22,9 @@ public interface AnnouncementService extends IService<Announcement> {
 
     IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
 
-    ResponseModel<Boolean> saveOrUpdateAnnouncement(Announcement announcement);
+    IPage<AnnouncementVO> getMyAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
+
+    ResponseModel<Boolean> saveOrUpdateAnnouncement(AnnouncementDTO data);
 
     IPage<AnnouncementPremUserVO> getAnnouncementPremUserVO(Page<AnnouncementPremUserVO> page, AnnouncementPremUserDTO query);
 

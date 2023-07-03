@@ -1,5 +1,8 @@
 package com.poho.stuup.handle;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+
 /**
  * @author BUNGA
  * @description: 默认导入处理
@@ -7,4 +10,8 @@ package com.poho.stuup.handle;
  */
 public class RecDefaultHandle implements RecExcelHandle {
 
+    @Override
+    public void recExport(HttpServletResponse response, Map<String, Object> params) {
+
+    }
 }

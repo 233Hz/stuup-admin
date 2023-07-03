@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.RankMonthMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.RankMonth">
+        <id column="id" property="id"/>
+        <result column="rank" property="rank"/>
+        <result column="year" property="year"/>
+        <result column="month" property="month"/>
+        <result column="student_id" property="studentId"/>
+        <result column="score" property="score"/>
+        <result column="rank_trend" property="rankTrend"/>
+        <result column="rank_change" property="rankChange"/>
+        <result column="score_change" property="scoreChange"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="ProgressRankVOMap" type="com.poho.stuup.model.vo.ProgressRankVO">
+        <result column="student_id" property="studentId"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="year" property="year"/>
+        <result column="month" property="month"/>
+        <result column="score" property="score"/>
+        <result column="rank_change" property="rankChange"/>
+        <result column="score_change" property="scoreChange"/>
+        <result column="class_id" property="classId"/>
+        <result column="grade_id" property="gradeId"/>
+        <result column="major_id" property="majorId"/>
+    </resultMap>
+
+    <select id="getProgressRank" resultMap="ProgressRankVOMap">
+        select rm.student_id,
+               rm.year,
+               rm.month,
+               rm.score,
+               rm.rank_change,
+               rm.score_change,
+               s.name as student_name,
+               s.student_no,
+               s.class_id,
+               s.grade_id,
+               s.major_id
+        from t_rank_month rm
+                 left join t_student s on s.id = rm.student_id
+        where rm.year = #{year}
+          and rm.month = #{month}
+          and rm.rank_trend = 1
+    </select>
+
+</mapper>

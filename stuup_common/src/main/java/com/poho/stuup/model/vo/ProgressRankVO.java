@@ -7,16 +7,21 @@ import java.math.BigDecimal;
 
 /**
  * @author BUNGA
- * @description: 全校年度排名对象
+ * @description: 每月进步榜对象
  * @date 2023/6/2 13:20
  */
 @Data
 public class ProgressRankVO {
 
     /**
+     * 排名
+     */
+    private Integer rank;
+
+    /**
      * 学生id
      */
-    private Long id;
+    private Long studentId;
 
     /**
      * 年份
@@ -69,19 +74,20 @@ public class ProgressRankVO {
     private BigDecimal score;
 
     /**
-     * 进步/退步/不变
+     * 排名变化名次
      */
-    private int progressState;
+    private Integer rankChange;
 
     /**
-     * 进步/退步 名称
+     * 本月获取分数
      */
-    private int progressRanking;
+    private BigDecimal scoreChange;
 
-    /**
-     * 排名
-     */
     @JsonIgnore
-    private Integer ranking;
+    private Integer classId;
+    @JsonIgnore
+    private Integer gradeId;
+    @JsonIgnore
+    private Integer majorId;
 
 }

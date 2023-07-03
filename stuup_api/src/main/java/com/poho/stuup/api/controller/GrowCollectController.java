@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.api.config.MinioConfig;
 import com.poho.stuup.constant.RecEnum;
+import com.poho.stuup.dao.YearMapper;
+import com.poho.stuup.handle.RecDefaultHandle;
 import com.poho.stuup.handle.RecExcelHandle;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.ExcelError;
@@ -12,12 +14,14 @@ import com.poho.stuup.service.GrowUserService;
 import com.poho.stuup.service.GrowthItemService;
 import com.poho.stuup.util.MinioUtils;
 import com.poho.stuup.util.ProjectUtil;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +46,9 @@ public class GrowCollectController {
     @Resource
     private GrowUserService growUserService;
 
+    @Resource
+    private YearMapper yearMapper;
+
     @PostMapping("/import")
     public ResponseModel<List<ExcelError>> recImport(MultipartFile file, @RequestParam(required = false) Map<String, Object> params) {
         String userId = ProjectUtil.obtainLoginUser(request);
@@ -59,6 +66,26 @@ public class GrowCollectController {
         params.put("userId", userId);
         RecExcelHandle handle = RecEnum.getHandle(recCode);
         return handle.recImport(file, growthItem, params);
+    }
+
+    @SneakyThrows
+    @GetMapping("/export")
+    public void recExport(HttpServletResponse response, @RequestParam(required = false) Map<String, Object> params) {
+        String recCode = (String) params.get("rec_code");
+        GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
+                .eq(GrowthItem::getCode, recCode));
+        if (growthItem == null) throw new RuntimeException("要导出的项目不存在");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode(growthItem.getName(), "UTF-8");
+        response.setHeader("Access-Control-Expose-Headers", "Content-disposition");
+        response.setHeader("Content-disposition", "attachment;fileName=" + fileName + ".xlsx");
+        RecExcelHandle handle = RecEnum.getHandle(recCode);
+        if (handle instanceof RecDefaultHandle) throw new RuntimeException("要导出的项目不存在");
+        if (params.get("yearId") == null) {
+            params.put("yearId", yearMapper.findCurrYear().getOid());
+        }
+        handle.recExport(response, params);
     }
 
     /**

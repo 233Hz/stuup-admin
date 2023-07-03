@@ -19,43 +19,39 @@ public interface FacultyMapper {
     int updateByPrimaryKey(Faculty record);
 
     /**
-     *
      * @return
      */
     List<Faculty> findAllFaculty();
 
     /**
-     *
      * @param map
      * @return
      */
     int findTotalFacultyByCond(Map<String, Object> map);
 
     /**
-     *
      * @param map
      * @return
      */
     List<Faculty> findFacultyPageResultByCond(Map<String, Object> map);
 
     /**
-     *
      * @param faculty
      * @return
      */
     Faculty checkFaculty(Faculty faculty);
 
     /**
-     *
      * @param facultyName
      * @return
      */
     Faculty findFacultyByName(String facultyName);
 
     /**
-     *
      * @param teacherId
      * @return
      */
     List<Faculty> findFacultyByAdmin(Integer teacherId);
+
+    List<Faculty> selectAll();
 }

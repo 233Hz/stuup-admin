@@ -7,7 +7,7 @@
         <result column="year" jdbcType="VARCHAR" property="year"/>
     </resultMap>
     <sql id="Base_Column_List">
-    oid, grade_name, year
+        oid, grade_name, year
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -16,15 +16,14 @@
         where oid = #{oid,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_grade
-    where oid = #{oid,jdbcType=INTEGER}
-  </delete>
+        delete
+        from t_grade
+        where oid = #{oid,jdbcType=INTEGER}
+    </delete>
     <insert id="insert" parameterType="com.poho.stuup.model.Grade">
-    insert into t_grade (oid, grade_name, year
-      )
-    values (#{oid,jdbcType=INTEGER}, #{gradeName,jdbcType=VARCHAR}, #{year,jdbcType=VARCHAR}
-      )
-  </insert>
+        insert into t_grade (oid, grade_name, year)
+        values (#{oid,jdbcType=INTEGER}, #{gradeName,jdbcType=VARCHAR}, #{year,jdbcType=VARCHAR})
+    </insert>
     <insert id="insertSelective" parameterType="com.poho.stuup.model.Grade">
         insert into t_grade
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -63,11 +62,11 @@
         where oid = #{oid,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Grade">
-    update t_grade
-    set grade_name = #{gradeName,jdbcType=VARCHAR},
-      year = #{year,jdbcType=VARCHAR}
-    where oid = #{oid,jdbcType=INTEGER}
-  </update>
+        update t_grade
+        set grade_name = #{gradeName,jdbcType=VARCHAR},
+            year       = #{year,jdbcType=VARCHAR}
+        where oid = #{oid,jdbcType=INTEGER}
+    </update>
     <select id="findTotalGradeByCond" resultType="java.lang.Integer" parameterType="java.util.HashMap">
         SELECT COUNT(tg.oid) FROM t_grade AS tg
         WHERE 1=1
@@ -107,5 +106,10 @@
         FROM t_grade AS tg
         WHERE tg.year = #{_parameter}
         limit 1
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select *
+        from t_grade
     </select>
 </mapper>

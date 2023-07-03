@@ -1,304 +1,300 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.poho.stuup.dao.TeacherMapper">
-  <resultMap id="BaseResultMap" type="com.poho.stuup.model.Teacher">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="job_no" jdbcType="VARCHAR" property="jobNo" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="sex" jdbcType="INTEGER" property="sex" />
-    <result column="faculty_id" jdbcType="INTEGER" property="facultyId" />
-    <result column="teach_group" jdbcType="INTEGER" property="teachGroup" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="state" jdbcType="INTEGER" property="state" />
-    <result column="intro" jdbcType="VARCHAR" property="intro" />
-    <result column="update_intro_date" jdbcType="TIMESTAMP" property="updateIntroDate" />
-    <result column="photo_path" jdbcType="VARCHAR" property="photoPath" />
-    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
-    <result column="invigilate" jdbcType="INTEGER" property="invigilate" />
-    <result column="faculty_name" property="facultyName" />
-    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
-    <result column="course_name" jdbcType="VARCHAR" property="courseName" />
-    <result column="standard_id" jdbcType="INTEGER" property="standardId" />
-    <result column="score" jdbcType="INTEGER" property="score" />
-    <result column="teach_case" jdbcType="INTEGER" property="teachCase" />
-    <result column="teach_common" jdbcType="INTEGER" property="teachCommon" />
-    <result column="teach_content" jdbcType="INTEGER" property="teachContent" />
-    <result column="teach_method" jdbcType="INTEGER" property="teachMethod" />
-    <result column="teach_effect" jdbcType="INTEGER" property="teachEffect" />
-    <result column="standard_item_id" jdbcType="INTEGER" property="standardItemId" />
-    <result column="scoreId" jdbcType="INTEGER" property="scoreId" />
-    <result column="courseId" jdbcType="INTEGER" property="courseId" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, job_no, name, sex, faculty_id, teach_group, phone, id_card, address, state, intro,
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.Teacher">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="job_no" jdbcType="VARCHAR" property="jobNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="sex" jdbcType="INTEGER" property="sex"/>
+        <result column="faculty_id" jdbcType="INTEGER" property="facultyId"/>
+        <result column="teach_group" jdbcType="INTEGER" property="teachGroup"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="id_card" jdbcType="VARCHAR" property="idCard"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="intro" jdbcType="VARCHAR" property="intro"/>
+        <result column="update_intro_date" jdbcType="TIMESTAMP" property="updateIntroDate"/>
+        <result column="photo_path" jdbcType="VARCHAR" property="photoPath"/>
+        <result column="is_valid" jdbcType="INTEGER" property="isValid"/>
+        <result column="invigilate" jdbcType="INTEGER" property="invigilate"/>
+        <result column="faculty_name" property="facultyName"/>
+        <result column="group_name" jdbcType="VARCHAR" property="groupName"/>
+        <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+        <result column="standard_id" jdbcType="INTEGER" property="standardId"/>
+        <result column="score" jdbcType="INTEGER" property="score"/>
+        <result column="teach_case" jdbcType="INTEGER" property="teachCase"/>
+        <result column="teach_common" jdbcType="INTEGER" property="teachCommon"/>
+        <result column="teach_content" jdbcType="INTEGER" property="teachContent"/>
+        <result column="teach_method" jdbcType="INTEGER" property="teachMethod"/>
+        <result column="teach_effect" jdbcType="INTEGER" property="teachEffect"/>
+        <result column="standard_item_id" jdbcType="INTEGER" property="standardItemId"/>
+        <result column="scoreId" jdbcType="INTEGER" property="scoreId"/>
+        <result column="courseId" jdbcType="INTEGER" property="courseId"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, job_no, name, sex, faculty_id, teach_group, phone, id_card, address, state, intro,
     update_intro_date, photo_path, is_valid, invigilate, type
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_teacher
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_teacher
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.poho.stuup.model.Teacher">
-    insert into t_teacher (id, job_no, name, 
-      sex, faculty_id, teach_group,
-      phone, id_card, address, 
-      state, intro, update_intro_date, 
-      photo_path, is_valid, invigilate, type
-      )
-    values (#{id,jdbcType=INTEGER}, #{jobNo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{sex,jdbcType=INTEGER}, #{facultyId,jdbcType=INTEGER}, #{teachGroup,jdbcType=INTEGER},
-      #{phone,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{state,jdbcType=INTEGER}, #{intro,jdbcType=VARCHAR}, #{updateIntroDate,jdbcType=TIMESTAMP}, 
-      #{photoPath,jdbcType=VARCHAR}, #{isValid,jdbcType=INTEGER}, #{invigilate,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.poho.stuup.model.Teacher">
-    insert into t_teacher
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="jobNo != null">
-        job_no,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="sex != null">
-        sex,
-      </if>
-      <if test="facultyId != null">
-        faculty_id,
-      </if>
-      <if test="teachGroup != null">
-        teach_group,
-      </if>
-      <if test="phone != null">
-        phone,
-      </if>
-      <if test="idCard != null">
-        id_card,
-      </if>
-      <if test="address != null">
-        address,
-      </if>
-      <if test="state != null">
-        state,
-      </if>
-      <if test="intro != null">
-        intro,
-      </if>
-      <if test="updateIntroDate != null">
-        update_intro_date,
-      </if>
-      <if test="photoPath != null">
-        photo_path,
-      </if>
-      <if test="isValid != null">
-        is_valid,
-      </if>
-      <if test="invigilate != null">
-        invigilate,
-      </if>
-        <if test="type != null">
-            type,
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_teacher
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from t_teacher
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.poho.stuup.model.Teacher">
+        insert into t_teacher (id, job_no, name,
+                               sex, faculty_id, teach_group,
+                               phone, id_card, address,
+                               state, intro, update_intro_date,
+                               photo_path, is_valid, invigilate, type)
+        values (#{id,jdbcType=INTEGER}, #{jobNo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{sex,jdbcType=INTEGER}, #{facultyId,jdbcType=INTEGER}, #{teachGroup,jdbcType=INTEGER},
+                #{phone,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+                #{state,jdbcType=INTEGER}, #{intro,jdbcType=VARCHAR}, #{updateIntroDate,jdbcType=TIMESTAMP},
+                #{photoPath,jdbcType=VARCHAR}, #{isValid,jdbcType=INTEGER}, #{invigilate,jdbcType=INTEGER},
+                #{type,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.poho.stuup.model.Teacher">
+        insert into t_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="jobNo != null">
+                job_no,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="facultyId != null">
+                faculty_id,
+            </if>
+            <if test="teachGroup != null">
+                teach_group,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="idCard != null">
+                id_card,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="intro != null">
+                intro,
+            </if>
+            <if test="updateIntroDate != null">
+                update_intro_date,
+            </if>
+            <if test="photoPath != null">
+                photo_path,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+            <if test="invigilate != null">
+                invigilate,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="jobNo != null">
+                #{jobNo,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="facultyId != null">
+                #{facultyId,jdbcType=INTEGER},
+            </if>
+            <if test="teachGroup != null">
+                #{teachGroup,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="idCard != null">
+                #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="intro != null">
+                #{intro,jdbcType=VARCHAR},
+            </if>
+            <if test="updateIntroDate != null">
+                #{updateIntroDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="photoPath != null">
+                #{photoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="invigilate != null">
+                #{invigilate,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Teacher">
+        update t_teacher
+        <set>
+            <if test="jobNo != null">
+                job_no = #{jobNo,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="facultyId != null">
+                faculty_id = #{facultyId,jdbcType=INTEGER},
+            </if>
+            <if test="teachGroup != null">
+                teach_group = #{teachGroup,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="idCard != null">
+                id_card = #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="intro != null">
+                intro = #{intro,jdbcType=VARCHAR},
+            </if>
+            <if test="updateIntroDate != null">
+                update_intro_date = #{updateIntroDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="photoPath != null">
+                photo_path = #{photoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="invigilate != null">
+                invigilate = #{invigilate,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Teacher">
+        update t_teacher
+        set job_no            = #{jobNo,jdbcType=VARCHAR},
+            name              = #{name,jdbcType=VARCHAR},
+            sex               = #{sex,jdbcType=INTEGER},
+            faculty_id        = #{facultyId,jdbcType=INTEGER},
+            teach_group       = #{teachGroup,jdbcType=INTEGER},
+            phone             = #{phone,jdbcType=VARCHAR},
+            id_card           = #{idCard,jdbcType=VARCHAR},
+            address           = #{address,jdbcType=VARCHAR},
+            state             = #{state,jdbcType=INTEGER},
+            intro             = #{intro,jdbcType=VARCHAR},
+            update_intro_date = #{updateIntroDate,jdbcType=TIMESTAMP},
+            photo_path        = #{photoPath,jdbcType=VARCHAR},
+            is_valid          = #{isValid,jdbcType=INTEGER},
+            invigilate        = #{invigilate,jdbcType=INTEGER},
+            type              = #{type,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="findTeacherByJobNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_teacher
+        where job_no = #{_parameter,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <select id="findTeacherByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_teacher
+        where name = #{_parameter,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <select id="findTotalTeacherByCond" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        SELECT COUNT(tt.id) FROM t_teacher AS tt
+        WHERE 1=1
+        <if test="key != null and key != ''">
+            AND tt.name LIKE CONCAT(CONCAT('%',#{key}),'%')
         </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="jobNo != null">
-        #{jobNo,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="sex != null">
-        #{sex,jdbcType=INTEGER},
-      </if>
-      <if test="facultyId != null">
-        #{facultyId,jdbcType=INTEGER},
-      </if>
-      <if test="teachGroup != null">
-        #{teachGroup,jdbcType=INTEGER},
-      </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="idCard != null">
-        #{idCard,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=INTEGER},
-      </if>
-      <if test="intro != null">
-        #{intro,jdbcType=VARCHAR},
-      </if>
-      <if test="updateIntroDate != null">
-        #{updateIntroDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="photoPath != null">
-        #{photoPath,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        #{isValid,jdbcType=INTEGER},
-      </if>
-      <if test="invigilate != null">
-        #{invigilate,jdbcType=INTEGER},
-      </if>
-        <if test="type != null">
-            #{type,jdbcType=VARCHAR},
+        <if test="facultyId != null">
+            AND tt.faculty_id = #{facultyId}
         </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Teacher">
-    update t_teacher
-    <set>
-      <if test="jobNo != null">
-        job_no = #{jobNo,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="sex != null">
-        sex = #{sex,jdbcType=INTEGER},
-      </if>
-      <if test="facultyId != null">
-        faculty_id = #{facultyId,jdbcType=INTEGER},
-      </if>
-      <if test="teachGroup != null">
-        teach_group = #{teachGroup,jdbcType=INTEGER},
-      </if>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="idCard != null">
-        id_card = #{idCard,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        address = #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="state != null">
-        state = #{state,jdbcType=INTEGER},
-      </if>
-      <if test="intro != null">
-        intro = #{intro,jdbcType=VARCHAR},
-      </if>
-      <if test="updateIntroDate != null">
-        update_intro_date = #{updateIntroDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="photoPath != null">
-        photo_path = #{photoPath,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        is_valid = #{isValid,jdbcType=INTEGER},
-      </if>
-      <if test="invigilate != null">
-        invigilate = #{invigilate,jdbcType=INTEGER},
-      </if>
-        <if test="type != null">
-            type = #{type,jdbcType=VARCHAR},
+    </select>
+    <select id="findTeacherPageResultByCond" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT tt.*, td.faculty_name, ttg.group_name
+        FROM t_teacher AS tt
+        LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
+        LEFT JOIN t_teach_group AS ttg on tt.teach_group = ttg.oid
+        WHERE 1=1
+        <if test="key != null and key != ''">
+            AND tt.name LIKE CONCAT(CONCAT('%',#{key}),'%')
         </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Teacher">
-    update t_teacher
-    set job_no = #{jobNo,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=INTEGER},
-      faculty_id = #{facultyId,jdbcType=INTEGER},
-      teach_group = #{teachGroup,jdbcType=INTEGER},
-      phone = #{phone,jdbcType=VARCHAR},
-      id_card = #{idCard,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      state = #{state,jdbcType=INTEGER},
-      intro = #{intro,jdbcType=VARCHAR},
-      update_intro_date = #{updateIntroDate,jdbcType=TIMESTAMP},
-      photo_path = #{photoPath,jdbcType=VARCHAR},
-      is_valid = #{isValid,jdbcType=INTEGER},
-      invigilate = #{invigilate,jdbcType=INTEGER},
-      type = #{type,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <select id="findTeacherByJobNo" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select
-    <include refid="Base_Column_List"/>
-    from t_teacher
-    where job_no = #{_parameter,jdbcType=VARCHAR}
-    limit 1
-  </select>
-  <select id="findTeacherByName" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select
-    <include refid="Base_Column_List"/>
-    from t_teacher
-    where name = #{_parameter,jdbcType=VARCHAR}
-    limit 1
-  </select>
-  <select id="findTotalTeacherByCond" resultType="java.lang.Integer" parameterType="java.util.HashMap">
-    SELECT COUNT(tt.id) FROM t_teacher AS tt
-    WHERE 1=1
-    <if test="key != null and key != ''">
-      AND tt.name LIKE CONCAT(CONCAT('%',#{key}),'%')
-    </if>
-    <if test="facultyId != null">
-      AND tt.faculty_id = #{facultyId}
-    </if>
-  </select>
-  <select id="findTeacherPageResultByCond" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    SELECT tt.*, td.faculty_name, ttg.group_name
-    FROM t_teacher AS tt
-    LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
-    LEFT JOIN t_teach_group AS ttg on tt.teach_group = ttg.oid
-    WHERE 1=1
-    <if test="key != null and key != ''">
-      AND tt.name LIKE CONCAT(CONCAT('%',#{key}),'%')
-    </if>
-    <if test="facultyId != null">
-      AND tt.faculty_id = #{facultyId}
-    </if>
-    ORDER BY tt.id DESC
-    limit #{start},#{length}
-  </select>
-  <select id="findTeachers" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT tt.*, td.faculty_name, ttg.group_name
-    from t_teacher as tt
-    LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
-    LEFT JOIN t_teach_group AS ttg on tt.teach_group = ttg.oid
-    WHERE 1=1
-    <if test="_parameter != null">
-      AND tt.faculty_id = #{_parameter}
-    </if>
-    ORDER BY tt.name ASC
-  </select>
-  <select id="findTeacherByKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT
-    tt.id,
-    tt.name
-    FROM
-    t_teacher AS tt,
-    t_user AS tu
-    WHERE
-    tt.job_no = tu.user_name
-    AND tt.name LIKE CONCAT(CONCAT('%', #{_parameter}), '%')
-    ORDER BY
-    tt.name ASC
-    LIMIT 10
-  </select>
-  <select id="findCourseTeacherByClass" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT
+        <if test="facultyId != null">
+            AND tt.faculty_id = #{facultyId}
+        </if>
+        ORDER BY tt.id DESC
+        limit #{start},#{length}
+    </select>
+    <select id="findTeachers" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT tt.*, td.faculty_name, ttg.group_name
+        from t_teacher as tt
+        LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
+        LEFT JOIN t_teach_group AS ttg on tt.teach_group = ttg.oid
+        WHERE 1=1
+        <if test="_parameter != null">
+            AND tt.faculty_id = #{_parameter}
+        </if>
+        ORDER BY tt.name ASC
+    </select>
+    <select id="findTeacherByKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT tt.id,
+               tt.name
+        FROM t_teacher AS tt,
+             t_user AS tu
+        WHERE tt.job_no = tu.user_name
+          AND tt.name LIKE CONCAT(CONCAT('%', #{_parameter}), '%')
+        ORDER BY tt.name ASC
+        LIMIT 10
+    </select>
+    <select id="findCourseTeacherByClass" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
         tfc.course_name AS courseName,
         tct.course_id as courseId,
         tess.oid AS scoreId,
@@ -313,23 +309,23 @@
         tess.*,
         td.faculty_name,
         ttg.group_name
-    FROM
+        FROM
         t_course_teacher AS tct
         LEFT JOIN t_teacher AS tt ON tct.teacher_id = tt.id
         LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
         LEFT JOIN t_teach_group AS ttg ON tt.teach_group = ttg.oid
         LEFT JOIN t_faculty_course as tfc on tfc.oid=tct.course_id
         left join (
-          select tes.* from t_eva_score as tes
-          where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
-          <if test="courseType != null and courseType != '' and courseType == 4">
-              and tes.course_type=#{courseType}
-          </if>
-          <if test="courseType != null and courseType != '' and courseType != 4">
-              and (tes.course_type=#{courseType} or tes.course_type = 3)
-          </if>
-          ) tess on tct.teacher_id=tess.teacher_id and tess.course_id=tct.course_id
-    WHERE
+        select tes.* from t_eva_score as tes
+        where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            and tes.course_type=#{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            and (tes.course_type=#{courseType} or tes.course_type = 3)
+        </if>
+        ) tess on tct.teacher_id=tess.teacher_id and tess.course_id=tct.course_id
+        WHERE
         1 = 1
         AND tct.class_id = #{classId}
         AND tct.is_eva = 1
@@ -339,15 +335,15 @@
         <if test="courseType != null and courseType != '' and courseType != 4">
             AND (tct.course_type = #{courseType} or tct.course_type = 3)
         </if>
-      <if test="flag == 1">
-        --  group by tfc.oid,tt.id
-      </if>
-      and tfc.course_name is not null
-      and tfc.term_id=#{termId}
-    ORDER BY CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state
-  </select>
-  <select id="findTeachersByGroup" parameterType="java.util.Map" resultMap="BaseResultMap">
-    SELECT
+        <if test="flag == 1">
+            -- group by tfc.oid,tt.id
+        </if>
+        and tfc.course_name is not null
+        and tfc.term_id=#{termId}
+        ORDER BY CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state
+    </select>
+    <select id="findTeachersByGroup" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
         distinct tt.id,
         tess.oid AS scoreId,
         tt.*,
@@ -361,44 +357,44 @@
         tess.*,
         td.faculty_name,
         ttg.group_name
-    FROM
+        FROM
         t_course_teacher AS tct
         LEFT JOIN t_teacher AS tt ON tt.id = tct.teacher_id
         LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
         LEFT JOIN t_teach_group AS ttg ON ttg.oid = tt.teach_group
         left join t_faculty_course as tfc on tfc.oid = tct.course_id
         left join (
-          select tes.* from t_eva_score as tes
-          where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
-          <if test="courseType != null and courseType != '' and courseType == 4">
-              and tes.course_type=#{courseType}
-          </if>
-          <if test="courseType != null and courseType != '' and courseType != 4">
-              and (tes.course_type=#{courseType} or tes.course_type = 3)
-          </if>
-          ) tess on tct.teacher_id=tess.teacher_id
-    WHERE
+        select tes.* from t_eva_score as tes
+        where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            and tes.course_type=#{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            and (tes.course_type=#{courseType} or tes.course_type = 3)
+        </if>
+        ) tess on tct.teacher_id=tess.teacher_id
+        WHERE
         tt.teach_group IN (
         SELECT
-            ttt.teach_group
+        ttt.teach_group
         FROM
-            t_teacher AS ttt
+        t_teacher AS ttt
         WHERE
-            ttt.id = #{teacherId}
+        ttt.id = #{teacherId}
         )
-      <if test="courseType != null and courseType != '' and courseType == 4">
-          AND tct.course_type = #{courseType}
-      </if>
-      <if test="courseType != null and courseType != '' and courseType != 4">
-          AND (tct.course_type = #{courseType} or tct.course_type = 3)
-      </if>
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            AND tct.course_type = #{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            AND (tct.course_type = #{courseType} or tct.course_type = 3)
+        </if>
         and tct.is_eva = 1
         and tt.id !=#{teacherId}
         and tfc.term_id=#{termId}
         order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state
-  </select>
-  <select id="findTeachersByGroupAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT
+    </select>
+    <select id="findTeachersByGroupAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
         distinct tt.id,
         tess.oid AS scoreId,
         tt.*,
@@ -412,44 +408,45 @@
         tess.*,
         td.faculty_name,
         ttg.group_name
-    FROM
+        FROM
         t_course_teacher AS tct
         LEFT JOIN t_teacher AS tt ON tt.id = tct.teacher_id
         LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
         LEFT JOIN t_teach_group AS ttg ON ttg.oid = tt.teach_group
         left join t_faculty_course as tfc on tfc.oid = tct.course_id
         left join (
-          select tes.* from t_eva_score as tes
-          where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
-          <if test="courseType != null and courseType != '' and courseType == 4">
-              and tes.course_type=#{courseType}
-          </if>
-          <if test="courseType != null and courseType != '' and courseType != 4">
-              and (tes.course_type=#{courseType} or tes.course_type = 3)
-          </if>
-          ) tess on tct.teacher_id=tess.teacher_id
-    WHERE
+        select tes.* from t_eva_score as tes
+        where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            and tes.course_type=#{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            and (tes.course_type=#{courseType} or tes.course_type = 3)
+        </if>
+        ) tess on tct.teacher_id=tess.teacher_id
+        WHERE
         tt.teach_group IN (
         SELECT
-            ttt.oid
+        ttt.oid
         FROM
-            t_teach_group AS ttt
+        t_teach_group AS ttt
         WHERE
-            ttt.teacher_id = #{teacherId}
+        ttt.teacher_id = #{teacherId}
         )
         AND tct.is_eva = 1
-      <if test="courseType != null and courseType != '' and courseType == 4">
-          AND tct.course_type = #{courseType}
-      </if>
-      <if test="courseType != null and courseType != '' and courseType != 4">
-          AND (tct.course_type = #{courseType} or tct.course_type = 3)
-      </if>
-      <!--AND tt.id != #{teacherId}-->
-      and tfc.term_id=#{termId}
-      order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING gbk)
-  </select>
-  <select id="findTeachersByFacultyAdmin" parameterType="java.util.Map" resultMap="BaseResultMap">
-    SELECT
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            AND tct.course_type = #{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            AND (tct.course_type = #{courseType} or tct.course_type = 3)
+        </if>
+        <!--AND tt.id != #{teacherId}-->
+        and tfc.term_id=#{termId}
+        order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING
+        gbk)
+    </select>
+    <select id="findTeachersByFacultyAdmin" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
         distinct tt.id,
         tess.oid AS scoreId,
         tess.standard_id AS standardId,
@@ -457,7 +454,7 @@
         tt.*,
         td.faculty_name,
         ttg.group_name
-    FROM
+        FROM
         t_course_teacher AS tct
         LEFT JOIN t_teacher AS tt ON tt.id = tct.teacher_id
         LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
@@ -467,15 +464,16 @@
         select tes.* from t_eva_score as tes
         where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
         ) tess on tct.teacher_id=tess.teacher_id
-    WHERE
+        WHERE
         td.faculty_admin = #{teacherId}
         AND tct.is_eva = 1
         <!--AND tt.id != #{teacherId}-->
         and tfc.term_id=#{termId}
-        order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING gbk)
-  </select>
-  <select id="findTeachersByClassAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT
+        order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING
+        gbk)
+    </select>
+    <select id="findTeachersByClassAdmin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
         tess.oid AS scoreId,
         tct.course_id AS courseId,
         tfc.course_name AS courseName,
@@ -491,7 +489,7 @@
         tess.*,
         td.faculty_name,
         ttg.group_name
-    FROM
+        FROM
         t_course_teacher AS tct
         LEFT JOIN t_teacher AS tt ON tt.id = tct.teacher_id
         LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
@@ -499,51 +497,49 @@
         LEFT JOIN t_teach_group AS ttg ON ttg.oid = tt.teach_group
         LEFT JOIN t_faculty_course as tfc on tfc.oid=tct.course_id
         left join (
-          select tes.* from t_eva_score as tes
-          where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
-          <if test="courseType != null and courseType != '' and courseType == 4">
-              and tes.course_type=#{courseType}
-          </if>
-          <if test="courseType != null and courseType != '' and courseType != 4">
-              and (tes.course_type=#{courseType} or tes.course_type = 3)
-          </if>
-          ) tess on tct.teacher_id=tess.teacher_id and tess.course_id=tct.course_id
-    WHERE
+        select tes.* from t_eva_score as tes
+        where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            and tes.course_type=#{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            and (tes.course_type=#{courseType} or tes.course_type = 3)
+        </if>
+        ) tess on tct.teacher_id=tess.teacher_id and tess.course_id=tct.course_id
+        WHERE
         tc.teacher_id = #{teacherId}
         AND tct.is_eva = 1
-      <if test="courseType != null and courseType != '' and courseType == 4">
-          AND tct.course_type = #{courseType}
-      </if>
-      <if test="courseType != null and courseType != '' and courseType != 4">
-          AND (tct.course_type = #{courseType} or tct.course_type = 3)
-      </if>
-      <if test="classId != null and classId != ''">
-          AND tct.class_id = #{classId}
-      </if>
-      <if test="flag == 1">
-        <!--  group by tfc.oid,tt.id-->
-      </if>
-      and tfc.course_name is not null
-      and tfc.term_id = #{termId}
-      <!-- and tt.id != #{teacherId}-->
-      order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING gbk)
-  </select>
-  <select id="findCourseTeachers" resultMap="BaseResultMap">
-    SELECT
-        distinct tt.id,
-        tt.*,
-        td.faculty_name,
-        ttg.group_name
-    FROM
-        t_course_teacher AS tct
-        LEFT JOIN t_teacher AS tt ON tt.id = tct.teacher_id
-        LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
-        LEFT JOIN t_teach_group AS ttg ON ttg.oid = tt.teach_group
-    WHERE
-        tct.is_eva = 1
-  </select>
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            AND tct.course_type = #{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            AND (tct.course_type = #{courseType} or tct.course_type = 3)
+        </if>
+        <if test="classId != null and classId != ''">
+            AND tct.class_id = #{classId}
+        </if>
+        <if test="flag == 1">
+            <!--  group by tfc.oid,tt.id-->
+        </if>
+        and tfc.course_name is not null
+        and tfc.term_id = #{termId}
+        <!-- and tt.id != #{teacherId}-->
+        order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING
+        gbk)
+    </select>
+    <select id="findCourseTeachers" resultMap="BaseResultMap">
+        SELECT distinct tt.id,
+                        tt.*,
+                        td.faculty_name,
+                        ttg.group_name
+        FROM t_course_teacher AS tct
+                 LEFT JOIN t_teacher AS tt ON tt.id = tct.teacher_id
+                 LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
+                 LEFT JOIN t_teach_group AS ttg ON ttg.oid = tt.teach_group
+        WHERE tct.is_eva = 1
+    </select>
     <select id="findCourseTeachersByCond" parameterType="java.util.Map" resultMap="BaseResultMap">
-    SELECT
+        SELECT
         distinct tt.id,
         tess.oid AS scoreId,
         tess.standard_id AS standardId,
@@ -557,45 +553,42 @@
         tt.*,
         td.faculty_name,
         ttg.group_name
-    FROM
+        FROM
         t_course_teacher AS tct
         LEFT JOIN t_teacher AS tt ON tt.id = tct.teacher_id
         LEFT JOIN t_faculty AS td ON tt.faculty_id = td.oid
         LEFT JOIN t_teach_group AS ttg ON ttg.oid = tt.teach_group
         left join t_faculty_course as tfc on tfc.oid = tct.course_id
-				left join (
-				select tes.* from t_eva_score as tes
-				where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
-                <if test="courseType != null and courseType != '' and courseType == 4">
-                    and tes.course_type=#{courseType}
-                </if>
-                <if test="courseType != null and courseType != '' and courseType != 4">
-                    and (tes.course_type=#{courseType} or tes.course_type = 3)
-                </if>
-				) tess on tct.teacher_id=tess.teacher_id
-    WHERE
+        left join (
+        select tes.* from t_eva_score as tes
+        where tes.term_id=#{termId} and tes.standard_id = #{standardId} and tes.user_id=#{userId}
+        <if test="courseType != null and courseType != '' and courseType == 4">
+            and tes.course_type=#{courseType}
+        </if>
+        <if test="courseType != null and courseType != '' and courseType != 4">
+            and (tes.course_type=#{courseType} or tes.course_type = 3)
+        </if>
+        ) tess on tct.teacher_id=tess.teacher_id
+        WHERE
         tct.is_eva = 1
         <!-- AND tt.id != #{teacherId} -->
         and tfc.term_id=#{termId}
-        order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING gbk)
+        order by CONVERT(td.faculty_name USING gbk),CONVERT(ttg.group_name USING gbk),tt.state,CONVERT(tt.name USING
+        gbk)
     </select>
     <select id="findCourseTeacherByKey" parameterType="java.util.Map" resultMap="BaseResultMap">
-        SELECT
-        distinct tt.id,
-        tt.name
-        FROM
-        t_course_teacher AS tct,
-        t_teacher AS tt,
-        t_user AS tu,
-		t_faculty_course as tfc
-        WHERE
-        tt.job_no = tu.user_name
-        and tt.id = tct.teacher_id
-        and tfc.oid = tct.course_id
-		and tfc.term_id=#{termId}
-        AND tt.name LIKE CONCAT(CONCAT('%', #{key}), '%')
-        ORDER BY
-        tt.name ASC
+        SELECT distinct tt.id,
+                        tt.name
+        FROM t_course_teacher AS tct,
+             t_teacher AS tt,
+             t_user AS tu,
+             t_faculty_course as tfc
+        WHERE tt.job_no = tu.user_name
+          and tt.id = tct.teacher_id
+          and tfc.oid = tct.course_id
+          and tfc.term_id = #{termId}
+          AND tt.name LIKE CONCAT(CONCAT('%', #{key}), '%')
+        ORDER BY tt.name ASC
         LIMIT 10
     </select>
     <select id="findEvaScoreTeacher" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -610,12 +603,25 @@
         limit 1
     </select>
     <select id="findCourseTeachersByTeacherId" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select tt.* from t_course_teacher as tct
-        left join t_faculty_course as tfc on tct.course_id=tfc.oid
-        left join t_faculty as tf on tfc.faculty_id=tf.oid
-        left join t_teacher as tt on tt.id = tct.teacher_id
-        left join t_user as tu on tu.user_name = tt.job_no
-        where tfc.term_id = #{termId} and tf.faculty_admin=#{teacherId}
+        select tt.*
+        from t_course_teacher as tct
+                 left join t_faculty_course as tfc on tct.course_id = tfc.oid
+                 left join t_faculty as tf on tfc.faculty_id = tf.oid
+                 left join t_teacher as tt on tt.id = tct.teacher_id
+                 left join t_user as tu on tu.user_name = tt.job_no
+        where tfc.term_id = #{termId}
+          and tf.faculty_admin = #{teacherId}
         group by tct.teacher_id
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select *
+        from t_teacher
+    </select>
+
+    <select id="getAllTeacherJobNosAndIds" resultMap="BaseResultMap">
+        select job_no, id
+        from t_teacher
+        where is_valid = 1
     </select>
 </mapper>

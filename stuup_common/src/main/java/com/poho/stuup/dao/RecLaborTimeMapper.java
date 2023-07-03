@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecLaborTime;
 import com.poho.stuup.model.dto.RecLaborTimeDTO;
+import com.poho.stuup.model.excel.RecLaborTimeExcel;
 import com.poho.stuup.model.vo.RecLaborTimeVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,4 +25,6 @@ import org.apache.ibatis.annotations.Param;
 public interface RecLaborTimeMapper extends BaseMapper<RecLaborTime> {
 
     IPage<RecLaborTimeVO> getRecLaborTimePage(Page<RecLaborTimeVO> page, @Param("query") RecLaborTimeDTO query);
+
+    List<RecLaborTimeExcel> queryExcelList(@Param("query") Map<String, Object> params);
 }

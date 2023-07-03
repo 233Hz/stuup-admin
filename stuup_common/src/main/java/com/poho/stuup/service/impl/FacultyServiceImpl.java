@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class FacultyServiceImpl implements IFacultyService {
@@ -56,7 +58,7 @@ public class FacultyServiceImpl implements IFacultyService {
     }
 
     @Override
-    public ResponseModel findDataPageResult(String key, int page, int pageSize)  {
+    public ResponseModel findDataPageResult(String key, int page, int pageSize) {
         ResponseModel model = new ResponseModel();
         Map<String, Object> map = new HashMap<>();
         map.put("key", key);
@@ -84,11 +86,10 @@ public class FacultyServiceImpl implements IFacultyService {
         if (checkFaculty != null) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
             model.setMessage("系部名称已存在");
-        }
-        else {
+        } else {
             int line = 0;
             if (faculty.getOid() != null) {
-                line = facultyMapper.updateByPrimaryKeySelective(faculty) ;
+                line = facultyMapper.updateByPrimaryKeySelective(faculty);
                 model.setCode(CommonConstants.CODE_SUCCESS);
                 model.setMessage("更新成功");
             } else {
@@ -109,5 +110,11 @@ public class FacultyServiceImpl implements IFacultyService {
     @Override
     public List<Faculty> findFacultyByAdmin(Integer id) {
         return facultyMapper.findFacultyByAdmin(id);
+    }
+
+    @Override
+    public Map<Integer, Faculty> facultyMap() {
+        List<Faculty> facultyList = facultyMapper.selectAll();
+        return facultyList.stream().collect(Collectors.toMap(Faculty::getOid, Function.identity()));
     }
 }

@@ -255,6 +255,18 @@
         where student_no = #{studentNo}
     </select>
 
+    <select id="getAllStudent" resultMap="BaseResultMap">
+        select id,
+               name,
+               student_no,
+               class_id,
+               grade_id,
+               major_id
+        from t_student
+        where status = 1
+          and is_valid = 1
+    </select>
+
     <select id="getAllStudentId" resultType="integer">
         select id
         from t_student

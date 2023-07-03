@@ -24,13 +24,6 @@
         <result column="remark" property="remark"/>
     </resultMap>
 
-    <select id="findGrowStudentRecForTimePeriod" resultType="Long">
-        select student_id
-        from t_rec_default
-        where grow_id = #{growId}
-          and create_time between #{startTime} and #{endTime}
-    </select>
-
     <select id="getRecLogDetails" resultMap="RecLogDetailsVOMap">
         select rd.id,
                g.grade_name,

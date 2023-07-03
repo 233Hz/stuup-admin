@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.dto.YearRankDTO;
 import com.poho.stuup.model.vo.YearRankVO;
-import com.poho.stuup.service.RankingYearService;
+import com.poho.stuup.service.RankYearService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,14 +23,15 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/rankingYear")
-public class RankingYearController {
+public class RankYearController {
 
     @Resource
-    private RankingYearService rankingYearService;
+    private RankYearService rankYearService;
 
-    @GetMapping("/yearRanking")
-    public ResponseModel<IPage<YearRankVO>> getYearRanking(Page<YearRankVO> page, @RequestParam("yearId") Long yearId, YearRankDTO query) {
-        return ResponseModel.ok(rankingYearService.getYearRanking(page, yearId, query));
+    @GetMapping("/yearRank")
+    public ResponseModel<IPage<YearRankVO>> getYearRank(Page<YearRankVO> page, @RequestParam("yearId") Long yearId, YearRankDTO query) {
+//        return ResponseModel.ok(rankYearService.getYearRank(page, yearId, query));
+        return null;
     }
 
 }

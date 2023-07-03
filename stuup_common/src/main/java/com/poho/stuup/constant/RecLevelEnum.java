@@ -18,8 +18,17 @@ public enum RecLevelEnum {
         this.value = value;
     }
 
+    public static String getLabelForValue(int label) {
+        for (RecLevelEnum recLevelEnum : RecLevelEnum.values()) {
+            if (recLevelEnum.getValue() == label) {
+                return recLevelEnum.getLabel();
+            }
+        }
+        return null;
+    }
+
     //根据label获取对应的枚举值
-    public static Integer getValueForLabel(String label, RecLevelEnum... args) {
+    public static Integer getValueForLabel(String label) {
         // TODO 通过 args 排除参与的枚举
         for (RecLevelEnum recLevelEnum : RecLevelEnum.values()) {
             if (recLevelEnum.getLabel().equals(label)) {

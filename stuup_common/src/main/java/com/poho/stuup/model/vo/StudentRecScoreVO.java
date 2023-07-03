@@ -49,4 +49,9 @@ public class StudentRecScoreVO {
      */
     private Date createTime;
 
+    /**
+     * 说明
+     */
+    private String description;
+
 }

@@ -27,7 +27,8 @@
     </resultMap>
 
     <select id="getRecLaborTimePage" resultMap="RecLaborTimeVOMap">
-        select rlt.id,
+        select
+        rlt.id,
         y.year_name,
         g.grade_name,
         c.name as class_name,
@@ -44,7 +45,7 @@
         left join t_class c on c.id = s.class_id
         <where>
             <if test="query.yearId != null and query.yearId != ''">
-                and y.oid = #{query.yearId}
+                and rlt.year_id = #{query.yearId}
             </if>
             <if test="query.gradeId != null and query.gradeId != ''">
                 and g.oid = #{query.gradeId}
@@ -59,6 +60,46 @@
                 and s.student_no like concat('%',#{query.studentNo},'%')
             </if>
         </where>
+        order by rlt.create_time desc
+    </select>
+
+    <resultMap id="RecLaborTimeExcelMap" type="com.poho.stuup.model.excel.RecLaborTimeExcel">
+        <result column="grade_name" property="gradeName"/>
+        <result column="class_name" property="className"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="id_card" property="idCard"/>
+        <result column="hours" property="hours"/>
+    </resultMap>
+
+    <select id="queryExcelList" resultMap="RecLaborTimeExcelMap">
+        select
+        g.grade_name,
+        c.name as class_name,
+        s.name as student_name,
+        s.student_no,
+        s.id_card,
+        rlt.hours
+        from t_rec_labor_time rlt
+        left join t_student s on s.id = rlt.student_id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_class c on c.id = s.class_id
+        <where>
+            rlt.year_id = #{query.yearId}
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.classId != null and query.classId != ''">
+                and c.id = #{query.classId}
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%',#{query.studentName},'%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%',#{query.studentNo},'%')
+            </if>
+        </where>
+        order by rlt.create_time desc
     </select>
 
 </mapper>

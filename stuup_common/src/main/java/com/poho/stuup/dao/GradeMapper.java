@@ -46,9 +46,10 @@ public interface GradeMapper {
     Grade checkGrade(Grade grade);
 
     /**
-     *
      * @param year
      * @return
      */
     Grade findGradeByYear(String year);
+
+    List<Grade> selectAll();
 }

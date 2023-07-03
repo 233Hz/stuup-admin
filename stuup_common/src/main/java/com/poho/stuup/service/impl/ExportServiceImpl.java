@@ -63,22 +63,22 @@ public class ExportServiceImpl implements IExportService {
     public boolean exportReward(InputStream inputStream, HttpServletResponse response, RewardSearchDTO searchDTO) {
         List<RewardDTO> list = rewardMapper.selectList(null, searchDTO);
         final List<List<String>> dataList = new ArrayList<>();
-        if(CollUtil.isNotEmpty(list)){
-            final String[] fieldNames = {"name", "levelName", "stuName", "obtainDateStr", "unitName", "rank"};
+        if (CollUtil.isNotEmpty(list)) {
+            final String[] fieldNames = {"title", "levelName", "stuName", "obtainDateStr", "unitName", "rank"};
             list.forEach(
-                o -> {
-                    List<String> fieldValueList = new ArrayList<>();
-                    o.setLevelName(ProjectUtil.LEVEL_DICT_MAP.get(o.getLevel()));
-                    if(o.getObtainDate() != null){
-                        o.setObtainDateStr(MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getObtainDate()));
+                    o -> {
+                        List<String> fieldValueList = new ArrayList<>();
+                        o.setLevelName(ProjectUtil.LEVEL_DICT_MAP.get(o.getLevel()));
+                        if (o.getObtainDate() != null) {
+                            o.setObtainDateStr(MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getObtainDate()));
+                        }
+                        Object value;
+                        for (String fieldName : fieldNames) {
+                            value = ReflectUtil.getFieldValue(o, fieldName);
+                            fieldValueList.add(value != null ? value.toString() : "");
+                        }
+                        dataList.add(fieldValueList);
                     }
-                    Object value;
-                    for (String fieldName : fieldNames) {
-                        value = ReflectUtil.getFieldValue(o, fieldName);
-                        fieldValueList.add(value != null ? value.toString() : "");
-                    }
-                    dataList.add(fieldValueList);
-                }
             );
         }
 
@@ -89,13 +89,13 @@ public class ExportServiceImpl implements IExportService {
     public boolean exportContest(InputStream inputStream, HttpServletResponse response, ContestSearchDTO searchDTO) {
         List<ContestDTO> list = contestMapper.selectList(null, searchDTO);
         final List<List<String>> dataList = new ArrayList<>();
-        if(CollUtil.isNotEmpty(list)){
-            final String[] fieldNames = {"name", "unitName", "levelName", "stuName", "obtainDateStr", "rank"};
+        if (CollUtil.isNotEmpty(list)) {
+            final String[] fieldNames = {"title", "unitName", "levelName", "stuName", "obtainDateStr", "rank"};
             list.forEach(
                     o -> {
                         List<String> fieldValueList = new ArrayList<>();
                         o.setLevelName(ProjectUtil.LEVEL_DICT_MAP.get(o.getLevel()));
-                        if(o.getObtainDate() != null){
+                        if (o.getObtainDate() != null) {
                             o.setObtainDateStr(MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getObtainDate()));
                         }
                         Object value;
@@ -114,13 +114,13 @@ public class ExportServiceImpl implements IExportService {
     public boolean exportCertificate(InputStream inputStream, HttpServletResponse response, CertificateSearchDTO searchDTO) {
         List<CertificateDTO> list = certificateMapper.selectList(null, searchDTO);
         final List<List<String>> dataList = new ArrayList<>();
-        if(CollUtil.isNotEmpty(list)){
-            final String[] fieldNames = {"name", "major", "unitName", "stuName", "levelName", "obtainDateStr", "certNo"};
+        if (CollUtil.isNotEmpty(list)) {
+            final String[] fieldNames = {"title", "major", "unitName", "stuName", "levelName", "obtainDateStr", "certNo"};
             list.forEach(
                     o -> {
                         List<String> fieldValueList = new ArrayList<>();
                         o.setLevelName(ProjectUtil.LEVEL_DICT_MAP.get(o.getLevel()));
-                        if(o.getObtainDate() != null){
+                        if (o.getObtainDate() != null) {
                             o.setObtainDateStr(MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getObtainDate()));
                         }
                         Object value;
@@ -139,20 +139,20 @@ public class ExportServiceImpl implements IExportService {
     public boolean exportMilitary(InputStream inputStream, HttpServletResponse response, MilitarySearchDTO searchDTO) {
         List<MilitaryDTO> list = militaryMapper.selectList(null, searchDTO);
         final List<List<String>> dataList = new ArrayList<>();
-        if(CollUtil.isNotEmpty(list)){
+        if (CollUtil.isNotEmpty(list)) {
             final String[] fieldNames = {"gradeName", "className", "stuNo", "stuName", "levelName", "goodFlagName"};
             List<Grade> gradeList = gradeMapper.findGrades();
-            Map<Integer, String> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getOid,Grade::getGradeName));
+            Map<Integer, String> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getOid, Grade::getGradeName));
             list.forEach(
                     o -> {
                         List<String> fieldValueList = new ArrayList<>();
-                        if(o.getLevel() != null){
+                        if (o.getLevel() != null) {
                             o.setLevelName(ProjectUtil.MILITARY_LEVEL_DICT_MAP.get(o.getLevel()));
                         }
-                        if(o.getGoodFlag() != null){
+                        if (o.getGoodFlag() != null) {
                             o.setGoodFlagName(ProjectUtil.GOOD_FLAG_DICT_MAP.get(o.getGoodFlag()));
                         }
-                        if(o.getGradeId() != null){
+                        if (o.getGradeId() != null) {
                             o.setGradeName(gradeMap.get(o.getGradeId()));
                         }
                         Object value;
@@ -171,22 +171,22 @@ public class ExportServiceImpl implements IExportService {
     public boolean exportPolitical(InputStream inputStream, HttpServletResponse response, PoliticalSearchDTO searchDTO) {
         List<PoliticalDTO> list = politicalMapper.selectList(null, searchDTO);
         final List<List<String>> dataList = new ArrayList<>();
-        if(CollUtil.isNotEmpty(list)){
-            final String[] fieldNames = {"gradeName", "className", "stuNo", "stuName", "name", "durationDateStr", "levelName", "role", "orgName"};
+        if (CollUtil.isNotEmpty(list)) {
+            final String[] fieldNames = {"gradeName", "className", "stuNo", "stuName", "title", "durationDateStr", "levelName", "role", "orgName"};
             List<Grade> gradeList = gradeMapper.findGrades();
-            Map<Integer, String> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getOid,Grade::getGradeName));
+            Map<Integer, String> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getOid, Grade::getGradeName));
             list.forEach(
                     o -> {
                         List<String> fieldValueList = new ArrayList<>();
                         o.setLevelName(ProjectUtil.POLITICAL_LEVEL_DICT_MAP.get(o.getLevel()));
                         String durationDateStr = "";
-                        if(o.getStartDate() != null){
+                        if (o.getStartDate() != null) {
                             durationDateStr = MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getStartDate());
                         }
-                        if(o.getEndDate() != null){
+                        if (o.getEndDate() != null) {
                             durationDateStr = durationDateStr + " - " + MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getEndDate());
                         }
-                        if(o.getGradeId() != null){
+                        if (o.getGradeId() != null) {
                             o.setGradeName(gradeMap.get(o.getGradeId()));
                         }
                         o.setDurationDateStr(durationDateStr);
@@ -206,13 +206,13 @@ public class ExportServiceImpl implements IExportService {
     public boolean exportVolunteer(InputStream inputStream, HttpServletResponse response, VolunteerSearchDTO searchDTO) {
         List<VolunteerDTO> list = volunteerMapper.selectList(null, searchDTO);
         final List<List<String>> dataList = new ArrayList<>();
-        if(CollUtil.isNotEmpty(list)){
-            final String[] fieldNames = {"stuNo", "stuName", "name", "address", "subName", "post", "durationName", "operDateStr", "memo"};
+        if (CollUtil.isNotEmpty(list)) {
+            final String[] fieldNames = {"stuNo", "stuName", "title", "address", "subName", "post", "durationName", "operDateStr", "memo"};
             list.forEach(
                     o -> {
                         List<String> fieldValueList = new ArrayList<>();
                         o.setDurationName(String.valueOf(o.getDuration()));
-                        if(o.getOperDate() != null){
+                        if (o.getOperDate() != null) {
                             o.setOperDateStr(MicrovanUtil.formatDateToStr(MicrovanUtil.DATE_FORMAT_PATTERN, o.getOperDate()));
                         }
                         Object value;
@@ -270,9 +270,7 @@ public class ExportServiceImpl implements IExportService {
         }
         OutputStream output = null;
         try {
-            StringBuilder title = new StringBuilder(exportTemplateEnum.getName());
-            title.append("_" + System.currentTimeMillis() + ".xlsx");
-            String fileName = URLEncoder.encode(title.toString(), "UTF-8");
+            String fileName = URLEncoder.encode(exportTemplateEnum.getName() + "_" + System.currentTimeMillis() + ".xlsx", "UTF-8");
             output = response.getOutputStream();
             response.setCharacterEncoding("UTF-8");
             response.setHeader("Content-Disposition", "attachment;filename=" + fileName);

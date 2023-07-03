@@ -97,4 +97,8 @@ public interface ClassMapper {
      * @date: 2023/6/9 10:50
      */
     Integer getClassIdForTeacher(@Param("teacherId") Long teacherId);
+
+    List<Class> selectAll();
+
+    List<Class> getClassTeacherIdsAndIds();
 }

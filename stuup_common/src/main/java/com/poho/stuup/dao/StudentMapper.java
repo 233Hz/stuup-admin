@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Mapper
 public interface StudentMapper {
@@ -56,7 +57,7 @@ public interface StudentMapper {
      */
     Long findStudentId(@Param("studentNo") String studentNo);
 
-    List<Long> selectIdList();
+    Set<Long> selectIdList();
 
     /**
      * @description: 通过学号获取学生信息
@@ -66,6 +67,8 @@ public interface StudentMapper {
      * @date: 2023/6/9 10:45
      */
     Student getStudentForStudentNO(@Param("studentNo") String studentNo);
+
+    List<Student> getAllStudent();
 
     List<Integer> getAllStudentId();
 

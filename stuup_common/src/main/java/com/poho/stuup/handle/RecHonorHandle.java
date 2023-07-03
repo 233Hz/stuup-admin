@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.EasyExcel;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.RecLevelEnum;
+import com.poho.stuup.dao.RecHonorMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecHonorListener;
 import com.poho.stuup.model.GrowthItem;
@@ -14,6 +16,7 @@ import com.poho.stuup.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,17 @@ public class RecHonorHandle implements RecExcelHandle {
         } catch (IOException e) {
             return ResponseModel.failed("导入失败");
         }
+    }
+
+    @Override
+    public void recExport(HttpServletResponse response, Map<String, Object> params) throws IOException {
+        RecHonorMapper recHonorMapper = SpringContextHolder.getBean(RecHonorMapper.class);
+        List<RecHonorExcel> recHonorExcels = recHonorMapper.queryExcelList(params);
+        recHonorExcels.forEach(recHonorExcel -> {
+            Integer level = recHonorExcel.getLevelValue();
+            recHonorExcel.setLevel(RecLevelEnum.getLabelForValue(level));
+        });
+        EasyExcel.write(response.getOutputStream(), RecHonorExcel.class).sheet().doWrite(recHonorExcels);
     }
 
 }

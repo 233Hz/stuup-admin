@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.EasyExcel;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.dao.RecLaborTimeMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.handle.excel.RecLaborTimeListener;
 import com.poho.stuup.model.GrowthItem;
@@ -14,6 +15,7 @@ import com.poho.stuup.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,13 @@ public class RecLaborTimeHandle implements RecExcelHandle {
         } catch (IOException e) {
             return ResponseModel.failed("导入失败");
         }
+    }
+
+    @Override
+    public void recExport(HttpServletResponse response, Map<String, Object> params) throws IOException {
+        RecLaborTimeMapper recLaborTimeMapper = SpringContextHolder.getBean(RecLaborTimeMapper.class);
+        List<RecLaborTimeExcel> recLaborTimeExcels = recLaborTimeMapper.queryExcelList(params);
+        EasyExcel.write(response.getOutputStream(), RecLaborTimeExcel.class).sheet().doWrite(recLaborTimeExcels);
     }
 
 }

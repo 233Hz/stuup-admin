@@ -10,8 +10,8 @@ import lombok.Getter;
 @Getter
 public enum CalculateTypeEnum {
 
-    PLUS("+", 1),
-    MINUS("-", 2);
+    PLUS("录入加分", 1),
+    MINUS("录入减分", 2);
 
     private final String type;
     private final int value;

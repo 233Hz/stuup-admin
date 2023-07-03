@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecCaucus;
 import com.poho.stuup.model.dto.RecCaucusDTO;
+import com.poho.stuup.model.excel.RecCaucusExcel;
 import com.poho.stuup.model.vo.RecCaucusVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,4 +25,6 @@ import org.apache.ibatis.annotations.Param;
 public interface RecCaucusMapper extends BaseMapper<RecCaucus> {
 
     IPage<RecCaucusVO> getRecCaucusPage(Page<RecCaucusVO> page, @Param("query") RecCaucusDTO query);
+
+    List<RecCaucusExcel> queryExcelList(@Param("query") Map<String, Object> params);
 }

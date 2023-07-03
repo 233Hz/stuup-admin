@@ -3,6 +3,7 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.SimpleUserDTO;
@@ -79,6 +80,15 @@ public interface IUserService {
      * @return
      */
     Map<String, Object> importUserList(List<User> userList);
+
+    /**
+     * @description: 获取当前用户信息
+     * @param: userId
+     * @return: com.poho.stuup.custom.CusUser
+     * @author BUNGA
+     * @date: 2023/6/20 10:26
+     */
+    CusUser getUserInfo(Long userId);
 
     /**
      * 查询用户菜单权限

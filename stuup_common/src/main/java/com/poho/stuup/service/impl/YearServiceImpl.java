@@ -175,4 +175,32 @@ public class YearServiceImpl implements IYearService {
         }
         return model;
     }
+
+    @Override
+    public Year findYearForStartAndEndTime(Date startTime, Date endTime) {
+        return yearMapper.findYearForStartAndEndTime(startTime, endTime);
+    }
+
+    @Override
+    public Year findTimeBelongYear(Date date) {
+        return yearMapper.findTimeBelongYear(date);
+    }
+
+    @Override
+    public void setAllYearNotCurr() {
+        yearMapper.setAllYearNotCurr();
+    }
+
+    @Override
+    public Year getCurrentYear() {
+        Year year = yearMapper.findCurrYear();
+        if (year == null) throw new RuntimeException("当前时间不在学年设置时间范围内");
+        return year;
+    }
+
+    @Override
+    public void setCurrentYear(Long oid) {
+        yearMapper.setCurrentYear(oid);
+    }
+
 }

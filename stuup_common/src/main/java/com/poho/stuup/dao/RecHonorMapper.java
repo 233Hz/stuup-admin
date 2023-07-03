@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecHonor;
 import com.poho.stuup.model.dto.RecHonorDTO;
+import com.poho.stuup.model.excel.RecHonorExcel;
 import com.poho.stuup.model.vo.RecHonorVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,4 +25,6 @@ import org.apache.ibatis.annotations.Param;
 public interface RecHonorMapper extends BaseMapper<RecHonor> {
 
     IPage<RecHonorVO> getRecHonorPage(Page<RecHonorVO> page, @Param("query") RecHonorDTO query);
+
+    List<RecHonorExcel> queryExcelList(@Param("query") Map<String, Object> params);
 }

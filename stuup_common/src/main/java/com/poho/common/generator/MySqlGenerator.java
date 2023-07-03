@@ -1,5 +1,6 @@
 package com.poho.common.generator;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -55,7 +56,10 @@ public class MySqlGenerator {
                 .strategyConfig(builder -> {
                     builder.addInclude(scanner("表名").split(",")) // 设置需要生成的表名
                             .addTablePrefix("t_") // 设置过滤表前缀
+                            .controllerBuilder()
+                            .enableRestStyle()
                             .entityBuilder()
+                            .idType(IdType.AUTO)
                             .enableLombok()
                             .serviceBuilder()
                             .formatServiceFileName("%sService")
@@ -73,9 +77,7 @@ public class MySqlGenerator {
      */
     public static String scanner(String tip) {
         Scanner scanner = new Scanner(System.in);
-        StringBuilder help = new StringBuilder();
-        help.append("请输入" + tip + "（多个表用 , 分割）：");
-        System.out.println(help.toString());
+        System.out.println("请输入" + tip + "（多个表用 , 分割）：");
         if (scanner.hasNext()) {
             String ipt = scanner.next();
             if (StringUtils.isNotBlank(ipt)) {

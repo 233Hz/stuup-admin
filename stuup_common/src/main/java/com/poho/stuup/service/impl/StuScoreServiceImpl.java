@@ -15,11 +15,9 @@ import com.poho.stuup.dao.UserMapper;
 import com.poho.stuup.model.StuScore;
 import com.poho.stuup.model.Student;
 import com.poho.stuup.model.User;
-import com.poho.stuup.model.dto.ClassRankDTO;
 import com.poho.stuup.model.dto.GrowGardenDTO;
-import com.poho.stuup.model.dto.MajorRankDTO;
-import com.poho.stuup.model.dto.SchoolRankDTO;
-import com.poho.stuup.model.vo.*;
+import com.poho.stuup.model.vo.FlowerVO;
+import com.poho.stuup.model.vo.GrowGardenVO;
 import com.poho.stuup.service.StuScoreService;
 import com.poho.stuup.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -106,21 +104,6 @@ public class StuScoreServiceImpl extends ServiceImpl<StuScoreMapper, StuScore> i
             if (userClassId == null) return ResponseModel.failed("没有查看权限");
         }
         return ResponseModel.ok(baseMapper.getGrowGardenForStudent(page, query, userClassId, startScore, endScore));
-    }
-
-    @Override
-    public IPage<SchoolRankVO> getSchoolRanking(Page<SchoolRankVO> page, SchoolRankDTO query) {
-        return baseMapper.getSchoolRanking(page, query);
-    }
-
-    @Override
-    public IPage<ClassRankVO> getClassRanking(Page<ClassRankVO> page, ClassRankDTO query) {
-        return baseMapper.getClassRanking(page, query);
-    }
-
-    @Override
-    public IPage<MajorRankVO> getMajorRanking(Page<MajorRankVO> page, MajorRankDTO query) {
-        return baseMapper.getMajorRanking(page, query);
     }
 
 

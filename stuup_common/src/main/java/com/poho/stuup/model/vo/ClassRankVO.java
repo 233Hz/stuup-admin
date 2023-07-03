@@ -15,7 +15,12 @@ public class ClassRankVO {
     /**
      * 班级id
      */
-    private Long id;
+    private Integer classId;
+
+    /**
+     * 排名
+     */
+    private Integer rank;
 
     /**
      * 所属班级

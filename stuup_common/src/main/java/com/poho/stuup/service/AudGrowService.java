@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.constant.AutStateEnum;
+import com.poho.stuup.constant.AudStateEnum;
 import com.poho.stuup.model.AudGrow;
 import com.poho.stuup.model.dto.GrowRecordDTO;
 import com.poho.stuup.model.vo.GrowApplyRecordVO;
@@ -53,13 +53,13 @@ public interface AudGrowService extends IService<AudGrow> {
      * @description: 更新记录状态
      * @param: id
      * @param: growId
-     * @param: autStateEnum
+     * @param: audStateEnum
      * @param: userId
      * @param: reason
      * @return: void
      * @author BUNGA
      * @date: 2023/6/16 14:25
      */
-    void updateRecordState(Long id, Long growId, AutStateEnum autStateEnum, Long userId, String reason);
+    void updateRecordState(Long id, Long growId, AudStateEnum audStateEnum, Long userId, String reason);
 
 }

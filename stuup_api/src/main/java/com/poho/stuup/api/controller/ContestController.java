@@ -40,7 +40,7 @@ public class ContestController {
     @Resource
     private IContestService contestService;
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取列表", httpMethod = "GET")
     @GetMapping("/list")
     public ResponseModel list(ContestSearchDTO searchDTO) {
@@ -48,7 +48,7 @@ public class ContestController {
         return contestService.findDataPageResult(searchDTO);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "导入", httpMethod = "POST")
     @RequestMapping(value = "/import", method = RequestMethod.POST)
     public ResponseModel importData(@RequestParam("importFile") MultipartFile importFile) {
@@ -65,7 +65,7 @@ public class ContestController {
                 File file = new File(path, fileName);
                 FileCopyUtils.copy(importFile.getBytes(), file);
                 String[] headNames = {"学籍号", "项目名称", "主办单位", "级别", "获奖日期", "获奖等第"};
-                String[] fieldNames = {"stuNo", "name", "unitName", "level", "obtainDate", "rank"};
+                String[] fieldNames = {"stuNo", "title", "unitName", "level", "obtainDate", "rank"};
                 List<ContestExcelDTO> list = new ExcelUtil().readExcel(file.getPath(), ContestExcelDTO.class, headNames, fieldNames);
                 if (MicrovanUtil.isNotEmpty(list)) {
                     Map<String, Object> result = contestService.importList(list);
@@ -80,7 +80,7 @@ public class ContestController {
                 model.setMessage("请选择Excel文件");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
             }
-        } catch (ExcelTitleException e ) {
+        } catch (ExcelTitleException e) {
             model.setMessage(e.getMessage());
             model.setCode(CommonConstants.CODE_EXCEPTION);
         } catch (IOException e) {

@@ -36,22 +36,21 @@ public interface MajorMapper {
     List<Major> findMajorPageResultByCond(Map<String, Object> map);
 
     /**
-     *
      * @param major
      * @return
      */
     Major checkMajor(Major major);
 
     /**
-     *
      * @return
      */
     List<Major> findMajors();
 
     /**
-     *
      * @param majorName
      * @return
      */
     Major findMajorByName(String majorName);
+
+    List<Major> selectAll();
 }

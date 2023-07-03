@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecMilitary;
 import com.poho.stuup.model.dto.RecMilitaryDTO;
+import com.poho.stuup.model.excel.RecMilitaryExcel;
 import com.poho.stuup.model.vo.RecMilitaryVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,4 +25,6 @@ import org.apache.ibatis.annotations.Param;
 public interface RecMilitaryMapper extends BaseMapper<RecMilitary> {
 
     IPage<RecMilitaryVO> getRecMilitaryPage(Page<RecMilitaryVO> page, @Param("query") RecMilitaryDTO query);
+
+    List<RecMilitaryExcel> queryExcelList(@Param("query") Map<String, Object> params);
 }

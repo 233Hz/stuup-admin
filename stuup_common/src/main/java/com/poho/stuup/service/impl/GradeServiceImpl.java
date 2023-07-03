@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class GradeServiceImpl implements IGradeService {
@@ -96,5 +98,11 @@ public class GradeServiceImpl implements IGradeService {
             }
         }
         return model;
+    }
+
+    @Override
+    public Map<Integer, Grade> gradeMap() {
+        List<Grade> gradeList = gradeMapper.selectAll();
+        return gradeList.stream().collect(Collectors.toMap(Grade::getOid, Function.identity()));
     }
 }

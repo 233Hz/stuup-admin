@@ -7,7 +7,10 @@ import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.CusMap;
 import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
-import com.poho.common.util.*;
+import com.poho.common.util.JwtUtil;
+import com.poho.common.util.MicrovanUtil;
+import com.poho.common.util.PasswordUtil;
+import com.poho.common.util.Validator;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.dao.*;
@@ -387,6 +390,11 @@ public class UserServiceImpl implements IUserService {
         resultMap.put("failNum", k);
         resultMap.put("msg", msg.toString());
         return resultMap;
+    }
+
+    public CusUser getUserInfo(Long userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        return ProjectUtil.convertCusUser(user);
     }
 
     @Override

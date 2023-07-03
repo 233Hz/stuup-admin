@@ -4,6 +4,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Faculty;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IFacultyService {
     int deleteByPrimaryKey(Integer oid);
@@ -19,15 +20,13 @@ public interface IFacultyService {
     int updateByPrimaryKey(Faculty record);
 
     /**
-     *
      * @return
      */
     List<Faculty> findAllFaculty();
 
-    ResponseModel findDataPageResult(String key, int page, int pageSize) ;
+    ResponseModel findDataPageResult(String key, int page, int pageSize);
 
     /**
-     *
      * @param faculty
      * @return
      */
@@ -36,4 +35,6 @@ public interface IFacultyService {
     Faculty findFacultyByName(String facultyName);
 
     List<Faculty> findFacultyByAdmin(Integer id);
+
+    Map<Integer, Faculty> facultyMap();
 }

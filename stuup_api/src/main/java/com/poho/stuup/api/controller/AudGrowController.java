@@ -1,14 +1,18 @@
 package com.poho.stuup.api.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.constant.AutStateEnum;
+import com.poho.stuup.constant.AudStateEnum;
 import com.poho.stuup.constant.ValidationGroups;
 import com.poho.stuup.dao.StudentMapper;
+import com.poho.stuup.event.EventPublish;
+import com.poho.stuup.event.SystemMsgEvent;
 import com.poho.stuup.model.AudGrow;
 import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.GrowRecordDTO;
+import com.poho.stuup.model.dto.SystemMagVO;
 import com.poho.stuup.model.vo.GrowApplyRecordVO;
 import com.poho.stuup.model.vo.GrowAuditRecordVO;
 import com.poho.stuup.service.AudGrowService;
@@ -50,6 +54,9 @@ public class AudGrowController {
     @Resource
     private IUserService userService;
 
+    @Resource
+    private EventPublish eventPublish;
+
     /**
      * @description: 申请成长项目
      * @param: data
@@ -75,8 +82,8 @@ public class AudGrowController {
     public ResponseModel<Boolean> updateAudGrow(@Validated({ValidationGroups.Update.class}) @RequestBody AudGrow data) {
         AudGrow audGrow = audGrowService.getById(data.getId());
         Integer state = audGrow.getState();
-        System.out.println(state == AutStateEnum.TO_BE_SUBMITTED.getCode());
-        if (AutStateEnum.TO_BE_SUBMITTED.getCode() != state && AutStateEnum.RETURN.getCode() != state)
+        System.out.println(state == AudStateEnum.TO_BE_SUBMITTED.getCode());
+        if (AudStateEnum.TO_BE_SUBMITTED.getCode() != state && AudStateEnum.RETURN.getCode() != state)
             return ResponseModel.failed("当前状态无法修改");
         if (!Objects.equals(data.getGrowId(), audGrow.getGrowId())) return ResponseModel.failed("无法修改申请的项目");
         return ResponseModel.ok(audGrowService.updateById(data), "修改成功");
@@ -93,7 +100,7 @@ public class AudGrowController {
     public ResponseModel<Boolean> deleteAudGrow(@PathVariable("id") Long id) {
         AudGrow audGrow = audGrowService.getById(id);
         Integer state = audGrow.getState();
-        if (AutStateEnum.TO_BE_SUBMITTED.getCode() != state && AutStateEnum.RETURN.getCode() != state)
+        if (AudStateEnum.TO_BE_SUBMITTED.getCode() != state && AudStateEnum.RETURN.getCode() != state)
             return ResponseModel.failed("当前状态无法删除");
         return ResponseModel.ok(audGrowService.removeById(id), "删除成功");
     }
@@ -139,10 +146,16 @@ public class AudGrowController {
     public ResponseModel<Boolean> submitGrowItem(@PathVariable("id") Long id) {
         AudGrow audGrow = audGrowService.getById(id);
         Integer state = audGrow.getState();
-        if (AutStateEnum.TO_BE_SUBMITTED.getCode() != state && AutStateEnum.RETURN.getCode() != state)
+        if (AudStateEnum.TO_BE_SUBMITTED.getCode() != state && AudStateEnum.RETURN.getCode() != state)
             return ResponseModel.failed("当前状态无法提交");
         String userId = ProjectUtil.obtainLoginUser(request);
-        audGrowService.updateRecordState(id, audGrow.getGrowId(), AutStateEnum.PENDING_REVIEW, Long.parseLong(userId), null);
+        audGrowService.updateRecordState(id, audGrow.getGrowId(), AudStateEnum.PENDING_REVIEW, Long.parseLong(userId), null);
+        // 发布通知
+        User user = userService.selectByPrimaryKey(audGrow.getApplicant());
+        SystemMagVO systemMagVO = new SystemMagVO();
+        systemMagVO.setTitle(StrUtil.format("{}-提交了申请", user.getUserName()));
+        systemMagVO.setUserId(audGrow.getAuditor());
+        eventPublish.publishEvent(new SystemMsgEvent(systemMagVO));
         return ResponseModel.ok(null, "提交成功");
     }
 
@@ -161,11 +174,11 @@ public class AudGrowController {
         Long studentId = studentMapper.findStudentId(user.getLoginName());
         if (studentId == null) return ResponseModel.failed("未查询到申请人信息，请联系管理员");
         Integer state = audGrow.getState();
-        if (AutStateEnum.PENDING_REVIEW.getCode() != state)
+        if (AudStateEnum.PENDING_REVIEW.getCode() != state)
             return ResponseModel.failed("当前状态无法审核");
         String userId = ProjectUtil.obtainLoginUser(request);
         // 更新状态
-        audGrowService.updateRecordState(id, audGrow.getGrowId(), AutStateEnum.PASS, Long.parseLong(userId), null);
+        audGrowService.updateRecordState(id, audGrow.getGrowId(), AudStateEnum.PASS, Long.parseLong(userId), null);
         // 计算积分
         recScoreService.calculateStudentScore(audGrow.getGrowId(), studentId);
         return ResponseModel.ok(null, "审核已通过");
@@ -182,10 +195,10 @@ public class AudGrowController {
     public ResponseModel<Boolean> refuseGrowItem(@PathVariable("id") Long id, @RequestParam(value = "reason", required = false, defaultValue = "审核已拒绝,未填写原因") String reason) {
         AudGrow audGrow = audGrowService.getById(id);
         Integer state = audGrow.getState();
-        if (AutStateEnum.PENDING_REVIEW.getCode() != state)
+        if (AudStateEnum.PENDING_REVIEW.getCode() != state)
             return ResponseModel.failed("当前状态无法审核");
         String userId = ProjectUtil.obtainLoginUser(request);
-        audGrowService.updateRecordState(id, audGrow.getGrowId(), AutStateEnum.REFUSE, Long.parseLong(userId), reason);
+        audGrowService.updateRecordState(id, audGrow.getGrowId(), AudStateEnum.REFUSE, Long.parseLong(userId), reason);
         return ResponseModel.ok(null, "审核已拒绝");
     }
 
@@ -200,10 +213,10 @@ public class AudGrowController {
     public ResponseModel<Boolean> returnGrowItem(@PathVariable("id") Long id, @RequestParam(value = "reason", required = false, defaultValue = "审核已退回,未填写原因") String reason) {
         AudGrow audGrow = audGrowService.getById(id);
         Integer state = audGrow.getState();
-        if (AutStateEnum.PENDING_REVIEW.getCode() != state)
+        if (AudStateEnum.PENDING_REVIEW.getCode() != state)
             return ResponseModel.failed("当前状态无法审核");
         String userId = ProjectUtil.obtainLoginUser(request);
-        audGrowService.updateRecordState(id, audGrow.getGrowId(), AutStateEnum.RETURN, Long.parseLong(userId), reason);
+        audGrowService.updateRecordState(id, audGrow.getGrowId(), AudStateEnum.RETURN, Long.parseLong(userId), reason);
         return ResponseModel.ok(null, "审核已退回");
     }
 

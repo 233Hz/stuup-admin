@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class MajorServiceImpl implements IMajorService {
@@ -96,5 +98,11 @@ public class MajorServiceImpl implements IMajorService {
     @Override
     public List<Major> findMajors() {
         return majorMapper.findMajors();
+    }
+
+    @Override
+    public Map<Integer, Major> majorMap() {
+        List<Major> majorList = majorMapper.selectAll();
+        return majorList.stream().collect(Collectors.toMap(Major::getOid, Function.identity()));
     }
 }

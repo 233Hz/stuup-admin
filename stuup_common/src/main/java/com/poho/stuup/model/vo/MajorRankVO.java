@@ -15,7 +15,12 @@ public class MajorRankVO {
     /**
      * 专业id
      */
-    private Long id;
+    private Integer majorId;
+
+    /**
+     * 排名
+     */
+    private Integer rank;
 
     /**
      * 专业名称
@@ -31,6 +36,5 @@ public class MajorRankVO {
      * 成长值
      */
     private BigDecimal score;
-
 
 }

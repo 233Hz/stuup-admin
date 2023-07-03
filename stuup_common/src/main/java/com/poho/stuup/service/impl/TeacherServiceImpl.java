@@ -5,12 +5,17 @@ import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.*;
-import com.poho.stuup.model.*;
+import com.poho.stuup.model.Teacher;
 import com.poho.stuup.service.ITeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherServiceImpl implements ITeacherService {
@@ -97,6 +102,12 @@ public class TeacherServiceImpl implements ITeacherService {
             return list;
         }
         return null;
+    }
+
+    @Override
+    public Map<Integer, Teacher> teacherMap() {
+        List<Teacher> teacherList = teacherMapper.selectAll();
+        return teacherList.stream().collect(Collectors.toMap(Teacher::getId, Function.identity()));
     }
 
 

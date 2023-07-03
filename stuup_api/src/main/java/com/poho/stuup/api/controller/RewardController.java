@@ -6,12 +6,10 @@ import com.poho.common.exception.ExcelTitleException;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
-import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.RewardExcelDTO;
 import com.poho.stuup.model.dto.RewardSearchDTO;
 import com.poho.stuup.service.IRewardService;
 import com.poho.stuup.util.ExcelUtil;
-import com.poho.stuup.util.ProjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -42,7 +40,7 @@ public class RewardController {
     @Resource
     private IRewardService rewardService;
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取列表", httpMethod = "GET")
     @GetMapping("/list")
     public ResponseModel list(RewardSearchDTO searchDTO) {
@@ -50,7 +48,7 @@ public class RewardController {
         return rewardService.findDataPageResult(searchDTO);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "导入", httpMethod = "POST")
     @RequestMapping(value = "/import", method = RequestMethod.POST)
     public ResponseModel importData(@RequestParam("importFile") MultipartFile importFile) {
@@ -67,7 +65,7 @@ public class RewardController {
                 File file = new File(path, fileName);
                 FileCopyUtils.copy(importFile.getBytes(), file);
                 String[] headNames = {"学籍号", "奖励名称", "奖励级别", "获奖时间", "颁奖单位", "名次或等第"};
-                String[] fieldNames = {"stuNo", "name", "level", "obtainDate", "unitName", "rank"};
+                String[] fieldNames = {"stuNo", "title", "level", "obtainDate", "unitName", "rank"};
                 List<RewardExcelDTO> list = new ExcelUtil().readExcel(file.getPath(), RewardExcelDTO.class, headNames, fieldNames);
                 if (MicrovanUtil.isNotEmpty(list)) {
                     Map<String, Object> result = rewardService.importList(list);
@@ -82,7 +80,7 @@ public class RewardController {
                 model.setMessage("请选择Excel文件");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
             }
-        } catch (ExcelTitleException e ) {
+        } catch (ExcelTitleException e) {
             model.setMessage(e.getMessage());
             model.setCode(CommonConstants.CODE_EXCEPTION);
         } catch (IOException e) {

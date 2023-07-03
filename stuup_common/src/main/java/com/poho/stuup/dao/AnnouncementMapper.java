@@ -20,4 +20,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface AnnouncementMapper extends BaseMapper<Announcement> {
 
     IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
+
+    IPage<AnnouncementVO> getMyAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
 }

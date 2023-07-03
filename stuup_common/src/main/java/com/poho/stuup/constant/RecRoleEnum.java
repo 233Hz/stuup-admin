@@ -24,6 +24,17 @@ public enum RecRoleEnum {
         this.value = value;
     }
 
+    // 通过value获取role
+    public static String getRoleForValue(int value) {
+        for (RecRoleEnum recRoleEnum : RecRoleEnum.values()) {
+            if (recRoleEnum.getValue() == value) {
+                return recRoleEnum.getRole();
+            }
+        }
+        return null;
+    }
+
+
     // 通过role获取value
     public static Integer getValueForRole(String role) {
         for (RecRoleEnum recRoleEnum : RecRoleEnum.values()) {

@@ -1,17 +1,13 @@
 package com.poho.stuup.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
@@ -37,19 +33,16 @@ public class Announcement implements Serializable {
     /**
      * 公告标题
      */
-    @NotBlank(message = "公告标题不能为空")
     private String title;
 
     /**
-     * 公告类型
+     * 公告类型（1.系统通知 2.通知公告）
      */
-    @NotNull(message = "公告类型不能为空")
     private Integer type;
 
     /**
-     * 公告范围
+     * 通知范围（1.全体用户 2.所有教师）
      */
-    @NotNull(message = "公告范围不能为空")
     private Integer scope;
 
     /**
@@ -63,6 +56,11 @@ public class Announcement implements Serializable {
     private Long createUser;
 
     /**
+     * 状态（1.未发布 2.发布）
+     */
+    private Integer state;
+
+    /**
      * 创建时间
      */
     private Date createTime;
@@ -71,12 +69,6 @@ public class Announcement implements Serializable {
      * 更新时间
      */
     private Date updateTime;
-
-    /**
-     * 用户id集合
-     */
-    @TableField(exist = false)
-    private List<Long> userIds;
 
 
 }

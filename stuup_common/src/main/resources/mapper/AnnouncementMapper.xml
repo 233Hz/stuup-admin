@@ -9,6 +9,7 @@
         <result column="type" property="type"/>
         <result column="scope" property="scope"/>
         <result column="content" property="content"/>
+        <result column="state" property="state"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
@@ -18,7 +19,9 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="type" property="type"/>
+        <result column="scope" property="scope"/>
         <result column="content" property="content"/>
+        <result column="state" property="state"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
     </resultMap>
@@ -28,22 +31,42 @@
         a.id,
         a.title,
         a.type,
+        a.scope,
+        a.state,
         a.content,
         a.create_time,
         u.user_name as create_user
         from t_announcement a
         left join t_user u on a.create_user = u.oid
         <where>
+            <if test="query.state != null and query.state != ''">
+                and a.state = #{query.state}
+            </if>
+            <if test="query.title != null and query.title != ''">
+                and a.title like concat('%',#{query.title},'%')
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <select id="getMyAnnouncementPage" resultMap="AnnouncementVOMap">
+        select
+        a.id,
+        a.title,
+        a.type,
+        a.create_time
+        from t_announcement a
+        left join t_announcement_user au on au.announcement_id = a.id
+        <where>
+            au.user_id = #{query.userId}
             <if test="query.title != null and query.title != ''">
                 and a.title like concat('%',#{query.title},'%')
             </if>
             <if test="query.type != null and query.type != ''">
                 and a.type = #{query.type}
             </if>
-            <if test="query.scope != null and query.scope != ''">
-                and a.scope = #{query.scope}
-            </if>
         </where>
+        order by a.create_time desc
     </select>
 
 </mapper>

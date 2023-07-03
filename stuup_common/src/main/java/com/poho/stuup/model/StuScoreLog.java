@@ -12,16 +12,16 @@ import java.util.Date;
 
 /**
  * <p>
- * 学期排行榜
+ * 学生积分日志
  * </p>
  *
  * @author BUNGA
- * @since 2023-06-12
+ * @since 2023-06-27
  */
 @Getter
 @Setter
-@TableName("t_ranking_month")
-public class RankingMonth implements Serializable {
+@TableName("t_stu_score_log")
+public class StuScoreLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,19 +32,9 @@ public class RankingMonth implements Serializable {
     private Long id;
 
     /**
-     * 排名
+     * 成长项id
      */
-    private Integer ranking;
-
-    /**
-     * 年份
-     */
-    private Integer year;
-
-    /**
-     * 月份
-     */
-    private Integer month;
+    private Long growId;
 
     /**
      * 学生id
@@ -52,14 +42,29 @@ public class RankingMonth implements Serializable {
     private Long studentId;
 
     /**
-     * 积分
+     * 获得积分
      */
     private BigDecimal score;
 
     /**
-     * 创建时间
+     * 获取学年id
+     */
+    private Long yearId;
+
+    /**
+     * 学期id
+     */
+    private Long semesterId;
+
+    /**
+     * 获取时间
      */
     private Date createTime;
+
+    /**
+     * 获取说明
+     */
+    private String description;
 
 
 }

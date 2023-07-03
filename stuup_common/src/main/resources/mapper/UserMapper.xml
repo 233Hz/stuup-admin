@@ -316,4 +316,10 @@
         </if>
     </select>
 
+    <select id="getAllUserLoginNamesAndIds" resultMap="BaseResultMap">
+        select oid, login_name
+        from t_user
+        where state = 1
+    </select>
+
 </mapper>

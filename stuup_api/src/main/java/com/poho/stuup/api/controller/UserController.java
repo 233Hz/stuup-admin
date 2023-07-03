@@ -7,11 +7,11 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.constant.ProjectConstants;
+import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.SimpleUserDTO;
 import com.poho.stuup.model.vo.SimpleUserVO;
-import com.poho.stuup.service.IRoleMenuService;
 import com.poho.stuup.service.IUserService;
 import com.poho.stuup.util.ExcelUtil;
 import com.poho.stuup.util.ProjectUtil;
@@ -42,8 +42,6 @@ import java.util.Map;
 public class UserController {
     @Resource
     private IUserService userService;
-    @Resource
-    private IRoleMenuService roleMenuService;
     @Resource
     private HttpServletRequest request;
     @Resource
@@ -81,6 +79,12 @@ public class UserController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseModel all() {
         return userService.queryList();
+    }
+
+    @GetMapping("/info")
+    public ResponseModel<CusUser> getUserInfo() {
+        String userId = ProjectUtil.obtainLoginUser(request);
+        return ResponseModel.ok(userService.getUserInfo(Long.valueOf(userId)));
     }
 
     @PostMapping("/queryUserAuthority")

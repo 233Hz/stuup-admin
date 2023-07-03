@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 public enum AnnouncementStateEnum {
 
-    PUBLISHED("已发布", 1),
-    UNPUBLISHED("未发布", 2);
+    UNPUBLISHED("未发布", 1),
+    PUBLISHED("已发布", 2);
 
     private final String state;
     private final int value;

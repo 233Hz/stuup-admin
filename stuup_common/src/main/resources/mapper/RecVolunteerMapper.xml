@@ -61,7 +61,7 @@
         left join t_class c on c.id = s.class_id
         <where>
             <if test="query.yearId != null and query.yearId != ''">
-                and y.oid = #{query.yearId}
+                and rv.year_id = #{query.yearId}
             </if>
             <if test="query.gradeId != null and query.gradeId != ''">
                 and g.oid = #{query.gradeId}
@@ -82,6 +82,66 @@
                 and rv.level = #{query.level}
             </if>
         </where>
+        order by rv.create_time desc
+    </select>
+
+    <resultMap id="RecVolunteerExcelMap" type="com.poho.stuup.model.excel.RecVolunteerExcel">
+        <result column="grade_name" property="gradeName"/>
+        <result column="class_name" property="className"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="id_card" property="idCard"/>
+        <result column="student_id" property="studentId"/>
+        <result column="name" property="name"/>
+        <result column="level_value" property="levelValue"/>
+        <result column="child" property="child"/>
+        <result column="post" property="post"/>
+        <result column="study_time" property="studyTime"/>
+        <result column="service_time" property="serviceTime"/>
+        <result column="reason" property="reason"/>
+    </resultMap>
+
+    <select id="queryExcelList" resultMap="RecVolunteerExcelMap">
+        select
+        g.grade_name,
+        c.name as class_name,
+        s.name as student_name,
+        s.student_no,
+        s.id_card,
+        s.id as student_id,
+        rv.name,
+        rv.level as level_value,
+        rv.child,
+        rv.study_time,
+        rv.service_time,
+        rv.reason
+        from t_rec_volunteer rv
+        left join t_student s on s.id = rv.student_id
+        left join t_year y on y.oid = rv.year_id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_class c on c.id = s.class_id
+        <where>
+            rv.year_id = #{query.yearId}
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.classId != null and query.classId != ''">
+                and c.id = #{query.classId}
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%',#{query.studentName},'%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%',#{query.studentNo},'%')
+            </if>
+            <if test="query.name != null and query.name != ''">
+                and rv.name like concat('%',#{query.name},'%')
+            </if>
+            <if test="query.level != null and query.level != ''">
+                and rv.level = #{query.level}
+            </if>
+        </where>
+        order by rv.create_time desc
     </select>
 
 </mapper>

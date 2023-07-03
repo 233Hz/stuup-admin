@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.StuScoreLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.StuScoreLog">
+        <id column="id" property="id"/>
+        <result column="grow_id" property="growId"/>
+        <result column="student_id" property="studentId"/>
+        <result column="score" property="score"/>
+        <result column="year_id" property="yearId"/>
+        <result column="semester_id" property="semesterId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+    <resultMap id="StudentRecScoreVOMap" type="com.poho.stuup.model.vo.StudentRecScoreVO">
+        <id column="id" property="id"/>
+        <result column="year_name" property="yearName"/>
+        <result column="first_level_name" property="firstLevelName"/>
+        <result column="second_level_name" property="secondLevelName"/>
+        <result column="three_level_name" property="threeLevelName"/>
+        <result column="grow_name" property="growName"/>
+        <result column="score" property="score"/>
+        <result column="create_time" property="createTime"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+    <select id="pageStudentRecScore" resultMap="StudentRecScoreVOMap">
+        select
+        scl.id,
+        y.year_name,
+        first.name as first_level_name,
+        second.name as second_level_name,
+        three.name as three_level_name,
+        gi.name as grow_name,
+        scl.score,
+        scl.create_time,
+        scl.description
+        from t_stu_score_log scl
+        left join t_growth_item gi on gi.id = scl.grow_id
+        left join t_growth first on first.id = gi.first_level_id
+        left join t_growth second on second.id = gi.second_level_id
+        left join t_growth three on three.id = gi.three_level_id
+        left join t_year y on y.oid = scl.year_id
+        <where>
+            scl.student_id = #{studentId}
+            <if test="query.yearId != null and query.yearId != ''">
+                and y.oid = #{query.yearId}
+            </if>
+            <if test="query.firstLevelId != null and query.firstLevelId != ''">
+                and gi.first_level_id = #{query.firstLevelId}
+            </if>
+            <if test="query.secondLevelId != null and query.secondLevelId != ''">
+                and gi.second_level_id = #{query.secondLevelId}
+            </if>
+            <if test="query.threeLevelId != null and query.threeLevelId != ''">
+                and gi.three_level_id = #{query.threeLevelId}
+            </if>
+            <if test="query.growName != null and query.growName != ''">
+                and gi.name like concat('%',#{query.growName},'%')
+            </if>
+            <if test="query.startTime != null and query.endTime != null and query.startTime != '' and query.endTime != '' ">
+                and scl.create_time between #{query.startTime} and #{query.endTime}
+            </if>
+        </where>
+        order by scl.create_time desc
+    </select>
+
+</mapper>

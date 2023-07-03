@@ -85,7 +85,6 @@ public class ProjectConstants {
     public static int USER_STATE_DISABLE = 2;
 
 
-
     /**
      * 教师类型
      * 1在职在编
@@ -115,9 +114,9 @@ public class ProjectConstants {
     public static int RANGE_TYPE_DZLD = 1; //党政领导
     public static int RANGE_TYPE_FGLD = 2; //分管领导
     public static int RANGE_TYPE_BMFZR = 3; //部门负责人
-    public static int RANGE_TYPE_QTZC= 4; //其他中层
-    public static int RANGE_TYPE_PTYG= 5; //普通员工
-    public static int RANGE_TYPE_SYZC= 6; //所有中层
+    public static int RANGE_TYPE_QTZC = 4; //其他中层
+    public static int RANGE_TYPE_PTYG = 5; //普通员工
+    public static int RANGE_TYPE_SYZC = 6; //所有中层
 
 
     /**

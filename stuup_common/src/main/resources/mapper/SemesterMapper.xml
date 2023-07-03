@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.SemesterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.Semester">
+        <id column="id" property="id"/>
+        <result column="year_id" property="yearId"/>
+        <result column="name" property="name"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="is_current" property="isCurrent"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="SemesterVOMap" type="com.poho.stuup.model.vo.SemesterVO">
+        <id column="id" property="id"/>
+        <result column="year_id" property="yearId"/>
+        <result column="year_name" property="yearName"/>
+        <result column="name" property="name"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="is_current" property="isCurrent"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="pageSemester" resultMap="SemesterVOMap">
+        select
+        s.id,
+        y.oid as year_id,
+        y.year_name,
+        s.name,
+        s.start_time,
+        s.end_time,
+        s.is_current,
+        s.create_time
+        from t_semester s
+        left join t_year y on y.oid = s.year_id
+        <where>
+            <if test="query.yearId != null and query.yearId != ''">
+                and s.year_id = #{query.yearId}
+            </if>
+            <if test="query.name != null and query.name != ''">
+                and s.name like concat('%', #{query.name}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getCurrentSemesterId" resultType="Long">
+        select id
+        from t_semester
+        where is_current = 1
+    </select>
+
+    <select id="findTimeBelongYear" resultMap="BaseResultMap">
+        select id,
+               year_id,
+               name,
+               start_time,
+               end_time
+        from t_semester
+        where #{date} between start_time and end_time
+    </select>
+
+</mapper>

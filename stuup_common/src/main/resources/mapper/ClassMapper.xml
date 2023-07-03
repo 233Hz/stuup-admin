@@ -292,4 +292,16 @@
         from t_class
         where teacher_id = #{teacherId}
     </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, name, faculty_id, grade_id, teacher_id, major_id
+        from t_class
+        where is_valid = 1
+    </select>
+
+    <select id="getClassTeacherIdsAndIds" resultMap="BaseResultMap">
+        select id, teacher_id
+        from t_class
+        where is_valid = 1
+    </select>
 </mapper>

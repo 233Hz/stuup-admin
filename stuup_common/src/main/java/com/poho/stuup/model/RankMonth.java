@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  * <p>
- * 年度排行榜
+ * 学期排行榜
  * </p>
  *
  * @author BUNGA
@@ -20,8 +20,8 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("t_ranking_year")
-public class RankingYear implements Serializable {
+@TableName("t_rank_month")
+public class RankMonth implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,12 +34,17 @@ public class RankingYear implements Serializable {
     /**
      * 排名
      */
-    private Integer ranking;
+    private Integer rank;
 
     /**
-     * 年份id
+     * 年份
      */
-    private Long yearId;
+    private Integer year;
+
+    /**
+     * 月份
+     */
+    private Integer month;
 
     /**
      * 学生id
@@ -50,6 +55,21 @@ public class RankingYear implements Serializable {
      * 积分
      */
     private BigDecimal score;
+
+    /**
+     * 排名趋势（1.上升 2.下降 3.不变）
+     */
+    private Integer rankTrend;
+
+    /**
+     * 排名变化名次
+     */
+    private Integer rankChange;
+
+    /**
+     * 本月获取分数
+     */
+    private BigDecimal scoreChange;
 
     /**
      * 创建时间

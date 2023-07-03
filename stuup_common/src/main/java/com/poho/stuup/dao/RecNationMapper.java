@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecNation;
 import com.poho.stuup.model.dto.RecNationDTO;
+import com.poho.stuup.model.excel.RecNationExcel;
 import com.poho.stuup.model.vo.RecNationVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,4 +25,6 @@ import org.apache.ibatis.annotations.Param;
 public interface RecNationMapper extends BaseMapper<RecNation> {
 
     IPage<RecNationVO> getRecNationPage(Page<RecNationVO> page, @Param("query") RecNationDTO query);
+
+    List<RecNationExcel> queryExcelList(@Param("query") Map<String, Object> params);
 }

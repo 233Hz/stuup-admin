@@ -15,4 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AnnouncementUserMapper extends BaseMapper<AnnouncementUser> {
 
+    void saveAnnouncementUser(Long announcementId, Integer scope);
+
 }

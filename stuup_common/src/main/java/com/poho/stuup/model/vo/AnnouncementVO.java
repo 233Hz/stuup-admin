@@ -23,9 +23,19 @@ public class AnnouncementVO {
     private Integer type;
 
     /**
-     * 文本类容
+     * 公告范围
+     */
+    private Integer scope;
+
+    /**
+     * 内容
      */
     private String content;
+
+    /**
+     * 发布状态
+     */
+    private Integer state;
 
     /**
      * 发布用户
@@ -36,6 +46,5 @@ public class AnnouncementVO {
      * 创建时间
      */
     private Date createTime;
-
 
 }

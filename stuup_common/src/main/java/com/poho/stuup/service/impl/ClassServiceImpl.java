@@ -5,16 +5,15 @@ import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.dao.*;
-import com.poho.stuup.model.*;
 import com.poho.stuup.model.Class;
+import com.poho.stuup.model.*;
 import com.poho.stuup.service.IClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassServiceImpl implements IClassService {
@@ -108,13 +107,11 @@ public class ClassServiceImpl implements IClassService {
         List<String> idList = new ArrayList<>();
         if (!MicrovanUtil.isEmpty(ids)) {
             String[] idsArr = ids.split(",");
-            for (String id: idsArr) {
-                idList.add(id);
-            }
+            Collections.addAll(idList, idsArr);
         }
         Map<String, Object> map = new HashMap<>();
         map.put("ids", idList);
-        return classMapper.deleteClass(map) > 0 ? true : false;
+        return classMapper.deleteClass(map) > 0;
     }
 
     @Override
@@ -140,8 +137,7 @@ public class ClassServiceImpl implements IClassService {
             if (MicrovanUtil.isEmpty(clazz.getTeacherNo())) {
                 itemMsg.append("班主任工号为空；");
                 isVia = false;
-            }
-            else {
+            } else {
                 Teacher teacher = teacherMapper.findTeacherByJobNo(clazz.getTeacherNo());
                 if (teacher != null) {
                     clazz.setTeacherId(teacher.getId());
@@ -150,12 +146,11 @@ public class ClassServiceImpl implements IClassService {
             if (MicrovanUtil.isEmpty(clazz.getGradeName())) {
                 itemMsg.append("年级为空；");
                 isVia = false;
-            }
-            else {
+            } else {
                 Grade grade = gradeMapper.findGradeByYear(clazz.getGradeName());
                 if (grade != null) {
                     clazz.setGradeId(grade.getOid());
-                }else {
+                } else {
                     itemMsg.append("没有该年级信息；");
                     isVia = false;
                 }
@@ -163,8 +158,7 @@ public class ClassServiceImpl implements IClassService {
             if (MicrovanUtil.isEmpty(clazz.getFacultyName())) {
                 itemMsg.append("系部名称为空；");
                 isVia = false;
-            }
-            else {
+            } else {
                 Faculty faculty = facultyMapper.findFacultyByName(clazz.getFacultyName());
                 if (faculty != null) {
                     clazz.setFacultyId(faculty.getOid());
@@ -173,8 +167,7 @@ public class ClassServiceImpl implements IClassService {
             if (MicrovanUtil.isEmpty(clazz.getMajorName())) {
                 itemMsg.append("专业名称为空；");
                 isVia = false;
-            }
-            else {
+            } else {
                 Major major = majorMapper.findMajorByName(clazz.getMajorName());
                 if (major != null) {
                     clazz.setMajorId(major.getOid());
@@ -204,7 +197,7 @@ public class ClassServiceImpl implements IClassService {
                     k++;
                 }
             } else {
-                msg.append(itemMsg.toString()).append("。");
+                msg.append(itemMsg).append("。");
                 k++;
             }
         }
@@ -239,4 +232,11 @@ public class ClassServiceImpl implements IClassService {
     public List<Class> findClassByAdminTeacher(Integer id) {
         return classMapper.findClassByAdmin(id);
     }
+
+    @Override
+    public Map<Integer, Class> classMap() {
+        List<Class> classList = classMapper.selectAll();
+        return classList.stream().collect(Collectors.toMap(Class::getId, Function.identity()));
+    }
+
 }

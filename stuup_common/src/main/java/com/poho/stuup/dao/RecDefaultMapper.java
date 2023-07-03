@@ -6,7 +6,6 @@ import com.poho.stuup.model.vo.RecLogDetailsVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,8 +18,6 @@ import java.util.List;
  */
 @Mapper
 public interface RecDefaultMapper extends BaseMapper<RecDefault> {
-
-    List<Long> findGrowStudentRecForTimePeriod(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     List<RecLogDetailsVO> getRecLogDetails(@Param("batchCode") Long batchCode);
 }

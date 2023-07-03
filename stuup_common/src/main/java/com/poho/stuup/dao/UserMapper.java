@@ -22,4 +22,6 @@ public interface UserMapper extends BaseDao<User> {
     IPage<AnnouncementPremUserVO> getPremUser(Page<AnnouncementPremUserVO> page, @Param("query") AnnouncementPremUserDTO query);
 
     List<SimpleUserVO> getSimpleUserPage(@Param("current") long current, @Param("size") long size, @Param("query") SimpleUserDTO query);
+
+    List<User> getAllUserLoginNamesAndIds();
 }

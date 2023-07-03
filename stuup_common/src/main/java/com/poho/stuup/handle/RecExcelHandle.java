@@ -63,13 +63,11 @@ public interface RecExcelHandle {
     /**
      * @description: 导出
      * @param: response
-     * @param: params   额外参数
+     * @param: params
      * @return: void
      * @author BUNGA
-     * @date: 2023/5/26 11:01
+     * @date: 2023/6/19 10:05
      */
-    default void recExport(HttpServletResponse response, Map<String, Object> params) {
-
-    }
+    void recExport(HttpServletResponse response, Map<String, Object> params) throws IOException;
 
 }

@@ -9,6 +9,7 @@
         <result column="grow_id" property="growId"/>
         <result column="score" property="score"/>
         <result column="year_id" property="yearId"/>
+        <result column="semester_id" property="semesterId"/>
         <result column="state" property="state"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
@@ -139,7 +140,7 @@
                 and trs.create_time between #{query.startTime} and #{query.endTime}
             </if>
         </where>
-        order by trs.create_time
+        order by trs.create_time desc
     </select>
 
     <select id="findTimePeriodRecord" resultMap="BaseResultMap">
@@ -153,6 +154,67 @@
         from t_rec_score
         where grow_id = #{growId}
           and create_time between #{startTime} and #{endTime}
+    </select>
+
+    <resultMap id="RecScoreYearRankDTOMap" type="com.poho.stuup.model.dto.RecScoreYearRankDTO">
+        <result column="student_id" property="studentId"/>
+        <result column="score" property="score"/>
+        <result column="student_name" property="studentName"/>
+        <result column="class_id" property="classId"/>
+        <result column="grade_id" property="gradeId"/>
+        <result column="major_id" property="majorId"/>
+    </resultMap>
+
+    <select id="findRecScoreForYear" resultMap="RecScoreYearRankDTOMap">
+        select trs.student_id,
+               trs.score,
+               s.name as student_name,
+               s.student_no,
+               s.class_id,
+               s.grade_id,
+               s.major_id
+        from t_rec_score trs
+                 left join t_student s on s.id = trs.student_id
+        where year_id = #{yearId}
+    </select>
+
+    <resultMap id="ClassRankVOMap" type="com.poho.stuup.model.vo.ClassRankVO">
+        <result column="class_id" property="classId"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getClassRank" resultMap="ClassRankVOMap">
+        select s.class_id,
+               trs.score
+        from t_rec_score trs
+                 left join t_student s on s.id = trs.student_id
+        where year_id = #{yearId}
+    </select>
+
+    <resultMap id="MajorRankVOMap" type="com.poho.stuup.model.vo.MajorRankVO">
+        <result column="major_id" property="majorId"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getMajorRank" resultMap="MajorRankVOMap">
+        select s.major_id,
+               trs.score
+        from t_rec_score trs
+                 left join t_student s on s.id = trs.student_id
+        where year_id = #{yearId}
+    </select>
+
+    <resultMap id="FacultyRankVOMap" type="com.poho.stuup.model.vo.FacultyRankVO">
+        <result column="class_id" property="classId"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="getFacultyRank" resultMap="FacultyRankVOMap">
+        select s.class_id,
+               trs.score
+        from t_rec_score trs
+                 left join t_student s on s.id = trs.student_id
+        where year_id = #{yearId}
     </select>
 
 

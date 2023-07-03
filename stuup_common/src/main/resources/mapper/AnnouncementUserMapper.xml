@@ -8,4 +8,12 @@
         <result column="user_id" property="userId"/>
     </resultMap>
 
+    <insert id="saveAnnouncementUser">
+        insert into t_announcement_user (announcement_id, user_id)
+        select #{announcementId} as announcement_id, oid as user_id from t_user
+        <if test="scope = 2">
+            where user_type = 2 and state = 1
+        </if>
+    </insert>
+
 </mapper>

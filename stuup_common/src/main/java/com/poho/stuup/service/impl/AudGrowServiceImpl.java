@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.constant.AutStateEnum;
+import com.poho.stuup.constant.AudStateEnum;
 import com.poho.stuup.constant.UserTypeEnum;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
@@ -100,15 +100,15 @@ public class AudGrowServiceImpl extends ServiceImpl<AudGrowMapper, AudGrow> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateRecordState(Long id, Long growId, AutStateEnum autStateEnum, Long userId, String reason) {
+    public void updateRecordState(Long id, Long growId, AudStateEnum audStateEnum, Long userId, String reason) {
         this.update(Wrappers.<AudGrow>lambdaUpdate()
-                .set(AudGrow::getState, autStateEnum.getCode())
+                .set(AudGrow::getState, audStateEnum.getCode())
                 .eq(AudGrow::getId, id));
         AudLog audLog = new AudLog();
         audLog.setAudId(id);
         audLog.setGrowId(growId);
         audLog.setUserId(userId);
-        audLog.setState(autStateEnum.getCode());
+        audLog.setState(audStateEnum.getCode());
         audLog.setReason(reason);
         audLogService.save(audLog);
     }

@@ -79,7 +79,7 @@
         from t_aud_log al
                  left join t_user u on u.oid = al.user_id
         where al.aud_id = #{audId}
-        order by al.create_time desc
+        order by al.create_time
     </select>
 
 </mapper>

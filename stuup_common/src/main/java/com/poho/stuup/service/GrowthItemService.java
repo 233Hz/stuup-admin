@@ -30,7 +30,7 @@ public interface GrowthItemService extends IService<GrowthItem> {
 
     /**
      * @description: 判断名称和编号是否重复
-     * @param: name
+     * @param: title
      * @param: code
      * @return: boolean
      * @author BUNGA
@@ -41,7 +41,7 @@ public interface GrowthItemService extends IService<GrowthItem> {
     /**
      * @description: 判断名称和编号是否重复
      * @param: id
-     * @param: name
+     * @param: title
      * @param: code
      * @return: boolean
      * @author BUNGA
