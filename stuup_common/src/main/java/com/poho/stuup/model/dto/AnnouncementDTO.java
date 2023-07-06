@@ -15,6 +15,11 @@ import javax.validation.constraints.NotNull;
 public class AnnouncementDTO {
 
     /**
+     * id
+     */
+    private Long id;
+
+    /**
      * 公告标题
      */
     @NotBlank(message = "公告标题不能为空")
@@ -28,7 +33,6 @@ public class AnnouncementDTO {
     /**
      * 公告内容
      */
-    @JsonIgnore
     private String content;
 
     /**

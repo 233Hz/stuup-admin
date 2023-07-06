@@ -14,7 +14,10 @@ import com.poho.common.util.Validator;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.dao.*;
-import com.poho.stuup.model.*;
+import com.poho.stuup.model.Dept;
+import com.poho.stuup.model.Menu;
+import com.poho.stuup.model.User;
+import com.poho.stuup.model.UserRole;
 import com.poho.stuup.model.dto.SimpleUserDTO;
 import com.poho.stuup.model.vo.SimpleUserVO;
 import com.poho.stuup.service.IUserService;
@@ -99,7 +102,6 @@ public class UserServiceImpl implements IUserService {
                     map.put("userId", user.getOid());
                     List<Long> roleIds = userRoleMapper.queryUserRoles(map);
                     if (MicrovanUtil.isNotEmpty(roleIds)) {
-                        Year currYear = yearMapper.findCurrYear();
                         CusUser cusUser = new CusUser();
                         cusUser.setUserId(user.getOid());
                         cusUser.setLoginName(user.getLoginName());
@@ -108,7 +110,7 @@ public class UserServiceImpl implements IUserService {
                         cusUser.setDeptId(user.getDeptId());
                         cusUser.setUserType(user.getUserType());
                         cusUser.setRoleIds(ProjectUtil.splitListUseComma(roleIds));
-                        cusUser.setYearId(currYear.getOid());
+                        Optional.ofNullable(yearMapper.findCurrYear()).flatMap(year -> Optional.ofNullable(year.getOid())).ifPresent(cusUser::setYearId);
                         model.setCode(CommonConstants.CODE_SUCCESS);
                         model.setMessage("登录成功");
                         model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));

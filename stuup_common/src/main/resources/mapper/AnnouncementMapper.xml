@@ -39,6 +39,7 @@
         from t_announcement a
         left join t_user u on a.create_user = u.oid
         <where>
+            a.type = 2
             <if test="query.state != null and query.state != ''">
                 and a.state = #{query.state}
             </if>
@@ -59,6 +60,7 @@
         left join t_announcement_user au on au.announcement_id = a.id
         <where>
             au.user_id = #{query.userId}
+            and a.state = 2
             <if test="query.title != null and query.title != ''">
                 and a.title like concat('%',#{query.title},'%')
             </if>

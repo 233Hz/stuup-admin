@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.AnnouncementStateEnum;
-import com.poho.stuup.constant.AnnouncementTypeEnum;
 import com.poho.stuup.model.Announcement;
 import com.poho.stuup.model.dto.AnnouncementDTO;
 import com.poho.stuup.model.dto.AnnouncementPremUserDTO;
@@ -40,7 +39,6 @@ public class AnnouncementController {
 
     @GetMapping("/page")
     public ResponseModel<IPage<AnnouncementVO>> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
-        query.setType(AnnouncementTypeEnum.ANNOUNCEMENT.getValue());
         return ResponseModel.ok(announcementService.getAnnouncementPage(page, query));
     }
 

@@ -54,6 +54,7 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
     public ResponseModel<Boolean> saveOrUpdateAnnouncement(AnnouncementDTO data) {
         String message = "保存";
         Announcement announcement = new Announcement();
+        announcement.setId(data.getId());
         announcement.setTitle(data.getTitle());
         announcement.setContent(data.getContent());
         announcement.setCreateUser(data.getUserId());
