@@ -22,8 +22,6 @@ public class TeacherServiceImpl implements ITeacherService {
     @Autowired
     private TeacherMapper teacherMapper;
     @Autowired
-    private TermMapper termMapper;
-    @Autowired
     private FacultyMapper facultyMapper;
     @Autowired
     private RoleMapper roleMapper;

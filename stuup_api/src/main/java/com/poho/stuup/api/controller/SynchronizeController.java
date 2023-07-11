@@ -57,7 +57,7 @@ public class SynchronizeController {
                 //同步年级
                 synchronizeService.synchronizeGrade();
                 //同步学期
-                synchronizeService.synchronizeTerm();
+                //synchronizeService.synchronizeTerm();
                 //同步专业
                 synchronizeService.synchronizeMajor();
                 //同步班级
@@ -83,23 +83,4 @@ public class SynchronizeController {
         return model;
     }
 
-    @ApiOperation(value = "手动同步学生得分信息", httpMethod = "GET")
-    @GetMapping("/syncStuScore")
-    public ResponseModel syncStuScore (){
-        ResponseModel model = new ResponseModel();
-       StringBuilder sb = new StringBuilder();
-        //同步学生信息初始化学生得分表信息
-        sb.append(synchronizeService.syncStuInfoInitStuScore());
-        //同步奖励信息
-
-        //技能大赛信息
-        //考证信息
-        //军训信息
-        //党团活动信息
-        //志愿者服务信息
-        model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setData(sb.toString());
-        model.setMessage("同步成功");
-        return model;
-    }
 }

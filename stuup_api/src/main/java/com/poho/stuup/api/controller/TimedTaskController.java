@@ -47,7 +47,7 @@ public class TimedTaskController {
                 //同步年级
                 synchronizeService.synchronizeGrade();
                 //同步学期
-                synchronizeService.synchronizeTerm();
+                //synchronizeService.synchronizeTerm();
                 //同步专业
                 synchronizeService.synchronizeMajor();
                 //同步班级

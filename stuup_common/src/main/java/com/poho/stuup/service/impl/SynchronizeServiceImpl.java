@@ -1,8 +1,5 @@
 package com.poho.stuup.service.impl;
 
-import cn.hutool.core.date.BetweenFormatter;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -19,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.xml.soap.SAAJResult;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,8 +40,6 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
     @Resource
     private UserRoleMapper userRoleMapper;
     @Resource
-    private TermMapper termMapper;
-    @Resource
     private GradeMapper gradeMapper;
     @Resource
     private MajorMapper majorMapper;
@@ -57,9 +51,6 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
     private DeptMapper deptMapper;
     @Resource
     private TeachGroupMapper teachGroupMapper;
-
-    @Resource
-    private ScoreMapper scoreMapper;
 
 
     /**
@@ -691,7 +682,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
         }
     }
 
-    @Override
+   /* @Override
     public void synchronizeTerm() {
         logger.error("同步学期开始");
         int addTotal = 0;
@@ -750,7 +741,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
         }
         logger.error("同步学期结束：新增成功" + addTotal + "个，更新" + updateTotal + "个");
     }
-
+*/
     @Override
     public void synchronizeGrade() {
         logger.error("同步年级开始");
@@ -981,20 +972,4 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 
     }*/
 
-    @Override
-    public String syncStuInfoInitStuScore(){
-        StringBuilder sb = new StringBuilder();
-        long startTimeMillis = DateUtil.current();
-        sb.append("同步学生信息到得分信息表初始化")
-                .append(" 开始时间：").append(DateUtil.now());
-        Integer maxScoreStuId = scoreMapper.selectMaxStuId();
-        maxScoreStuId = maxScoreStuId != null ? maxScoreStuId : 0;
-        int num = scoreMapper.insertScoreFromStu(maxScoreStuId);
-        sb.append(StrUtil.format(" maxScoreStuId:{}, 同步插入学生信息 num:{}", maxScoreStuId, num));
-        sb.append(" 结束时间：").append(DateUtil.now())
-                .append(" 花费时间：")
-                .append(DateUtil.formatBetween(DateUtil.current() - startTimeMillis, BetweenFormatter.Level.SECOND));
-        logger.info(sb.toString());
-        return sb.toString();
-    }
 }

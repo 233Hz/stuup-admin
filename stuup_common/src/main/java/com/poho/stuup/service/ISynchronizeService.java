@@ -24,7 +24,7 @@ public interface ISynchronizeService {
     /**
      * 同步学期[已完成]
      */
-    void synchronizeTerm();
+    //void synchronizeTerm();
 
     /**
      * 同步年级[已完成]
@@ -46,6 +46,5 @@ public interface ISynchronizeService {
      */
     void synchronizeTeachGroup();
 
-    String syncStuInfoInitStuScore();
 
 }
