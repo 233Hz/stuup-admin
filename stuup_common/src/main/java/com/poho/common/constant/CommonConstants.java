@@ -23,6 +23,7 @@ public class CommonConstants {
     public static final int CODE_NO_LOGIN = 1002;        //未登陆状态
     public static final int CODE_NO_AUTH = 1003;         //无操作权限
     public static final int CODE_LOGIN_EXPIRE = 1002;    //登录过期
+    public static final int CODE_REFRESH_TOKEN = 1004;    //刷新token
 
     /**
      * token
@@ -37,7 +38,9 @@ public class CommonConstants {
     public static final String JWT_SECERT = "46cc793c53dc451b8a4fe2cd0bb00847";//密匙
     public static final long JWT_TTL = 7 * 24 * 60 * 60 * 1000;//token有效时间,单位毫秒
     public static final long JWT_TTL_COMMON = 30 * 60 * 1000;//token有效时间,单位毫秒
+    public static final long JWT_TTL_ONE_HOUR = 60 * 60 * 1000;//token有效时间,单位毫秒
     public static final long JWT_TTL_ONE_DAY = 24 * 60 * 60 * 1000;//token有效时间,单位毫秒
+    public static final long DURATION_MINUTE = 15L;//  15分钟
 
     public static final String CLAIMS_USER = "claimsUser";
 

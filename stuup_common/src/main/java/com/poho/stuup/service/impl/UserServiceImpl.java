@@ -113,7 +113,8 @@ public class UserServiceImpl implements IUserService {
                         Optional.ofNullable(yearMapper.findCurrYear()).flatMap(year -> Optional.ofNullable(year.getOid())).ifPresent(cusUser::setYearId);
                         model.setCode(CommonConstants.CODE_SUCCESS);
                         model.setMessage("登录成功");
-                        model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));
+                        //model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));
+                        model.setToken(JwtUtil.createJwt(user.getOid().toString()));
                         model.setData(cusUser);
                     } else {
                         model.setCode(CommonConstants.CODE_EXCEPTION);

@@ -1,5 +1,8 @@
 package com.poho.stuup.api.interceptor;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import com.alibaba.druid.support.json.JSONUtils;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.CheckResult;
 import com.poho.common.custom.ResponseMsg;
@@ -11,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 在请求处理之前进行调用（Controller方法调用之前
@@ -33,6 +37,12 @@ public class MicrovanInterceptor implements HandlerInterceptor {
         CheckResult checkResult = JwtUtil.parseJwt(token);
         if (checkResult.isSuccess()) {
             Claims claims = checkResult.getClaims();
+            //剩余过期时间(分钟)
+            long duration = DateUtil.between(new Date(), claims.getExpiration(), DateUnit.MINUTE, false);
+            if(duration <= CommonConstants.DURATION_MINUTE){ //如果还有xx分钟自动刷新token
+                this.setErrorResponse(response, ResponseMsg.refreshToken(claims.getId()));
+                return false;
+            }
             request.setAttribute(CommonConstants.CLAIMS_USER, claims);
             return true;
         } else {

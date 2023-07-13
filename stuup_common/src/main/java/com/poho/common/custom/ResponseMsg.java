@@ -1,6 +1,7 @@
 package com.poho.common.custom;
 
 import com.poho.common.constant.CommonConstants;
+import com.poho.common.util.JwtUtil;
 
 /**
  * @Author: wupeng
@@ -90,6 +91,17 @@ public class ResponseMsg {
      */
     public static String loginExpire() {
         ResponseModel model = new ResponseModel(CommonConstants.CODE_LOGIN_EXPIRE, "登录过期，请重新登录");
+        return model.general();
+    }
+
+    /**
+     * 刷新token
+     *
+     * @return
+     */
+    public static String refreshToken(String userId) {
+        ResponseModel model = new ResponseModel(CommonConstants.CODE_REFRESH_TOKEN, "刷新token");
+        model.setToken(JwtUtil.createJwt(userId));
         return model.general();
     }
 }
