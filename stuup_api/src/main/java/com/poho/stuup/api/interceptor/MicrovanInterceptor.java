@@ -2,7 +2,6 @@ package com.poho.stuup.api.interceptor;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import com.alibaba.druid.support.json.JSONUtils;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.CheckResult;
 import com.poho.common.custom.ResponseMsg;
@@ -39,7 +38,7 @@ public class MicrovanInterceptor implements HandlerInterceptor {
             Claims claims = checkResult.getClaims();
             //剩余过期时间(分钟)
             long duration = DateUtil.between(new Date(), claims.getExpiration(), DateUnit.MINUTE, false);
-            if(duration <= CommonConstants.DURATION_MINUTE){ //如果还有xx分钟自动刷新token
+            if(duration > 0 && duration <= CommonConstants.DURATION_MINUTE){ //如果还有xx分钟自动刷新token
                 this.setErrorResponse(response, ResponseMsg.refreshToken(claims.getId()));
                 return false;
             }

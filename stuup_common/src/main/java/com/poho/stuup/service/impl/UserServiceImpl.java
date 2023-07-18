@@ -114,7 +114,7 @@ public class UserServiceImpl implements IUserService {
                         model.setCode(CommonConstants.CODE_SUCCESS);
                         model.setMessage("登录成功");
                         //model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));
-                        model.setToken(JwtUtil.createJwt(user.getOid().toString()));
+                        model.setToken(JwtUtil.createJwt(user.getOid().toString(), CommonConstants.JWT_TTL_COMMON));
                         model.setData(cusUser);
                     } else {
                         model.setCode(CommonConstants.CODE_EXCEPTION);

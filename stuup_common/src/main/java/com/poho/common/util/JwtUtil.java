@@ -21,8 +21,11 @@ public class JwtUtil {
      * @return
      */
     public static String createJwt(String userId) {
-        //return createJwt(userId,"subject", CommonConstants.JWT_ISS, CommonConstants.JWT_TTL);
-        return createJwt(userId,"subject", CommonConstants.JWT_ISS, CommonConstants.JWT_TTL_ONE_HOUR);
+        return createJwt(userId,"subject", CommonConstants.JWT_ISS, CommonConstants.JWT_TTL);
+    }
+
+    public static String createJwt(String userId, long till) {
+        return createJwt(userId,"subject", CommonConstants.JWT_ISS, till);
     }
 
     /**
