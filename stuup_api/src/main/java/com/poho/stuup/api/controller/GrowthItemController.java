@@ -64,15 +64,6 @@ public class GrowthItemController {
                     return ResponseModel.failed("无法修改系统内置项目编号");
             }
         }
-        if (PeriodEnum.UNLIMITED.getValue() != data.getFillPeriod()) {
-            if (data.getFillPeriodNum() == null) {
-                return ResponseModel.failed("项目录入周期选择除”不限“之外的类型必须填写项目周期内可录入次数");
-            }
-        } else {
-            if (data.getFillPeriodNum() != null) {
-                return ResponseModel.failed("项目录入周期选择”不限“类型无需填写项目周期内可录入次数");
-            }
-        }
         if (PeriodEnum.UNLIMITED.getValue() != data.getScorePeriod()) {
             if (data.getScoreUpperLimit() == null) {
                 return ResponseModel.failed("分值刷新周期选择除“不限”之外的类型必须填写每个周期内分值的上限");
@@ -80,6 +71,9 @@ public class GrowthItemController {
         } else {
             if (data.getScoreUpperLimit() != null) {
                 return ResponseModel.failed("分值刷新周期选择“不限”类型无需填写每个周期内分值的上限");
+            }
+            if (data.getCollectLimit() != null) {
+                return ResponseModel.failed("分值刷新周期选择“不限”类型无需填写可采集次数");
             }
         }
         return growthItemService.saveOrUpdate(data) ? ResponseModel.ok(data.getId(), "保存成功！") : ResponseModel.failed("保存失败！");

@@ -37,7 +37,7 @@ public class CommonConstants {
     public static final String JWT_ISS = "poho-jwt";//jwt签发者
     public static final String JWT_SECERT = "46cc793c53dc451b8a4fe2cd0bb00847";//密匙
     public static final long JWT_TTL = 7 * 24 * 60 * 60 * 1000;//token有效时间,单位毫秒
-    public static final long JWT_TTL_COMMON = 30 * 60 * 1000;//token有效时间,单位毫秒
+    public static final long JWT_TTL_COMMON = 24 * 60 * 60 * 1000;//token有效时间,单位毫秒
     public static final long JWT_TTL_ONE_HOUR = 60 * 60 * 1000;//token有效时间,单位毫秒
     public static final long JWT_TTL_ONE_DAY = 24 * 60 * 60 * 1000;//token有效时间,单位毫秒
     public static final long DURATION_MINUTE = 15L;//  15分钟

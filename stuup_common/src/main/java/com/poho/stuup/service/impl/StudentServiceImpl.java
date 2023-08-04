@@ -52,4 +52,9 @@ public class StudentServiceImpl implements IStudentService {
     public List<Integer> getAllStudentId() {
         return studentMapper.getAllStudentId();
     }
+
+    @Override
+    public Integer countAtSchoolNum() {
+        return studentMapper.countAtSchoolNum();
+    }
 }

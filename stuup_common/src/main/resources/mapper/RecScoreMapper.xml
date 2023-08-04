@@ -12,7 +12,6 @@
         <result column="semester_id" property="semesterId"/>
         <result column="state" property="state"/>
         <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <resultMap id="RecScoreVOMap" type="com.poho.stuup.model.vo.RecScoreVO">
@@ -94,11 +93,6 @@
 
     <resultMap id="StudentRecScoreVOMap" type="com.poho.stuup.model.vo.StudentRecScoreVO">
         <id column="id" property="id"/>
-        <result column="year_name" property="yearName"/>
-        <result column="first_level_name" property="firstLevelName"/>
-        <result column="second_level_name" property="secondLevelName"/>
-        <result column="three_level_name" property="threeLevelName"/>
-        <result column="grow_name" property="growName"/>
         <result column="score" property="score"/>
         <result column="create_time" property="createTime"/>
     </resultMap>

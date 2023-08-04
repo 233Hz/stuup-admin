@@ -7,10 +7,9 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="description" property="description"/>
-        <result column="fill_period" property="fillPeriod"/>
-        <result column="fill_period_num" property="fillPeriodNum"/>
         <result column="score_period" property="scorePeriod"/>
         <result column="score_upper_limit" property="scoreUpperLimit"/>
+        <result column="collect_limit" property="collectLimit"/>
         <result column="calculate_type" property="calculateType"/>
         <result column="score" property="score"/>
         <result column="gatherer" property="gatherer"/>

@@ -13,7 +13,6 @@ import com.poho.stuup.model.vo.RecLaborTimeVO;
 import com.poho.stuup.service.RecLaborTimeService;
 import com.poho.stuup.service.RecScoreService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -41,10 +40,10 @@ public class RecLaborTimeServiceImpl extends ServiceImpl<RecLaborTimeMapper, Rec
     private RecLogMapper recLogMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveRecLaborTimeExcel(long batchCode, GrowthItem growthItem, List<RecLaborTimeExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
+        if (currYear == null) throw new RuntimeException("不在学年时间范围内，无法导入");
         List<RecDefault> recDefaults = new ArrayList<>();
         //=================保存数据=================
         List<RecLaborTime> recLaborTimes = excels.stream().map(excel -> {
@@ -73,7 +72,7 @@ public class RecLaborTimeServiceImpl extends ServiceImpl<RecLaborTimeMapper, Rec
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
         // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
     }
 
     @Override

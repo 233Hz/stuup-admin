@@ -9,7 +9,6 @@ import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.dao.UserMapper;
 import com.poho.stuup.model.StuScoreLog;
 import com.poho.stuup.model.User;
-import com.poho.stuup.model.dto.StudentRecScoreDTO;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
 import com.poho.stuup.service.StuScoreLogService;
 import org.springframework.stereotype.Service;
@@ -34,12 +33,12 @@ public class StuScoreLogServiceImpl extends ServiceImpl<StuScoreLogMapper, StuSc
     private StudentMapper studentMapper;
 
     @Override
-    public ResponseModel<IPage<StudentRecScoreVO>> pageStudentRecScore(Page<StudentRecScoreVO> page, Long userId, StudentRecScoreDTO query) {
+    public ResponseModel<IPage<StudentRecScoreVO>> pageStudentRecScore(Page<StudentRecScoreVO> page, Long userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) return ResponseModel.failed("未查询到您的用户信息，请联系管理员");
         String loginName = user.getLoginName();
         Long studentId = studentMapper.findStudentId(loginName);
         if (studentId == null) return ResponseModel.failed("未查询到您的学生信息，请联系管理员");
-        return ResponseModel.ok(baseMapper.pageStudentRecScore(page, studentId, query));
+        return ResponseModel.ok(baseMapper.pageStudentRecScore(page, studentId));
     }
 }

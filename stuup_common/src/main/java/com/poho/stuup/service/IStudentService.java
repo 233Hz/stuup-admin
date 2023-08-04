@@ -21,4 +21,13 @@ public interface IStudentService {
     Student getStudentForStudentNO(@Param("studentNo") String studentNo);
 
     List<Integer> getAllStudentId();
+
+    /**
+     * @description: 统计在校生人数
+     * @param:
+     * @return: java.lang.Integer
+     * @author BUNGA
+     * @date: 2023/7/19 19:28
+     */
+    Integer countAtSchoolNum();
 }

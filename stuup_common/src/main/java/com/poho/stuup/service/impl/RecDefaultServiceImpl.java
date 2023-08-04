@@ -12,7 +12,6 @@ import com.poho.stuup.model.excel.RecDefaultExcel;
 import com.poho.stuup.service.RecDefaultService;
 import com.poho.stuup.service.RecScoreService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -41,10 +40,10 @@ public class RecDefaultServiceImpl extends ServiceImpl<RecDefaultMapper, RecDefa
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveRecDefaultExcel(long batchCode, GrowthItem growthItem, List<RecDefaultExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
+        if (currYear == null) throw new RuntimeException("不在学年时间范围内，无法导入");
         // 保存导入记录
         List<RecDefault> recDefaults = excels.stream().map(excel -> {
             RecDefault recDefault = new RecDefault();
@@ -63,7 +62,7 @@ public class RecDefaultServiceImpl extends ServiceImpl<RecDefaultMapper, RecDefa
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
         // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
     }
 
 }

@@ -28,6 +28,8 @@ public class EventPublish {
             applicationContext.publishEvent(event);
         } else if (event instanceof SystemMsgEvent) {
             applicationContext.publishEvent(event);
+        } else if (event instanceof CalculateFailEvent) {
+            applicationContext.publishEvent(event);
         } else {
             //发布失败
             log.error("事件发布失败");

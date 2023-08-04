@@ -4,6 +4,7 @@ import com.poho.stuup.model.Year;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public interface YearMapper extends BaseDao<Year> {
@@ -35,4 +36,11 @@ public interface YearMapper extends BaseDao<Year> {
     void setAllYearNotCurr();
 
     void setCurrentYear(@Param("oid") Long oid);
+
+    /**
+     * 查询近三年
+     *
+     * @return
+     */
+    List<Year> findNear3Years();
 }

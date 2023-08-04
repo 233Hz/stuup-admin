@@ -13,8 +13,6 @@ import com.poho.stuup.model.dto.StudentRecScoreDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -56,28 +54,7 @@ public interface RecScoreService extends IService<RecScore> {
      * @author BUNGA
      * @date: 2023/5/29 13:08
      */
-    void calculateScore(List<RecDefault> recDefaults, Long yearId, GrowthItem growthItem);
-
-    /**
-     * @description: 查找该时间段内学生获取的分数
-     * @param: startTime
-     * @param: endTime
-     * @return: java.util.Map<java.lang.Long, java.math.BigDecimal>
-     * @author BUNGA
-     * @date: 2023/6/13 14:55
-     */
-    Map<Long, BigDecimal> findTimePeriodScoreMap(Date startTime, Date endTime);
-
-    /**
-     * @description: 查找该时间段内学生获取的分数
-     * @param: growthId
-     * @param: startTime
-     * @param: endTime
-     * @return: java.util.Map<java.lang.Long, java.math.BigDecimal>
-     * @author BUNGA
-     * @date: 2023/6/13 14:55
-     */
-    Map<Long, BigDecimal> findTimePeriodScoreMap(Long growthId, Date startTime, Date endTime);
+    void calculateScore(List<RecDefault> recDefaults, Long yearId, GrowthItem growthItem, Map<String, Object> params);
 
     /**
      * @description: 计算该学生积分

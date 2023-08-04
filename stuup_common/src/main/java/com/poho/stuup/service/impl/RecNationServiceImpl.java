@@ -14,7 +14,6 @@ import com.poho.stuup.model.vo.RecNationVO;
 import com.poho.stuup.service.RecNationService;
 import com.poho.stuup.service.RecScoreService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -43,10 +42,10 @@ public class RecNationServiceImpl extends ServiceImpl<RecNationMapper, RecNation
     private RecLogMapper recLogMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveRecNationExcel(long batchCode, GrowthItem growthItem, List<RecNationExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
+        if (currYear == null) throw new RuntimeException("不在学年时间范围内，无法导入");
         List<RecDefault> recDefaults = new ArrayList<>();
         //=================保存数据=================
         List<RecNation> recNations = excels.stream().map(excel -> {
@@ -78,7 +77,7 @@ public class RecNationServiceImpl extends ServiceImpl<RecNationMapper, RecNation
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
         // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
     }
 
     @Override

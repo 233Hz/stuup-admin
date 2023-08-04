@@ -15,7 +15,6 @@ import com.poho.stuup.model.vo.RecMilitaryVO;
 import com.poho.stuup.service.RecMilitaryService;
 import com.poho.stuup.service.RecScoreService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -44,10 +43,10 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
     private RecLogMapper recLogMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveRecMilitaryExcel(long batchCode, GrowthItem growthItem, List<RecMilitaryExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
+        if (currYear == null) throw new RuntimeException("不在学年时间范围内，无法导入");
         List<RecDefault> qualifiedRecDefaults = new ArrayList<>();  // 合格学员记录
         List<RecDefault> excellentRecDefaults = new ArrayList<>();  // 优秀学员记录
         //=================保存数据=================
@@ -90,8 +89,8 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
         recLogMapper.insert(recLog);
 
         // 计算学生成长积分
-        recScoreService.calculateScore(excellentRecDefaults, currYear.getOid(), growthItem);
-        recScoreService.calculateScore(qualifiedRecDefaults, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(excellentRecDefaults, currYear.getOid(), growthItem, params);
+        recScoreService.calculateScore(qualifiedRecDefaults, currYear.getOid(), growthItem, params);
 
     }
 

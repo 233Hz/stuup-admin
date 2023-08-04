@@ -72,5 +72,11 @@ public class ManualTaskController {
         return ResponseModel.ok();
     }
 
+    @GetMapping("/task8")
+    public ResponseModel task8() {
+        growScheduledTaskController.compensateCalculateFail();
+        return ResponseModel.ok();
+    }
+
 
 }

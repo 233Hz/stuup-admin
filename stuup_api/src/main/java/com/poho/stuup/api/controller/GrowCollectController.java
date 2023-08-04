@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,10 +61,8 @@ public class GrowCollectController {
         // 查询项目负责人
         boolean isGrowUser = growUserService.isGrowUser(Long.parseLong(userId), growId);
         if (!isGrowUser) return ResponseModel.failed("不是该项目负责人，无法导入");
-        // 校验是否可以导入
-        boolean canImport = growthItemService.verifyRemainingFillNum(Long.valueOf(userId), recCode);
-        if (!canImport) return ResponseModel.failed("导入次数已使用完");
         params.put("userId", userId);
+        params.put("nowTime", new Date());
         RecExcelHandle handle = RecEnum.getHandle(recCode);
         return handle.recImport(file, growthItem, params);
     }

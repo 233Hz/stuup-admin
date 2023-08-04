@@ -282,4 +282,11 @@
             #{classId}
         </foreach>
     </select>
+
+    <select id="countAtSchoolNum" resultType="integer">
+        select count(*)
+        from t_student
+        where status = 1
+          and is_valid = 1
+    </select>
 </mapper>

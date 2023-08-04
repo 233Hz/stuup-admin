@@ -15,31 +15,6 @@ public class StudentRecScoreVO {
     private Long id;
 
     /**
-     * 获取学年
-     */
-    private String yearName;
-
-    /**
-     * 一级名称
-     */
-    private String firstLevelName;
-
-    /**
-     * 二级名称
-     */
-    private String secondLevelName;
-
-    /**
-     * 三级名称
-     */
-    private String threeLevelName;
-
-    /**
-     * 成长项目
-     */
-    private String growName;
-
-    /**
      * 获得分数
      */
     private Integer score;

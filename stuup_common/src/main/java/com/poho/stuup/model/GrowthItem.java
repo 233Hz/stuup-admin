@@ -50,19 +50,7 @@ public class GrowthItem implements Serializable {
     private String description;
 
     /**
-     * 项目录入周期（不限、每天、每周、每月、每学期、每年、3年）
-     */
-    @NotNull(message = "请选择项目录入周期")
-    private Integer fillPeriod;
-
-    /**
-     * 项目周期内可录入次数
-     */
-    @TableField(updateStrategy = FieldStrategy.IGNORED, jdbcType = JdbcType.NVARCHAR)
-    private Integer fillPeriodNum;
-
-    /**
-     * 分值刷新周期（不限、每天、每周、每月、每学期、每年、3年）
+     * 分值刷新周期（不限、每天、每周、每月、每学期、每年）
      */
     @NotNull(message = "请选择分值刷新周期")
     private Integer scorePeriod;
@@ -72,6 +60,12 @@ public class GrowthItem implements Serializable {
      */
     @TableField(updateStrategy = FieldStrategy.IGNORED, jdbcType = JdbcType.NVARCHAR)
     private BigDecimal scoreUpperLimit;
+
+    /**
+     * 可采集次数
+     */
+    @TableField(updateStrategy = FieldStrategy.IGNORED, jdbcType = JdbcType.NVARCHAR)
+    private Integer collectLimit;
 
     /**
      * 分值计算类型（1.录入为加分 2.录入为扣分）

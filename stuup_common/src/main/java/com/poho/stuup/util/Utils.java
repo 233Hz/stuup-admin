@@ -118,18 +118,6 @@ public class Utils {
                     endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year + 1, config4.getConfigValue()));
                 }
                 break;
-            case THREE_YEAR:
-                if (config1 == null || config4 == null) return null;
-                // 当前年上学期开学时间
-                Date termBeginsTime2 = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
-                if (date.compareTo(termBeginsTime2) < 0) {
-                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year - 3, config1.getConfigValue()));
-                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config4.getConfigValue()));
-                } else {
-                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
-                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year + 3, config4.getConfigValue()));
-                }
-                break;
             default:
                 break;
         }

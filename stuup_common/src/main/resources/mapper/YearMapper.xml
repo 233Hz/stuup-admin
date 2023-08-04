@@ -213,4 +213,12 @@
         where oid = #{oid}
     </update>
 
+    <select id="findNear3Years" resultMap="BaseResultMap">
+        select oid,
+               year_name
+        from t_year
+        order by year_start desc
+        limit 3
+    </select>
+
 </mapper>

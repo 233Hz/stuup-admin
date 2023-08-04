@@ -6,13 +6,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.constant.CommonConstants;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.constant.WhetherEnum;
-import com.poho.stuup.model.Config;
-import com.poho.stuup.model.Semester;
-import com.poho.stuup.model.Year;
-import com.poho.stuup.service.IConfigService;
-import com.poho.stuup.service.IYearService;
-import com.poho.stuup.service.RecScoreService;
-import com.poho.stuup.service.SemesterService;
+import com.poho.stuup.model.*;
+import com.poho.stuup.service.*;
+import com.poho.stuup.service.impl.StudentServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author BUNGA
@@ -41,6 +41,18 @@ public class GrowScheduledTaskController {
 
     @Resource
     private SemesterService semesterService;
+
+    @Resource
+    private StudentServiceImpl studentService;
+
+    @Resource
+    private YearInfoService yearInfoService;
+
+    @Resource
+    private CalculateFailLogService calculateFailLogService;
+
+    @Resource
+    private GrowthItemService growthItemService;
 
     /**
      * 每天检查生成当前学年和学期
@@ -73,6 +85,7 @@ public class GrowScheduledTaskController {
             yearService.insertSelective(year);
             year = yearService.findYearForStartAndEndTime(lastSemesterStartTime, nextSemesterEndTime);
         }
+
         // 上学期结束时间
         Date lastSemesterEndTime = DateUtil.parseDate(StrUtil.format("{}-{}", schoolYear + 1, config2.getConfigValue()));
         // 下学期开始时间
@@ -106,6 +119,22 @@ public class GrowScheduledTaskController {
         yearService.setAllYearNotCurr();
         if (currentYear != null) {
             yearService.setCurrentYear(currentYear.getOid());
+
+            // 查询当前在校生人数
+            Integer countAtSchool = studentService.countAtSchoolNum();
+            YearInfo yearInfo = yearInfoService.getOne(Wrappers.<YearInfo>lambdaQuery()
+                    .eq(YearInfo::getYearId, year.getOid()));
+            // 设置当前在校生人数
+            if (yearInfo == null) {
+                yearInfo = new YearInfo();
+                yearInfo.setYearId(year.getOid());
+                yearInfo.setStudentNum(countAtSchool);
+                yearInfoService.save(yearInfo);
+            } else {
+                yearInfoService.update(Wrappers.<YearInfo>lambdaUpdate()
+                        .set(YearInfo::getStudentNum, countAtSchool)
+                        .eq(YearInfo::getYearId, year.getOid()));
+            }
         }
         Semester currentSemester = semesterService.findTimeBelongYear(date);
         semesterService.update(Wrappers.<Semester>lambdaUpdate()
@@ -155,19 +184,23 @@ public class GrowScheduledTaskController {
     @Scheduled(cron = "0 59 23 30 6 ?")
     public void calculateScoreForYear() {
         recScoreService.calculateScore(PeriodEnum.YEAR);
-//        eventPublish.publishEvent(new StatisticsYearRankEvent(yearId));
     }
 
-    /**
-     * 计算每三年任务分数
-     */
-//    @Scheduled(cron = "00 59 23 30 6 ? */3")
-//    public void calculateScoreForThreeYear() {
-//
-//    }
-//    @Scheduled(cron = "*/5 * * * * *")
-//    public void test() {
-//        eventPublish.publishEvent(new StatisticsMonthRankEvent(new Date()));
-//    }
+    @Scheduled(cron = "0 0 4 * * ?")
+    public void compensateCalculateFail() {
+        List<CalculateFailLog> calculateFailLogs = calculateFailLogService.list(Wrappers.<CalculateFailLog>lambdaQuery().eq(CalculateFailLog::getStatus, WhetherEnum.NO.getValue()));
+        int size = calculateFailLogs.size();
+        // 查询所有项目
+        List<GrowthItem> growthItems = growthItemService.list(Wrappers.<GrowthItem>lambdaQuery()
+                .select(GrowthItem::getId, GrowthItem::getScorePeriod, GrowthItem::getCalculateType, GrowthItem::getScore, GrowthItem::getScore, GrowthItem::getScoreUpperLimit));
+        Map<Long, GrowthItem> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getId, Function.identity()));
+        for (int i = 0; i < size; i++) {
+            CalculateFailLog calculateFailLog = calculateFailLogs.get(i);
+            Long growthItemId = calculateFailLog.getGrowId();
+            GrowthItem growthItem = growthItemMap.get(growthItemId);
+            calculateFailLogService.saveCalculateResult(calculateFailLog, growthItem);
+        }
+    }
+
 
 }

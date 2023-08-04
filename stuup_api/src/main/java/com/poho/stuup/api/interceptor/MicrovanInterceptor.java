@@ -28,7 +28,7 @@ public class MicrovanInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         String token = request.getHeader("Authorization");
-        if(token == null || "".equals(token)) {
+        if (token == null || "".equals(token)) {
             this.setErrorResponse(response, ResponseMsg.noLogin());
             return false;
         }
@@ -38,7 +38,7 @@ public class MicrovanInterceptor implements HandlerInterceptor {
             Claims claims = checkResult.getClaims();
             //剩余过期时间(分钟)
             long duration = DateUtil.between(new Date(), claims.getExpiration(), DateUnit.MINUTE, false);
-            if(duration > 0 && duration <= CommonConstants.DURATION_MINUTE){ //如果还有xx分钟自动刷新token
+            if (duration > 0 && duration <= CommonConstants.DURATION_MINUTE) { //如果还有xx分钟自动刷新token
                 this.setErrorResponse(response, ResponseMsg.refreshToken(claims.getId()));
                 return false;
             }
@@ -51,7 +51,6 @@ public class MicrovanInterceptor implements HandlerInterceptor {
     }
 
     /**
-     *
      * @param response
      * @param message
      * @throws IOException

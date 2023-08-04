@@ -6,11 +6,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.constant.AnnouncementStateEnum;
 import com.poho.stuup.constant.AnnouncementTypeEnum;
+import com.poho.stuup.constant.ChangeTypeEnum;
 import com.poho.stuup.constant.CommonConstants;
-import com.poho.stuup.constant.RankTrendEnum;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
 import com.poho.stuup.model.*;
+import com.poho.stuup.model.dto.CalculateFailDTO;
 import com.poho.stuup.model.dto.StatisticsRankEventDTO;
 import com.poho.stuup.model.dto.SystemMagVO;
 import com.poho.stuup.service.AnnouncementService;
@@ -75,6 +76,9 @@ public class EventListenerHandle {
 
     @Resource
     private AnnouncementUserService announcementUserService;
+
+    @Resource
+    private CalculateFailLogMapper calculateFailLogMapper;
 
     @EventListener
     @Transactional(rollbackFor = Exception.class)
@@ -234,11 +238,11 @@ public class EventListenerHandle {
                 }
                 // 设置排名相关形象
                 if (rank == lastRank) {
-                    rankMonth.setRankTrend(RankTrendEnum.SAME.getValue());
+                    rankMonth.setRankTrend(ChangeTypeEnum.SAME.getValue());
                     rankMonth.setRankChange(0);
                 } else if (rank > lastRank) {
                     int progressRanking = rank - lastRank; // 进步名次
-                    rankMonth.setRankTrend(RankTrendEnum.UP.getValue());
+                    rankMonth.setRankTrend(ChangeTypeEnum.UP.getValue());
                     rankMonth.setRankChange(progressRanking);
                     // 发送进步提醒个班主任
                     int ranking = CommonConstants.DEFAULT_NOTIFY_RANKING; // 获取不到默认10名
@@ -261,7 +265,7 @@ public class EventListenerHandle {
                     }
                 } else {
                     int retrogress = lastRank - rank;  // 退步名次
-                    rankMonth.setRankTrend(RankTrendEnum.DOWN.getValue());
+                    rankMonth.setRankTrend(ChangeTypeEnum.DOWN.getValue());
                     rankMonth.setRankChange(retrogress);
 
                     // 发送退步提醒个学生个人和班主任
@@ -370,5 +374,21 @@ public class EventListenerHandle {
         announcementUser.setAnnouncementId(announcement.getId());
         announcementUser.setUserId(systemMagVO.getUserId());
         announcementUserService.save(announcementUser);
+    }
+
+    @EventListener
+    @Transactional(rollbackFor = Exception.class)
+    public void handle(@NotNull CalculateFailEvent event) {
+        CalculateFailDTO calculateFailDTO = event.getCalculateFailDTO();
+        CalculateFailLog calculateFailLog = new CalculateFailLog();
+        calculateFailLog.setStudentId(calculateFailDTO.getStudentId());
+        calculateFailLog.setGrowId(calculateFailDTO.getGrowId());
+        calculateFailLog.setYearId(calculateFailDTO.getYearId());
+        calculateFailLog.setSemesterId(calculateFailDTO.getSemesterId());
+        calculateFailLog.setCreateTime(calculateFailDTO.getCreateTime());
+        calculateFailLog.setError(calculateFailDTO.getError());
+        calculateFailLog.setCount(calculateFailDTO.getCount());
+        calculateFailLog.setCalculateType(calculateFailDTO.getCalculateType());
+        calculateFailLogMapper.insert(calculateFailLog);
     }
 }

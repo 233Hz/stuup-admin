@@ -16,7 +16,6 @@ import com.poho.stuup.model.vo.RecSocietyVO;
 import com.poho.stuup.service.RecScoreService;
 import com.poho.stuup.service.RecSocietyService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
     private RecLogMapper recLogMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveRecSocietyExcel(long batchCode, GrowthItem growthItem, List<RecSocietyExcel> excels, Map<String, Object> params) {
         String userId = (String) params.get("userId");
         Year currYear = yearMapper.findCurrYear();
@@ -81,7 +79,7 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
         // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem);
+        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
     }
 
     @Override
