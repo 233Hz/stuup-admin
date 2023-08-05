@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.StuScoreLog;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -18,6 +19,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface StuScoreLogMapper extends BaseMapper<StuScoreLog> {
 
-    IPage<StudentRecScoreVO> pageStudentRecScore(Page<StudentRecScoreVO> page, Long studentId);
+    IPage<StudentRecScoreVO> pageStudentRecScore(Page<StudentRecScoreVO> page, @Param("studentId") Long studentId);
 
 }

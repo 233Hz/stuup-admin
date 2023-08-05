@@ -1,5 +1,6 @@
 package com.poho.stuup.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,6 +14,8 @@ import java.util.Date;
 public class StudentRecScoreVO {
 
     private Long id;
+
+    private String name;
 
     /**
      * 获得分数
@@ -28,5 +31,30 @@ public class StudentRecScoreVO {
      * 说明
      */
     private String description;
+
+    /**
+     * 一级项目
+     */
+    @JsonIgnore
+    private String firstName;
+
+    /**
+     * 二级项目
+     */
+    @JsonIgnore
+    private String secondName;
+
+    /**
+     * 三级项目
+     */
+    @JsonIgnore
+    private String thirdName;
+
+    /**
+     * 成长项名称
+     */
+    @JsonIgnore
+    private String growName;
+
 
 }

@@ -25,3 +25,29 @@ values ('last_semester_start_time', '09-01', '上学期开始时间'),
 insert into t_config(config_key, config_value, config_note)
 values ('progress_notify_ranking', '10', '进步提醒名次'),
        ('retrogress_notify_ranking', '10', '退步提醒名次');
+
+-- 新增 t_year_info
+
+insert into t_config(config_key, config_value, config_note)
+values ('national_level_competition_award_growth_code',
+        'CZ_028,CZ_037,CZ_041,CZ_055',
+        '国家级竞赛获奖成长项code'),
+       ('city_level_competition_award_growth_code',
+        'CZ_029,CZ_038,CZ_042,CZ_056',
+        '国家级竞赛获奖成长项code'),
+       ('district_level_competition_award_growth_code',
+        'CZ_030,CZ_039,CZ_043,CZ_057',
+        '国家级竞赛获奖成长项code'),
+       ('school_level_competition_award_growth_code',
+        'CZ_031,CZ_040,CZ_051,CZ_058',
+        '国家级竞赛获奖成长项code'),
+       ('scholarship_growth_code',
+        'CZ_028,CZ_029,CZ_030,CZ_031',
+        '奖学金项目code'),
+       ('hold_an_activity_growth_code',
+        'CZ_001,CZ_002,CZ_003,CZ_004,CZ_005,CZ_006,CZ_007,CZ_008,CZ_047,CZ_054,CZ_059',
+        '举办活动项目code');
+
+alter table t_rec_score
+    drop column update_time;
+

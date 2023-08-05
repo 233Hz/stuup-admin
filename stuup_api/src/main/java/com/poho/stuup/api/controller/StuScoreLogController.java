@@ -1,9 +1,9 @@
 package com.poho.stuup.api.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
+import com.poho.stuup.model.vo.StudentScoreDetailsVO;
 import com.poho.stuup.service.StuScoreLogService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +33,7 @@ public class StuScoreLogController {
 
 
     @GetMapping("/page")
-    public ResponseModel<IPage<StudentRecScoreVO>> pageStudentRecScore(Page<StudentRecScoreVO> page) {
+    public ResponseModel<StudentScoreDetailsVO> pageStudentRecScore(Page<StudentRecScoreVO> page) {
         String userId = ProjectUtil.obtainLoginUser(request);
         return stuScoreLogService.pageStudentRecScore(page, Long.parseLong(userId));
     }

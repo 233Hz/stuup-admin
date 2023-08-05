@@ -19,14 +19,27 @@
         <result column="score" property="score"/>
         <result column="create_time" property="createTime"/>
         <result column="description" property="description"/>
+        <result column="first_name" property="firstName"/>
+        <result column="second_name" property="secondName"/>
+        <result column="third_name" property="thirdName"/>
+        <result column="grow_name" property="growName"/>
     </resultMap>
 
     <select id="pageStudentRecScore" resultMap="StudentRecScoreVOMap">
         select scl.id,
                scl.score,
                scl.create_time,
-               scl.description
+               scl.description,
+               first.name  as first_name,
+               second.name as second_name,
+               third.name  as third_name,
+               gi.name     as grow_name
         from t_stu_score_log scl
+                 left join t_growth_item gi on gi.id = scl.grow_id
+                 left join t_growth first on first.id = gi.first_level_id
+                 left join t_growth second on second.id = gi.second_level_id
+                 left join t_growth third on third.id = gi.three_level_id
+        where scl.student_id = #{studentId}
         order by scl.create_time desc
     </select>
 
