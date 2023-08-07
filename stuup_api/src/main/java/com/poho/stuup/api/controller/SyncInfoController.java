@@ -20,6 +20,16 @@ public class SyncInfoController {
     @Resource
     private PropertiesConfig propertiesConfig;
 
+
+    /**
+     * 获取远程开方社团总数
+     * @return
+     */
+    @GetMapping("/getRemoteOpenCommunityTotal")
+    public ResponseModel getRemoteOpenCommunityTotal() {
+        return syncInfoService.getRemoteOpenCommunityTotal(propertiesConfig.getCommunityUrl());
+    }
+
     /**
      * 同步当前学期社团成员
      * @return

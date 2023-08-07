@@ -43,6 +43,32 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
 
     private final ApplicationContext applicationContext;
 
+    @Override
+    public ResponseModel<Integer> getRemoteOpenCommunityTotal(String url){
+        ResponseModel<Integer> responseModel;
+        Map<String, Object> paramMap = new HashMap<>();
+        final String uri = "openApi/community/openTotal.htm"; //社团系统获取开放社团总数
+        url = url + uri;
+        String jsonStr = "";
+        try {
+            jsonStr = HttpUtil.post(url, paramMap);
+            JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
+            if(jsonObject.get("success") != null && !jsonObject.getBool("success")){ //接口返回失败
+                responseModel = ResponseModel.failed(jsonObject.getStr("msg"));
+                log.error(StrUtil.format("调用远程接口:{} 失败原因 :{}", url, JSONUtil.toJsonStr(responseModel)));
+            } else { //返回数据列表
+                responseModel = ResponseModel.ok();
+                int total = jsonObject.getInt("obj");
+                responseModel.setData(total);
+                log.info(StrUtil.format("调用远程接口:{} 返回total值 :{}", url, total));
+            }
+        } catch (Exception e) {
+            log.error(StrUtil.format("url:{}  返回jsonStr:{} 异常：{}", url, jsonStr, e.getMessage()));
+            responseModel = ResponseModel.failed(e.getMessage());
+            e.printStackTrace();
+        }
+        return responseModel;
+    }
 
     @Override
     public ResponseModel syncCommunityMember(String url){
@@ -85,7 +111,7 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
             this.save(syncInfo);
         }
         //调用外部系统接口，获取社团成员数据
-        ResponseModel<List<CommunityMemberDTO>> responseModel = this.callRemoteMemberApi(url, termName);
+        ResponseModel<List<CommunityMemberDTO>> responseModel = this.getRemoteCommunityMember(url, termName);
         if(CommonConstants.CODE_FAIL == responseModel.getCode()){ //调用接口失败
            return responseModel;
         }
@@ -113,7 +139,7 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
         return ResponseModel.ok(StrUtil.format("同步成功 同步总记录数：{}", list.size()));
     }
 
-    private ResponseModel<List<CommunityMemberDTO>> callRemoteMemberApi(String url, String termName){
+    private ResponseModel<List<CommunityMemberDTO>> getRemoteCommunityMember(String url, String termName){
         ResponseModel<List<CommunityMemberDTO>> responseModel;
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("termName", termName);
