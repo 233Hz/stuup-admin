@@ -128,4 +128,9 @@ public class ProjectConstants {
 
     public static final int SCORE_TYPE_ADD = 1;
     public static final int SCORE_TYPE_SUBTRACT = 2;
+
+    public static final String SYNC_INFO_BUSINESS_CODE_COMMUNITY = "community";
+
+    //社团活动记录业务code
+    public static final String COMMUNITY_CODE = "CZ_011";
 }

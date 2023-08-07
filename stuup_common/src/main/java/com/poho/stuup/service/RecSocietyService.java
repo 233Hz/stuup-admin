@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecSociety;
 import com.poho.stuup.model.dto.RecSocietyDTO;
+import com.poho.stuup.model.dto.SocietySaveDTO;
 import com.poho.stuup.model.excel.RecSocietyExcel;
 import com.poho.stuup.model.vo.RecSocietyVO;
 
@@ -43,4 +44,6 @@ public interface RecSocietyService extends IService<RecSociety> {
      * @date: 2023/6/1 15:18
      */
     IPage<RecSocietyVO> getRecSocietyPage(Page<RecSocietyVO> page, RecSocietyDTO query);
+
+    void saveSocietyFromSyncData(SocietySaveDTO societySaveDTO);
 }

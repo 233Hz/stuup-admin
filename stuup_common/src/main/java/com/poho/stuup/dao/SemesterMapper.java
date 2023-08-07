@@ -27,4 +27,6 @@ public interface SemesterMapper extends BaseMapper<Semester> {
     Long getCurrentSemesterId();
 
     Semester findTimeBelongYear(@Param("date") Date date);
+
+    String getCurrTermName();
 }

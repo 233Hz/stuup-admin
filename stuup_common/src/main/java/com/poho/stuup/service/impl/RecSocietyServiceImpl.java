@@ -1,26 +1,29 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.constant.RecRoleEnum;
+import com.poho.stuup.constant.SyncCommunityMemberStateEnum;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecSocietyMapper;
+import com.poho.stuup.dao.SyncCommunityMemberMapper;
 import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.RecSocietyDTO;
+import com.poho.stuup.model.dto.SocietySaveDTO;
 import com.poho.stuup.model.excel.RecSocietyExcel;
 import com.poho.stuup.model.vo.RecSocietyVO;
 import com.poho.stuup.service.RecScoreService;
 import com.poho.stuup.service.RecSocietyService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +45,9 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
 
     @Resource
     private RecLogMapper recLogMapper;
+
+    @Resource
+    private SyncCommunityMemberMapper syncCommunityMemberMapper;
 
     @Override
     public void saveRecSocietyExcel(long batchCode, GrowthItem growthItem, List<RecSocietyExcel> excels, Map<String, Object> params) {
@@ -80,6 +86,38 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
         recLogMapper.insert(recLog);
         // 计算学生成长积分
         recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveSocietyFromSyncData(SocietySaveDTO societySaveDTO) {
+        Long currYearId = societySaveDTO.getCurrYearId();
+        Long stuId = societySaveDTO.getStuId();
+        Long growthItemId = societySaveDTO.getGrowthItem().getId();
+
+        RecSociety recSociety = new RecSociety();
+        recSociety.setYearId(currYearId);
+        recSociety.setGrowId(growthItemId);
+        recSociety.setStudentId(stuId);
+        recSociety.setName(societySaveDTO.getCommunityName());
+        this.save(recSociety);
+        // 计算学生成长积分
+        RecDefault recDefault = new RecDefault();
+        recDefault.setYearId(currYearId);
+        recDefault.setGrowId(growthItemId);
+        recDefault.setStudentId(stuId);
+        recDefault.setBatchCode(societySaveDTO.getBatchCode());
+        Map<String, Object> params = new HashMap<>();
+        params.put("nowTime", new Date());
+        recScoreService.calculateScore(CollUtil.list(false, recDefault), currYearId, societySaveDTO.getGrowthItem(), params);
+        //更新同步记录的处理状态
+        SyncCommunityMember syncCommunityMember = SyncCommunityMember.builder()
+                .id(societySaveDTO.getCommunityMemberId())
+                .memo(null)
+                .updateTime(null)
+                .state(SyncCommunityMemberStateEnum.HANDLER_SUCCESS.getValue())
+                .build();
+        syncCommunityMemberMapper.updateById(syncCommunityMember);
     }
 
     @Override

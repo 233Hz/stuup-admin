@@ -14,6 +14,9 @@ public class PropertiesConfig {
     @Value("${stuup.base.url}")
     private String baseUrl;
 
+    @Value("${stuup.base.communityUrl}")
+    private String communityUrl;
+
     public String getBaseDoc() {
         return baseDoc;
     }
@@ -28,5 +31,13 @@ public class PropertiesConfig {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public String getCommunityUrl() {
+        return communityUrl;
+    }
+
+    public void setCommunityUrl(String communityUrl) {
+        this.communityUrl = communityUrl;
     }
 }

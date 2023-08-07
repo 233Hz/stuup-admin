@@ -53,6 +53,12 @@
         from t_semester
         where is_current = 1
     </select>
+    <select id="getCurrTermName" resultType="java.lang.String">
+        select name
+        from t_semester
+        where is_current = 1
+        limit 1
+    </select>
 
     <select id="findTimeBelongYear" resultMap="BaseResultMap">
         select id,
