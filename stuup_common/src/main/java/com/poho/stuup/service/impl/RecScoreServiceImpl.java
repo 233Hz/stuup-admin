@@ -367,6 +367,33 @@ public class RecScoreServiceImpl extends ServiceImpl<RecScoreMapper, RecScore> i
         }
     }
 
+    @Override
+    public Integer getStudentNowRanking(Long studentId) {
+        Long yearId = yearMapper.findCurrYearId();
+        if (yearId != null) {
+            List<RecScore> recScores = baseMapper.selectList(Wrappers.<RecScore>lambdaQuery()
+                    .select(RecScore::getStudentId, RecScore::getScore)
+                    .eq(RecScore::getYearId, yearId));
+            Map<Long, BigDecimal> studentScoreSum = recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecScore::getScore, BigDecimal::add)));
+            // 对结果按总分数进行倒序排序
+            List<Map.Entry<Long, BigDecimal>> sortedEntries = studentScoreSum.entrySet().stream()
+                    .sorted(Map.Entry.<Long, BigDecimal>comparingByValue().reversed())
+                    .collect(Collectors.toList());
+            int currentRank = 1;
+            BigDecimal previousScore = null;
+            for (Map.Entry<Long, BigDecimal> entry : sortedEntries) {
+                if (previousScore != null && entry.getValue().compareTo(previousScore) < 0) {
+                    currentRank++;
+                }
+                if (Objects.equals(entry.getKey(), studentId)) {
+                    return currentRank;
+                }
+                previousScore = entry.getValue();
+            }
+        }
+        return null;
+    }
+
     /**
      * 不限周期 不限次数 加分
      *

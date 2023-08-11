@@ -21,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -82,4 +83,9 @@ public class SemesterController {
         return ResponseModel.ok(semesterService.update(Wrappers.<Semester>lambdaUpdate().set(Semester::getIsCurrent, WhetherEnum.YES.getValue()).eq(Semester::getId, id)), "设置成功");
     }
 
+    @GetMapping("/getStudentSemester")
+    public ResponseModel<List<Semester>> getStudentSemester() {
+        String userId = ProjectUtil.obtainLoginUser(request);
+        return semesterService.getStudentSemester(Long.valueOf(userId));
+    }
 }

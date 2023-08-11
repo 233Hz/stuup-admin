@@ -3,7 +3,7 @@ package com.poho.stuup.api.controller;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.poho.stuup.constant.CommonConstants;
+import com.poho.stuup.constant.ConfigKeyEnum;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.model.*;
@@ -60,10 +60,10 @@ public class GrowScheduledTaskController {
     @Scheduled(cron = "0 1 0 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void generateYearAndSemester() {
-        Config config1 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.LAST_SEMESTER_START_TIME.getKey());
-        Config config2 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.LAST_SEMESTER_END_TIME.getKey());
-        Config config3 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.NEXT_SEMESTER_START_TIME.getKey());
-        Config config4 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.NEXT_SEMESTER_END_TIME.getKey());
+        Config config1 = configService.selectByPrimaryKey(ConfigKeyEnum.LAST_SEMESTER_START_TIME.getKey());
+        Config config2 = configService.selectByPrimaryKey(ConfigKeyEnum.LAST_SEMESTER_END_TIME.getKey());
+        Config config3 = configService.selectByPrimaryKey(ConfigKeyEnum.NEXT_SEMESTER_START_TIME.getKey());
+        Config config4 = configService.selectByPrimaryKey(ConfigKeyEnum.NEXT_SEMESTER_END_TIME.getKey());
         if (config1 == null || config2 == null || config3 == null || config4 == null)
             throw new RuntimeException("系统配置不完整-上下学期起止时间，请联系管理员");
         Date date = new Date();

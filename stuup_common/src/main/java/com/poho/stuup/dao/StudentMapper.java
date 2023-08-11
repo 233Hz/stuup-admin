@@ -74,4 +74,5 @@ public interface StudentMapper {
     List<Long> findStudentUserIdByClassId(@Param("classIds") List<Integer> classIds);
 
     Integer countAtSchoolNum();
+
 }

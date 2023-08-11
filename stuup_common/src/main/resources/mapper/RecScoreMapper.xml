@@ -211,5 +211,48 @@
         where year_id = #{yearId}
     </select>
 
+    <resultMap id="WholeSchoolTop10VOMap" type="com.poho.stuup.model.vo.WholeSchoolTop10VO">
+        <result column="student_name" property="studentName"/>
+        <result column="class_name" property="className"/>
+        <result column="class_teacher" property="classTeacher"/>
+        <result column="ranking" property="ranking"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="findWholeSchoolTop10Ranking" resultMap="WholeSchoolTop10VOMap">
+        select s.name         as student_name,
+               c.name         as class_name,
+               t.name         as class_teacher,
+               sum(trs.score) as score
+        from t_rec_score trs
+                 left join t_student s on s.id = trs.student_id
+                 left join t_class c on c.id = s.class_id
+                 left join t_teacher t on t.id = c.teacher_id
+        where trs.year_id = #{yearId}
+        group by trs.student_id
+        order by score desc
+        limit 10
+    </select>
+
+    <resultMap id="WholeClassTop10VOMap" type="com.poho.stuup.model.vo.WholeClassTop10VO">
+        <result column="class_name" property="className"/>
+        <result column="class_teacher" property="classTeacher"/>
+        <result column="ranking" property="ranking"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="findWholeClassTop10Ranking" resultMap="WholeClassTop10VOMap">
+        select c.name         as class_name,
+               t.name         as class_teacher,
+               sum(trs.score) as score
+        from t_rec_score trs
+                 left join t_student s on s.id = trs.student_id
+                 left join t_class c on c.id = s.class_id
+                 left join t_teacher t on t.id = c.teacher_id
+        where trs.year_id = #{yearId}
+        group by s.class_id
+        order by score desc
+        limit 10
+    </select>
 
 </mapper>

@@ -75,4 +75,12 @@ public interface RecScoreService extends IService<RecScore> {
      * @date: 2023/6/6 10:30
      */
     void calculateScore(PeriodEnum periodEnum);
+
+    /**
+     * 获取学生的当前排名
+     *
+     * @param studentId
+     * @return
+     */
+    Integer getStudentNowRanking(Long studentId);
 }

@@ -7,7 +7,7 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.constant.CalculateTypeEnum;
 import com.poho.stuup.constant.ChangeTypeEnum;
-import com.poho.stuup.constant.CommonConstants;
+import com.poho.stuup.constant.ConfigKeyEnum;
 import com.poho.stuup.dao.GrowthMapper;
 import com.poho.stuup.dao.YearInfoMapper;
 import com.poho.stuup.dao.YearMapper;
@@ -29,10 +29,10 @@ public class VisualServiceImpl implements VisualService {
 
     private final static Map<String, String> COMPETITION_AWARD_LEVEL_OF_CONFIG_KEY_MAP = new HashMap<String, String>() {
         {
-            put("国家级", CommonConstants.ConfigKey.NATIONAL_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
-            put("市级", CommonConstants.ConfigKey.CITY_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
-            put("区级", CommonConstants.ConfigKey.DISTRICT_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
-            put("校级", CommonConstants.ConfigKey.SCHOOL_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
+            put("国家级", ConfigKeyEnum.NATIONAL_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
+            put("市级", ConfigKeyEnum.CITY_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
+            put("区级", ConfigKeyEnum.DISTRICT_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
+            put("校级", ConfigKeyEnum.SCHOOL_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey());
         }
     };
     @Resource
@@ -137,7 +137,7 @@ public class VisualServiceImpl implements VisualService {
         long count = 0;
         Year currYear = yearMapper.findCurrYear();
         if (currYear != null) {
-            Config config = configService.selectByPrimaryKey(CommonConstants.ConfigKey.SCHOLARSHIP_GROWTH_CODE.getKey());
+            Config config = configService.selectByPrimaryKey(ConfigKeyEnum.SCHOLARSHIP_GROWTH_CODE.getKey());
             String configValue = config.getConfigValue();
             if (configValue != null) {
                 List<String> growthCodes = Arrays.asList(configValue.split(","));
@@ -162,7 +162,7 @@ public class VisualServiceImpl implements VisualService {
         long count = 0;
         Year currYear = yearMapper.findCurrYear();
         if (currYear != null) {
-            Config config = configService.selectByPrimaryKey(CommonConstants.ConfigKey.HOLD_AN_ACTIVITY_GROWTH_CODE.getKey());
+            Config config = configService.selectByPrimaryKey(ConfigKeyEnum.HOLD_AN_ACTIVITY_GROWTH_CODE.getKey());
             String configValue = config.getConfigValue();
             if (configValue != null) {
                 List<String> growthCodes = Arrays.asList(configValue.split(","));

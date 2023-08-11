@@ -213,12 +213,10 @@
         where oid = #{oid}
     </update>
 
-    <select id="findNear3Years" resultMap="BaseResultMap">
-        select oid,
-               year_name
+    <select id="findRangeYearStart" resultType="long">
+        select oid
         from t_year
-        order by year_start desc
-        limit 3
+        where year_start between #{startTime} and #{endTime}
     </select>
 
 </mapper>

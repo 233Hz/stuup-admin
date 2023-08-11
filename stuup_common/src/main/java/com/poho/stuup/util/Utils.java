@@ -3,7 +3,7 @@ package com.poho.stuup.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.poho.stuup.constant.CommonConstants;
+import com.poho.stuup.constant.ConfigKeyEnum;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.constant.RoleEnum;
 import com.poho.stuup.dao.RoleMapper;
@@ -73,10 +73,10 @@ public class Utils {
         Date startTime = null, endTime = null;
         int year = DateUtil.year(date);
         IConfigService configService = SpringContextHolder.getBean(IConfigService.class);
-        Config config1 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.LAST_SEMESTER_START_TIME.getKey());
-        Config config2 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.LAST_SEMESTER_END_TIME.getKey());
-        Config config3 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.NEXT_SEMESTER_START_TIME.getKey());
-        Config config4 = configService.selectByPrimaryKey(CommonConstants.ConfigKey.NEXT_SEMESTER_END_TIME.getKey());
+        Config config1 = configService.selectByPrimaryKey(ConfigKeyEnum.LAST_SEMESTER_START_TIME.getKey());
+        Config config2 = configService.selectByPrimaryKey(ConfigKeyEnum.LAST_SEMESTER_END_TIME.getKey());
+        Config config3 = configService.selectByPrimaryKey(ConfigKeyEnum.NEXT_SEMESTER_START_TIME.getKey());
+        Config config4 = configService.selectByPrimaryKey(ConfigKeyEnum.NEXT_SEMESTER_END_TIME.getKey());
 
         switch (periodEnum) {
             case DAY:

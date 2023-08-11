@@ -57,4 +57,8 @@ public interface RecScoreMapper extends BaseMapper<RecScore> {
     List<MajorRankVO> getMajorRank(@Param("yearId") Long oid);
 
     List<FacultyRankVO> getFacultyRank(@Param("yearId") Long oid);
+
+    List<WholeSchoolTop10VO> findWholeSchoolTop10Ranking(@Param("yearId") Long yearId);
+
+    List<WholeClassTop10VO> findWholeClassTop10Ranking(@Param("yearId") Long yearId);
 }

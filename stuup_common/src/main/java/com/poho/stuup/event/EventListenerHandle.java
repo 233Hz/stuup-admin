@@ -4,10 +4,7 @@ import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.poho.stuup.constant.AnnouncementStateEnum;
-import com.poho.stuup.constant.AnnouncementTypeEnum;
-import com.poho.stuup.constant.ChangeTypeEnum;
-import com.poho.stuup.constant.CommonConstants;
+import com.poho.stuup.constant.*;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
 import com.poho.stuup.model.*;
@@ -246,7 +243,7 @@ public class EventListenerHandle {
                     rankMonth.setRankChange(progressRanking);
                     // 发送进步提醒个班主任
                     int ranking = CommonConstants.DEFAULT_NOTIFY_RANKING; // 获取不到默认10名
-                    Config config = configService.selectByPrimaryKey(CommonConstants.ConfigKey.PROGRESS_NOTIFY_RANKING.getKey());
+                    Config config = configService.selectByPrimaryKey(ConfigKeyEnum.PROGRESS_NOTIFY_RANKING.getKey());
                     if (config != null) ranking = Integer.parseInt(config.getConfigValue());
                     if (progressRanking >= ranking) {
                         // 发布通知
@@ -270,7 +267,7 @@ public class EventListenerHandle {
 
                     // 发送退步提醒个学生个人和班主任
                     int ranking = CommonConstants.DEFAULT_NOTIFY_RANKING; // 获取不到默认10名
-                    Config config = configService.selectByPrimaryKey(CommonConstants.ConfigKey.RETROGRESS_NOTIFY_RANKING.getKey());
+                    Config config = configService.selectByPrimaryKey(ConfigKeyEnum.RETROGRESS_NOTIFY_RANKING.getKey());
                     if (config != null) ranking = Integer.parseInt(config.getConfigValue());
                     if (retrogress >= ranking) {
                         // 发布通知

@@ -14,7 +14,7 @@ import com.poho.stuup.model.StuGrowth;
 public interface StuGrowthService extends IService<StuGrowth> {
 
     /**
-     * 采集次数+1
+     * 采集次数
      *
      * @param studentId
      */

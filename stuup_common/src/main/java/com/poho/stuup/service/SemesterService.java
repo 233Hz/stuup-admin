@@ -3,11 +3,13 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Semester;
 import com.poho.stuup.model.dto.SemesterDTO;
 import com.poho.stuup.model.vo.SemesterVO;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -47,4 +49,12 @@ public interface SemesterService extends IService<Semester> {
      * @date: 2023/6/28 15:41
      */
     Semester findTimeBelongYear(Date date);
+
+    /**
+     * 获取学生的学期信息
+     *
+     * @param userId
+     * @return
+     */
+    ResponseModel<List<Semester>> getStudentSemester(Long userId);
 }
