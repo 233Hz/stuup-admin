@@ -53,4 +53,11 @@ public interface MajorMapper {
     Major findMajorByName(String majorName);
 
     List<Major> selectAll();
+
+    /**
+     * 统计专业总数
+     *
+     * @return
+     */
+    int countMajorTotal();
 }

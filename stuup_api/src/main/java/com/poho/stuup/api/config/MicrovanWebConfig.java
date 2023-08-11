@@ -33,7 +33,7 @@ public class MicrovanWebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/v2/**")
                 .excludePathPatterns("/sync/**")
                 .excludePathPatterns("/csrf")
-                .excludePathPatterns("/visual/**")
+                .excludePathPatterns("/screen/**")
                 .excludePathPatterns("/manualTask/**");
     }
 }

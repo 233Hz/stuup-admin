@@ -304,4 +304,10 @@
         from t_class
         where is_valid = 1
     </select>
+
+    <select id="countClassTotal" resultType="int">
+        select count(*)
+        from t_class
+        where is_valid = 1
+    </select>
 </mapper>

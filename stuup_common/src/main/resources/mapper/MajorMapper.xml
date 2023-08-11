@@ -152,4 +152,10 @@
         from t_major
         where state = 1
     </select>
+
+    <select id="countMajorTotal" resultType="int">
+        select count(*)
+        from t_major
+        where state = 1
+    </select>
 </mapper>

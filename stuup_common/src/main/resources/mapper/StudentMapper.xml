@@ -258,6 +258,7 @@
     <select id="getAllStudent" resultMap="BaseResultMap">
         select id,
                name,
+               sex,
                student_no,
                class_id,
                grade_id,
@@ -288,5 +289,19 @@
         from t_student
         where status = 1
           and is_valid = 1
+    </select>
+
+    <resultMap id="MajorPopulationsVOMap" type="com.poho.stuup.model.vo.MajorPopulationsVO">
+        <result column="major_name" property="majorName"/>
+        <result column="count" property="count"/>
+    </resultMap>
+
+    <select id="countMajorPopulations" resultMap="MajorPopulationsVOMap">
+        select m.major_name as major_name,
+               count(s.id)  as count
+        from t_student s
+                 left join t_major m on s.major_id = m.oid
+        where major_id is not null
+        group by major_id
     </select>
 </mapper>

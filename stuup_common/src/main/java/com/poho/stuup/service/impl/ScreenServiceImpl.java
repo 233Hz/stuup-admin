@@ -4,19 +4,16 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.constant.CalculateTypeEnum;
 import com.poho.stuup.constant.ChangeTypeEnum;
 import com.poho.stuup.constant.ConfigKeyEnum;
-import com.poho.stuup.dao.GrowthMapper;
-import com.poho.stuup.dao.YearInfoMapper;
-import com.poho.stuup.dao.YearMapper;
+import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
-import com.poho.stuup.model.vo.AllKindsOfCompetitionAwardNumVO;
-import com.poho.stuup.model.vo.GrowthScoreCountVO;
-import com.poho.stuup.model.vo.StudentGrowthMonitorVO;
-import com.poho.stuup.model.vo.YearAtSchoolNumVO;
+import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.*;
+import com.poho.stuup.util.Utils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class VisualServiceImpl implements VisualService {
+public class ScreenServiceImpl implements ScreenService {
 
     private final static Map<String, String> COMPETITION_AWARD_LEVEL_OF_CONFIG_KEY_MAP = new HashMap<String, String>() {
         {
@@ -49,6 +46,18 @@ public class VisualServiceImpl implements VisualService {
     private YearMapper yearMapper;
     @Resource
     private RecScoreService recScoreService;
+
+    @Resource
+    private StudentMapper studentMapper;
+
+    @Resource
+    private ClassMapper classMapper;
+
+    @Resource
+    private MajorMapper majorMapper;
+
+    @Resource
+    private GrowthItemMapper growthItemMapper;
 
     @Override
     public List<StudentGrowthMonitorVO> studentGrowthMonitor() {
@@ -184,7 +193,7 @@ public class VisualServiceImpl implements VisualService {
 
     //TODO 加缓存
     @Override
-    public List<GrowthScoreCountVO> countGrowthScoreForLastMonth() {
+    public List<GrowthScoreCountVO> countGrowthScoreCompare() {
         List<GrowthScoreCountVO> resultList = new ArrayList<>();
 
         List<Growth> growths = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
@@ -247,5 +256,57 @@ public class VisualServiceImpl implements VisualService {
             }
         }
         return resultList;
+    }
+
+    @Override
+    public List<MajorPopulationsVO> countMajorPopulations() {
+        return studentMapper.countMajorPopulations();
+    }
+
+    @Override
+    public ScreenImportantDataVO getImportantData() {
+        ScreenImportantDataVO screenImportantDataVO = new ScreenImportantDataVO();
+        List<Student> students = studentMapper.getAllStudent();
+        if (CollUtil.isNotEmpty(students)) {
+            // 统计在校生人数
+            screenImportantDataVO.setAtSchoolNum(students.size());
+            int boyNum = 0, girlNum = 0;
+            int size = students.size();
+            for (int i = 0; i < size; i++) {
+                Student student = students.get(i);
+                Integer sex = student.getSex();
+                if (sex == 1) boyNum++;
+                if (sex == 2) girlNum++;
+            }
+            // 统计男女比例
+            int gcd = Utils.calculatorGCD(boyNum, girlNum);
+            String sexRatio = StrUtil.format("{}:{}", boyNum / gcd, girlNum / gcd);
+            screenImportantDataVO.setSexRatio(sexRatio);
+        }
+
+        // 统计班级总数
+        int classNum = classMapper.countClassTotal();
+        screenImportantDataVO.setClassNum(classNum);
+
+        // 统计专业总数
+        int majorNum = majorMapper.countMajorTotal();
+        screenImportantDataVO.setMajorNum(majorNum);
+
+        // 统计社团总数
+
+
+        // 统计成长项目总数
+        Long growthItemNum = growthItemMapper.selectCount(Wrappers.lambdaQuery());
+        screenImportantDataVO.setGrowthNum(growthItemNum);
+
+        // 统计举办活动次数
+        Long activityNum = countHoldAnActivityNum();
+        screenImportantDataVO.setActivityNum(activityNum);
+
+        // 统计获得奖学金人数
+        Long scholarshipNum = countScholarshipNum();
+        screenImportantDataVO.setScholarshipNum(scholarshipNum);
+
+        return screenImportantDataVO;
     }
 }

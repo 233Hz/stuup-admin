@@ -2,6 +2,7 @@ package com.poho.stuup.dao;
 
 
 import com.poho.stuup.model.Student;
+import com.poho.stuup.model.vo.MajorPopulationsVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -75,4 +76,5 @@ public interface StudentMapper {
 
     Integer countAtSchoolNum();
 
+    List<MajorPopulationsVO> countMajorPopulations();
 }

@@ -101,4 +101,11 @@ public interface ClassMapper {
     List<Class> selectAll();
 
     List<Class> getClassTeacherIdsAndIds();
+
+    /**
+     * 统计班级数量
+     *
+     * @return
+     */
+    int countClassTotal();
 }

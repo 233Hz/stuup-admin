@@ -1,13 +1,10 @@
 package com.poho.stuup.service;
 
-import com.poho.stuup.model.vo.AllKindsOfCompetitionAwardNumVO;
-import com.poho.stuup.model.vo.GrowthScoreCountVO;
-import com.poho.stuup.model.vo.StudentGrowthMonitorVO;
-import com.poho.stuup.model.vo.YearAtSchoolNumVO;
+import com.poho.stuup.model.vo.*;
 
 import java.util.List;
 
-public interface VisualService {
+public interface ScreenService {
 
     /**
      * 学生成长监控
@@ -44,5 +41,24 @@ public interface VisualService {
      */
     Long countHoldAnActivityNum();
 
-    List<GrowthScoreCountVO> countGrowthScoreForLastMonth();
+    /**
+     * 统计上月成长总分和上上月的对比
+     *
+     * @return
+     */
+    List<GrowthScoreCountVO> countGrowthScoreCompare();
+
+    /**
+     * 统计各专业人数
+     *
+     * @return
+     */
+    List<MajorPopulationsVO> countMajorPopulations();
+
+    /**
+     * 查询可视化重要突出的数据
+     *
+     * @return
+     */
+    ScreenImportantDataVO getImportantData();
 }
