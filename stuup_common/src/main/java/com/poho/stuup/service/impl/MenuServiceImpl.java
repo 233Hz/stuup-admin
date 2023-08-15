@@ -9,10 +9,7 @@ import com.poho.stuup.model.vo.Tree;
 import com.poho.stuup.service.MenuService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
@@ -20,12 +17,13 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     public List<Tree> getMenuTree() {
         List<Menu> menus = baseMapper.selectList(Wrappers.<Menu>lambdaQuery()
-                .select(Menu::getOid, Menu::getPid, Menu::getName));
-        Map<Long, Tree> map = new HashMap<>();
+                .select(Menu::getOid, Menu::getPid, Menu::getName, Menu::getSort));
+        Map<Integer, Tree> map = new HashMap<>();
         for (Menu menu : menus) {
             Tree tree = new Tree();
             tree.setKey(menu.getName());
             tree.setValue(menu.getOid());
+            tree.setSort(menu.getSort());
             map.put(menu.getOid(), tree);
         }
         List<Tree> menuTreeList = new ArrayList<>();
@@ -45,6 +43,16 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                 menuTreeList.add(menuTree);
             }
         }
+        sortTree(menuTreeList);
         return menuTreeList;
+    }
+
+    private void sortTree(List<Tree> trees) {
+        trees.sort(Comparator.comparingInt(Tree::getSort));
+        int size = trees.size();
+        for (int i = 0; i < size; i++) {
+            Tree tree = trees.get(i);
+            if (tree.getChildren() != null && tree.getChildren().size() > 0) sortTree(tree.getChildren());
+        }
     }
 }

@@ -21,4 +21,6 @@ public class MenuController {
     public ResponseModel<List<Tree>> getMenuTree() {
         return ResponseModel.ok(menuService.getMenuTree());
     }
+
+
 }

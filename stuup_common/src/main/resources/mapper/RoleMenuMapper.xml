@@ -14,8 +14,12 @@
         <result column="code" property="code"/>
         <result column="path" property="path"/>
         <result column="icon" property="icon"/>
+        <result column="type" property="type"/>
         <result column="flag" property="flag"/>
-        <result column="flag" property="flag"/>
+        <result column="sort" property="sort"/>
+        <result column="keep_alive" property="keepAlive"/>
+        <result column="permission" property="permission"/>
+        <result column="use_layout" property="useLayout"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
@@ -120,7 +124,12 @@
         m.path,
         m.icon,
         m.flag,
-        m.flag,
+        m.type,
+        m.sort,
+        m.keep_alive,
+        m.use_layout,
+        m.hidden,
+        m.redirect,
         m.create_time,
         m.update_time
         from t_role_menu rm

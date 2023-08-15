@@ -1,12 +1,13 @@
 package com.poho.stuup.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 树形对象
+ *
  * @author BUNGA
  * @description: TODO
  * @date 2023/5/23 9:15
@@ -19,4 +20,8 @@ public class Tree {
     private Object value;
 
     private List<Tree> children;
+
+    @JsonIgnore
+    private Integer sort;
+
 }
