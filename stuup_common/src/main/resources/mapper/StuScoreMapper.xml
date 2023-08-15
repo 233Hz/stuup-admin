@@ -54,7 +54,7 @@
                 and c.name like concat('%', #{query.className}, '%')
             </if>
         </where>
-        order by score
+        order by score desc
     </select>
 
 </mapper>
