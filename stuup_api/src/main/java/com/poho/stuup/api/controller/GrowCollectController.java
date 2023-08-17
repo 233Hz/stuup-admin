@@ -82,7 +82,7 @@ public class GrowCollectController {
         RecExcelHandle handle = RecEnum.getHandle(recCode);
         if (handle instanceof RecDefaultHandle) throw new RuntimeException("要导出的项目不存在");
         if (params.get("yearId") == null) {
-            params.put("yearId", yearMapper.findCurrYear().getOid());
+            throw new RuntimeException("请选择要导出的学年");
         }
         handle.recExport(response, params);
     }

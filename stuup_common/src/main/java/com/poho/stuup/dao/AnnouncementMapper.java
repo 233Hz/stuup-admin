@@ -7,6 +7,7 @@ import com.poho.stuup.model.Announcement;
 import com.poho.stuup.model.dto.AnnouncementDTO;
 import com.poho.stuup.model.vo.AnnouncementVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -19,7 +20,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AnnouncementMapper extends BaseMapper<Announcement> {
 
-    IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
+    IPage<AnnouncementVO> notifyPage(Page<AnnouncementVO> page, @Param("query") AnnouncementDTO query);
 
-    IPage<AnnouncementVO> getMyAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
+    IPage<AnnouncementVO> myNotifyPage(Page<AnnouncementVO> page, @Param("query") AnnouncementDTO query);
+
+    IPage<AnnouncementVO> mySystemPage(Page<AnnouncementVO> page, @Param("query") AnnouncementDTO query);
 }

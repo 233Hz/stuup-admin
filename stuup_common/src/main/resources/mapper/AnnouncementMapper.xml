@@ -26,7 +26,7 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
 
-    <select id="getAnnouncementPage" resultMap="AnnouncementVOMap">
+    <select id="notifyPage" resultMap="AnnouncementVOMap">
         select
         a.id,
         a.title,
@@ -50,22 +50,38 @@
         order by a.create_time desc
     </select>
 
-    <select id="getMyAnnouncementPage" resultMap="AnnouncementVOMap">
+    <select id="myNotifyPage" resultMap="AnnouncementVOMap">
+        select
+        id,
+        title,
+        create_time
+        from t_announcement
+        <where>
+            state = 2
+            and type = 2
+            <if test="query.title != null and query.title != ''">
+                and title like concat('%',#{query.title},'%')
+            </if>
+            <if test="query.scope != null and query.scope != ''">
+                and scope = #{query.scope}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="mySystemPage" resultMap="AnnouncementVOMap">
         select
         a.id,
         a.title,
-        a.type,
         a.create_time
         from t_announcement a
         left join t_announcement_user au on au.announcement_id = a.id
         <where>
             au.user_id = #{query.userId}
             and a.state = 2
+            and a.type = 1
             <if test="query.title != null and query.title != ''">
                 and a.title like concat('%',#{query.title},'%')
-            </if>
-            <if test="query.type != null and query.type != ''">
-                and a.type = #{query.type}
             </if>
         </where>
         order by a.create_time desc

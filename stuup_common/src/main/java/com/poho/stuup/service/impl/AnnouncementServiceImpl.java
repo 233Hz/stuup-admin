@@ -5,18 +5,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.AnnouncementScopeEnum;
 import com.poho.stuup.constant.AnnouncementStateEnum;
 import com.poho.stuup.constant.AnnouncementTypeEnum;
+import com.poho.stuup.constant.UserTypeEnum;
 import com.poho.stuup.dao.AnnouncementMapper;
 import com.poho.stuup.dao.AnnouncementUserMapper;
 import com.poho.stuup.dao.UserMapper;
 import com.poho.stuup.model.Announcement;
+import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.AnnouncementDTO;
-import com.poho.stuup.model.dto.AnnouncementPremUserDTO;
-import com.poho.stuup.model.vo.AnnouncementPremUserVO;
 import com.poho.stuup.model.vo.AnnouncementVO;
 import com.poho.stuup.service.AnnouncementService;
-import com.poho.stuup.util.Utils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,18 +40,29 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
     private AnnouncementUserMapper announcementUserMapper;
 
     @Override
-    public IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
-        return baseMapper.getAnnouncementPage(page, query);
+    public IPage<AnnouncementVO> notifyPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        return baseMapper.notifyPage(page, query);
     }
 
     @Override
-    public IPage<AnnouncementVO> getMyAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
-        return baseMapper.getMyAnnouncementPage(page, query);
+    public IPage<AnnouncementVO> myNotifyPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        Long userId = query.getUserId();
+        User user = userMapper.selectByPrimaryKey(userId);
+        Integer userType = user.getUserType();
+        if (userType != UserTypeEnum.TEACHER.getValue()) {
+            query.setScope(AnnouncementScopeEnum.ALL.getValue());
+        }
+        return baseMapper.myNotifyPage(page, query);
+    }
+
+    @Override
+    public IPage<AnnouncementVO> mySystemPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        return baseMapper.mySystemPage(page, query);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseModel<Boolean> saveOrUpdateAnnouncement(AnnouncementDTO data) {
+    public ResponseModel<Boolean> saveOrUpdateNotify(AnnouncementDTO data) {
         String message = "保存";
         Announcement announcement = new Announcement();
         announcement.setId(data.getId());
@@ -67,14 +78,5 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
         this.saveOrUpdate(announcement);
         announcementUserMapper.saveAnnouncementUser(announcement.getId(), data.getScope());
         return ResponseModel.ok(null, StrUtil.format("{}成功", message));
-    }
-
-    @Override
-    public IPage<AnnouncementPremUserVO> getAnnouncementPremUserVO(Page<AnnouncementPremUserVO> page, AnnouncementPremUserDTO query) {
-        boolean superAdmin = Utils.isSuperAdmin(query.getCurrUser());
-        if (superAdmin) {
-            query.setCurrUser(null);
-        }
-        return userMapper.getPremUser(page, query);
     }
 }

@@ -8,8 +8,6 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.AnnouncementStateEnum;
 import com.poho.stuup.model.Announcement;
 import com.poho.stuup.model.dto.AnnouncementDTO;
-import com.poho.stuup.model.dto.AnnouncementPremUserDTO;
-import com.poho.stuup.model.vo.AnnouncementPremUserVO;
 import com.poho.stuup.model.vo.AnnouncementVO;
 import com.poho.stuup.service.AnnouncementService;
 import com.poho.stuup.util.ProjectUtil;
@@ -38,19 +36,19 @@ public class AnnouncementController {
     private AnnouncementService announcementService;
 
     @GetMapping("/page")
-    public ResponseModel<IPage<AnnouncementVO>> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
-        return ResponseModel.ok(announcementService.getAnnouncementPage(page, query));
+    public ResponseModel<IPage<AnnouncementVO>> notifyPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        return ResponseModel.ok(announcementService.notifyPage(page, query));
     }
 
     @PostMapping("/save_update")
-    public ResponseModel<Boolean> saveOrUpdateAnnouncement(@Valid @RequestBody AnnouncementDTO data) {
+    public ResponseModel<Boolean> saveOrUpdateNotify(@Valid @RequestBody AnnouncementDTO data) {
         String userId = ProjectUtil.obtainLoginUser(request);
         data.setUserId(Long.valueOf(userId));
-        return announcementService.saveOrUpdateAnnouncement(data);
+        return announcementService.saveOrUpdateNotify(data);
     }
 
     @GetMapping("/publish/{id}")
-    public ResponseModel<Boolean> publishAnnouncement(@PathVariable("id") Long id) {
+    public ResponseModel<Boolean> publishNotify(@PathVariable("id") Long id) {
         Announcement announcement = announcementService.getById(id);
         Integer state = announcement.getState();
         boolean result;
@@ -72,28 +70,27 @@ public class AnnouncementController {
     }
 
     @DeleteMapping("/del/{id}")
-    public ResponseModel<Boolean> delAnnouncement(@PathVariable("id") Long id) {
+    public ResponseModel<Boolean> delNotify(@PathVariable("id") Long id) {
         boolean result = announcementService.removeById(id);
         return result ? ResponseModel.ok(true, "删除成功") : ResponseModel.failed(false, "删除失败");
     }
 
-    @GetMapping("/premUser/page")
-    public ResponseModel<IPage<AnnouncementPremUserVO>> getAnnouncementPremUserVO(Page<AnnouncementPremUserVO> page, AnnouncementPremUserDTO query) {
-        String userId = ProjectUtil.obtainLoginUser(request);
-        query.setCurrUser(Long.valueOf(userId));
-        return ResponseModel.ok(announcementService.getAnnouncementPremUserVO(page, query));
-    }
-
-    @GetMapping("/myPage")
-    public ResponseModel<IPage<AnnouncementVO>> getAnnouncementMyPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+    @GetMapping("/my/notify/page")
+    public ResponseModel<IPage<AnnouncementVO>> myNotifyPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
         String userId = ProjectUtil.obtainLoginUser(request);
         query.setUserId(Long.valueOf(userId));
-        query.setState(AnnouncementStateEnum.PUBLISHED.getValue());
-        return ResponseModel.ok(announcementService.getMyAnnouncementPage(page, query));
+        return ResponseModel.ok(announcementService.myNotifyPage(page, query));
+    }
+
+    @GetMapping("/my/system/page")
+    public ResponseModel<IPage<AnnouncementVO>> mySystemPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
+        String userId = ProjectUtil.obtainLoginUser(request);
+        query.setUserId(Long.valueOf(userId));
+        return ResponseModel.ok(announcementService.mySystemPage(page, query));
     }
 
     @GetMapping("/{id}")
-    public ResponseModel<Announcement> getAnnouncementById(@PathVariable("id") Long id) {
+    public ResponseModel<Announcement> notifyById(@PathVariable("id") Long id) {
         return ResponseModel.ok(announcementService.getById(id));
     }
 

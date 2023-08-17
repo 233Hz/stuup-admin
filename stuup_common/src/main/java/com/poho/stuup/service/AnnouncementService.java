@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Announcement;
 import com.poho.stuup.model.dto.AnnouncementDTO;
-import com.poho.stuup.model.dto.AnnouncementPremUserDTO;
-import com.poho.stuup.model.vo.AnnouncementPremUserVO;
 import com.poho.stuup.model.vo.AnnouncementVO;
 
 /**
@@ -20,12 +18,12 @@ import com.poho.stuup.model.vo.AnnouncementVO;
  */
 public interface AnnouncementService extends IService<Announcement> {
 
-    IPage<AnnouncementVO> getAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
+    IPage<AnnouncementVO> notifyPage(Page<AnnouncementVO> page, AnnouncementDTO query);
 
-    IPage<AnnouncementVO> getMyAnnouncementPage(Page<AnnouncementVO> page, AnnouncementDTO query);
+    IPage<AnnouncementVO> myNotifyPage(Page<AnnouncementVO> page, AnnouncementDTO query);
 
-    ResponseModel<Boolean> saveOrUpdateAnnouncement(AnnouncementDTO data);
+    IPage<AnnouncementVO> mySystemPage(Page<AnnouncementVO> page, AnnouncementDTO query);
 
-    IPage<AnnouncementPremUserVO> getAnnouncementPremUserVO(Page<AnnouncementPremUserVO> page, AnnouncementPremUserDTO query);
+    ResponseModel<Boolean> saveOrUpdateNotify(AnnouncementDTO data);
 
 }

@@ -193,13 +193,11 @@ public class UserServiceImpl implements IUserService {
                 //修改用户信息时，清除用户角色只会清除不带year_id角色
                 userRoleMapper.clearUserRole(user.getOid());
                 for (Long roleId : user.getRoles()) {
-                    if (roleId > ProjectConstants.ROLE_PTJS) {
-                        UserRole userRole = new UserRole();
-                        userRole.setUserId(user.getOid());
-                        userRole.setRoleId(roleId);
-                        userRole.setCreateTime(new Date());
-                        userRoleMapper.insertSelective(userRole);
-                    }
+                    UserRole userRole = new UserRole();
+                    userRole.setUserId(user.getOid());
+                    userRole.setRoleId(roleId);
+                    userRole.setCreateTime(new Date());
+                    userRoleMapper.insertSelective(userRole);
                 }
             }
             model.setCode(CommonConstants.CODE_SUCCESS);
