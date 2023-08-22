@@ -36,6 +36,11 @@ public class RecLog implements Serializable {
     private Long yearId;
 
     /**
+     * 学期id
+     */
+    private Long semesterId;
+
+    /**
      * 成长项目id
      */
     private Long growId;

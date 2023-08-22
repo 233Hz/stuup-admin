@@ -10,13 +10,10 @@ import java.util.Date;
  */
 public interface CalculateScoreService {
 
-    void savePlusCalculateScoreResult(Long studentId, Long growthItemId, Long yearId, Long semesterId, Date createTime, Integer count, BigDecimal growthItemScore);
 
-    void savePlusCalculateScoreResult(Long studentId, Long growthItemId, Long yearId, Long semesterId, Date createTime, Integer count, BigDecimal growthItemScore, BigDecimal scoreUpperLimit);
+    void saveAddScoreCalculateResult(Long yearId, Long semesterId, Date time, Long growthItemId, Long studentId, Long jobGrowId, BigDecimal addScore);
 
-    void saveMinusCalculateScoreResult(Long studentId, Long growthItemId, Long yearId, Long semesterId, Date createTime, Integer count, BigDecimal growthItemScore);
+    void saveAddScoreCalculateResult(Long yearId, Long semesterId, Date time, Long growthItemId, Long studentId, Long jobGrowId, long count, BigDecimal growthItemScore, BigDecimal growthItemScoreUpperLimit);
 
-    void saveMinusCalculateScoreResult(Long studentId, Long growthItemId, Long yearId, Long semesterId, Date createTime, Integer count, BigDecimal growthItemScore, BigDecimal scoreUpperLimit);
-
-
+    void saveDeductScoreCalculateResult(Long yearId, Long semesterId, Date time, Long growthItemId, Long studentId, Long jobGrowId, long count, BigDecimal growthItemScore, BigDecimal growthItemScoreUpperLimit);
 }

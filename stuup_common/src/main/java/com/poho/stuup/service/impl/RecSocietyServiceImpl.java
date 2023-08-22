@@ -1,6 +1,5 @@
 package com.poho.stuup.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,23 +7,22 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.constant.RecRoleEnum;
 import com.poho.stuup.constant.SyncCommunityMemberStateEnum;
+import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecSocietyMapper;
 import com.poho.stuup.dao.SyncCommunityMemberMapper;
-import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.RecSocietyDTO;
 import com.poho.stuup.model.dto.SocietySaveDTO;
 import com.poho.stuup.model.excel.RecSocietyExcel;
 import com.poho.stuup.model.vo.RecSocietyVO;
-import com.poho.stuup.service.RecScoreService;
+import com.poho.stuup.service.RecAddScoreService;
 import com.poho.stuup.service.RecSocietyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -38,10 +36,10 @@ import java.util.stream.Collectors;
 public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSociety> implements RecSocietyService {
 
     @Resource
-    private YearMapper yearMapper;
+    private RecDefaultMapper recDefaultMapper;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Resource
     private RecLogMapper recLogMapper;
@@ -50,22 +48,21 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
     private SyncCommunityMemberMapper syncCommunityMemberMapper;
 
     @Override
-    public void saveRecSocietyExcel(long batchCode, GrowthItem growthItem, List<RecSocietyExcel> excels, Map<String, Object> params) {
-        String userId = (String) params.get("userId");
-        Year currYear = yearMapper.findCurrYear();
-        List<RecDefault> recDefaults = new ArrayList<>();
-        //=================保存数据=================
-        List<RecSociety> recSocieties = excels.stream().map(excel -> {
+    @Transactional(rollbackFor = Exception.class)
+    public void saveRecSocietyExcel(List<RecSocietyExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+        List<Long> studentIds = new ArrayList<>();
+        for (RecSocietyExcel excel : excels) {
             RecDefault recDefault = new RecDefault();
-            recDefault.setYearId(currYear.getOid());
+            recDefault.setYearId(yearId);
+            recDefault.setSemesterId(semesterId);
             recDefault.setGrowId(growthItem.getId());
             recDefault.setStudentId(excel.getStudentId());
             recDefault.setBatchCode(batchCode);
             recDefault.setRemark(excel.getRemark());
-            recDefaults.add(recDefault);
-            //===================================================================
+            recDefaultMapper.insert(recDefault);
             RecSociety recSociety = new RecSociety();
-            recSociety.setYearId(currYear.getOid());
+            recSociety.setYearId(yearId);
+            recSociety.setSemesterId(semesterId);
             recSociety.setGrowId(growthItem.getId());
             recSociety.setStudentId(excel.getStudentId());
             recSociety.setName(excel.getName());
@@ -74,18 +71,17 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
             recSociety.setEndTime(DateUtil.parseDate(excel.getEndTime()));
             recSociety.setRole(RecRoleEnum.getValueForRole(excel.getRole()));
             recSociety.setBatchCode(batchCode);
-            return recSociety;
-        }).collect(Collectors.toList());
-        this.saveBatch(recSocieties);
-        // 插入一条导入日志
+            baseMapper.insert(recSociety);
+            studentIds.add(excel.getStudentId());
+        }
         RecLog recLog = new RecLog();
+        recLog.setYearId(yearId);
+        recLog.setSemesterId(semesterId);
         recLog.setGrowId(growthItem.getId());
-        recLog.setYearId(currYear.getOid());
-        recLog.setCreateUser(Long.valueOf(userId));
+        recLog.setCreateUser(userId);
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
-        // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
+        recAddScoreService.batchCalculateScore(studentIds, growthItem, yearId, semesterId, DateUtil.date(batchCode));
     }
 
     @Override
@@ -109,7 +105,8 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
         recDefault.setBatchCode(societySaveDTO.getBatchCode());
         Map<String, Object> params = new HashMap<>();
         params.put("nowTime", new Date());
-        recScoreService.calculateScore(CollUtil.list(false, recDefault), currYearId, societySaveDTO.getGrowthItem(), params);
+        // TODO ????
+//        recAddScoreService.calculateScore(CollUtil.list(false, recDefault), currYearId, societySaveDTO.getGrowthItem(), params);
         //更新同步记录的处理状态
         SyncCommunityMember syncCommunityMember = SyncCommunityMember.builder()
                 .id(societySaveDTO.getCommunityMemberId())

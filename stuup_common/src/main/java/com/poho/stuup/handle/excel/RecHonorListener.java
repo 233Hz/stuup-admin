@@ -27,11 +27,13 @@ import java.util.Map;
 @Slf4j
 public class RecHonorListener implements ReadListener<RecHonorExcel> {
 
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecHonorService recHonorService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
     //===============================================================
 
@@ -40,14 +42,15 @@ public class RecHonorListener implements ReadListener<RecHonorExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecHonorExcel> recHonorExcels = new ArrayList<>();
 
-    public RecHonorListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecHonorService recHonorService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecHonorListener(StudentMapper studentMapper, RecHonorService recHonorService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recHonorService = recHonorService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
-
 
     @Override
     public void invoke(RecHonorExcel data, AnalysisContext context) {
@@ -102,7 +105,7 @@ public class RecHonorListener implements ReadListener<RecHonorExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recHonorService.saveRecHonorExcel(batchCode, growthItem, recHonorExcels, params);
+        recHonorService.saveRecHonorExcel(recHonorExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

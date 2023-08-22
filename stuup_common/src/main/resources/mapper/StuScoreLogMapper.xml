@@ -43,4 +43,8 @@
         order by scl.create_time desc
     </select>
 
+    <insert id="executeSql" parameterType="string">
+        ${sql}
+    </insert>
+
 </mapper>

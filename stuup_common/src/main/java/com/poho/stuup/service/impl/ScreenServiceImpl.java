@@ -45,7 +45,7 @@ public class ScreenServiceImpl implements ScreenService {
     @Resource
     private YearMapper yearMapper;
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Resource
     private StudentMapper studentMapper;
@@ -224,19 +224,19 @@ public class ScreenServiceImpl implements ScreenService {
                 if (CollUtil.isNotEmpty(growthItems)) {
                     growthScoreCountVO.setGrowthItemCount(growthItems.size());
                     // 查询上月总积分
-                    List<BigDecimal> offset1MonthScores = recScoreService.listObjs(Wrappers.<RecScore>lambdaQuery()
-                                    .select(RecScore::getScore)
-                                    .in(RecScore::getGrowId, growthItems)
-                                    .between(RecScore::getCreateTime, offset1MonthBegin, offset1MonthEnd),
+                    List<BigDecimal> offset1MonthScores = recAddScoreService.listObjs(Wrappers.<RecAddScore>lambdaQuery()
+                                    .select(RecAddScore::getScore)
+                                    .in(RecAddScore::getGrowId, growthItems)
+                                    .between(RecAddScore::getCreateTime, offset1MonthBegin, offset1MonthEnd),
                             score -> (BigDecimal) score);
                     if (CollUtil.isNotEmpty(offset1MonthScores)) {
                         totalScore = offset1MonthScores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
                     }
                     // 查询上上月总积分
-                    List<BigDecimal> offset2MonthScores = recScoreService.listObjs(Wrappers.<RecScore>lambdaQuery()
-                                    .select(RecScore::getScore)
-                                    .in(RecScore::getGrowId, growthItems)
-                                    .between(RecScore::getCreateTime, offset2MonthBegin, offset2MonthEnd),
+                    List<BigDecimal> offset2MonthScores = recAddScoreService.listObjs(Wrappers.<RecAddScore>lambdaQuery()
+                                    .select(RecAddScore::getScore)
+                                    .in(RecAddScore::getGrowId, growthItems)
+                                    .between(RecAddScore::getCreateTime, offset2MonthBegin, offset2MonthEnd),
                             score -> (BigDecimal) score);
                     if (CollUtil.isNotEmpty(offset2MonthScores)) {
                         BigDecimal lastTotalScore = offset2MonthScores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);

@@ -6,13 +6,13 @@ import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.dao.StuScoreMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.dao.UserMapper;
-import com.poho.stuup.model.RecScore;
+import com.poho.stuup.model.RecAddScore;
 import com.poho.stuup.model.StuScore;
 import com.poho.stuup.model.Student;
 import com.poho.stuup.model.User;
 import com.poho.stuup.model.vo.GrowthInfo;
 import com.poho.stuup.service.GrowthInfoService;
-import com.poho.stuup.service.RecScoreService;
+import com.poho.stuup.service.RecAddScoreService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,7 +38,7 @@ public class GrowthInfoServiceImpl implements GrowthInfoService {
     private StuScoreMapper stuScoreMapper;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Override
     public ResponseModel<GrowthInfo> getInfo(Long userId) {
@@ -56,13 +56,13 @@ public class GrowthInfoServiceImpl implements GrowthInfoService {
                 .eq(StuScore::getStudentId, studentId));
         BigDecimal score = stuScore.getScore();
         result.setTotalScore(score);
-        Integer ranking = recScoreService.getStudentNowRanking(Long.valueOf(studentId));
+        Integer ranking = recAddScoreService.getStudentNowRanking(Long.valueOf(studentId));
         result.setRanking(ranking);
-        List<RecScore> recScores = recScoreService.list(Wrappers.<RecScore>lambdaQuery()
-                .select(RecScore::getId, RecScore::getScore)
-                .eq(RecScore::getState, WhetherEnum.NO.getValue())
-                .eq(RecScore::getStudentId, studentId));
-        result.setUnearnedPoints(recScores);
+        List<RecAddScore> recAddScores = recAddScoreService.list(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getId, RecAddScore::getScore)
+                .eq(RecAddScore::getState, WhetherEnum.NO.getValue())
+                .eq(RecAddScore::getStudentId, studentId));
+        result.setUnearnedPoints(recAddScores);
         return ResponseModel.ok(result);
     }
 }

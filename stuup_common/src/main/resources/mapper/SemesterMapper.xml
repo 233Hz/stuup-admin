@@ -70,4 +70,12 @@
         where #{date} between start_time and end_time
     </select>
 
+    <select id="findByRange" resultMap="BaseResultMap">
+        select *
+        from t_semester
+        where #{date} between start_time and end_time
+        order by start_time desc
+        limit 1
+    </select>
+
 </mapper>

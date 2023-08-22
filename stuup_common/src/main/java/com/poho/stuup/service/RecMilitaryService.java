@@ -10,7 +10,6 @@ import com.poho.stuup.model.excel.RecMilitaryExcel;
 import com.poho.stuup.model.vo.RecMilitaryVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -32,7 +31,7 @@ public interface RecMilitaryService extends IService<RecMilitary> {
      * @author BUNGA
      * @date: 2023/6/1 14:28
      */
-    void saveRecMilitaryExcel(long batchCode, GrowthItem growthItem, List<RecMilitaryExcel> excels, Map<String, Object> params);
+    void saveRecMilitaryExcel(List<RecMilitaryExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 
     /**
      * @description: 分页查询

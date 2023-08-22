@@ -210,13 +210,24 @@
     <update id="setCurrentYear">
         update t_year
         set curr = 1
-        where oid = #{oid}
+        where oid = #{oid};
+        update t_year
+        set curr = 2
+        where oid != #{oid};
     </update>
 
     <select id="findRangeYearStart" resultType="long">
         select oid
         from t_year
         where year_start between #{startTime} and #{endTime}
+    </select>
+
+    <select id="findByRange" resultMap="BaseResultMap">
+        select *
+        from t_year
+        where #{date} between year_start and year_end
+        order by year_start desc
+        limit 1
     </select>
 
 </mapper>

@@ -10,7 +10,6 @@ import com.poho.stuup.model.excel.RecCaucusExcel;
 import com.poho.stuup.model.vo.RecCaucusVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -32,7 +31,7 @@ public interface RecCaucusService extends IService<RecCaucus> {
      * @author BUNGA
      * @date: 2023/6/1 14:08
      */
-    void saveRecCaucusExcel(long batchCode, GrowthItem growthItem, List<RecCaucusExcel> excels, Map<String, Object> params);
+    void saveRecCaucusExcel(List<RecCaucusExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 
     /**
      * @description: 分页查询

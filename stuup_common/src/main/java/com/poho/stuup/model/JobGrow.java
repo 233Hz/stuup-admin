@@ -7,21 +7,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * <p>
- * 积分记录表
+ *
  * </p>
  *
  * @author BUNGA
- * @since 2023-05-29
+ * @since 2023-08-18
  */
 @Getter
 @Setter
-@TableName("t_rec_score")
-public class RecScore implements Serializable {
+@TableName("t_job_grow")
+public class JobGrow implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,39 +31,24 @@ public class RecScore implements Serializable {
     private Long id;
 
     /**
-     * 学生id
-     */
-    private Long studentId;
-
-    /**
      * 项目id
      */
     private Long growId;
 
     /**
-     * 得分
+     * 执行日期
      */
-    private BigDecimal score;
+    private LocalDate execDate;
 
     /**
-     * 获得所属学年
-     */
-    private Long yearId;
-
-    /**
-     * 获取所属学期
-     */
-    private Long semesterId;
-
-    /**
-     * 获取状态（0.未获取 1.已获取）
+     * 执行状态（1.完成 2.未完成）
      */
     private Integer state;
 
     /**
-     * 创建时间
+     * 备注
      */
-    private Date createTime;
+    private String error;
 
 
 }

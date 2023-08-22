@@ -10,7 +10,6 @@ import com.poho.stuup.model.excel.RecVolunteerExcel;
 import com.poho.stuup.model.vo.RecVolunteerVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -32,7 +31,7 @@ public interface RecVolunteerService extends IService<RecVolunteer> {
      * @author BUNGA
      * @date: 2023/6/1 14:37
      */
-    void saveRecVolunteerExcel(long batchCode, GrowthItem growthItem, List<RecVolunteerExcel> excels, Map<String, Object> params);
+    void saveRecVolunteerExcel(List<RecVolunteerExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 
     /**
      * @description: 分页查询

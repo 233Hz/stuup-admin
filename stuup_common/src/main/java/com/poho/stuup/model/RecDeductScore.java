@@ -7,20 +7,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * <p>
- * 积分计算失败记录
+ * 扣分记录
  * </p>
  *
  * @author BUNGA
- * @since 2023-08-03
+ * @since 2023-08-18
  */
 @Getter
 @Setter
-@TableName("t_calculate_fail_log")
-public class CalculateFailLog implements Serializable {
+@TableName("t_rec_deduct_score")
+public class RecDeductScore implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,9 +37,9 @@ public class CalculateFailLog implements Serializable {
     private Long studentId;
 
     /**
-     * 是否执行成功（1.是 2.否）
+     * 学期id
      */
-    private Integer status;
+    private Long semesterId;
 
     /**
      * 项目id
@@ -46,34 +47,24 @@ public class CalculateFailLog implements Serializable {
     private Long growId;
 
     /**
-     * 年份id
+     * 分值
+     */
+    private BigDecimal score;
+
+    /**
+     * 获得所属学年
      */
     private Long yearId;
 
     /**
-     * 学期id
+     * 获取状态（1.已获取 2.未获取）
      */
-    private Long semesterId;
-
-    /**
-     * 错误信息
-     */
-    private String error;
+    private Integer state;
 
     /**
      * 创建时间
      */
     private Date createTime;
-
-    /**
-     * 统计次数
-     */
-    private Integer count;
-
-    /**
-     * 计算类型
-     */
-    private Integer calculateType;
 
 
 }

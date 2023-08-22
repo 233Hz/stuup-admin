@@ -24,12 +24,13 @@ import java.util.Map;
  */
 @Slf4j
 public class RecDefaultListener implements ReadListener<RecDefaultExcel> {
-
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecDefaultService recDefaultService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
     //===============================================================
 
@@ -38,13 +39,16 @@ public class RecDefaultListener implements ReadListener<RecDefaultExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecDefaultExcel> recDefaultExcels = new ArrayList<>();
 
-    public RecDefaultListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecDefaultService recDefaultService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecDefaultListener(StudentMapper studentMapper, RecDefaultService recDefaultService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recDefaultService = recDefaultService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
+
 
     @Override
     public void invoke(RecDefaultExcel data, AnalysisContext context) {
@@ -80,7 +84,7 @@ public class RecDefaultListener implements ReadListener<RecDefaultExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recDefaultService.saveRecDefaultExcel(batchCode, growthItem, recDefaultExcels, params);
+        recDefaultService.saveRecDefaultExcel(recDefaultExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

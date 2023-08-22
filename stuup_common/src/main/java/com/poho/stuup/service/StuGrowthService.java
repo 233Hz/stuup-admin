@@ -18,5 +18,5 @@ public interface StuGrowthService extends IService<StuGrowth> {
      *
      * @param studentId
      */
-    void setCollectCount(Long studentId, Long growthItemId, Integer count);
+    void addCollectCount(Long studentId, Long growthItemId);
 }

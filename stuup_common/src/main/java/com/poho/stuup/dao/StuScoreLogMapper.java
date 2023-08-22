@@ -21,4 +21,5 @@ public interface StuScoreLogMapper extends BaseMapper<StuScoreLog> {
 
     IPage<StudentRecScoreVO> pageStudentRecScore(Page<StudentRecScoreVO> page, @Param("studentId") Long studentId);
 
+    int executeSql(@Param("sql") String sql);
 }

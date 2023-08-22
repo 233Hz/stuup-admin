@@ -36,6 +36,11 @@ public class RecMilitary implements Serializable {
     private Long yearId;
 
     /**
+     * 学期id
+     */
+    private Long semesterId;
+
+    /**
      * 项目id
      */
     private Long growId;

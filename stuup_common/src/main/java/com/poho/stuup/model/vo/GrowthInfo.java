@@ -1,6 +1,6 @@
 package com.poho.stuup.model.vo;
 
-import com.poho.stuup.model.RecScore;
+import com.poho.stuup.model.RecAddScore;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -33,5 +33,5 @@ public class GrowthInfo {
     /**
      * 未获取的积分记录
      */
-    private List<RecScore> unearnedPoints;
+    private List<RecAddScore> unearnedPoints;
 }

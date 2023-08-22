@@ -27,26 +27,29 @@ import java.util.Map;
 @Slf4j
 public class RecMilitaryListener implements ReadListener<RecMilitaryExcel> {
 
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecMilitaryService recMilitaryService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
-    //===============================================================
+
     public int total, success, fail;
     public List<ExcelError> errors = new ArrayList<>();
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecMilitaryExcel> recMilitaryExcels = new ArrayList<>();
 
-    public RecMilitaryListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecMilitaryService recMilitaryService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecMilitaryListener(StudentMapper studentMapper, RecMilitaryService recMilitaryService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recMilitaryService = recMilitaryService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
-
 
     @Override
     public void invoke(RecMilitaryExcel data, AnalysisContext context) {
@@ -95,7 +98,7 @@ public class RecMilitaryListener implements ReadListener<RecMilitaryExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recMilitaryService.saveRecMilitaryExcel(batchCode, growthItem, recMilitaryExcels, params);
+        recMilitaryService.saveRecMilitaryExcel(recMilitaryExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

@@ -17,7 +17,7 @@ import com.poho.stuup.model.vo.GrowApplyRecordVO;
 import com.poho.stuup.model.vo.GrowAuditRecordVO;
 import com.poho.stuup.service.AudGrowService;
 import com.poho.stuup.service.IUserService;
-import com.poho.stuup.service.RecScoreService;
+import com.poho.stuup.service.RecAddScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -46,7 +46,7 @@ public class AudGrowController {
     private AudGrowService audGrowService;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Resource
     private StudentMapper studentMapper;
@@ -180,7 +180,7 @@ public class AudGrowController {
         // 更新状态
         audGrowService.updateRecordState(id, audGrow.getGrowId(), AudStateEnum.PASS, Long.parseLong(userId), null);
         // 计算积分
-        recScoreService.calculateStudentScore(audGrow.getGrowId(), studentId);
+        recAddScoreService.calculateStudentScore(audGrow.getGrowId(), studentId);
         return ResponseModel.ok(null, "审核已通过");
     }
 

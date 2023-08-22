@@ -1,26 +1,32 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.MilitaryLevelEnum;
+import com.poho.stuup.constant.RecEnum;
 import com.poho.stuup.constant.WhetherEnum;
+import com.poho.stuup.dao.GrowthItemMapper;
+import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecMilitaryMapper;
-import com.poho.stuup.dao.YearMapper;
-import com.poho.stuup.model.*;
+import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.RecDefault;
+import com.poho.stuup.model.RecLog;
+import com.poho.stuup.model.RecMilitary;
 import com.poho.stuup.model.dto.RecMilitaryDTO;
 import com.poho.stuup.model.excel.RecMilitaryExcel;
 import com.poho.stuup.model.vo.RecMilitaryVO;
+import com.poho.stuup.service.RecAddScoreService;
 import com.poho.stuup.service.RecMilitaryService;
-import com.poho.stuup.service.RecScoreService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,63 +40,57 @@ import java.util.stream.Collectors;
 public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMilitary> implements RecMilitaryService {
 
     @Resource
-    private YearMapper yearMapper;
+    private RecDefaultMapper recDefaultMapper;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Resource
     private RecLogMapper recLogMapper;
 
+    @Resource
+    private GrowthItemMapper growthItemMapper;
+
     @Override
-    public void saveRecMilitaryExcel(long batchCode, GrowthItem growthItem, List<RecMilitaryExcel> excels, Map<String, Object> params) {
-        String userId = (String) params.get("userId");
-        Year currYear = yearMapper.findCurrYear();
-        if (currYear == null) throw new RuntimeException("不在学年时间范围内，无法导入");
-        List<RecDefault> qualifiedRecDefaults = new ArrayList<>();  // 合格学员记录
-        List<RecDefault> excellentRecDefaults = new ArrayList<>();  // 优秀学员记录
-        //=================保存数据=================
-        List<RecMilitary> recMilitaries = excels.stream().map(excel -> {
+    @Transactional(rollbackFor = Exception.class)
+    public void saveRecMilitaryExcel(List<RecMilitaryExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+        GrowthItem growthItem1 = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
+                .eq(GrowthItem::getCode, RecEnum.REC_MILITARY_EXCELLENT.getCode()));
+        GrowthItem growthItem2 = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
+                .eq(GrowthItem::getCode, RecEnum.REC_MILITARY_QUALIFIED.getCode()));
+        List<Long> studentIds1 = new ArrayList<>();
+        List<Long> studentIds2 = new ArrayList<>();
+        for (RecMilitaryExcel excel : excels) {
             RecDefault recDefault = new RecDefault();
-            recDefault.setYearId(currYear.getOid());
-            recDefault.setGrowId(growthItem.getId());
+            recDefault.setYearId(yearId);
+            recDefault.setSemesterId(semesterId);
             recDefault.setStudentId(excel.getStudentId());
             recDefault.setBatchCode(batchCode);
             recDefault.setRemark(excel.getRemark());
-
-            //过滤出合格学员
-            String level = excel.getLevel();
-            if (MilitaryLevelEnum.QUALIFIED.getValue() == MilitaryLevelEnum.getValueForLabel(level)) {
-                qualifiedRecDefaults.add(recDefault);
-            }
             // 过滤出优秀学员
-            String excellent = excel.getExcellent();
-            if (WhetherEnum.YES.getValue() == WhetherEnum.getValueForLabel(excellent)) {
-                excellentRecDefaults.add(recDefault);
+            Integer excellent = WhetherEnum.getValueForLabel(excel.getExcellent());
+            if (excellent != null && WhetherEnum.YES.getValue() == excellent) {
+                recDefault.setGrowId(growthItem1.getId());
+                recDefaultMapper.insert(recDefault);
+                studentIds1.add(excel.getStudentId());
             }
-
-            //===================================================================
-            RecMilitary recMilitary = new RecMilitary();
-            recMilitary.setYearId(currYear.getOid());
-            recMilitary.setGrowId(growthItem.getId());
-            recMilitary.setStudentId(excel.getStudentId());
-            recMilitary.setLevel(MilitaryLevelEnum.getValueForLabel(excel.getLevel()));
-            recMilitary.setExcellent(WhetherEnum.getValueForLabel(excel.getExcellent()));
-            recMilitary.setBatchCode(batchCode);
-            return recMilitary;
-        }).collect(Collectors.toList());
-        this.saveBatch(recMilitaries);
-        // 插入一条导入日志
+            //过滤出合格学员
+            Integer level = MilitaryLevelEnum.getValueForLabel(excel.getLevel());
+            if (level != null && MilitaryLevelEnum.QUALIFIED.getValue() == level) {
+                recDefault.setGrowId(growthItem2.getId());
+                recDefaultMapper.insert(recDefault);
+                studentIds1.add(excel.getStudentId());
+            }
+        }
         RecLog recLog = new RecLog();
+        recLog.setYearId(yearId);
+        recLog.setSemesterId(semesterId);
         recLog.setGrowId(growthItem.getId());
-        recLog.setYearId(currYear.getOid());
-        recLog.setCreateUser(Long.valueOf(userId));
+        recLog.setCreateUser(userId);
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
-
-        // 计算学生成长积分
-        recScoreService.calculateScore(excellentRecDefaults, currYear.getOid(), growthItem, params);
-        recScoreService.calculateScore(qualifiedRecDefaults, currYear.getOid(), growthItem, params);
+        recAddScoreService.batchCalculateScore(studentIds1, growthItem1, yearId, semesterId, DateUtil.date(batchCode));
+        recAddScoreService.batchCalculateScore(studentIds2, growthItem2, yearId, semesterId, DateUtil.date(batchCode));
 
     }
 

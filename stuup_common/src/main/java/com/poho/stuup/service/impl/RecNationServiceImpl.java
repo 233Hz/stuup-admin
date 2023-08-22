@@ -1,25 +1,28 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.RecLevelEnum;
+import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecNationMapper;
-import com.poho.stuup.dao.YearMapper;
-import com.poho.stuup.model.*;
+import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.RecDefault;
+import com.poho.stuup.model.RecLog;
+import com.poho.stuup.model.RecNation;
 import com.poho.stuup.model.dto.RecNationDTO;
 import com.poho.stuup.model.excel.RecNationExcel;
 import com.poho.stuup.model.vo.RecNationVO;
+import com.poho.stuup.service.RecAddScoreService;
 import com.poho.stuup.service.RecNationService;
-import com.poho.stuup.service.RecScoreService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,32 +36,30 @@ import java.util.stream.Collectors;
 public class RecNationServiceImpl extends ServiceImpl<RecNationMapper, RecNation> implements RecNationService {
 
     @Resource
-    private YearMapper yearMapper;
+    private RecDefaultMapper recDefaultMapper;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Resource
     private RecLogMapper recLogMapper;
 
     @Override
-    public void saveRecNationExcel(long batchCode, GrowthItem growthItem, List<RecNationExcel> excels, Map<String, Object> params) {
-        String userId = (String) params.get("userId");
-        Year currYear = yearMapper.findCurrYear();
-        if (currYear == null) throw new RuntimeException("不在学年时间范围内，无法导入");
-        List<RecDefault> recDefaults = new ArrayList<>();
-        //=================保存数据=================
-        List<RecNation> recNations = excels.stream().map(excel -> {
+    @Transactional(rollbackFor = Exception.class)
+    public void saveRecNationExcel(List<RecNationExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+        List<Long> studentIds = new ArrayList<>();
+        for (RecNationExcel excel : excels) {
             RecDefault recDefault = new RecDefault();
-            recDefault.setYearId(currYear.getOid());
+            recDefault.setYearId(yearId);
+            recDefault.setSemesterId(semesterId);
             recDefault.setGrowId(growthItem.getId());
             recDefault.setStudentId(excel.getStudentId());
             recDefault.setBatchCode(batchCode);
             recDefault.setRemark(excel.getRemark());
-            recDefaults.add(recDefault);
-            //===================================================================
+            recDefaultMapper.insert(recDefault);
             RecNation recNation = new RecNation();
-            recNation.setYearId(currYear.getOid());
+            recNation.setYearId(yearId);
+            recNation.setSemesterId(semesterId);
             recNation.setGrowId(growthItem.getId());
             recNation.setStudentId(excel.getStudentId());
             recNation.setName(excel.getName());
@@ -66,18 +67,17 @@ public class RecNationServiceImpl extends ServiceImpl<RecNationMapper, RecNation
             recNation.setOrg(excel.getOrg());
             recNation.setHour(Integer.valueOf(excel.getHour()));
             recNation.setBatchCode(batchCode);
-            return recNation;
-        }).collect(Collectors.toList());
-        this.saveBatch(recNations);
-        // 插入一条导入日志
+            baseMapper.insert(recNation);
+            studentIds.add(excel.getStudentId());
+        }
         RecLog recLog = new RecLog();
+        recLog.setYearId(yearId);
+        recLog.setSemesterId(semesterId);
         recLog.setGrowId(growthItem.getId());
-        recLog.setYearId(currYear.getOid());
-        recLog.setCreateUser(Long.valueOf(userId));
+        recLog.setCreateUser(userId);
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
-        // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
+        recAddScoreService.batchCalculateScore(studentIds, growthItem, yearId, semesterId, DateUtil.date(batchCode));
     }
 
     @Override

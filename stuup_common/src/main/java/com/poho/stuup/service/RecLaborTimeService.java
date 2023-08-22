@@ -10,7 +10,6 @@ import com.poho.stuup.model.excel.RecLaborTimeExcel;
 import com.poho.stuup.model.vo.RecLaborTimeVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -32,7 +31,7 @@ public interface RecLaborTimeService extends IService<RecLaborTime> {
      * @author BUNGA
      * @date: 2023/6/1 14:15
      */
-    void saveRecLaborTimeExcel(long batchCode, GrowthItem growthItem, List<RecLaborTimeExcel> excels, Map<String, Object> params);
+    void saveRecLaborTimeExcel(List<RecLaborTimeExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 
     /**
      * @description: 分页查询

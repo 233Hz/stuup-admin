@@ -26,11 +26,13 @@ import java.util.Map;
 @Slf4j
 public class RecVolunteerListener implements ReadListener<RecVolunteerExcel> {
 
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecVolunteerService recVolunteerService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
     //===============================================================
 
@@ -39,12 +41,14 @@ public class RecVolunteerListener implements ReadListener<RecVolunteerExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecVolunteerExcel> recVolunteerExcels = new ArrayList<>();
 
-    public RecVolunteerListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecVolunteerService recVolunteerService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecVolunteerListener(StudentMapper studentMapper, RecVolunteerService recVolunteerService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recVolunteerService = recVolunteerService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
 
     @Override
@@ -84,7 +88,7 @@ public class RecVolunteerListener implements ReadListener<RecVolunteerExcel> {
         if (StrUtil.isBlank(data.getStudyTime())) {
             errorMessages.add("学时不能为空");
         }
-        if (!Utils.isNumber(data.getStudyTime())) {
+        if (Utils.isNumber(data.getStudyTime())) {
             errorMessages.add("学时必须为数字");
         }
         if (StrUtil.isBlank(data.getServiceTime())) {
@@ -107,7 +111,7 @@ public class RecVolunteerListener implements ReadListener<RecVolunteerExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recVolunteerService.saveRecVolunteerExcel(batchCode, growthItem, recVolunteerExcels, params);
+        recVolunteerService.saveRecVolunteerExcel(recVolunteerExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

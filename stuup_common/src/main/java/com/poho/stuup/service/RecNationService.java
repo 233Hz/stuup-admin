@@ -10,7 +10,6 @@ import com.poho.stuup.model.excel.RecNationExcel;
 import com.poho.stuup.model.vo.RecNationVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -32,7 +31,7 @@ public interface RecNationService extends IService<RecNation> {
      * @author BUNGA
      * @date: 2023/6/1 14:32
      */
-    void saveRecNationExcel(long batchCode, GrowthItem growthItem, List<RecNationExcel> excels, Map<String, Object> params);
+    void saveRecNationExcel(List<RecNationExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 
     /**
      * @description: 分页查询

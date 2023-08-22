@@ -7,6 +7,7 @@
         <id column="id" property="id"/>
         <result column="grow_id" property="growId"/>
         <result column="year_id" property="yearId"/>
+        <result column="semester_id" property="semesterId"/>
         <result column="student_id" property="studentId"/>
         <result column="name" property="name"/>
         <result column="level" property="level"/>

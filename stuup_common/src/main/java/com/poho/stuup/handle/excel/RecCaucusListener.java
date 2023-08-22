@@ -29,11 +29,13 @@ import java.util.Map;
 @Slf4j
 public class RecCaucusListener implements ReadListener<RecCaucusExcel> {
 
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecCaucusService recCaucusService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
     //===============================================================
 
@@ -42,14 +44,15 @@ public class RecCaucusListener implements ReadListener<RecCaucusExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecCaucusExcel> recCaucusExcels = new ArrayList<>();
 
-    public RecCaucusListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecCaucusService recCaucusService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecCaucusListener(StudentMapper studentMapper, RecCaucusService recCaucusService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recCaucusService = recCaucusService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
-
 
     @Override
     public void invoke(RecCaucusExcel data, AnalysisContext context) {
@@ -113,7 +116,7 @@ public class RecCaucusListener implements ReadListener<RecCaucusExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recCaucusService.saveRecCaucusExcel(batchCode, growthItem, recCaucusExcels, params);
+        recCaucusService.saveRecCaucusExcel(recCaucusExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

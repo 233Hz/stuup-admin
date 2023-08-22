@@ -14,7 +14,7 @@ import com.poho.stuup.model.*;
 import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.service.PortraitService;
-import com.poho.stuup.service.RecScoreService;
+import com.poho.stuup.service.RecAddScoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +65,7 @@ public class PortraitServiceImpl implements PortraitService {
     private GrowthItemMapper growthItemMapper;
 
     @Resource
-    private RecScoreMapper recScoreMapper;
+    private RecAddScoreMapper recAddScoreMapper;
 
     @Resource
     private IConfigService configService;
@@ -86,7 +86,7 @@ public class PortraitServiceImpl implements PortraitService {
     private SyncCommunityMemberMapper syncCommunityMemberMapper;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Override
     public ResponseModel<PortraitBasicInfoVO> getBasicInfo(Long userId) {
@@ -135,7 +135,7 @@ public class PortraitServiceImpl implements PortraitService {
         } else {
             portraitBasicInfoVO.setTotalMinusScore(BigDecimal.ZERO);
         }
-        Integer ranking = recScoreService.getStudentNowRanking(Long.valueOf(studentId));
+        Integer ranking = recAddScoreService.getStudentNowRanking(Long.valueOf(studentId));
         portraitBasicInfoVO.setRanking(ranking);
         List<SyncCommunityMember> syncCommunityMembers = syncCommunityMemberMapper.selectList(Wrappers.<SyncCommunityMember>lambdaQuery()
                 .select(SyncCommunityMember::getCommunityName)
@@ -170,17 +170,17 @@ public class PortraitServiceImpl implements PortraitService {
                     .select(GrowthItem::getId)
                     .eq(GrowthItem::getFirstLevelId, id));
             List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
-            List<RecScore> studentRecScores = recScoreMapper.selectList(Wrappers.<RecScore>lambdaQuery()
-                    .select(RecScore::getScore)
-                    .eq(RecScore::getStudentId, studentId)
-                    .eq(RecScore::getYearId, yearId)
-                    .in(RecScore::getGrowId, growthItemIds));
-            BigDecimal studentScore = studentRecScores.stream().map(RecScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
+            List<RecAddScore> studentRecAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                    .select(RecAddScore::getScore)
+                    .eq(RecAddScore::getStudentId, studentId)
+                    .eq(RecAddScore::getYearId, yearId)
+                    .in(RecAddScore::getGrowId, growthItemIds));
+            BigDecimal studentScore = studentRecAddScores.stream().map(RecAddScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
             portraitCapacityEvaluatorVO.setIndicatorScore(studentScore);
-            List<RecScore> totalRecScores = recScoreMapper.selectList(Wrappers.<RecScore>lambdaQuery()
-                    .select(RecScore::getScore)
-                    .eq(RecScore::getYearId, yearId));
-            BigDecimal totalScore = totalRecScores.stream().map(RecScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
+            List<RecAddScore> totalRecAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                    .select(RecAddScore::getScore)
+                    .eq(RecAddScore::getYearId, yearId));
+            BigDecimal totalScore = totalRecAddScores.stream().map(RecAddScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
             portraitCapacityEvaluatorVO.setIndicatorAvgScore(totalScore.divide(BigDecimal.valueOf(totalStudentNum), 2, RoundingMode.HALF_UP));
             result.add(portraitCapacityEvaluatorVO);
         }
@@ -217,15 +217,15 @@ public class PortraitServiceImpl implements PortraitService {
                 Map<Long, GrowthItem> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getId, Function.identity()));
                 List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
                 growthItems.clear();
-                List<RecScore> recScores = recScoreMapper.selectList(Wrappers.<RecScore>lambdaQuery()
-                        .select(RecScore::getGrowId, RecScore::getCreateTime)
-                        .in(RecScore::getGrowId, growthItemIds));
+                List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                        .select(RecAddScore::getGrowId, RecAddScore::getCreateTime)
+                        .in(RecAddScore::getGrowId, growthItemIds));
                 growthItemIds.clear();
-                int size2 = recScores.size();
+                int size2 = recAddScores.size();
                 for (int j = 0; j < size2; j++) {
                     PortraitAwardRecordVO portraitAwardRecordVO = new PortraitAwardRecordVO();
-                    RecScore recScore = recScores.get(j);
-                    Long growId = recScore.getGrowId();
+                    RecAddScore recAddScore = recAddScores.get(j);
+                    Long growId = recAddScore.getGrowId();
                     GrowthItem growthItem = growthItemMap.get(growId);
                     if (growthItem == null) continue;
                     String growthItemName = "";
@@ -244,7 +244,7 @@ public class PortraitServiceImpl implements PortraitService {
                         growthItemName = growthItemName + "--" + growthName;
                     }
                     growthItemName = growthItemName + "--" + growthItem.getName();
-                    Date createTime = recScore.getCreateTime();
+                    Date createTime = recAddScore.getCreateTime();
                     portraitAwardRecordVO.setAwardName(growthItemName);
                     portraitAwardRecordVO.setAwardType(awardType);
                     portraitAwardRecordVO.setAwardTime(createTime);
@@ -278,16 +278,16 @@ public class PortraitServiceImpl implements PortraitService {
             Map<Long, GrowthItem> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getId, Function.identity()));
             List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
             growthItems.clear();
-            List<RecScore> recScores = recScoreMapper.selectList(Wrappers.<RecScore>lambdaQuery()
-                    .select(RecScore::getGrowId, RecScore::getCreateTime)
-                    .eq(RecScore::getStudentId, studentId)
-                    .in(RecScore::getGrowId, growthItemIds));
+            List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                    .select(RecAddScore::getGrowId, RecAddScore::getCreateTime)
+                    .eq(RecAddScore::getStudentId, studentId)
+                    .in(RecAddScore::getGrowId, growthItemIds));
             growthItemIds.clear();
-            int size = recScores.size();
+            int size = recAddScores.size();
             for (int i = 0; i < size; i++) {
                 PortraitActivityRecordVO portraitActivityRecordVO = new PortraitActivityRecordVO();
-                RecScore recScore = recScores.get(i);
-                Long growId = recScore.getGrowId();
+                RecAddScore recAddScore = recAddScores.get(i);
+                Long growId = recAddScore.getGrowId();
                 GrowthItem growthItem = growthItemMap.get(growId);
                 if (growthItem == null) continue;
                 String growthItemName = "";
@@ -306,7 +306,7 @@ public class PortraitServiceImpl implements PortraitService {
                     growthItemName = growthItemName + "--" + growthName;
                 }
                 growthItemName = growthItemName + "--" + growthItem.getName();
-                Date createTime = recScore.getCreateTime();
+                Date createTime = recAddScore.getCreateTime();
                 portraitActivityRecordVO.setActivityName(growthItemName);
                 portraitActivityRecordVO.setActivityTime(createTime);
                 result.add(portraitActivityRecordVO);
@@ -457,10 +457,10 @@ public class PortraitServiceImpl implements PortraitService {
                         .select(GrowthItem::getId)
                         .in(GrowthItem::getCode, codes));
                 List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
-                Long activityCount = recScoreMapper.selectCount(Wrappers.<RecScore>lambdaQuery()
-                        .eq(RecScore::getStudentId, studentId)
-                        .eq(RecScore::getSemesterId, semesterId)
-                        .in(RecScore::getId, growthItemIds));
+                Long activityCount = recAddScoreMapper.selectCount(Wrappers.<RecAddScore>lambdaQuery()
+                        .eq(RecAddScore::getStudentId, studentId)
+                        .eq(RecAddScore::getSemesterId, semesterId)
+                        .in(RecAddScore::getId, growthItemIds));
                 portraitGrowthDataVO.setActivityCount(activityCount);
             }
         }
@@ -485,10 +485,10 @@ public class PortraitServiceImpl implements PortraitService {
                     .select(GrowthItem::getId)
                     .in(GrowthItem::getCode, growthItemCodes));
             List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
-            Long awardCount = recScoreMapper.selectCount(Wrappers.<RecScore>lambdaQuery()
-                    .eq(RecScore::getSemesterId, semesterId)
-                    .eq(RecScore::getStudentId, studentId)
-                    .in(RecScore::getGrowId, growthItemIds));
+            Long awardCount = recAddScoreMapper.selectCount(Wrappers.<RecAddScore>lambdaQuery()
+                    .eq(RecAddScore::getSemesterId, semesterId)
+                    .eq(RecAddScore::getStudentId, studentId)
+                    .in(RecAddScore::getGrowId, growthItemIds));
             portraitGrowthDataVO.setAwardCount(awardCount);
         }
         // 查询获得证书次数
@@ -501,10 +501,10 @@ public class PortraitServiceImpl implements PortraitService {
                         .select(GrowthItem::getId)
                         .in(GrowthItem::getCode, codes));
                 List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
-                Long certificateCount = recScoreMapper.selectCount(Wrappers.<RecScore>lambdaQuery()
-                        .eq(RecScore::getStudentId, studentId)
-                        .eq(RecScore::getSemesterId, semesterId)
-                        .in(RecScore::getId, growthItemIds));
+                Long certificateCount = recAddScoreMapper.selectCount(Wrappers.<RecAddScore>lambdaQuery()
+                        .eq(RecAddScore::getStudentId, studentId)
+                        .eq(RecAddScore::getSemesterId, semesterId)
+                        .in(RecAddScore::getId, growthItemIds));
                 portraitGrowthDataVO.setCertificateCount(certificateCount);
             }
         }
@@ -524,11 +524,11 @@ public class PortraitServiceImpl implements PortraitService {
         List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
                 .select(GrowthItem::getId, GrowthItem::getName));
         // 查询当前学期所有的成长项记录
-        List<RecScore> allRecScore = recScoreMapper.selectList(Wrappers.<RecScore>lambdaQuery()
-                .select(RecScore::getGrowId, RecScore::getScore)
-                .eq(RecScore::getSemesterId, semesterId));
+        List<RecAddScore> allRecAddScore = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getGrowId, RecAddScore::getScore)
+                .eq(RecAddScore::getSemesterId, semesterId));
         // 按项目分组求和
-        Map<Long, BigDecimal> allScoreSumByGrowId = allRecScore.stream().collect(Collectors.groupingBy(RecScore::getGrowId, Collectors.mapping(RecScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+        Map<Long, BigDecimal> allScoreSumByGrowId = allRecAddScore.stream().collect(Collectors.groupingBy(RecAddScore::getGrowId, Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
         Map<Long, BigDecimal> newAllScoreSumByGrowId = new HashMap<>();
         allScoreSumByGrowId.forEach((growthItemId, sumScore) -> {
             BigDecimal avgScore = sumScore.divide(new BigDecimal(countStudent), 2, RoundingMode.HALF_UP);
@@ -536,12 +536,12 @@ public class PortraitServiceImpl implements PortraitService {
         });
         // 查询自己所有项目的记录
         Integer studentId = student.getId();
-        List<RecScore> studentRecScore = recScoreMapper.selectList(Wrappers.<RecScore>lambdaQuery()
-                .select(RecScore::getGrowId, RecScore::getScore)
-                .eq(RecScore::getSemesterId, semesterId)
-                .eq(RecScore::getStudentId, studentId));
+        List<RecAddScore> studentRecAddScore = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getGrowId, RecAddScore::getScore)
+                .eq(RecAddScore::getSemesterId, semesterId)
+                .eq(RecAddScore::getStudentId, studentId));
         // 按项目分组求和
-        Map<Long, BigDecimal> studentScoreSumByGrowId = studentRecScore.stream().collect(Collectors.groupingBy(RecScore::getGrowId, Collectors.mapping(RecScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+        Map<Long, BigDecimal> studentScoreSumByGrowId = studentRecAddScore.stream().collect(Collectors.groupingBy(RecAddScore::getGrowId, Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
         Map<Long, BigDecimal> newStudentScoreSumByGrowId = new HashMap<>();
         studentScoreSumByGrowId.forEach((growthItemId, sumScore) -> {
             BigDecimal avgScore = sumScore.divide(new BigDecimal(countStudent), 2, RoundingMode.HALF_UP);

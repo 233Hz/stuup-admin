@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.api.config.MinioConfig;
 import com.poho.stuup.constant.RecEnum;
-import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.handle.RecDefaultHandle;
 import com.poho.stuup.handle.RecExcelHandle;
 import com.poho.stuup.model.GrowthItem;
@@ -22,7 +21,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -47,13 +45,9 @@ public class GrowCollectController {
     @Resource
     private GrowUserService growUserService;
 
-    @Resource
-    private YearMapper yearMapper;
-
     @PostMapping("/import")
-    public ResponseModel<List<ExcelError>> recImport(MultipartFile file, @RequestParam(required = false) Map<String, Object> params) {
+    public ResponseModel<List<ExcelError>> recImport(MultipartFile file, @RequestParam String recCode) {
         String userId = ProjectUtil.obtainLoginUser(request);
-        String recCode = (String) params.get("rec_code");
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, recCode));
         if (growthItem == null) return ResponseModel.failed("导入项目不存在");
@@ -61,10 +55,8 @@ public class GrowCollectController {
         // 查询项目负责人
         boolean isGrowUser = growUserService.isGrowUser(Long.parseLong(userId), growId);
         if (!isGrowUser) return ResponseModel.failed("不是该项目负责人，无法导入");
-        params.put("userId", userId);
-        params.put("nowTime", new Date());
         RecExcelHandle handle = RecEnum.getHandle(recCode);
-        return handle.recImport(file, growthItem, params);
+        return handle.recImport(file, growthItem, Long.valueOf(userId));
     }
 
     @SneakyThrows

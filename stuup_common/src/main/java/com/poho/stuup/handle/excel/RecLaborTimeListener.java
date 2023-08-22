@@ -26,11 +26,13 @@ import java.util.Map;
 @Slf4j
 public class RecLaborTimeListener implements ReadListener<RecLaborTimeExcel> {
 
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecLaborTimeService recLaborTimeService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
     //===============================================================
 
@@ -39,14 +41,15 @@ public class RecLaborTimeListener implements ReadListener<RecLaborTimeExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecLaborTimeExcel> recLaborTimeExcels = new ArrayList<>();
 
-    public RecLaborTimeListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecLaborTimeService recLaborTimeService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecLaborTimeListener(StudentMapper studentMapper, RecLaborTimeService recLaborTimeService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recLaborTimeService = recLaborTimeService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
-
 
     @Override
     public void invoke(RecLaborTimeExcel data, AnalysisContext context) {
@@ -73,7 +76,7 @@ public class RecLaborTimeListener implements ReadListener<RecLaborTimeExcel> {
         if (StrUtil.isBlank(data.getHours())) {
             errorMessages.add("累计课时不能为空");
         }
-        if (!Utils.isNumber(data.getHours())) {
+        if (Utils.isNumber(data.getHours())) {
             errorMessages.add("累计课时必须为数字");
         }
 
@@ -89,7 +92,7 @@ public class RecLaborTimeListener implements ReadListener<RecLaborTimeExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recLaborTimeService.saveRecLaborTimeExcel(batchCode, growthItem, recLaborTimeExcels, params);
+        recLaborTimeService.saveRecLaborTimeExcel(recLaborTimeExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

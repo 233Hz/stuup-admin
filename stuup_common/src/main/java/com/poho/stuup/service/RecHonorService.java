@@ -10,7 +10,6 @@ import com.poho.stuup.model.excel.RecHonorExcel;
 import com.poho.stuup.model.vo.RecHonorVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -32,7 +31,7 @@ public interface RecHonorService extends IService<RecHonor> {
      * @author BUNGA
      * @date: 2023/6/1 13:49
      */
-    void saveRecHonorExcel(long batchCode, GrowthItem growthItem, List<RecHonorExcel> excels, Map<String, Object> params);
+    void saveRecHonorExcel(List<RecHonorExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 
     /**
      * @description: 分页查询

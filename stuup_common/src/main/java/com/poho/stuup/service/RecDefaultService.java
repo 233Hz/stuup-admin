@@ -6,7 +6,6 @@ import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.excel.RecDefaultExcel;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -27,5 +26,5 @@ public interface RecDefaultService extends IService<RecDefault> {
      * @author BUNGA
      * @date: 2023/5/29 10:42
      */
-    void saveRecDefaultExcel(long batchCode, GrowthItem growthItem, List<RecDefaultExcel> excels, Map<String, Object> params);
+    void saveRecDefaultExcel(List<RecDefaultExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 }

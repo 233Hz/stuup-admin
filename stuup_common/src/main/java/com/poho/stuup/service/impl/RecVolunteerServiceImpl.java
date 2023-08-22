@@ -5,22 +5,24 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.RecLevelEnum;
+import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecVolunteerMapper;
-import com.poho.stuup.dao.YearMapper;
-import com.poho.stuup.model.*;
+import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.RecDefault;
+import com.poho.stuup.model.RecLog;
+import com.poho.stuup.model.RecVolunteer;
 import com.poho.stuup.model.dto.RecVolunteerDTO;
 import com.poho.stuup.model.excel.RecVolunteerExcel;
 import com.poho.stuup.model.vo.RecVolunteerVO;
-import com.poho.stuup.service.RecScoreService;
+import com.poho.stuup.service.RecAddScoreService;
 import com.poho.stuup.service.RecVolunteerService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,31 +36,30 @@ import java.util.stream.Collectors;
 public class RecVolunteerServiceImpl extends ServiceImpl<RecVolunteerMapper, RecVolunteer> implements RecVolunteerService {
 
     @Resource
-    private YearMapper yearMapper;
+    private RecDefaultMapper recDefaultMapper;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Resource
     private RecLogMapper recLogMapper;
 
     @Override
-    public void saveRecVolunteerExcel(long batchCode, GrowthItem growthItem, List<RecVolunteerExcel> excels, Map<String, Object> params) {
-        String userId = (String) params.get("userId");
-        Year currYear = yearMapper.findCurrYear();
-        List<RecDefault> recDefaults = new ArrayList<>();
-        //=================保存数据=================
-        List<RecVolunteer> recVolunteers = excels.stream().map(excel -> {
+    @Transactional(rollbackFor = Exception.class)
+    public void saveRecVolunteerExcel(List<RecVolunteerExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+        List<Long> studentIds = new ArrayList<>();
+        for (RecVolunteerExcel excel : excels) {
             RecDefault recDefault = new RecDefault();
-            recDefault.setYearId(currYear.getOid());
+            recDefault.setYearId(yearId);
+            recDefault.setSemesterId(semesterId);
             recDefault.setGrowId(growthItem.getId());
             recDefault.setStudentId(excel.getStudentId());
             recDefault.setBatchCode(batchCode);
             recDefault.setRemark(excel.getRemark());
-            recDefaults.add(recDefault);
-            //===================================================================
+            recDefaultMapper.insert(recDefault);
             RecVolunteer recVolunteer = new RecVolunteer();
-            recVolunteer.setYearId(currYear.getOid());
+            recVolunteer.setYearId(yearId);
+            recVolunteer.setSemesterId(semesterId);
             recVolunteer.setGrowId(growthItem.getId());
             recVolunteer.setStudentId(excel.getStudentId());
             recVolunteer.setName(excel.getName());
@@ -69,18 +70,17 @@ public class RecVolunteerServiceImpl extends ServiceImpl<RecVolunteerMapper, Rec
             recVolunteer.setServiceTime(DateUtil.parseDate(excel.getServiceTime()));
             recVolunteer.setReason(excel.getReason());
             recVolunteer.setBatchCode(batchCode);
-            return recVolunteer;
-        }).collect(Collectors.toList());
-        this.saveBatch(recVolunteers);
-        // 插入一条导入日志
+            baseMapper.insert(recVolunteer);
+            studentIds.add(excel.getStudentId());
+        }
         RecLog recLog = new RecLog();
+        recLog.setYearId(yearId);
+        recLog.setSemesterId(semesterId);
         recLog.setGrowId(growthItem.getId());
-        recLog.setYearId(currYear.getOid());
-        recLog.setCreateUser(Long.valueOf(userId));
+        recLog.setCreateUser(userId);
         recLog.setBatchCode(batchCode);
         recLogMapper.insert(recLog);
-        // 计算学生成长积分
-        recScoreService.calculateScore(recDefaults, currYear.getOid(), growthItem, params);
+        recAddScoreService.batchCalculateScore(studentIds, growthItem, yearId, semesterId, DateUtil.date(batchCode));
     }
 
     @Override

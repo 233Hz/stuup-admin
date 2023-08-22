@@ -27,11 +27,13 @@ import java.util.Map;
 @Slf4j
 public class RecNationListener implements ReadListener<RecNationExcel> {
 
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecNationService recNationService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
     //================================================================
 
@@ -40,12 +42,14 @@ public class RecNationListener implements ReadListener<RecNationExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecNationExcel> recNationExcels = new ArrayList<>();
 
-    public RecNationListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecNationService recNationService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecNationListener(StudentMapper studentMapper, RecNationService recNationService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recNationService = recNationService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
 
     @Override
@@ -85,7 +89,7 @@ public class RecNationListener implements ReadListener<RecNationExcel> {
         if (StrUtil.isBlank(data.getHour())) {
             errorMessages.add("累计时间（课时）不能为空");
         }
-        if (!Utils.isNumber(data.getHour())) {
+        if (Utils.isNumber(data.getHour())) {
             errorMessages.add("累计时间（课时）必须为数字");
         }
 
@@ -102,7 +106,7 @@ public class RecNationListener implements ReadListener<RecNationExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recNationService.saveRecNationExcel(batchCode, growthItem, recNationExcels, params);
+        recNationService.saveRecNationExcel(recNationExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

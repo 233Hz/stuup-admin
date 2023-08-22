@@ -8,13 +8,12 @@ import com.poho.stuup.constant.*;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
 import com.poho.stuup.model.*;
-import com.poho.stuup.model.dto.CalculateFailDTO;
 import com.poho.stuup.model.dto.StatisticsRankEventDTO;
 import com.poho.stuup.model.dto.SystemMagVO;
 import com.poho.stuup.service.AnnouncementService;
 import com.poho.stuup.service.AnnouncementUserService;
 import com.poho.stuup.service.IConfigService;
-import com.poho.stuup.service.RecScoreService;
+import com.poho.stuup.service.RecAddScoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.event.EventListener;
@@ -54,7 +53,7 @@ public class EventListenerHandle {
     private IConfigService configService;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @Resource
     private StudentMapper studentMapper;
@@ -74,8 +73,6 @@ public class EventListenerHandle {
     @Resource
     private AnnouncementUserService announcementUserService;
 
-    @Resource
-    private CalculateFailLogMapper calculateFailLogMapper;
 
     @EventListener
     @Transactional(rollbackFor = Exception.class)
@@ -88,13 +85,13 @@ public class EventListenerHandle {
         List<Student> students = studentMapper.getAllStudent();
 
         // 查询出该学期的所有记录
-        List<RecScore> recScores = recScoreService.list(Wrappers.<RecScore>lambdaQuery()
-                .select(RecScore::getStudentId, RecScore::getScore)
-                .eq(RecScore::getYearId, yearId));
-        int recordSize = recScores.size();
+        List<RecAddScore> recAddScores = recAddScoreService.list(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getStudentId, RecAddScore::getScore)
+                .eq(RecAddScore::getYearId, yearId));
+        int recordSize = recAddScores.size();
 
         // 对学生id进行分组求和
-        Map<Long, BigDecimal> recScoresSumScore = recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecScore::getScore, BigDecimal::add)));
+        Map<Long, BigDecimal> recScoresSumScore = recAddScores.stream().collect(Collectors.groupingBy(RecAddScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecAddScore::getScore, BigDecimal::add)));
 
         List<RankYear> rankYearList = students.stream().map(student -> {
                     RankYear rankSemester = new RankYear();
@@ -106,7 +103,7 @@ public class EventListenerHandle {
                 .collect(Collectors.toList());
 
         students.clear();
-        recScores.clear();
+        recAddScores.clear();
         recScoresSumScore.clear();
 
         if (recordSize > 0) {
@@ -147,13 +144,13 @@ public class EventListenerHandle {
         Date monthEnd = DateUtil.endOfDay(startTime);
 
         // 查询改月时间段内的记录
-        List<RecScore> recScores = recScoreService.list(Wrappers.<RecScore>lambdaQuery()
-                .select(RecScore::getStudentId, RecScore::getScore)
-                .between(RecScore::getCreateTime, monthBegin, monthEnd));
-        int recordSize = recScores.size();
+        List<RecAddScore> recAddScores = recAddScoreService.list(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getStudentId, RecAddScore::getScore)
+                .between(RecAddScore::getCreateTime, monthBegin, monthEnd));
+        int recordSize = recAddScores.size();
 
         // 对学生id进行分组求和
-        Map<Long, BigDecimal> recScoresSumScore = recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecScore::getScore, BigDecimal::add)));
+        Map<Long, BigDecimal> recScoresSumScore = recAddScores.stream().collect(Collectors.groupingBy(RecAddScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecAddScore::getScore, BigDecimal::add)));
 
         List<RankMonth> rankMonthList = students.stream().map(student -> {
                     Long studentId = Long.valueOf(student.getId());
@@ -166,7 +163,7 @@ public class EventListenerHandle {
                 })
                 .collect(Collectors.toList());
 
-        recScores.clear();
+        recAddScores.clear();
         recScoresSumScore.clear();
 
         if (recordSize > 0) {
@@ -316,13 +313,13 @@ public class EventListenerHandle {
         List<Student> students = studentMapper.getAllStudent();
 
         // 查询出该学期的所有记录
-        List<RecScore> recScores = recScoreService.list(Wrappers.<RecScore>lambdaQuery()
-                .select(RecScore::getStudentId, RecScore::getScore)
-                .eq(RecScore::getSemesterId, semesterId));
-        int recordSize = recScores.size();
+        List<RecAddScore> recAddScores = recAddScoreService.list(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getStudentId, RecAddScore::getScore)
+                .eq(RecAddScore::getSemesterId, semesterId));
+        int recordSize = recAddScores.size();
 
         // 对学生id进行分组求和
-        Map<Long, BigDecimal> recScoresSumScore = recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecScore::getScore, BigDecimal::add)));
+        Map<Long, BigDecimal> recScoresSumScore = recAddScores.stream().collect(Collectors.groupingBy(RecAddScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecAddScore::getScore, BigDecimal::add)));
 
         List<RankSemester> rankSemesterList = students.stream().map(student -> {
                     RankSemester rankSemester = new RankSemester();
@@ -334,7 +331,7 @@ public class EventListenerHandle {
                 .collect(Collectors.toList());
 
         students.clear();
-        recScores.clear();
+        recAddScores.clear();
         recScoresSumScore.clear();
 
         if (recordSize > 0) {
@@ -373,19 +370,4 @@ public class EventListenerHandle {
         announcementUserService.save(announcementUser);
     }
 
-    @EventListener
-    @Transactional(rollbackFor = Exception.class)
-    public void handle(@NotNull CalculateFailEvent event) {
-        CalculateFailDTO calculateFailDTO = event.getCalculateFailDTO();
-        CalculateFailLog calculateFailLog = new CalculateFailLog();
-        calculateFailLog.setStudentId(calculateFailDTO.getStudentId());
-        calculateFailLog.setGrowId(calculateFailDTO.getGrowId());
-        calculateFailLog.setYearId(calculateFailDTO.getYearId());
-        calculateFailLog.setSemesterId(calculateFailDTO.getSemesterId());
-        calculateFailLog.setCreateTime(calculateFailDTO.getCreateTime());
-        calculateFailLog.setError(calculateFailDTO.getError());
-        calculateFailLog.setCount(calculateFailDTO.getCount());
-        calculateFailLog.setCalculateType(calculateFailDTO.getCalculateType());
-        calculateFailLogMapper.insert(calculateFailLog);
-    }
 }

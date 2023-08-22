@@ -63,7 +63,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
     private IYearService yearService;
 
     @Resource
-    private RecScoreMapper recScoreMapper;
+    private RecAddScoreMapper recAddScoreMapper;
 
     @Override
     public List<YearRankVO> getSchoolRank() {
@@ -79,13 +79,13 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
         Map<Integer, Major> majorMap = majorService.majorMap();            // 专业
         Map<Integer, Faculty> facultyMap = facultyService.facultyMap();    // 系部
 
-        List<RecScore> recScores = recScoreMapper.selectList(Wrappers.<RecScore>lambdaQuery()
-                .select(RecScore::getStudentId, RecScore::getScore)
-                .eq(RecScore::getYearId, year.getOid()));
-        int recordSize = recScores.size();
+        List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getStudentId, RecAddScore::getScore)
+                .eq(RecAddScore::getYearId, year.getOid()));
+        int recordSize = recAddScores.size();
 
         // 对学生进行分组求和
-        Map<Long, BigDecimal> recordSumScore = recScores.stream().collect(Collectors.groupingBy(RecScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecScore::getScore, BigDecimal::add)));
+        Map<Long, BigDecimal> recordSumScore = recAddScores.stream().collect(Collectors.groupingBy(RecAddScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecAddScore::getScore, BigDecimal::add)));
 
         List<YearRankVO> result = students.stream().map(student -> {
                     Integer studentId = student.getId();
@@ -118,7 +118,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
         gradeMap.clear();
         majorMap.clear();
         facultyMap.clear();
-        recScores.clear();
+        recAddScores.clear();
         recordSumScore.clear();
 
         if (recordSize > 0) {
@@ -154,7 +154,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
         Map<Integer, Major> majorMap = majorService.majorMap();            // 专业
         Map<Integer, Faculty> facultyMap = facultyService.facultyMap();    // 系部
 
-        List<ClassRankVO> recScores = recScoreMapper.getClassRank(year.getOid());
+        List<ClassRankVO> recScores = recAddScoreMapper.getClassRank(year.getOid());
         int recordSize = recScores.size();
 
         // 按班级进行分组求和
@@ -221,7 +221,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
         Map<Integer, Major> majorMap = majors.stream().collect(Collectors.toMap(Major::getOid, Function.identity()));   // 专业
         Map<Integer, Faculty> facultyMap = facultyService.facultyMap();    // 系部
 
-        List<MajorRankVO> recScores = recScoreMapper.getMajorRank(year.getOid());
+        List<MajorRankVO> recScores = recAddScoreMapper.getMajorRank(year.getOid());
         int recordSize = recScores.size();
 
         // 按专业进行分组求和
@@ -280,7 +280,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
         Map<Integer, String> facultyMap = faculties.stream().collect(Collectors.toMap(Faculty::getOid, Faculty::getFacultyName));   // 系部
         Map<Integer, Class> classMap = classService.classMap();            // 班级
 
-        List<FacultyRankVO> recScores = recScoreMapper.getFacultyRank(year.getOid());
+        List<FacultyRankVO> recScores = recAddScoreMapper.getFacultyRank(year.getOid());
         int recordSize = recScores.size();
 
         // 按专业进行分组求和

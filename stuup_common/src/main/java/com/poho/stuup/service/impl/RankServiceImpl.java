@@ -1,7 +1,7 @@
 package com.poho.stuup.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.poho.stuup.dao.RecScoreMapper;
+import com.poho.stuup.dao.RecAddScoreMapper;
 import com.poho.stuup.dao.YearMapper;
 import com.poho.stuup.model.vo.WholeClassTop10VO;
 import com.poho.stuup.model.vo.WholeSchoolTop10VO;
@@ -19,13 +19,13 @@ public class RankServiceImpl implements RankService {
     private YearMapper yearMapper;
 
     @Resource
-    private RecScoreMapper recScoreMapper;
+    private RecAddScoreMapper recAddScoreMapper;
 
     @Override
     public List<WholeSchoolTop10VO> getWholeSchoolTop10Ranking() {
         Long yearId = yearMapper.findCurrYearId();
         if (yearId == null) return new ArrayList<>();
-        List<WholeSchoolTop10VO> list = recScoreMapper.findWholeSchoolTop10Ranking(yearId);
+        List<WholeSchoolTop10VO> list = recAddScoreMapper.findWholeSchoolTop10Ranking(yearId);
         if (CollUtil.isNotEmpty(list)) {
             int size = list.size();
             for (int i = 0; i < size; i++) {
@@ -40,7 +40,7 @@ public class RankServiceImpl implements RankService {
     public List<WholeClassTop10VO> getWholeClassTop10Ranking() {
         Long yearId = yearMapper.findCurrYearId();
         if (yearId == null) return new ArrayList<>();
-        List<WholeClassTop10VO> list = recScoreMapper.findWholeClassTop10Ranking(yearId);
+        List<WholeClassTop10VO> list = recAddScoreMapper.findWholeClassTop10Ranking(yearId);
         if (CollUtil.isNotEmpty(list)) {
             int size = list.size();
             for (int i = 0; i < size; i++) {

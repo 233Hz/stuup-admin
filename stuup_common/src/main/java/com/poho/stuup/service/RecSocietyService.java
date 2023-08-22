@@ -11,7 +11,6 @@ import com.poho.stuup.model.excel.RecSocietyExcel;
 import com.poho.stuup.model.vo.RecSocietyVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -33,7 +32,7 @@ public interface RecSocietyService extends IService<RecSociety> {
      * @author BUNGA
      * @date: 2023/6/1 13:35
      */
-    void saveRecSocietyExcel(long batchCode, GrowthItem growthItem, List<RecSocietyExcel> excels, Map<String, Object> params);
+    void saveRecSocietyExcel(List<RecSocietyExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
 
     /**
      * @description: 分页查询

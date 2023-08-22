@@ -28,11 +28,13 @@ import java.util.Map;
 @Slf4j
 public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
 
-    private final long batchCode;
-    private final Map<String, Object> params;
-    private final GrowthItem growthItem;
     private final StudentMapper studentMapper;
     private final RecSocietyService recSocietyService;
+    private final GrowthItem growthItem;
+    private final Long yearId;
+    private final Long semesterId;
+    private final Long userId;
+    private final long batchCode;
 
     //================================================================
 
@@ -41,12 +43,14 @@ public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecSocietyExcel> recSocietyExcels = new ArrayList<>();
 
-    public RecSocietyListener(long batchCode, Map<String, Object> params, GrowthItem growthItem, StudentMapper studentMapper, RecSocietyService recSocietyService) {
-        this.batchCode = batchCode;
-        this.params = params;
-        this.growthItem = growthItem;
+    public RecSocietyListener(StudentMapper studentMapper, RecSocietyService recSocietyService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
         this.studentMapper = studentMapper;
         this.recSocietyService = recSocietyService;
+        this.growthItem = growthItem;
+        this.yearId = yearId;
+        this.semesterId = semesterId;
+        this.userId = userId;
+        this.batchCode = batchCode;
     }
 
     @Override
@@ -112,7 +116,7 @@ public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recSocietyService.saveRecSocietyExcel(batchCode, growthItem, recSocietyExcels, params);
+        recSocietyService.saveRecSocietyExcel(recSocietyExcels, growthItem, yearId, semesterId, userId, batchCode);
         log.info("==========导入已完成！==========");
     }
 }

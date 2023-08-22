@@ -6,12 +6,12 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.WhetherEnum;
-import com.poho.stuup.model.RecScore;
+import com.poho.stuup.model.RecAddScore;
 import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.dto.StudentRecScoreDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
-import com.poho.stuup.service.RecScoreService;
+import com.poho.stuup.service.RecAddScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import com.poho.stuup.util.Utils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,13 +35,13 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/recScore")
-public class RecScoreController {
+public class RecAddScoreController {
 
     @Resource
     private HttpServletRequest request;
 
     @Resource
-    private RecScoreService recScoreService;
+    private RecAddScoreService recAddScoreService;
 
     @GetMapping("/page")
     public ResponseModel<IPage<RecScoreVO>> getRecScorePage(Page<RecScoreVO> page, RecScoreDTO query) {
@@ -53,7 +53,7 @@ public class RecScoreController {
             boolean isDateTime = Utils.isDateTime(query.getEndTime());
             if (!isDateTime) return ResponseModel.failed("结束时间格式错误");
         }
-        return ResponseModel.ok(recScoreService.getRecScorePage(page, query));
+        return ResponseModel.ok(recAddScoreService.getRecScorePage(page, query));
     }
 
     @GetMapping("/student/page")
@@ -67,15 +67,15 @@ public class RecScoreController {
             if (!isDateTime) return ResponseModel.failed("结束时间格式错误");
         }
         String userId = ProjectUtil.obtainLoginUser(request);
-        return recScoreService.pageStudentRecScore(page, Long.parseLong(userId), query);
+        return recAddScoreService.pageStudentRecScore(page, Long.parseLong(userId), query);
     }
 
     @GetMapping("/updateState")
     public ResponseModel updateRecordState(@RequestParam("idStr") String idStr) {
         List<Long> ids = Arrays.stream(idStr.split(",")).map(Long::valueOf).collect(Collectors.toList());
-        recScoreService.update(Wrappers.<RecScore>lambdaUpdate()
-                .set(RecScore::getState, WhetherEnum.YES.getValue())
-                .in(RecScore::getId, ids));
+        recAddScoreService.update(Wrappers.<RecAddScore>lambdaUpdate()
+                .set(RecAddScore::getState, WhetherEnum.YES.getValue())
+                .in(RecAddScore::getId, ids));
         return ResponseModel.ok();
     }
 

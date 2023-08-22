@@ -15,6 +15,8 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -56,8 +58,8 @@ public class Utils {
 
     // 验证字符串是否为数字
     public boolean isNumber(String number) {
-        if (StrUtil.isBlank(number)) return false;
-        return number.matches(NUMBER_PATTERN);
+        if (StrUtil.isBlank(number)) return true;
+        return !number.matches(NUMBER_PATTERN);
     }
 
     /**
@@ -92,29 +94,46 @@ public class Utils {
                 break;
             case SEMESTER:
                 if (config1 == null || config2 == null || config3 == null || config4 == null) return null;
-                Date time1 = DateUtil.parseDate(StrUtil.format("{}-{}", year - 1, config1.getConfigValue()));
-                Date time2 = DateUtil.parseDate(StrUtil.format("{}-{}", year, config2.getConfigValue()));
-                if (date.compareTo(time1) < 0) {
-                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year - 1, config1.getConfigValue()));
-                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config2.getConfigValue()));
-                } else if (date.compareTo(time2) < 0) {
-                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config3.getConfigValue()));
-                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config4.getConfigValue()));
+                String configValue1 = config1.getConfigValue();
+                String configValue2 = config2.getConfigValue();
+                String configValue3 = config3.getConfigValue();
+                String configValue4 = config4.getConfigValue();
+                LocalDateTime localDateTime1 = LocalDateTime.of(year, Integer.parseInt(configValue2.substring(0, 2)), Integer.parseInt(configValue2.substring(3)), 23, 59, 59);
+                LocalDateTime localDateTime2 = LocalDateTime.of(year, Integer.parseInt(configValue4.substring(0, 2)), Integer.parseInt(configValue4.substring(3)), 23, 59, 59);
+                Date time1 = Date.from(localDateTime1.atZone(ZoneId.systemDefault()).toInstant());
+                Date time2 = Date.from(localDateTime2.atZone(ZoneId.systemDefault()).toInstant());
+                if (date.compareTo(time1) <= 0) {
+                    LocalDateTime startLocalDateTime = LocalDateTime.of(year - 1, Integer.parseInt(configValue1.substring(0, 2)), Integer.parseInt(configValue1.substring(3)), 0, 0, 0);
+                    LocalDateTime endLocalDateTime = LocalDateTime.of(year, Integer.parseInt(configValue2.substring(0, 2)), Integer.parseInt(configValue2.substring(3)), 23, 59, 59);
+                    startTime = Date.from(startLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                    endTime = Date.from(endLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                } else if (date.compareTo(time2) <= 0) {
+                    LocalDateTime startLocalDateTime = LocalDateTime.of(year, Integer.parseInt(configValue3.substring(0, 2)), Integer.parseInt(configValue3.substring(3)), 0, 0, 0);
+                    LocalDateTime endLocalDateTime = LocalDateTime.of(year, Integer.parseInt(configValue4.substring(0, 2)), Integer.parseInt(configValue4.substring(3)), 23, 59, 59);
+                    startTime = Date.from(startLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                    endTime = Date.from(endLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
                 } else {
-                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
-                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year + 1, config2.getConfigValue()));
+                    LocalDateTime startLocalDateTime = LocalDateTime.of(year, Integer.parseInt(configValue1.substring(0, 2)), Integer.parseInt(configValue1.substring(3)), 0, 0, 0);
+                    LocalDateTime endLocalDateTime = LocalDateTime.of(year + 1, Integer.parseInt(configValue2.substring(0, 2)), Integer.parseInt(configValue2.substring(3)), 23, 59, 59);
+                    startTime = Date.from(startLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                    endTime = Date.from(endLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
                 }
                 break;
             case YEAR:
                 if (config1 == null || config4 == null) return null;
                 // 当前年上学期开学时间
-                Date termBeginsTime1 = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
-                if (date.compareTo(termBeginsTime1) < 0) {
-                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year - 1, config1.getConfigValue()));
-                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config4.getConfigValue()));
+                LocalDateTime localDateTime = LocalDateTime.of(year, Integer.parseInt(config1.getConfigValue().substring(0, 2)), Integer.parseInt(config1.getConfigValue().substring(3)), 0, 0, 0);
+                Date time = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                if (date.compareTo(time) < 0) {
+                    LocalDateTime startLocalDateTime = LocalDateTime.of(year - 1, Integer.parseInt(config1.getConfigValue().substring(0, 2)), Integer.parseInt(config1.getConfigValue().substring(3)), 0, 0, 0);
+                    LocalDateTime endLocalDateTime = LocalDateTime.of(year, Integer.parseInt(config4.getConfigValue().substring(0, 2)), Integer.parseInt(config4.getConfigValue().substring(3)), 0, 0, 0);
+                    startTime = Date.from(startLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                    endTime = Date.from(endLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
                 } else {
-                    startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config1.getConfigValue()));
-                    endTime = DateUtil.parseDate(StrUtil.format("{}-{}", year + 1, config4.getConfigValue()));
+                    LocalDateTime startLocalDateTime = LocalDateTime.of(year, Integer.parseInt(config1.getConfigValue().substring(0, 2)), Integer.parseInt(config1.getConfigValue().substring(3)), 0, 0, 0);
+                    LocalDateTime endLocalDateTime = LocalDateTime.of(year + 1, Integer.parseInt(config4.getConfigValue().substring(0, 2)), Integer.parseInt(config4.getConfigValue().substring(3)), 0, 0, 0);
+                    startTime = Date.from(startLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                    endTime = Date.from(endLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
                 }
                 break;
             default:

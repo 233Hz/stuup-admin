@@ -36,6 +36,11 @@ public class RecDefault implements Serializable {
     private Long yearId;
 
     /**
+     * 学期id
+     */
+    private Long semesterId;
+
+    /**
      * 成长项目id（t_growth_item表）
      */
     private Long growId;

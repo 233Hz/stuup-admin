@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class StuGrowthServiceImpl extends ServiceImpl<StuGrowthMapper, StuGrowth> implements StuGrowthService {
 
     @Override
-    public void setCollectCount(Long studentId, Long growthItemId, Integer count) {
+    public void addCollectCount(Long studentId, Long growthItemId) {
         StuGrowth stuGrowth = baseMapper.selectOne(Wrappers.<StuGrowth>lambdaQuery()
                 .eq(StuGrowth::getStudentId, studentId)
                 .eq(StuGrowth::getGrowId, growthItemId));
@@ -27,11 +27,11 @@ public class StuGrowthServiceImpl extends ServiceImpl<StuGrowthMapper, StuGrowth
             stuGrowth = new StuGrowth();
             stuGrowth.setStudentId(studentId);
             stuGrowth.setGrowId(growthItemId);
-            stuGrowth.setCount(count);
+            stuGrowth.setCount(1);
             baseMapper.insert(stuGrowth);
         } else {
             this.update(Wrappers.<StuGrowth>lambdaUpdate()
-                    .set(StuGrowth::getCount, stuGrowth.getCount() + count)
+                    .set(StuGrowth::getCount, stuGrowth.getCount() + 1)
                     .eq(StuGrowth::getStudentId, studentId)
                     .eq(StuGrowth::getGrowId, growthItemId));
         }
