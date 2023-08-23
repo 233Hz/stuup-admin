@@ -1,5 +1,6 @@
 package com.poho.stuup.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -17,6 +18,11 @@ public class WholeSchoolTop10VO {
      * 学生姓名
      */
     private String studentName;
+
+    /**
+     * 用户头像
+     */
+    private String avatar;
 
     /**
      * 班级姓名
@@ -37,4 +43,7 @@ public class WholeSchoolTop10VO {
      * 积分
      */
     private BigDecimal score;
+
+    @JsonIgnore
+    private Long avatarId;
 }

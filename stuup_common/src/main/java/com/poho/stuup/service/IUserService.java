@@ -107,4 +107,6 @@ public interface IUserService {
      * @date: 2023/6/14 19:18
      */
     IPage<SimpleUserVO> getSimpleUserPage(Page<SimpleUserVO> page, SimpleUserDTO query);
+
+    ResponseModel<String> updateUserAvatar(Long userId, Long avatarId);
 }

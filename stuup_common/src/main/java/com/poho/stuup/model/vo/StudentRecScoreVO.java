@@ -3,6 +3,7 @@ package com.poho.stuup.model.vo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -20,7 +21,7 @@ public class StudentRecScoreVO {
     /**
      * 获得分数
      */
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 获得时间

@@ -22,6 +22,7 @@ public enum ConfigKeyEnum {
     SCHOLARSHIP_GROWTH_CODE("scholarship_growth_code", "奖学金项目code"),
     HOLD_AN_ACTIVITY_GROWTH_CODE("hold_an_activity_growth_code", "举办活动项目code"),
     GET_CERTIFICATE_GROWTH_CODE("get_certificate_growth_code", "获得证书项目code"),
+    SCORE_TIMEOUT_AUTO_COLLECT("score_timeout_auto_collect", "积分超时自动收取时间"),
     ;
     private final String key;
     private final String description;

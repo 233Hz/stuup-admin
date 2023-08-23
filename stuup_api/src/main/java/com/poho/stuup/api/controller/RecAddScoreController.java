@@ -11,6 +11,7 @@ import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.dto.StudentRecScoreDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
+import com.poho.stuup.model.vo.UnCollectScore;
 import com.poho.stuup.service.RecAddScoreService;
 import com.poho.stuup.util.ProjectUtil;
 import com.poho.stuup.util.Utils;
@@ -78,5 +79,12 @@ public class RecAddScoreController {
                 .in(RecAddScore::getId, ids));
         return ResponseModel.ok();
     }
+
+    @GetMapping("/unCollectScore")
+    public ResponseModel<List<UnCollectScore>> getUnCollectScore() {
+        String userId = ProjectUtil.obtainLoginUser(request);
+        return ResponseModel.ok(recAddScoreService.getUnCollectScore(Long.valueOf(userId)));
+    }
+
 
 }

@@ -29,6 +29,11 @@ public class PortraitBasicInfoVO {
     private String phone;
 
     /**
+     * 用户头像
+     */
+    private String avatar;
+
+    /**
      * 班级
      */
     private String className;

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.model.JobGrow;
 
+import java.util.Date;
+
 /**
  * <p>
  * 服务类
@@ -14,7 +16,7 @@ import com.poho.stuup.model.JobGrow;
  */
 public interface JobGrowService extends IService<JobGrow> {
 
-    void executeGrowJob(PeriodEnum periodEnum);
+    void executeGrowJob(PeriodEnum periodEnum, Date date);
 
     void executeGrowJobCompensation();
 }

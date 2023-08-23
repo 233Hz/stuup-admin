@@ -7,21 +7,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * <p>
- * 扣分记录
+ * 用户登入日志
  * </p>
  *
  * @author BUNGA
- * @since 2023-08-18
+ * @since 2023-08-22
  */
 @Getter
 @Setter
-@TableName("t_rec_deduct_score")
-public class RecDeductScore implements Serializable {
+@TableName("t_login_log")
+public class LoginLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,29 +31,9 @@ public class RecDeductScore implements Serializable {
     private Long id;
 
     /**
-     * 学生id
+     * 用户id
      */
-    private Long studentId;
-
-    /**
-     * 学期id
-     */
-    private Long semesterId;
-
-    /**
-     * 项目id
-     */
-    private Long growId;
-
-    /**
-     * 分值
-     */
-    private BigDecimal score;
-
-    /**
-     * 获得所属学年
-     */
-    private Long yearId;
+    private Long userId;
 
     /**
      * 创建时间

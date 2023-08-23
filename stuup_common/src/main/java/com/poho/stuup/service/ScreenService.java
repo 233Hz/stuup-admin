@@ -61,4 +61,6 @@ public interface ScreenService {
      * @return
      */
     ScreenImportantDataVO getImportantData();
+
+    List<DailyVisitsVO> countDailyVisits();
 }

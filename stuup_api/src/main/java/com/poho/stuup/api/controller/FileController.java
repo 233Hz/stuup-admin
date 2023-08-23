@@ -82,7 +82,7 @@ public class FileController {
         MinioUtils.createBucket(prop.getBucketName());
         String fileName = UUID.randomUUID().toString().replace("-", "") + StrUtil.DOT + FileUtil.extName(originName);
         MinioUtils.uploadFile(prop.getBucketName(), multipartFile, fileName);
-        String url = MinioUtils.getPreSignedObjectUrl(prop.getBucketName(), fileName);
+        String url = MinioUtils.getPreSignedObjectUrl(prop.getBucketName(), fileName, 60 * 30);
         // 保存文件信息
         String userId = ProjectUtil.obtainLoginUser(request);
         File file = new File();

@@ -41,9 +41,11 @@
                s.student_no,
                s.class_id,
                s.grade_id,
-               s.major_id
+               s.major_id,
+               u.avatar_id
         from t_rank_month rm
                  left join t_student s on s.id = rm.student_id
+                 left join t_user u on u.login_name = s.student_no
         where rm.year = #{year}
           and rm.month = #{month}
           and rm.rank_trend = 1

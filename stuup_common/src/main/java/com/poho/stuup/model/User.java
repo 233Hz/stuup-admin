@@ -32,6 +32,8 @@ public class User {
 
     private Date createTime;
 
+    private Long avatarId;
+
     private List<Long> roles;
     private String roleNames;
     private String deptName;
@@ -180,5 +182,13 @@ public class User {
 
     public void setRowNum(int rowNum) {
         this.rowNum = rowNum;
+    }
+
+    public Long getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(Long avatarId) {
+        this.avatarId = avatarId;
     }
 }

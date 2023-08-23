@@ -322,4 +322,10 @@
         where state = 1
     </select>
 
+    <update id="updateUserAvatar">
+        update t_user
+        set avatar_id = #{avatarId}
+        where oid = #{userId}
+    </update>
+
 </mapper>

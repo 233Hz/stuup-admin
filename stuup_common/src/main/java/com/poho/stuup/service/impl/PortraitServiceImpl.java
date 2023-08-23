@@ -15,6 +15,7 @@ import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.service.PortraitService;
 import com.poho.stuup.service.RecAddScoreService;
+import com.poho.stuup.util.MinioUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +89,9 @@ public class PortraitServiceImpl implements PortraitService {
     @Resource
     private RecAddScoreService recAddScoreService;
 
+    @Resource
+    private FileMapper fileMapper;
+
     @Override
     public ResponseModel<PortraitBasicInfoVO> getBasicInfo(Long userId) {
         User user = userMapper.selectByPrimaryKey(userId);
@@ -99,6 +103,17 @@ public class PortraitServiceImpl implements PortraitService {
         portraitBasicInfoVO.setStudentName(student.getName());
         portraitBasicInfoVO.setStudentNo(student.getStudentNo());
         portraitBasicInfoVO.setPhone(student.getPhone());
+        if (user.getAvatarId() != null) {
+            try {
+                File file = fileMapper.selectById(user.getAvatarId());
+                String bucket = file.getBucket();
+                String storageName = file.getStorageName();
+                String url = MinioUtils.getPreSignedObjectUrl(bucket, storageName);
+                portraitBasicInfoVO.setAvatar(url);
+            } catch (Exception e) {
+                log.error("获取用户头像url失败");
+            }
+        }
         Integer classId = student.getClassId();
         if (classId != null) {
             Class _class = classMapper.selectByPrimaryKey(classId);

@@ -46,18 +46,18 @@ public class ScreenServiceImpl implements ScreenService {
     private YearMapper yearMapper;
     @Resource
     private RecAddScoreService recAddScoreService;
-
     @Resource
     private StudentMapper studentMapper;
-
     @Resource
     private ClassMapper classMapper;
-
     @Resource
     private MajorMapper majorMapper;
-
     @Resource
     private GrowthItemMapper growthItemMapper;
+    @Resource
+    private LoginLogMapper loginLogMapper;
+    @Resource
+    private RecLogService recLogService;
 
     @Override
     public List<StudentGrowthMonitorVO> studentGrowthMonitor() {
@@ -181,9 +181,9 @@ public class ScreenServiceImpl implements ScreenService {
                                     .in(GrowthItem::getCode, growthCodes),
                             id -> Long.valueOf(String.valueOf(id)));
                     if (CollUtil.isNotEmpty(growIds)) {
-                        count = recDefaultService.count(Wrappers.<RecDefault>lambdaQuery()
-                                .between(RecDefault::getCreateTime, currYear.getYearStart(), currYear.getYearEnd())
-                                .in(RecDefault::getGrowId, growIds));
+                        count = recLogService.count(Wrappers.<RecLog>lambdaQuery()
+                                .between(RecLog::getCreateTime, currYear.getYearStart(), currYear.getYearEnd())
+                                .in(RecLog::getGrowId, growIds));
                     }
                 }
             }
@@ -308,5 +308,10 @@ public class ScreenServiceImpl implements ScreenService {
         screenImportantDataVO.setScholarshipNum(scholarshipNum);
 
         return screenImportantDataVO;
+    }
+
+    @Override
+    public List<DailyVisitsVO> countDailyVisits() {
+        return loginLogMapper.countDailyVisits();
     }
 }

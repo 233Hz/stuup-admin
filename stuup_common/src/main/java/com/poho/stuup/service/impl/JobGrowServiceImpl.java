@@ -68,9 +68,8 @@ public class JobGrowServiceImpl extends ServiceImpl<JobGrowMapper, JobGrow> impl
     }
 
     @Override
-    public void executeGrowJob(PeriodEnum periodEnum) {
+    public void executeGrowJob(PeriodEnum periodEnum, Date date) {
         log.info("========================开始========================");
-        Date date = new Date();
         long start = System.currentTimeMillis();
         Year year = yearMapper.findByRange(date);
         Semester semester = semesterMapper.findByRange(date);

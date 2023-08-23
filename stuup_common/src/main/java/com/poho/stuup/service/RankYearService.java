@@ -7,6 +7,7 @@ import com.poho.stuup.model.vo.FacultyRankVO;
 import com.poho.stuup.model.vo.MajorRankVO;
 import com.poho.stuup.model.vo.YearRankVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,4 +27,6 @@ public interface RankYearService extends IService<RankYear> {
     List<MajorRankVO> getMajorRank();
 
     List<FacultyRankVO> getFacultyRank();
+
+    void generateRank(Date date);
 }

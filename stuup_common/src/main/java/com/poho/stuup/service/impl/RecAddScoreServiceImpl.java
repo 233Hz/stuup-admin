@@ -8,12 +8,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.CalculateTypeEnum;
 import com.poho.stuup.constant.PeriodEnum;
+import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.dto.StudentRecScoreDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
+import com.poho.stuup.model.vo.UnCollectScore;
 import com.poho.stuup.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -360,6 +362,35 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
             }
         }
         return null;
+    }
+
+    @Override
+    public void collectionTimeoutScore(Integer timeout) {
+        baseMapper.collectionTimeoutScore(timeout);
+    }
+
+    @Override
+    public List<UnCollectScore> getUnCollectScore(Long userId) {
+        List<UnCollectScore> result = new ArrayList<>();
+        User user = userMapper.selectByPrimaryKey(userId);
+        if (user != null) {
+            Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
+            if (student != null) {
+                Integer studentId = student.getId();
+                List<RecAddScore> unCollectScores = baseMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                        .select(RecAddScore::getId, RecAddScore::getScore)
+                        .eq(RecAddScore::getStudentId, studentId)
+                        .eq(RecAddScore::getState, WhetherEnum.NO.getValue()));
+                for (RecAddScore recAddScore : unCollectScores) {
+                    UnCollectScore unCollectScore = new UnCollectScore();
+                    unCollectScore.setId(recAddScore.getId());
+                    unCollectScore.setScore(recAddScore.getScore());
+                    result.add(unCollectScore);
+                }
+                return result;
+            }
+        }
+        return result;
     }
 
 

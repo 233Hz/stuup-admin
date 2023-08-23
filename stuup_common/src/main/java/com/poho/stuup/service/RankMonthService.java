@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.RankMonth;
 import com.poho.stuup.model.vo.ProgressRankVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,4 +18,6 @@ import java.util.List;
 public interface RankMonthService extends IService<RankMonth> {
 
     List<ProgressRankVO> getProgressRank();
+
+    void generateRank(Date date);
 }

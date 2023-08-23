@@ -62,5 +62,5 @@ public interface RecAddScoreMapper extends BaseMapper<RecAddScore> {
 
     List<WholeClassTop10VO> findWholeClassTop10Ranking(@Param("yearId") Long yearId);
 
-    int executeSql(@Param("sql") String sql);
+    int collectionTimeoutScore(@Param("timeout") Integer timeout);
 }

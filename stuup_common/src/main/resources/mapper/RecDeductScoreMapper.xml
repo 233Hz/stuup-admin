@@ -10,7 +10,6 @@
         <result column="grow_id" property="growId"/>
         <result column="score" property="score"/>
         <result column="year_id" property="yearId"/>
-        <result column="state" property="state"/>
         <result column="create_time" property="createTime"/>
     </resultMap>
 

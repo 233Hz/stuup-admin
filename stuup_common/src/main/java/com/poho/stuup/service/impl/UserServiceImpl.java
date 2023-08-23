@@ -2,6 +2,7 @@ package com.poho.stuup.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.CusMap;
@@ -12,21 +13,26 @@ import com.poho.common.util.MicrovanUtil;
 import com.poho.common.util.PasswordUtil;
 import com.poho.common.util.Validator;
 import com.poho.stuup.constant.ProjectConstants;
+import com.poho.stuup.constant.UserTypeEnum;
+import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.dao.*;
-import com.poho.stuup.model.Dept;
-import com.poho.stuup.model.Menu;
-import com.poho.stuup.model.User;
-import com.poho.stuup.model.UserRole;
+import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.SimpleUserDTO;
 import com.poho.stuup.model.vo.SimpleUserVO;
 import com.poho.stuup.service.IUserService;
+import com.poho.stuup.service.RecAddScoreService;
+import com.poho.stuup.service.StuScoreService;
+import com.poho.stuup.util.MinioUtils;
 import com.poho.stuup.util.ProjectUtil;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -53,6 +59,30 @@ public class UserServiceImpl implements IUserService {
 
     @Resource
     private YearMapper yearMapper;
+
+    @Resource
+    private SemesterMapper semesterMapper;
+
+    @Resource
+    private LoginLogMapper loginLogMapper;
+
+    @Resource
+    private StudentMapper studentMapper;
+
+    @Resource
+    private GrowthItemMapper growthItemMapper;
+
+    @Resource
+    private RecAddScoreService recAddScoreService;
+
+    @Resource
+    private StuScoreLogMapper stuScoreLogMapper;
+
+    @Resource
+    private StuScoreService stuScoreService;
+
+    @Resource
+    private FileMapper fileMapper;
 
     @Override
     public int deleteByPrimaryKey(Long oid) {
@@ -84,7 +114,9 @@ public class UserServiceImpl implements IUserService {
         return userMapper.updateByPrimaryKey(record);
     }
 
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseModel checkLogin(String loginName, String password) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
@@ -98,10 +130,15 @@ public class UserServiceImpl implements IUserService {
         logger.info(String.format("登录 loginName:%s , pwd:%s", loginName, password));
         if (MicrovanUtil.isNotEmpty(user)) {
             if (PasswordUtil.verify(password, user.getPassword())) { //验证密码
-                if (user.getState().intValue() == ProjectConstants.USER_STATE_COMMON) {
+                if (user.getState() == ProjectConstants.USER_STATE_COMMON) {
                     map.put("userId", user.getOid());
                     List<Long> roleIds = userRoleMapper.queryUserRoles(map);
                     if (MicrovanUtil.isNotEmpty(roleIds)) {
+                        String message = "登录成功";
+
+                        Long yearId = yearMapper.findCurrYearId();
+                        Long semesterId = semesterMapper.getCurrentSemesterId();
+
                         CusUser cusUser = new CusUser();
                         cusUser.setUserId(user.getOid());
                         cusUser.setLoginName(user.getLoginName());
@@ -110,10 +147,86 @@ public class UserServiceImpl implements IUserService {
                         cusUser.setDeptId(user.getDeptId());
                         cusUser.setUserType(user.getUserType());
                         cusUser.setRoleIds(ProjectUtil.splitListUseComma(roleIds));
-                        Optional.ofNullable(yearMapper.findCurrYear()).flatMap(year -> Optional.ofNullable(year.getOid())).ifPresent(cusUser::setYearId);
+
+
+                        // 获取用户头像
+                        if (user.getAvatarId() != null) {
+                            try {
+                                File file = fileMapper.selectById(user.getAvatarId());
+                                String bucket = file.getBucket();
+                                String storageName = file.getStorageName();
+                                String url = MinioUtils.getPreSignedObjectUrl(bucket, storageName);
+                                cusUser.setAvatar(url);
+                            } catch (Exception e) {
+                                logger.error("获取用户头像url失败！");
+                                e.printStackTrace();
+                            }
+                        }
+
+                        if (yearId != null) cusUser.setYearId(yearId);
+                        // 每日登入
+                        if (user.getUserType() == UserTypeEnum.STUDENT.getValue()) {
+                            Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
+                            if (student != null) {
+                                Integer studentId = student.getId();
+                                // 获取用户总积分
+                                StuScore stuScore = stuScoreService.getOne(Wrappers.<StuScore>lambdaQuery()
+                                        .select(StuScore::getScore)
+                                        .eq(StuScore::getStudentId, studentId));
+                                cusUser.setTotalScore(BigDecimal.ZERO);
+                                if (stuScore != null) {
+                                    // 获取未收取的分数
+                                    List<RecAddScore> unCollectScores = recAddScoreService.list(Wrappers.<RecAddScore>lambdaQuery()
+                                            .select(RecAddScore::getScore)
+                                            .eq(RecAddScore::getStudentId, studentId)
+                                            .eq(RecAddScore::getState, WhetherEnum.NO.getValue()));
+                                    BigDecimal unCollectScore = unCollectScores.stream().map(RecAddScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
+                                    cusUser.setTotalScore(stuScore.getScore().subtract(unCollectScore));
+                                }
+
+                                // 获取排名
+                                Integer ranking = recAddScoreService.getStudentNowRanking(Long.valueOf(studentId));
+                                if (ranking != null) cusUser.setRanking(ranking);
+
+                                // 查询当天的登入次数
+                                int count = loginLogMapper.findTodayLoginCount(cusUser.getUserId());
+                                if (count == 0) {
+                                    if (yearId != null && semesterId != null) {
+                                        GrowthItem growthItem = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
+                                                .eq(GrowthItem::getCode, "CZ_066"));
+                                        if (growthItem != null) {
+                                            RecAddScore recAddScore = new RecAddScore();
+                                            recAddScore.setYearId(yearId);
+                                            recAddScore.setSemesterId(semesterId);
+                                            recAddScore.setStudentId(Long.valueOf(studentId));
+                                            recAddScore.setGrowId(growthItem.getId());
+                                            recAddScore.setScore(growthItem.getScore());
+                                            recAddScoreService.save(recAddScore);
+                                            StuScoreLog stuScoreLog = new StuScoreLog();
+                                            stuScoreLog.setYearId(yearId);
+                                            stuScoreLog.setSemesterId(semesterId);
+                                            stuScoreLog.setStudentId(Long.valueOf(studentId));
+                                            stuScoreLog.setGrowId(growthItem.getId());
+                                            stuScoreLog.setScore(growthItem.getScore());
+                                            stuScoreLog.setDescription(growthItem.getName());
+                                            stuScoreLogMapper.insert(stuScoreLog);
+                                            stuScoreService.updateTotalScore(Long.valueOf(studentId), growthItem.getScore());
+
+                                            message = StrUtil.format("登入成功（+{}分）", growthItem.getScore());
+                                        }
+                                    }
+                                }
+
+
+                            }
+                        }
+                        // 保存登入日志
+                        LoginLog loginLog = new LoginLog();
+                        loginLog.setUserId(cusUser.getUserId());
+                        loginLogMapper.insert(loginLog);
+
                         model.setCode(CommonConstants.CODE_SUCCESS);
-                        model.setMessage("登录成功");
-                        //model.setToken(JwtUtil.createOneDayJwt(user.getOid().toString()));
+                        model.setMessage(message);
                         model.setToken(JwtUtil.createJwt(user.getOid().toString(), CommonConstants.JWT_TTL_COMMON));
                         model.setData(cusUser);
                     } else {
@@ -416,5 +529,17 @@ public class UserServiceImpl implements IUserService {
         page.setTotal(total);
         page.setRecords(simpleUserPage);
         return page;
+    }
+
+    @SneakyThrows
+    @Override
+    public ResponseModel<String> updateUserAvatar(Long userId, Long avatarId) {
+        int line = userMapper.updateUserAvatar(userId, avatarId);
+        if (line != 1) return ResponseModel.failed("更新头像失败");
+        File file = fileMapper.selectById(avatarId);
+        String bucket = file.getBucket();
+        String storageName = file.getStorageName();
+        String url = MinioUtils.getPreSignedObjectUrl(bucket, storageName);
+        return ResponseModel.ok(url, "更新成功！");
     }
 }

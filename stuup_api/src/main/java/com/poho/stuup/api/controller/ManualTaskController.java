@@ -1,16 +1,12 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.event.EventPublish;
-import com.poho.stuup.event.StatisticsMonthRankEvent;
-import com.poho.stuup.model.dto.StatisticsRankEventDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * @author BUNGA
@@ -47,7 +43,7 @@ public class ManualTaskController {
 
     @GetMapping("/task4")
     public ResponseModel task4() {
-        growScheduledTaskController.calculateScoreForSemester();
+        growScheduledTaskController.calculateScoreForLastSemester();
         return ResponseModel.ok();
     }
 
@@ -63,18 +59,15 @@ public class ManualTaskController {
         return ResponseModel.ok();
     }
 
-    @GetMapping("/task7")
-    public ResponseModel task7() {
-        StatisticsRankEventDTO statisticsRankEventDTO = new StatisticsRankEventDTO();
-        statisticsRankEventDTO.setPeriodEnum(PeriodEnum.MONTH);
-        statisticsRankEventDTO.setStartTime(new Date());
-        eventPublish.publishEvent(new StatisticsMonthRankEvent(statisticsRankEventDTO));
-        return ResponseModel.ok();
-    }
-
     @GetMapping("/task8")
     public ResponseModel task8() {
         growScheduledTaskController.compensateCalculateFail();
+        return ResponseModel.ok();
+    }
+
+    @GetMapping("/task9")
+    public ResponseModel task9() {
+        growScheduledTaskController.collectionTimeoutScore();
         return ResponseModel.ok();
     }
 

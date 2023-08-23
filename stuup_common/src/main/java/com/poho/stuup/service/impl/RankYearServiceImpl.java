@@ -2,6 +2,7 @@ package com.poho.stuup.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
 import com.poho.stuup.model.*;
@@ -10,14 +11,13 @@ import com.poho.stuup.model.vo.FacultyRankVO;
 import com.poho.stuup.model.vo.MajorRankVO;
 import com.poho.stuup.model.vo.YearRankVO;
 import com.poho.stuup.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
  * @author BUNGA
  * @since 2023-06-12
  */
+@Slf4j
 @Service
 public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> implements RankYearService {
 
@@ -63,7 +64,11 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
     private IYearService yearService;
 
     @Resource
+    private YearMapper yearMapper;
+
+    @Resource
     private RecAddScoreMapper recAddScoreMapper;
+
 
     @Override
     public List<YearRankVO> getSchoolRank() {
@@ -327,5 +332,60 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
         }
 
         return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void generateRank(Date date) {
+        log.info("====================开始统计学年排行榜====================");
+        long start = System.currentTimeMillis();
+        Year year = yearMapper.findByRange(date);
+        if (year == null) return;
+        Long yearId = year.getOid();
+        // 所有学生
+        List<Student> students = studentMapper.getAllStudent();
+
+        // 查询出该学期的所有记录
+        List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
+                .select(RecAddScore::getStudentId, RecAddScore::getScore)
+                .eq(RecAddScore::getState, WhetherEnum.YES.getValue())
+                .eq(RecAddScore::getYearId, yearId));
+        int recordSize = recAddScores.size();
+
+        // 对学生id进行分组求和
+        Map<Long, BigDecimal> recScoresSumScore = recAddScores.stream().collect(Collectors.groupingBy(RecAddScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecAddScore::getScore, BigDecimal::add)));
+
+        List<RankYear> rankYearList = students.stream().map(student -> {
+                    RankYear rankSemester = new RankYear();
+                    rankSemester.setYearId(yearId);
+                    rankSemester.setStudentId(student.getId().longValue());
+                    rankSemester.setScore(recScoresSumScore.getOrDefault(student.getId().longValue(), BigDecimal.ZERO));
+                    return rankSemester;
+                })
+                .collect(Collectors.toList());
+
+        students.clear();
+        recAddScores.clear();
+        recScoresSumScore.clear();
+
+        if (recordSize > 0) {
+            rankYearList.sort(Comparator.comparing(RankYear::getScore).reversed());
+        }
+
+        // 设置排名
+        int rank = 1;
+        BigDecimal lastStudentScore = rankYearList.get(0).getScore();
+
+        for (RankYear rankYear : rankYearList) {
+            if (lastStudentScore.compareTo(rankYear.getScore()) != 0) rank++;
+            rankYear.setRanking(rank);
+            lastStudentScore = rankYear.getScore();
+            baseMapper.insert(rankYear);
+        }
+
+        long end = System.currentTimeMillis();
+        log.info("====================任务执行完毕====================");
+        log.info("耗时:{}ms", end - start);
+        log.info("耗时:{}分{}秒", (end - start) / 1000 / 60, (end - start) / 1000 % 60);
     }
 }

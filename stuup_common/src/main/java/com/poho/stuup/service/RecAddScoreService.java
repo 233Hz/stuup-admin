@@ -10,6 +10,7 @@ import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.dto.StudentRecScoreDTO;
 import com.poho.stuup.model.vo.RecScoreVO;
 import com.poho.stuup.model.vo.StudentRecScoreVO;
+import com.poho.stuup.model.vo.UnCollectScore;
 
 import java.util.Date;
 import java.util.List;
@@ -64,4 +65,8 @@ public interface RecAddScoreService extends IService<RecAddScore> {
      * @return
      */
     Integer getStudentNowRanking(Long studentId);
+
+    void collectionTimeoutScore(Integer timeout);
+
+    List<UnCollectScore> getUnCollectScore(Long userId);
 }

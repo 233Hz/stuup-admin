@@ -24,4 +24,6 @@ public interface UserMapper extends BaseDao<User> {
     List<SimpleUserVO> getSimpleUserPage(@Param("current") long current, @Param("size") long size, @Param("query") SimpleUserDTO query);
 
     List<User> getAllUserLoginNamesAndIds();
+
+    int updateUserAvatar(@Param("userId") Long userId, @Param("avatarId") Long avatarId);
 }

@@ -3,6 +3,8 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.RankSemester;
 
+import java.util.Date;
+
 /**
  * <p>
  * 学期榜 服务类
@@ -13,4 +15,5 @@ import com.poho.stuup.model.RankSemester;
  */
 public interface RankSemesterService extends IService<RankSemester> {
 
+    void generateRank(Date date);
 }

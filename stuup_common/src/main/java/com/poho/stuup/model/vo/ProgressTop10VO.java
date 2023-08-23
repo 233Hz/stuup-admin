@@ -1,5 +1,6 @@
 package com.poho.stuup.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -42,4 +43,12 @@ public class ProgressTop10VO {
      * 上升名次
      */
     private Integer riseRanking;
+
+    /**
+     * 用户头像
+     */
+    private String avatar;
+
+    @JsonIgnore
+    private Long avatarId;
 }

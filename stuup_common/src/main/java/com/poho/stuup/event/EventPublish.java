@@ -20,13 +20,7 @@ public class EventPublish {
     private ApplicationContext applicationContext;
 
     public void publishEvent(ApplicationEvent event) {
-        if (event instanceof StatisticsYearRankEvent) {
-            applicationContext.publishEvent(event);
-        } else if (event instanceof StatisticsMonthRankEvent) {
-            applicationContext.publishEvent(event);
-        } else if (event instanceof StatisticsSemesterRankEvent) {
-            applicationContext.publishEvent(event);
-        } else if (event instanceof SystemMsgEvent) {
+        if (event instanceof SystemMsgEvent) {
             applicationContext.publishEvent(event);
         } else {
             log.error("事件发布失败");

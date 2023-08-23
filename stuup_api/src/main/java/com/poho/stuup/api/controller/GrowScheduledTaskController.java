@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -49,11 +50,24 @@ public class GrowScheduledTaskController {
     @Resource
     private JobGrowService jobGrowService;
 
+    @Resource
+    private RecAddScoreService recAddScoreService;
+
+    @Resource
+    private RankYearService rankYearService;
+
+    @Resource
+    private RankMonthService rankMonthService;
+
+    @Resource
+    private RankSemesterService rankSemesterService;
+
 
     /**
      * 每天检查生成当前学年和学期
      */
-    @Scheduled(cron = "0 1 0 * * ?")
+    @Async
+    @Scheduled(cron = "0 1 0 * * ?")    // 每天晚上 00:01
     @Transactional(rollbackFor = Exception.class)
     public void generateYearAndSemester() {
         Config config1 = configService.selectByPrimaryKey(ConfigKeyEnum.LAST_SEMESTER_START_TIME.getKey());
@@ -194,50 +208,109 @@ public class GrowScheduledTaskController {
      * 计算每天任务分数
      */
     @Async
-    @Scheduled(cron = "0 0 23 * * ?")
+    @Scheduled(cron = "0 0 22 * * ?")   // 每天晚上 22:00
     public void calculateScoreForDay() {
-        jobGrowService.executeGrowJob(PeriodEnum.DAY);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        Date date = calendar.getTime();
+        jobGrowService.executeGrowJob(PeriodEnum.DAY, date);
     }
 
     /**
      * 计算每周任务分数
      */
     @Async
-    @Scheduled(cron = "0 0 23 ? * SUN")
+    @Scheduled(cron = "0 20 22 ? * SUN")    // 每周日晚上 22:20
     public void calculateScoreForWeek() {
-        jobGrowService.executeGrowJob(PeriodEnum.WEEK);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        Date date = calendar.getTime();
+        jobGrowService.executeGrowJob(PeriodEnum.WEEK, date);
     }
 
     /**
      * 计算每月任务分数
      */
     @Async
-    @Scheduled(cron = "0 0 23 28-31 * ?")
+    @Scheduled(cron = "0 15 10 28-31 * ?")  // 每月最后一天晚上 22:40
     public void calculateScoreForMonth() {
-        jobGrowService.executeGrowJob(PeriodEnum.MONTH);
+        Calendar calendar = Calendar.getInstance();
+        if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            Date date = calendar.getTime();
+            jobGrowService.executeGrowJob(PeriodEnum.MONTH, date);
+            rankMonthService.generateRank(date);
+        }
     }
 
     /**
      * 计算每学期任务分数
      */
     @Async
-    @Scheduled(cron = "0 0 23 15 1,6 ? ")
-    public void calculateScoreForSemester() {
-        jobGrowService.executeGrowJob(PeriodEnum.SEMESTER);
+    @Scheduled(cron = "0 0 23 15 1 ? ")   // 每年的01-15 23:00
+    public void calculateScoreForLastSemester() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        Date date = calendar.getTime();
+        jobGrowService.executeGrowJob(PeriodEnum.SEMESTER, date);
+        rankSemesterService.generateRank(date);
+    }
+
+
+    /**
+     * 计算每年和每学年下学期的任务分数
+     */
+    @Async
+    @Scheduled(cron = "0 20 23 30 6 ?")  // 每年的 06-30 23:00
+    public void calculateScoreForYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        Date date = calendar.getTime();
+        jobGrowService.executeGrowJob(PeriodEnum.SEMESTER, date);
+        rankSemesterService.generateRank(date);
+        jobGrowService.executeGrowJob(PeriodEnum.YEAR, date);
+        rankYearService.generateRank(date);
     }
 
     /**
-     * 计算每年任务分数
+     * 成长计算每日定时补偿
      */
     @Async
-    @Scheduled(cron = "0 0 23 30 6 ?")
-    public void calculateScoreForYear() {
-        jobGrowService.executeGrowJob(PeriodEnum.YEAR);
-    }
-
-    @Scheduled(cron = "0 0 4 * * ?")
+    @Scheduled(cron = "0 40 23 * * ?")  // 每天晚上的 23:40
     public void compensateCalculateFail() {
         jobGrowService.executeGrowJobCompensation();
+    }
+
+    /**
+     * 自动采集未收集的水滴
+     */
+
+    @Async
+    @Scheduled(cron = "0 55 23 * * ?")     // 每天晚上的 23:55
+    public void collectionTimeoutScore() {
+        Config config = configService.selectByPrimaryKey(ConfigKeyEnum.SCORE_TIMEOUT_AUTO_COLLECT.getKey());
+        Integer timeout;
+        if (config != null) {
+            try {
+                timeout = Integer.valueOf(config.getConfigValue());
+            } catch (NumberFormatException e) {
+                log.error("{}配置错误", ConfigKeyEnum.SCORE_TIMEOUT_AUTO_COLLECT.getKey());
+                timeout = 7;
+            }
+        } else {
+            timeout = 7;
+        }
+        recAddScoreService.collectionTimeoutScore(timeout);
     }
 
 

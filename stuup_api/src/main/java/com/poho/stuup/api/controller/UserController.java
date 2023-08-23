@@ -204,4 +204,10 @@ public class UserController {
     public ResponseModel<IPage<SimpleUserVO>> getSimpleUserPage(Page<SimpleUserVO> page, SimpleUserDTO query) {
         return ResponseModel.ok(userService.getSimpleUserPage(page, query));
     }
+
+    @GetMapping("/updateAvatar")
+    public ResponseModel<String> updateUserAvatar(@RequestParam("avatarId") Long avatarId) {
+        String userId = ProjectUtil.obtainLoginUser(request);
+        return userService.updateUserAvatar(Long.valueOf(userId), avatarId);
+    }
 }

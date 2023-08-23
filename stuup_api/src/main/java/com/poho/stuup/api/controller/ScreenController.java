@@ -48,4 +48,9 @@ public class ScreenController {
         return ResponseModel.ok(screenService.countGrowthScoreCompare());
     }
 
+    @GetMapping("/countDailyVisits")
+    public ResponseModel<List<DailyVisitsVO>> countDailyVisits() {
+        return ResponseModel.ok(screenService.countDailyVisits());
+    }
+
 }

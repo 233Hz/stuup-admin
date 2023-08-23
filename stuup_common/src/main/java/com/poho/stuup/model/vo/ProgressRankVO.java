@@ -89,5 +89,7 @@ public class ProgressRankVO {
     private Integer gradeId;
     @JsonIgnore
     private Integer majorId;
+    @JsonIgnore
+    private Long avatarId;
 
 }

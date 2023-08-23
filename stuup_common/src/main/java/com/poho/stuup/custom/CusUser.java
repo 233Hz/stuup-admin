@@ -1,5 +1,7 @@
 package com.poho.stuup.custom;
 
+import java.math.BigDecimal;
+
 /**
  * @Author: wupeng
  * @Description:
@@ -21,6 +23,12 @@ public class CusUser {
     private String roleIds;
 
     private Long yearId;
+
+    private String avatar;
+
+    private Integer ranking;
+
+    private BigDecimal totalScore;
 
     public CusUser() {
 
@@ -129,5 +137,29 @@ public class CusUser {
 
     public void setYearId(Long yearId) {
         this.yearId = yearId;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Integer getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(Integer ranking) {
+        this.ranking = ranking;
+    }
+
+    public BigDecimal getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(BigDecimal totalScore) {
+        this.totalScore = totalScore;
     }
 }

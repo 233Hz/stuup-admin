@@ -33,7 +33,7 @@
 
     <select id="getRecScorePage" resultMap="RecScoreVOMap">
         select
-        trs.id,
+        ras.id,
         y.year_name,
         first.name as first_level_name,
         second.name as second_level_name,
@@ -44,16 +44,16 @@
         s.name as student_name,
         s.student_no,
         s.id_card,
-        trs.student_id,
-        trs.score,
-        trs.create_time
-        from t_rec_score trs
-        left join t_growth_item gi on gi.id = trs.grow_id
+        ras.student_id,
+        ras.score,
+        ras.create_time
+        from t_rec_add_score ras
+        left join t_growth_item gi on gi.id = ras.grow_id
         left join t_growth first on first.id = gi.first_level_id
         left join t_growth second on second.id = gi.second_level_id
         left join t_growth three on three.id = gi.three_level_id
-        left join t_student s on s.id = trs.student_id
-        left join t_year y on y.oid = trs.year_id
+        left join t_student s on s.id = ras.student_id
+        left join t_year y on y.oid = ras.year_id
         left join t_grade g on g.oid = s.grade_id
         left join t_class c on c.id = s.class_id
         <where>
@@ -85,10 +85,10 @@
                 and s.student_no like concat('%',#{query.studentNo},'%')
             </if>
             <if test="query.startTime != null and query.endTime != null and query.startTime != '' and query.endTime != '' ">
-                and trs.create_time between #{query.startTime} and #{query.endTime}
+                and ras.create_time between #{query.startTime} and #{query.endTime}
             </if>
         </where>
-        order by trs.create_time
+        order by ras.create_time
     </select>
 
     <resultMap id="StudentRecScoreVOMap" type="com.poho.stuup.model.vo.StudentRecScoreVO">
@@ -99,22 +99,22 @@
 
     <select id="pageStudentRecScore" resultMap="StudentRecScoreVOMap">
         select
-        trs.id,
+        ras.id,
         y.year_name,
         first.name as first_level_name,
         second.name as second_level_name,
         three.name as three_level_name,
         gi.name as grow_name,
-        trs.score,
-        trs.create_time
-        from t_rec_score trs
-        left join t_growth_item gi on gi.id = trs.grow_id
+        ras.score,
+        ras.create_time
+        from t_rec_add_score ras
+        left join t_growth_item gi on gi.id = ras.grow_id
         left join t_growth first on first.id = gi.first_level_id
         left join t_growth second on second.id = gi.second_level_id
         left join t_growth three on three.id = gi.three_level_id
-        left join t_year y on y.oid = trs.year_id
+        left join t_year y on y.oid = ras.year_id
         <where>
-            trs.student_id = #{studentId}
+            ras.student_id = #{studentId}
             <if test="query.yearId != null and query.yearId != ''">
                 and y.oid = #{query.yearId}
             </if>
@@ -131,21 +131,21 @@
                 and gi.name like concat('%',#{query.growName},'%')
             </if>
             <if test="query.startTime != null and query.endTime != null and query.startTime != '' and query.endTime != '' ">
-                and trs.create_time between #{query.startTime} and #{query.endTime}
+                and ras.create_time between #{query.startTime} and #{query.endTime}
             </if>
         </where>
-        order by trs.create_time desc
+        order by ras.create_time desc
     </select>
 
     <select id="findTimePeriodRecord" resultMap="BaseResultMap">
         select *
-        from t_rec_score
+        from t_rec_add_score
         where create_time between #{startTime} and #{endTime}
     </select>
 
     <select id="findTimePeriodRecordForGrow" resultMap="BaseResultMap">
         select *
-        from t_rec_score
+        from t_rec_add_score
         where grow_id = #{growId}
           and create_time between #{startTime} and #{endTime}
     </select>
@@ -160,15 +160,15 @@
     </resultMap>
 
     <select id="findRecScoreForYear" resultMap="RecScoreYearRankDTOMap">
-        select trs.student_id,
-               trs.score,
+        select ras.student_id,
+               ras.score,
                s.name as student_name,
                s.student_no,
                s.class_id,
                s.grade_id,
                s.major_id
-        from t_rec_score trs
-                 left join t_student s on s.id = trs.student_id
+        from t_rec_add_score ras
+                 left join t_student s on s.id = ras.student_id
         where year_id = #{yearId}
     </select>
 
@@ -179,9 +179,9 @@
 
     <select id="getClassRank" resultMap="ClassRankVOMap">
         select s.class_id,
-               trs.score
-        from t_rec_score trs
-                 left join t_student s on s.id = trs.student_id
+               ras.score
+        from t_rec_add_score ras
+                 left join t_student s on s.id = ras.student_id
         where year_id = #{yearId}
     </select>
 
@@ -192,9 +192,9 @@
 
     <select id="getMajorRank" resultMap="MajorRankVOMap">
         select s.major_id,
-               trs.score
-        from t_rec_score trs
-                 left join t_student s on s.id = trs.student_id
+               ras.score
+        from t_rec_add_score ras
+                 left join t_student s on s.id = ras.student_id
         where year_id = #{yearId}
     </select>
 
@@ -205,9 +205,9 @@
 
     <select id="getFacultyRank" resultMap="FacultyRankVOMap">
         select s.class_id,
-               trs.score
-        from t_rec_score trs
-                 left join t_student s on s.id = trs.student_id
+               ras.score
+        from t_rec_add_score ras
+                 left join t_student s on s.id = ras.student_id
         where year_id = #{yearId}
     </select>
 
@@ -217,19 +217,22 @@
         <result column="class_teacher" property="classTeacher"/>
         <result column="ranking" property="ranking"/>
         <result column="score" property="score"/>
+        <result column="avatar_id" property="avatarId"/>
     </resultMap>
 
     <select id="findWholeSchoolTop10Ranking" resultMap="WholeSchoolTop10VOMap">
         select s.name         as student_name,
                c.name         as class_name,
                t.name         as class_teacher,
-               sum(trs.score) as score
-        from t_rec_score trs
-                 left join t_student s on s.id = trs.student_id
+               sum(ras.score) as score,
+               u.avatar_id    as avatar_id
+        from t_rec_add_score ras
+                 left join t_student s on s.id = ras.student_id
+                 left join t_user u on u.login_name = s.student_no
                  left join t_class c on c.id = s.class_id
                  left join t_teacher t on t.id = c.teacher_id
-        where trs.year_id = #{yearId}
-        group by trs.student_id
+        where ras.year_id = #{yearId}
+        group by ras.student_id
         order by score desc
         limit 10
     </select>
@@ -239,25 +242,30 @@
         <result column="class_teacher" property="classTeacher"/>
         <result column="ranking" property="ranking"/>
         <result column="score" property="score"/>
+        <result column="avatar_id" property="avatarId"/>
     </resultMap>
 
     <select id="findWholeClassTop10Ranking" resultMap="WholeClassTop10VOMap">
         select c.name         as class_name,
                t.name         as class_teacher,
-               sum(trs.score) as score
-        from t_rec_score trs
-                 left join t_student s on s.id = trs.student_id
+               sum(ras.score) as score,
+               u.avatar_id    as avatar_id
+        from t_rec_add_score ras
+                 left join t_student s on s.id = ras.student_id
                  left join t_class c on c.id = s.class_id
                  left join t_teacher t on t.id = c.teacher_id
-        where trs.year_id = #{yearId}
+                 left join t_user u on u.login_name = t.job_no
+        where ras.year_id = #{yearId}
         group by s.class_id
         order by score desc
         limit 10
     </select>
 
-
-    <insert id="executeSql" parameterType="string">
-        ${sql}
-    </insert>
+    <update id="collectionTimeoutScore">
+        update t_rec_add_score
+        set state = 1
+        where create_time &lt;= date_sub(curdate(), interval #{timeout} day)
+          and state = 2;
+    </update>
 
 </mapper>

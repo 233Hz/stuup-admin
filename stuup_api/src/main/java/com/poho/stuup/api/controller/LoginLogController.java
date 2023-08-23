@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 扣分记录 前端控制器
+ * 用户登入日志 前端控制器
  * </p>
  *
  * @author BUNGA
- * @since 2023-08-18
+ * @since 2023-08-22
  */
 @RestController
-@RequestMapping("/recDeductScore")
-public class RecDeductScoreController {
+@RequestMapping("/loginLog")
+public class LoginLogController {
 
 }
