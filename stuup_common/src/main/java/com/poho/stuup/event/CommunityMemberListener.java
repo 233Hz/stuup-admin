@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.constant.SyncCommunityMemberStateEnum;
+import com.poho.stuup.dao.SemesterMapper;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.dao.SyncCommunityMemberMapper;
 import com.poho.stuup.dao.YearMapper;
@@ -35,9 +36,12 @@ public class CommunityMemberListener implements ApplicationListener<CommunityMem
 
     private final YearMapper yearMapper;
 
+    private final SemesterMapper semesterMapper;
+
     private final StudentMapper studentMapper;
 
     private final SyncCommunityMemberMapper syncCommunityMemberMapper;
+
     @Override
     @Async
     public void onApplicationEvent(CommunityMemberEvent event) {
@@ -48,17 +52,18 @@ public class CommunityMemberListener implements ApplicationListener<CommunityMem
         List<SyncCommunityMember> memberList = syncCommunityMemberService.list(
                 Wrappers.<SyncCommunityMember>lambdaQuery()
                         .eq(SyncCommunityMember::getSyncInfoId, infoId)
-                        .eq(SyncCommunityMember::getState, SyncCommunityMemberStateEnum.HANDLER_WAIT) );
-        if(CollUtil.isEmpty(memberList)){
+                        .eq(SyncCommunityMember::getState, SyncCommunityMemberStateEnum.HANDLER_WAIT));
+        if (CollUtil.isEmpty(memberList)) {
             log.info(StrUtil.format("infoId:{} 本次没有待处理或处理失败记录。", infoId));
             return;
         }
         //调用积分功能模块
         long batchCode = System.currentTimeMillis();
         Long currYearId = yearMapper.findCurrYearId();
+        Long currentSemesterId = semesterMapper.getCurrentSemesterId();
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, ProjectConstants.COMMUNITY_CODE));
-        if(growthItem == null){
+        if (growthItem == null) {
             log.error(StrUtil.format("本次处理社团同步的社团记录 infoId:{} communityCode:{} 系统找到该项目，请联系管理员确认"
                     , infoId, ProjectConstants.COMMUNITY_CODE));
             return;
@@ -67,11 +72,12 @@ public class CommunityMemberListener implements ApplicationListener<CommunityMem
         for (SyncCommunityMember communityMember : memberList) {
             stuNo = communityMember.getStuNo();
             Long stuId = studentMapper.findStudentId(stuNo);
-            if(stuId != null){
+            if (stuId != null) {
                 SocietySaveDTO societySaveDTO = SocietySaveDTO.builder()
                         .communityMemberId(communityMember.getId())
                         .batchCode(batchCode)
                         .currYearId(currYearId)
+                        .currSemesterId(currentSemesterId)
                         .growthItem(growthItem)
                         .stuId(stuId)
                         .communityName(communityMember.getCommunityName())

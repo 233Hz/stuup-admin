@@ -47,6 +47,7 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
     @Resource
     private SyncCommunityMemberMapper syncCommunityMemberMapper;
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveRecSocietyExcel(List<RecSocietyExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
@@ -88,11 +89,13 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
     @Transactional(rollbackFor = Exception.class)
     public void saveSocietyFromSyncData(SocietySaveDTO societySaveDTO) {
         Long currYearId = societySaveDTO.getCurrYearId();
+        Long currSemesterId = societySaveDTO.getCurrSemesterId();
         Long stuId = societySaveDTO.getStuId();
         Long growthItemId = societySaveDTO.getGrowthItem().getId();
 
         RecSociety recSociety = new RecSociety();
         recSociety.setYearId(currYearId);
+        recSociety.setSemesterId(currSemesterId);
         recSociety.setGrowId(growthItemId);
         recSociety.setStudentId(stuId);
         recSociety.setName(societySaveDTO.getCommunityName());
@@ -100,13 +103,13 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
         // 计算学生成长积分
         RecDefault recDefault = new RecDefault();
         recDefault.setYearId(currYearId);
+        recDefault.setSemesterId(currSemesterId);
         recDefault.setGrowId(growthItemId);
         recDefault.setStudentId(stuId);
         recDefault.setBatchCode(societySaveDTO.getBatchCode());
+        recDefaultMapper.insert(recDefault);
         Map<String, Object> params = new HashMap<>();
         params.put("nowTime", new Date());
-        // TODO ????
-//        recAddScoreService.calculateScore(CollUtil.list(false, recDefault), currYearId, societySaveDTO.getGrowthItem(), params);
         //更新同步记录的处理状态
         SyncCommunityMember syncCommunityMember = SyncCommunityMember.builder()
                 .id(societySaveDTO.getCommunityMemberId())

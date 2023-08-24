@@ -20,6 +20,8 @@ public class SocietySaveDTO implements Serializable {
 
     private Long currYearId;
 
+    private Long currSemesterId;
+
     private GrowthItem growthItem;
 
     private Long stuId;
