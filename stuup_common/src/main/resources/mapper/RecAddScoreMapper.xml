@@ -268,4 +268,20 @@
           and state = 2;
     </update>
 
+    <select id="fetchTotalScore" resultType="BigDecimal">
+        select sum(score) as totalScore
+        from t_rec_add_score
+        where
+        year_id = #{yearId}
+        <if test="studentId != null and studentId != ''">
+            and student_id = #{studentId}
+        </if>
+        <if test="growthItemIds != null and growthItemIds.size > 0">
+            and grow_id in
+            <foreach collection="growthItemIds" item="growthItemId" open="(" separator="," close=")">
+                #{growthItemId}
+            </foreach>
+        </if>
+    </select>
+
 </mapper>

@@ -343,23 +343,29 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
         if (yearId != null) {
             List<RecAddScore> recAddScores = baseMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                     .select(RecAddScore::getStudentId, RecAddScore::getScore)
-                    .eq(RecAddScore::getYearId, yearId));
-            Map<Long, BigDecimal> studentScoreSum = recAddScores.stream().collect(Collectors.groupingBy(RecAddScore::getStudentId, Collectors.reducing(BigDecimal.ZERO, RecAddScore::getScore, BigDecimal::add)));
-            // 对结果按总分数进行倒序排序
-            List<Map.Entry<Long, BigDecimal>> sortedEntries = studentScoreSum.entrySet().stream()
-                    .sorted(Map.Entry.<Long, BigDecimal>comparingByValue().reversed())
-                    .collect(Collectors.toList());
-            int currentRank = 1;
-            BigDecimal previousScore = null;
-            for (Map.Entry<Long, BigDecimal> entry : sortedEntries) {
-                if (previousScore != null && entry.getValue().compareTo(previousScore) < 0) {
-                    currentRank++;
+                    .eq(RecAddScore::getYearId, yearId)
+                    .groupBy(RecAddScore::getStudentId));
+            // 对recAddScores数组按照score字段从高到低排序
+            recAddScores.sort(Comparator.comparing(RecAddScore::getScore).reversed());
+
+            // 设置排名
+            int rank = 1;
+            BigDecimal lastStudentScore = recAddScores.get(0).getScore();
+            Integer studentRank = null;
+
+            for (RecAddScore recAddScore : recAddScores) {
+                if (lastStudentScore.compareTo(recAddScore.getScore()) != 0) {
+                    rank++;
                 }
-                if (Objects.equals(entry.getKey(), studentId)) {
-                    return currentRank;
+                if (recAddScore.getStudentId().equals(studentId)) {
+                    studentRank = rank;
+                    break;
                 }
-                previousScore = entry.getValue();
+                lastStudentScore = recAddScore.getScore();
             }
+
+            return studentRank;
+
         }
         return null;
     }

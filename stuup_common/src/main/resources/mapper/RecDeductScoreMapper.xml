@@ -13,4 +13,16 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
 
+    <select id="fetchTotalScore" resultType="BigDecimal">
+        select ifnull(sum(score), 0) as totalScore
+        from t_rec_deduct_score
+        where student_id = #{studentId}
+        <if test="yearId != null and yearId != ''">
+            and year_id = #{yearId}
+        </if>
+        <if test="semesterId != null and semesterId != ''">
+            and semester_id = #{semesterId}
+        </if>
+    </select>
+
 </mapper>

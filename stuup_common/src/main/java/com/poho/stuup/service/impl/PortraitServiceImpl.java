@@ -69,6 +69,9 @@ public class PortraitServiceImpl implements PortraitService {
     private RecAddScoreMapper recAddScoreMapper;
 
     @Resource
+    private RecDeductScoreMapper recDeductScoreMapper;
+
+    @Resource
     private IConfigService configService;
 
     @Resource
@@ -84,7 +87,7 @@ public class PortraitServiceImpl implements PortraitService {
     private CourseMapper courseMapper;
 
     @Resource
-    private SyncCommunityMemberMapper syncCommunityMemberMapper;
+    private RecSocietyMapper recSocietyMapper;
 
     @Resource
     private RecAddScoreService recAddScoreService;
@@ -136,26 +139,22 @@ public class PortraitServiceImpl implements PortraitService {
             }
         }
         Integer studentId = student.getId();
+        // 获取总分
         StuScore stuScore = stuScoreMapper.selectOne(Wrappers.<StuScore>lambdaQuery()
                 .select(StuScore::getScore)
                 .eq(StuScore::getStudentId, studentId));
         portraitBasicInfoVO.setTotalScore(stuScore == null ? BigDecimal.ZERO : stuScore.getScore());
-        List<StuScoreLog> stuScoreLogs = stuScoreLogMapper.selectList(Wrappers.<StuScoreLog>lambdaQuery()
-                .select(StuScoreLog::getScore)
-                .eq(StuScoreLog::getStudentId, studentId)
-                .lt(StuScoreLog::getScore, BigDecimal.ZERO));
-        if (CollUtil.isNotEmpty(stuScoreLogs)) {
-            BigDecimal totalScore = stuScoreLogs.stream().map(StuScoreLog::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
-            portraitBasicInfoVO.setTotalMinusScore(totalScore);
-        } else {
-            portraitBasicInfoVO.setTotalMinusScore(BigDecimal.ZERO);
-        }
+        // 获取总扣分
+        BigDecimal totalDeductScore = recDeductScoreMapper.fetchTotalScore(studentId, null, null);
+        portraitBasicInfoVO.setTotalMinusScore(totalDeductScore);
+        // 获取排名
         Integer ranking = recAddScoreService.getStudentNowRanking(Long.valueOf(studentId));
         portraitBasicInfoVO.setRanking(ranking);
-        List<SyncCommunityMember> syncCommunityMembers = syncCommunityMemberMapper.selectList(Wrappers.<SyncCommunityMember>lambdaQuery()
-                .select(SyncCommunityMember::getCommunityName)
-                .eq(SyncCommunityMember::getStuNo, studentNo));
-        List<String> communityMemberNames = syncCommunityMembers.stream().map(SyncCommunityMember::getCommunityName).collect(Collectors.toList());
+        // 获取参加的社团
+        List<RecSociety> recSocieties = recSocietyMapper.selectList(Wrappers.<RecSociety>lambdaQuery()
+                .select(RecSociety::getName)
+                .eq(RecSociety::getStudentId, studentId));
+        List<String> communityMemberNames = recSocieties.stream().map(RecSociety::getName).collect(Collectors.toList());
         portraitBasicInfoVO.setAssociations(communityMemberNames);
         return ResponseModel.ok(portraitBasicInfoVO);
     }
@@ -185,18 +184,10 @@ public class PortraitServiceImpl implements PortraitService {
                     .select(GrowthItem::getId)
                     .eq(GrowthItem::getFirstLevelId, id));
             List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
-            List<RecAddScore> studentRecAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
-                    .select(RecAddScore::getScore)
-                    .eq(RecAddScore::getStudentId, studentId)
-                    .eq(RecAddScore::getYearId, yearId)
-                    .in(RecAddScore::getGrowId, growthItemIds));
-            BigDecimal studentScore = studentRecAddScores.stream().map(RecAddScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
-            portraitCapacityEvaluatorVO.setIndicatorScore(studentScore);
-            List<RecAddScore> totalRecAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
-                    .select(RecAddScore::getScore)
-                    .eq(RecAddScore::getYearId, yearId));
-            BigDecimal totalScore = totalRecAddScores.stream().map(RecAddScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
-            portraitCapacityEvaluatorVO.setIndicatorAvgScore(totalScore.divide(BigDecimal.valueOf(totalStudentNum), 2, RoundingMode.HALF_UP));
+            BigDecimal stu_total_score = recAddScoreMapper.fetchTotalScore(yearId, studentId, growthItemIds);
+            portraitCapacityEvaluatorVO.setIndicatorScore(stu_total_score);
+            BigDecimal all_total_score = recAddScoreMapper.fetchTotalScore(yearId, null, growthItemIds);
+            portraitCapacityEvaluatorVO.setIndicatorAvgScore(all_total_score.divide(BigDecimal.valueOf(totalStudentNum), 2, RoundingMode.HALF_UP));
             result.add(portraitCapacityEvaluatorVO);
         }
         return ResponseModel.ok(result);
@@ -234,6 +225,7 @@ public class PortraitServiceImpl implements PortraitService {
                 growthItems.clear();
                 List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                         .select(RecAddScore::getGrowId, RecAddScore::getCreateTime)
+                        .eq(RecAddScore::getStudentId, studentId)
                         .in(RecAddScore::getGrowId, growthItemIds));
                 growthItemIds.clear();
                 int size2 = recAddScores.size();
@@ -445,7 +437,7 @@ public class PortraitServiceImpl implements PortraitService {
         // 查询成长值和排名
         RankSemester rankSemester = rankSemesterMapper.selectOne(Wrappers.<RankSemester>lambdaQuery()
                 .select(RankSemester::getScore, RankSemester::getRanking)
-                .eq(RankSemester::getSemesterId, studentId)
+                .eq(RankSemester::getStudentId, studentId)
                 .eq(RankSemester::getSemesterId, semesterId));
         if (rankSemester != null) {
             BigDecimal score = rankSemester.getScore();
@@ -454,14 +446,9 @@ public class PortraitServiceImpl implements PortraitService {
             portraitGrowthDataVO.setRank(ranking);
         }
         // 查询扣除分
-        List<StuScoreLog> stuScoreLogs = stuScoreLogMapper.selectList(Wrappers.<StuScoreLog>lambdaQuery()
-                .select(StuScoreLog::getScore)
-                .eq(StuScoreLog::getStudentId, studentId)
-                .eq(StuScoreLog::getSemesterId, semesterId));
-        if (CollUtil.isNotEmpty(stuScoreLogs)) {
-            BigDecimal minusScore = stuScoreLogs.stream().map(StuScoreLog::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
-            portraitGrowthDataVO.setMinusScore(minusScore);
-        }
+        BigDecimal totalDeductScore = recDeductScoreMapper.fetchTotalScore(studentId, null, semesterId);
+        portraitGrowthDataVO.setMinusScore(totalDeductScore);
+
         // 查询参加活动次数
         Config config1 = configService.selectByPrimaryKey(ConfigKeyEnum.HOLD_AN_ACTIVITY_GROWTH_CODE.getKey());
         if (config1 != null) {
@@ -540,8 +527,10 @@ public class PortraitServiceImpl implements PortraitService {
                 .select(GrowthItem::getId, GrowthItem::getName));
         // 查询当前学期所有的成长项记录
         List<RecAddScore> allRecAddScore = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
-                .select(RecAddScore::getGrowId, RecAddScore::getScore)
+                .select(RecAddScore::getGrowId, RecAddScore::getScore, RecAddScore::getStudentId)
                 .eq(RecAddScore::getSemesterId, semesterId));
+        // 过滤出当前学生的记录
+        List<RecAddScore> studentRecAddScore = allRecAddScore.stream().filter(recAddScore -> Objects.equals(recAddScore.getStudentId(), Long.valueOf(student.getId()))).collect(Collectors.toList());
         // 按项目分组求和
         Map<Long, BigDecimal> allScoreSumByGrowId = allRecAddScore.stream().collect(Collectors.groupingBy(RecAddScore::getGrowId, Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
         Map<Long, BigDecimal> newAllScoreSumByGrowId = new HashMap<>();
@@ -549,19 +538,8 @@ public class PortraitServiceImpl implements PortraitService {
             BigDecimal avgScore = sumScore.divide(new BigDecimal(countStudent), 2, RoundingMode.HALF_UP);
             newAllScoreSumByGrowId.put(growthItemId, avgScore);
         });
-        // 查询自己所有项目的记录
-        Integer studentId = student.getId();
-        List<RecAddScore> studentRecAddScore = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
-                .select(RecAddScore::getGrowId, RecAddScore::getScore)
-                .eq(RecAddScore::getSemesterId, semesterId)
-                .eq(RecAddScore::getStudentId, studentId));
         // 按项目分组求和
         Map<Long, BigDecimal> studentScoreSumByGrowId = studentRecAddScore.stream().collect(Collectors.groupingBy(RecAddScore::getGrowId, Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
-        Map<Long, BigDecimal> newStudentScoreSumByGrowId = new HashMap<>();
-        studentScoreSumByGrowId.forEach((growthItemId, sumScore) -> {
-            BigDecimal avgScore = sumScore.divide(new BigDecimal(countStudent), 2, RoundingMode.HALF_UP);
-            newStudentScoreSumByGrowId.put(growthItemId, avgScore);
-        });
         // 遍历所有项目
         int size = growthItems.size();
         for (int i = 0; i < size; i++) {
@@ -572,7 +550,7 @@ public class PortraitServiceImpl implements PortraitService {
             portraitGrowthComparisonVO.setGrowthItemName(growthItemName);
             BigDecimal avgScore = newAllScoreSumByGrowId.getOrDefault(growthItemId, BigDecimal.ZERO);
             portraitGrowthComparisonVO.setAvgScore(avgScore);
-            BigDecimal score = newStudentScoreSumByGrowId.getOrDefault(growthItemId, BigDecimal.ZERO);
+            BigDecimal score = studentScoreSumByGrowId.getOrDefault(growthItemId, BigDecimal.ZERO);
             portraitGrowthComparisonVO.setScore(score);
             result.add(portraitGrowthComparisonVO);
         }

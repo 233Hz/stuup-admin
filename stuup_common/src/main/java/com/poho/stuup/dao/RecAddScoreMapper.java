@@ -11,6 +11,7 @@ import com.poho.stuup.model.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -63,4 +64,6 @@ public interface RecAddScoreMapper extends BaseMapper<RecAddScore> {
     List<WholeClassTop10VO> findWholeClassTop10Ranking(@Param("yearId") Long yearId);
 
     int collectionTimeoutScore(@Param("timeout") Integer timeout);
+
+    BigDecimal fetchTotalScore(@Param("yearId") Long yearId, @Param("studentId") Long studentId, @Param("growthItemIds") List<Long> growthItemIds);
 }
