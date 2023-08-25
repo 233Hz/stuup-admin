@@ -298,6 +298,7 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
         Long semesterId = semesterMapper.getCurrentSemesterId();
         RecDefault recDefault = new RecDefault();
         recDefault.setYearId(yearId);
+        recDefault.setSemesterId(semesterId);
         recDefault.setStudentId(studentId);
         recDefault.setGrowId(growId);
         recDefault.setBatchCode(System.currentTimeMillis());
