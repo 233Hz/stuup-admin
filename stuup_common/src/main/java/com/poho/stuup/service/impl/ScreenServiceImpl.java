@@ -128,9 +128,9 @@ public class ScreenServiceImpl implements ScreenService {
                                         .in(GrowthItem::getCode, growthCodes),
                                 id -> Long.valueOf(String.valueOf(id)));
                         if (CollUtil.isNotEmpty(growIds)) {
-                            long count = recDefaultService.count(Wrappers.<RecDefault>lambdaQuery()
-                                    .between(RecDefault::getCreateTime, currYear.getYearStart(), currYear.getYearEnd())
-                                    .in(RecDefault::getGrowId, growIds));
+                            long count = recAddScoreService.count(Wrappers.<RecAddScore>lambdaQuery()
+                                    .between(RecAddScore::getCreateTime, currYear.getYearStart(), currYear.getYearEnd())
+                                    .in(RecAddScore::getGrowId, growIds));
                             allKindsOfCompetitionAwardNumVO.setAwardNum(count);
                         }
                     }
