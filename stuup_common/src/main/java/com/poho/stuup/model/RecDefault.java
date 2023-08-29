@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -69,5 +70,15 @@ public class RecDefault implements Serializable {
      * 每次导入的code（当前导入的时间戳）
      */
     private Long batchCode;
+
+    /**
+     * 状态（1.已计算 2.未计算）
+     */
+    private Integer state;
+
+    /**
+     * 计算分
+     */
+    private BigDecimal calculateScore;
 
 }

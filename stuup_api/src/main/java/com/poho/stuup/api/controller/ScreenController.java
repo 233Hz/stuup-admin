@@ -1,8 +1,10 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.ScreenService;
+import com.poho.stuup.service.SyncInfoService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +19,12 @@ public class ScreenController {
     @Resource
     private ScreenService screenService;
 
+    @Resource
+    private SyncInfoService syncInfoService;
+
+    @Resource
+    private PropertiesConfig propertiesConfig;
+
     @GetMapping("/countMajorPopulations")
     public ResponseModel<List<MajorPopulationsVO>> countMajorPopulations() {
         return ResponseModel.ok(screenService.countMajorPopulations());
@@ -24,7 +32,13 @@ public class ScreenController {
 
     @GetMapping("/important/data")
     public ResponseModel<ScreenImportantDataVO> getImportantData() {
-        return ResponseModel.ok(screenService.getImportantData());
+        // 统计社团总数
+        ResponseModel<Integer> remoteOpenCommunityTotal = syncInfoService.getRemoteOpenCommunityTotal(propertiesConfig.getCommunityUrl());
+        ScreenImportantDataVO importantData = screenService.getImportantData();
+        if (remoteOpenCommunityTotal.getCode() == 0 && remoteOpenCommunityTotal.getData() != null) {
+            importantData.setClubNum(remoteOpenCommunityTotal.getData());
+        }
+        return ResponseModel.ok(importantData);
     }
 
 

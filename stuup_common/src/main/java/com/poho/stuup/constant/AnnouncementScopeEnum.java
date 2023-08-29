@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public enum AnnouncementScopeEnum {
 
-    ALL("全体用户", 1),
+    ALL("全体师生", 1),
     ALL_TEACHER("全体教师", 2);
 
     private final String scope;

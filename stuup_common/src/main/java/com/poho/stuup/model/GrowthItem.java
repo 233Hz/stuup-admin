@@ -41,7 +41,6 @@ public class GrowthItem implements Serializable {
     /**
      * 项目code
      */
-    @NotBlank(message = "请输入项目编号")
     private String code;
 
     /**

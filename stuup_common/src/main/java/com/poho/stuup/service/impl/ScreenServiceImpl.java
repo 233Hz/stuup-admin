@@ -292,9 +292,6 @@ public class ScreenServiceImpl implements ScreenService {
         int majorNum = majorMapper.countMajorTotal();
         screenImportantDataVO.setMajorNum(majorNum);
 
-        // 统计社团总数
-
-
         // 统计成长项目总数
         Long growthItemNum = growthItemMapper.selectCount(Wrappers.lambdaQuery());
         screenImportantDataVO.setGrowthNum(growthItemNum);

@@ -1,5 +1,6 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.poho.stuup.dao.JobGrowStudentMapper;
 import com.poho.stuup.dao.RecAddScoreMapper;
 import com.poho.stuup.dao.RecDeductScoreMapper;
@@ -73,12 +74,24 @@ public class CalculateScoreServiceImpl implements CalculateScoreService {
         for (int i = 1; i <= count; i++) {
             BigDecimal totalScore = growthItemScore.multiply(new BigDecimal(i));
             BigDecimal addScore;
+
+            StuScoreLog stuScoreLog = new StuScoreLog();
+            stuScoreLog.setYearId(yearId);
+            stuScoreLog.setSemesterId(semesterId);
+            stuScoreLog.setStudentId(studentId);
+            stuScoreLog.setGrowId(growthItemId);
+            stuScoreLog.setCreateTime(time);
+            stuScoreLog.setScore(growthItemScore);
+
             if (growthItemScoreUpperLimit.subtract(totalScore).compareTo(BigDecimal.ZERO) >= 0) {
                 addScore = growthItemScore;
             } else {
                 if (totalScore.subtract(growthItemScoreUpperLimit).compareTo(growthItemScore) < 0) {
                     addScore = growthItemScoreUpperLimit.subtract(growthItemScore.multiply(new BigDecimal(i - 1)));
+                    stuScoreLog.setDescription(StrUtil.format("本次统计已超出分数上限，上限为:{},本次分数为:{},计入总分:{}", growthItemScoreUpperLimit, growthItemScore, addScore));
                 } else {
+                    stuScoreLog.setDescription(StrUtil.format("本次统计已超出分数上限，不计入总分"));
+                    stuScoreLogMapper.insert(stuScoreLog);
                     continue;
                 }
             }
@@ -90,13 +103,6 @@ public class CalculateScoreServiceImpl implements CalculateScoreService {
             recAddScore.setScore(addScore);
             recAddScore.setCreateTime(time);
             recAddScoreMapper.insert(recAddScore);
-            StuScoreLog stuScoreLog = new StuScoreLog();
-            stuScoreLog.setYearId(yearId);
-            stuScoreLog.setSemesterId(semesterId);
-            stuScoreLog.setStudentId(studentId);
-            stuScoreLog.setGrowId(growthItemId);
-            stuScoreLog.setScore(addScore);
-            stuScoreLog.setCreateTime(time);
             stuScoreLogMapper.insert(stuScoreLog);
             stuScoreService.updateTotalScore(studentId, addScore);
         }

@@ -88,9 +88,6 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
         if (CollUtil.isNotEmpty(result)) {
             Map<Integer, Class> classMap = classService.classMap();            // 班级
             Map<Integer, Teacher> teacherMap = teacherService.teacherMap();    // 班主任
-            Map<Integer, Grade> gradeMap = gradeService.gradeMap();            // 年级
-            Map<Integer, Major> majorMap = majorService.majorMap();            // 专业
-            Map<Integer, Faculty> facultyMap = facultyService.facultyMap();    // 系部
 
             for (ProgressRankVO progressRankVO : result) {
                 Optional.ofNullable(progressRankVO.getClassId()).flatMap(classId -> Optional.ofNullable(classMap.get(classId))).ifPresent(_class -> {
@@ -99,22 +96,11 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
                     // 设置班主任
                     Integer teacherId = _class.getTeacherId();
                     Optional.ofNullable(teacherMap.get(teacherId)).ifPresent(teacher -> progressRankVO.setClassTeacher(teacher.getName()));
-                    // 设置系部名称
-                    Integer facultyId = _class.getFacultyId();
-                    Optional.ofNullable(facultyMap.get(facultyId)).ifPresent(faculty -> progressRankVO.setFacultyName(faculty.getFacultyName()));
                 });
-
-                //设置所属年级名称
-                Optional.ofNullable(progressRankVO.getGradeId()).flatMap(gradeId -> Optional.ofNullable(gradeMap.get(gradeId))).ifPresent(grade -> progressRankVO.setGradeName(grade.getGradeName()));
-                // 设置专业名称
-                Optional.ofNullable(progressRankVO.getMajorId()).flatMap(majorId -> Optional.ofNullable(majorMap.get(majorId))).ifPresent(major -> progressRankVO.setMajorName(major.getMajorName()));
             }
 
             classMap.clear();
             teacherMap.clear();
-            gradeMap.clear();
-            majorMap.clear();
-            facultyMap.clear();
 
             // 按照进步名次排序
             result.sort(Comparator.comparing(ProgressRankVO::getRankChange).reversed());

@@ -185,9 +185,11 @@ public class PortraitServiceImpl implements PortraitService {
                     .eq(GrowthItem::getFirstLevelId, id));
             List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
             BigDecimal stu_total_score = recAddScoreMapper.fetchTotalScore(yearId, studentId, growthItemIds);
+            stu_total_score = stu_total_score == null ? BigDecimal.ZERO : stu_total_score;
             portraitCapacityEvaluatorVO.setIndicatorScore(stu_total_score);
             BigDecimal all_total_score = recAddScoreMapper.fetchTotalScore(yearId, null, growthItemIds);
-            portraitCapacityEvaluatorVO.setIndicatorAvgScore(all_total_score.divide(BigDecimal.valueOf(totalStudentNum), 2, RoundingMode.HALF_UP));
+            all_total_score = all_total_score == null ? BigDecimal.ZERO : all_total_score.divide(BigDecimal.valueOf(totalStudentNum), 2, RoundingMode.HALF_UP);
+            portraitCapacityEvaluatorVO.setIndicatorAvgScore(all_total_score);
             result.add(portraitCapacityEvaluatorVO);
         }
         return ResponseModel.ok(result);

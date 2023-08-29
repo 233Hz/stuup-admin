@@ -43,4 +43,9 @@
         where gi.gatherer = 2
     </select>
 
+    <select id="fetchMaxId" resultType="Long">
+        select max(id)
+        from t_growth_item
+    </select>
+
 </mapper>

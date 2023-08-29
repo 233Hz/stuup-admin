@@ -44,11 +44,6 @@ public class ProgressRankVO {
     private String studentNo;
 
     /**
-     * 年级
-     */
-    private String gradeName;
-
-    /**
      * 所属班级
      */
     private String className;
@@ -57,16 +52,6 @@ public class ProgressRankVO {
      * 班主任
      */
     private String classTeacher;
-
-    /**
-     * 所属系部
-     */
-    private String facultyName;
-
-    /**
-     * 所属专业
-     */
-    private String majorName;
 
     /**
      * 成长值

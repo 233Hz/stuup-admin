@@ -125,6 +125,13 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
                     for (Long studentId : studentIds) {
                         // 有次数限制  加分
                         Integer useCollectCount = studentCollectLimitMap.getOrDefault(studentId, 0);
+                        StuScoreLog stuScoreLog = new StuScoreLog();
+                        stuScoreLog.setYearId(yearId);
+                        stuScoreLog.setSemesterId(semesterId);
+                        stuScoreLog.setStudentId(studentId);
+                        stuScoreLog.setGrowId(growthItemId);
+                        stuScoreLog.setCreateTime(time);
+                        stuScoreLog.setScore(growthItemScore);
                         if (useCollectCount < collectLimit) {
                             RecAddScore recAddScore = new RecAddScore();
                             recAddScore.setYearId(yearId);
@@ -134,17 +141,12 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
                             recAddScore.setCreateTime(time);
                             recAddScore.setScore(growthItemScore);
                             recAddScoreMapper.insert(recAddScore);
-                            StuScoreLog stuScoreLog = new StuScoreLog();
-                            stuScoreLog.setYearId(yearId);
-                            stuScoreLog.setSemesterId(semesterId);
-                            stuScoreLog.setStudentId(studentId);
-                            stuScoreLog.setGrowId(growthItemId);
-                            stuScoreLog.setCreateTime(time);
-                            stuScoreLog.setScore(growthItemScore);
-                            stuScoreLogMapper.insert(stuScoreLog);
                             stuScoreService.updateTotalScore(studentId, growthItemScore);
                             studentCollectLimitMap.put(studentId, useCollectCount + 1);
+                        } else {
+                            stuScoreLog.setDescription("超出次数上限，本次不计入总分");
                         }
+                        stuScoreLogMapper.insert(stuScoreLog);
                     }
                 } else {
                     // 有次数限制  扣分
@@ -159,43 +161,43 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
                             recDeductScore.setCreateTime(time);
                             recDeductScore.setScore(growthItemScore);
                             recDeductScoreMapper.insert(recDeductScore);
-                            StuScoreLog stuScoreLog = new StuScoreLog();
-                            stuScoreLog.setYearId(yearId);
-                            stuScoreLog.setSemesterId(semesterId);
-                            stuScoreLog.setStudentId(studentId);
-                            stuScoreLog.setGrowId(growthItemId);
-                            stuScoreLog.setCreateTime(time);
-                            stuScoreLog.setScore(growthItemScore.negate());
-                            stuScoreLogMapper.insert(stuScoreLog);
                             studentCollectLimitMap.put(studentId, useCollectCount + 1);
                         }
+                        StuScoreLog stuScoreLog = new StuScoreLog();
+                        stuScoreLog.setYearId(yearId);
+                        stuScoreLog.setSemesterId(semesterId);
+                        stuScoreLog.setStudentId(studentId);
+                        stuScoreLog.setGrowId(growthItemId);
+                        stuScoreLog.setCreateTime(time);
+                        stuScoreLog.setScore(growthItemScore.negate());
+                        stuScoreLogMapper.insert(stuScoreLog);
                     }
                     HashSet<Long> studentIdSet = new HashSet<>(studentIds);
                     List<Long> allStudentIds = studentMapper.selectIdList();
                     for (Long studentId : allStudentIds) {
                         Integer useCollectCount = studentCollectLimitMap.getOrDefault(studentId, 0);
-                        if (useCollectCount < collectLimit) {
-                            if (!studentIdSet.contains(studentId)) {
-                                RecAddScore recAddScore = new RecAddScore();
-                                recAddScore.setYearId(yearId);
-                                recAddScore.setSemesterId(semesterId);
-                                recAddScore.setStudentId(studentId);
-                                recAddScore.setGrowId(growthItemId);
-                                recAddScore.setCreateTime(time);
-                                recAddScore.setScore(growthItemScore);
-                                recAddScoreMapper.insert(recAddScore);
-                                StuScoreLog stuScoreLog = new StuScoreLog();
-                                stuScoreLog.setYearId(yearId);
-                                stuScoreLog.setSemesterId(semesterId);
-                                stuScoreLog.setStudentId(studentId);
-                                stuScoreLog.setGrowId(growthItemId);
-                                stuScoreLog.setCreateTime(time);
-                                stuScoreLog.setScore(growthItemScore);
-                                stuScoreLogMapper.insert(stuScoreLog);
-                                stuScoreService.updateTotalScore(studentId, growthItemScore);
-                                studentCollectLimitMap.put(studentId, useCollectCount + 1);
-                            }
+                        StuScoreLog stuScoreLog = new StuScoreLog();
+                        stuScoreLog.setYearId(yearId);
+                        stuScoreLog.setSemesterId(semesterId);
+                        stuScoreLog.setStudentId(studentId);
+                        stuScoreLog.setGrowId(growthItemId);
+                        stuScoreLog.setCreateTime(time);
+                        stuScoreLog.setScore(growthItemScore);
+                        if (useCollectCount < collectLimit && !studentIdSet.contains(studentId)) {
+                            RecAddScore recAddScore = new RecAddScore();
+                            recAddScore.setYearId(yearId);
+                            recAddScore.setSemesterId(semesterId);
+                            recAddScore.setStudentId(studentId);
+                            recAddScore.setGrowId(growthItemId);
+                            recAddScore.setCreateTime(time);
+                            recAddScore.setScore(growthItemScore);
+                            recAddScoreMapper.insert(recAddScore);
+                            stuScoreService.updateTotalScore(studentId, growthItemScore);
+                            studentCollectLimitMap.put(studentId, useCollectCount + 1);
+                        } else {
+                            stuScoreLog.setDescription("超出次数上限，本次不计入总分");
                         }
+                        stuScoreLogMapper.insert(stuScoreLog);
                     }
                 }
                 studentCollectLimitMap.forEach((studentId, count) -> {

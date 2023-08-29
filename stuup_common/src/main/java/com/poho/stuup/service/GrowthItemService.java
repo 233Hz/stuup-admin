@@ -29,27 +29,6 @@ public interface GrowthItemService extends IService<GrowthItem> {
     Map<String, Long> getGrowthItemMap();
 
     /**
-     * @description: 判断名称和编号是否重复
-     * @param: title
-     * @param: code
-     * @return: boolean
-     * @author BUNGA
-     * @date: 2023/5/29 16:27
-     */
-    boolean isExist(String code);
-
-    /**
-     * @description: 判断名称和编号是否重复
-     * @param: id
-     * @param: title
-     * @param: code
-     * @return: boolean
-     * @author BUNGA
-     * @date: 2023/5/29 17:48
-     */
-    boolean isExist(Long id, String code);
-
-    /**
      * @description: 通过code查询成长项
      * @param: recCode
      * @return: com.poho.stuup.model.GrowthItem
@@ -94,4 +73,7 @@ public interface GrowthItemService extends IService<GrowthItem> {
      * @date: 2023/6/15 15:09
      */
     List<GrowthItemSelectVO> getStudentGrowthItems();
+
+
+    ResponseModel<Long> saveOrUpdateGrowthItem(GrowthItem data);
 }

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.FloweringStageEnum;
+import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.dao.GrowUserMapper;
 import com.poho.stuup.dao.GrowthItemMapper;
 import com.poho.stuup.model.Config;
@@ -45,19 +46,6 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
         List<GrowthItem> itemList = baseMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
                 .select(GrowthItem::getId, GrowthItem::getCode));
         return itemList.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
-    }
-
-    @Override
-    public boolean isExist(String code) {
-        return baseMapper.exists(Wrappers.<GrowthItem>lambdaQuery()
-                .eq(GrowthItem::getCode, code));
-    }
-
-    @Override
-    public boolean isExist(Long id, String code) {
-        return baseMapper.exists(Wrappers.<GrowthItem>lambdaQuery()
-                .ne(GrowthItem::getId, id)
-                .eq(GrowthItem::getCode, code));
     }
 
     @Override
@@ -101,6 +89,33 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
     @Override
     public List<GrowthItemSelectVO> getStudentGrowthItems() {
         return baseMapper.getStudentGrowthItems();
+    }
+
+
+    @Override
+    public ResponseModel<Long> saveOrUpdateGrowthItem(GrowthItem data) {
+        Long id = data.getId();
+        if (PeriodEnum.UNLIMITED.getValue() != data.getScorePeriod()) {
+            if (data.getScoreUpperLimit() == null) {
+                return ResponseModel.failed("分值刷新周期选择除“不限”之外的类型必须填写每个周期内分值的上限");
+            }
+            if (data.getCollectLimit() != null) {
+                return ResponseModel.failed("分值刷新周期选择除“不限”之外的类型无需填写可采集次数");
+            }
+        } else {
+            if (data.getScoreUpperLimit() != null) {
+                return ResponseModel.failed("分值刷新周期选择“不限”类型无需填写每个周期内分值的上限");
+            }
+        }
+        if (id == null) {
+            // 获取最大id
+            Long maxId = baseMapper.fetchMaxId();
+            data.setCode(StrUtil.format("CZ_{}", maxId + 1));
+            return baseMapper.insert(data) > 0 ? ResponseModel.ok(data.getId(), "保存成功！") : ResponseModel.failed("保存失败！");
+        } else {
+            if (StrUtil.isNotBlank(data.getCode())) return ResponseModel.failed("项目编码不能修改");
+            return baseMapper.updateById(data) > 0 ? ResponseModel.ok(data.getId(), "保存成功！") : ResponseModel.failed("保存失败！");
+        }
     }
 
 }

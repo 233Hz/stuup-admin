@@ -41,7 +41,7 @@ public class Announcement implements Serializable {
     private Integer type;
 
     /**
-     * 通知范围（1.全体用户 2.所有教师）
+     * 通知范围（1.全体师生 2.所有教师）
      */
     private Integer scope;
 
