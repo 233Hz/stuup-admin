@@ -1,5 +1,6 @@
 package com.poho.stuup.service;
 
+import cn.hutool.core.date.StopWatch;
 import com.poho.stuup.model.vo.*;
 
 import java.util.List;
@@ -60,7 +61,7 @@ public interface ScreenService {
      *
      * @return
      */
-    ScreenImportantDataVO getImportantData();
+    ScreenImportantDataVO getImportantData( StopWatch stopWatch );
 
     List<DailyVisitsVO> countDailyVisits();
 }

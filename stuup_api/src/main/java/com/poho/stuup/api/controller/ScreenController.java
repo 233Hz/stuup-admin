@@ -1,17 +1,22 @@
 package com.poho.stuup.api.controller;
 
+import cn.hutool.core.date.StopWatch;
+import cn.hutool.core.util.StrUtil;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.api.config.PropertiesConfig;
 import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.ScreenService;
 import com.poho.stuup.service.SyncInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RestController
 @RequestMapping("/screen")
 public class ScreenController {
@@ -32,9 +37,16 @@ public class ScreenController {
 
     @GetMapping("/important/data")
     public ResponseModel<ScreenImportantDataVO> getImportantData() {
+
         // 统计社团总数
+        StopWatch stopWatch = new StopWatch("学生成长可视化大屏数据接口");
+        stopWatch.start("社团总数统计");
         ResponseModel<Integer> remoteOpenCommunityTotal = syncInfoService.getRemoteOpenCommunityTotal(propertiesConfig.getCommunityUrl());
-        ScreenImportantDataVO importantData = screenService.getImportantData();
+        stopWatch.stop();
+
+        ScreenImportantDataVO importantData = screenService.getImportantData(stopWatch );
+        log.info(StrUtil.format("可视化大屏数据接口花费时间：{}", stopWatch.prettyPrint(TimeUnit.SECONDS)));
+
         if (remoteOpenCommunityTotal.getCode() == 0 && remoteOpenCommunityTotal.getData() != null) {
             importantData.setClubNum(remoteOpenCommunityTotal.getData());
         }

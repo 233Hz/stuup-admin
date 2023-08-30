@@ -46,6 +46,13 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
     @Override
     public ResponseModel<Integer> getRemoteOpenCommunityTotal(String url){
         ResponseModel<Integer> responseModel;
+
+        //TODO 等测试环境、线上环境 社团都部署好再放开调接口
+        if(1 == 1){
+            responseModel = ResponseModel.ok(0);
+            return responseModel;
+        }
+
         Map<String, Object> paramMap = new HashMap<>();
         final String uri = "openApi/community/openTotal.htm"; //社团系统获取开放社团总数
         url = url + uri;

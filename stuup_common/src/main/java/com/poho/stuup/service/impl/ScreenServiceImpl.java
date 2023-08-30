@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.constant.CalculateTypeEnum;
@@ -264,7 +265,8 @@ public class ScreenServiceImpl implements ScreenService {
     }
 
     @Override
-    public ScreenImportantDataVO getImportantData() {
+    public ScreenImportantDataVO getImportantData( StopWatch stopWatch ) {
+        stopWatch.start("男女统计");
         ScreenImportantDataVO screenImportantDataVO = new ScreenImportantDataVO();
         List<Student> students = studentMapper.getAllStudent();
         if (CollUtil.isNotEmpty(students)) {
@@ -283,26 +285,37 @@ public class ScreenServiceImpl implements ScreenService {
             String sexRatio = StrUtil.format("{}:{}", boyNum / gcd, girlNum / gcd);
             screenImportantDataVO.setSexRatio(sexRatio);
         }
+        stopWatch.stop();
 
         // 统计班级总数
+        stopWatch.start("班级总数统计");
         int classNum = classMapper.countClassTotal();
         screenImportantDataVO.setClassNum(classNum);
+        stopWatch.stop();
 
         // 统计专业总数
+        stopWatch.start("专业总数统计");
         int majorNum = majorMapper.countMajorTotal();
         screenImportantDataVO.setMajorNum(majorNum);
+        stopWatch.stop();
 
         // 统计成长项目总数
+        stopWatch.start("成长项目总数统计");
         Long growthItemNum = growthItemMapper.selectCount(Wrappers.lambdaQuery());
         screenImportantDataVO.setGrowthNum(growthItemNum);
+        stopWatch.stop();
 
         // 统计举办活动次数
+        stopWatch.start("男女统计");
         Long activityNum = countHoldAnActivityNum();
         screenImportantDataVO.setActivityNum(activityNum);
+        stopWatch.stop();
 
         // 统计获得奖学金人数
+        stopWatch.start("获得奖学金人数统计");
         Long scholarshipNum = countScholarshipNum();
         screenImportantDataVO.setScholarshipNum(scholarshipNum);
+        stopWatch.stop();
 
         return screenImportantDataVO;
     }
