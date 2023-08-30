@@ -21,6 +21,21 @@ public class GrowthItemSelectVO {
     private String name;
 
     /**
+     * 一级项目id
+     */
+    private Long firstLevelId;
+
+    /**
+     * 二级项目id
+     */
+    private Long secondLevelId;
+
+    /**
+     * 三级项目id
+     */
+    private Long thirdLevelId;
+
+    /**
      * 一级项目
      */
     private String firstLevelName;
