@@ -138,6 +138,7 @@
         <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
             #{roleId}
         </foreach>
+        and m.oid is not null
     </select>
 
     <select id="getRoleMenu" resultType="Long">

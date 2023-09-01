@@ -17,6 +17,6 @@ import com.poho.stuup.model.vo.StudentScoreDetailsVO;
  */
 public interface StuScoreLogService extends IService<StuScoreLog> {
 
-    ResponseModel<StudentScoreDetailsVO> pageStudentRecScore(Page<StudentRecScoreVO> page, Long userId);
+    ResponseModel<StudentScoreDetailsVO> studentScoreDetailsPage(Page<StudentRecScoreVO> page, Long userId);
 
 }

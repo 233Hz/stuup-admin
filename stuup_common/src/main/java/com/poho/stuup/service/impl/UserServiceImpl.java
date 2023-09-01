@@ -208,7 +208,6 @@ public class UserServiceImpl implements IUserService {
                                             stuScoreLog.setStudentId(Long.valueOf(studentId));
                                             stuScoreLog.setGrowId(growthItem.getId());
                                             stuScoreLog.setScore(growthItem.getScore());
-                                            stuScoreLog.setDescription(growthItem.getName());
                                             stuScoreLogMapper.insert(stuScoreLog);
                                             stuScoreService.updateTotalScore(Long.valueOf(studentId), growthItem.getScore());
 

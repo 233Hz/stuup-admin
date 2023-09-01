@@ -43,7 +43,7 @@ public class StuScoreLogServiceImpl extends ServiceImpl<StuScoreLogMapper, StuSc
     private StuScoreMapper stuScoreMapper;
 
     @Override
-    public ResponseModel<StudentScoreDetailsVO> pageStudentRecScore(Page<StudentRecScoreVO> page, Long userId) {
+    public ResponseModel<StudentScoreDetailsVO> studentScoreDetailsPage(Page<StudentRecScoreVO> page, Long userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) return ResponseModel.failed("未查询到您的用户信息，请联系管理员");
         String loginName = user.getLoginName();
@@ -67,10 +67,11 @@ public class StuScoreLogServiceImpl extends ServiceImpl<StuScoreLogMapper, StuSc
             String secondName = studentRecScoreVO.getSecondName();
             String thirdName = studentRecScoreVO.getThirdName();
             String growName = studentRecScoreVO.getGrowName();
-            String name = firstName;
-            if (StrUtil.isNotBlank(secondName)) name += StrUtil.format("-{}", secondName);
-            if (StrUtil.isNotBlank(thirdName)) name += StrUtil.format("-{}", thirdName);
-            if (StrUtil.isNotBlank(growName)) name += StrUtil.format("-{}", growName);
+            String name = "";
+            if (StrUtil.isNotBlank(firstName)) name += StrUtil.format("{}-", firstName);
+            if (StrUtil.isNotBlank(secondName)) name += StrUtil.format("{}-", secondName);
+            if (StrUtil.isNotBlank(thirdName)) name += StrUtil.format("{}-", thirdName);
+            if (StrUtil.isNotBlank(growName)) name += StrUtil.format("{}", growName);
             studentRecScoreVO.setName(name);
         }
         studentScoreDetailsVO.setRecords(records);
