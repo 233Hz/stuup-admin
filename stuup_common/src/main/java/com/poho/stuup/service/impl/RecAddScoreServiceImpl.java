@@ -348,27 +348,28 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
                     .select(RecAddScore::getStudentId, RecAddScore::getScore)
                     .eq(RecAddScore::getYearId, yearId)
                     .groupBy(RecAddScore::getStudentId));
-            // 对recAddScores数组按照score字段从高到低排序
-            recAddScores.sort(Comparator.comparing(RecAddScore::getScore).reversed());
+            if (CollUtil.isNotEmpty(recAddScores)) {
+                // 对recAddScores数组按照score字段从高到低排序
+                recAddScores.sort(Comparator.comparing(RecAddScore::getScore).reversed());
 
-            // 设置排名
-            int rank = 1;
-            BigDecimal lastStudentScore = recAddScores.get(0).getScore();
-            Integer studentRank = null;
+                // 设置排名
+                int rank = 1;
+                BigDecimal lastStudentScore = recAddScores.get(0).getScore();
+                Integer studentRank = null;
 
-            for (RecAddScore recAddScore : recAddScores) {
-                if (lastStudentScore.compareTo(recAddScore.getScore()) != 0) {
-                    rank++;
+                for (RecAddScore recAddScore : recAddScores) {
+                    if (lastStudentScore.compareTo(recAddScore.getScore()) != 0) {
+                        rank++;
+                    }
+                    if (recAddScore.getStudentId().equals(studentId)) {
+                        studentRank = rank;
+                        break;
+                    }
+                    lastStudentScore = recAddScore.getScore();
                 }
-                if (recAddScore.getStudentId().equals(studentId)) {
-                    studentRank = rank;
-                    break;
-                }
-                lastStudentScore = recAddScore.getScore();
+
+                return studentRank;
             }
-
-            return studentRank;
-
         }
         return null;
     }
