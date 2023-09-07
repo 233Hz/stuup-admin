@@ -85,10 +85,10 @@ public interface IYearService {
 
     /**
      * 获取当前学年
-     *
-     * @return
      */
     Year getCurrentYear();
+
+    Long getCurrentYearId();
 
     /**
      * 设置当前学年

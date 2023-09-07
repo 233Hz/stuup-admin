@@ -1,14 +1,18 @@
 package com.poho.stuup.api.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.model.GrowUser;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.dto.GrowthItemLeaderDTO;
 import com.poho.stuup.model.dto.GrowthItemUserDTO;
-import com.poho.stuup.model.vo.SimpleUserVO;
+import com.poho.stuup.model.vo.GrowthItemUserVO;
 import com.poho.stuup.service.GrowUserService;
 import com.poho.stuup.service.GrowthItemService;
+import com.poho.stuup.service.IUserService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +34,9 @@ import java.util.stream.Collectors;
 public class GrowUserController {
 
     @Resource
+    private IUserService userService;
+
+    @Resource
     private GrowUserService growUserService;
 
     @Resource
@@ -44,14 +51,14 @@ public class GrowUserController {
      */
     @PostMapping("/setGrowthItemUser")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseModel<Boolean> setGrowthItemUser(@Valid @RequestBody GrowthItemUserDTO data) {
-        Long growId = data.getGrowId();
+    public ResponseModel<Boolean> setGrowthItemUser(@Valid @RequestBody GrowthItemLeaderDTO data) {
+        Long growId = data.getGrowthItemId();
         GrowthItem growthItem = growthItemService.getById(growId);
         Integer growType = growthItem.getType();
-        if (growType == GrowGathererEnum.STUDENT.getValue())
-            return ResponseModel.failed("学生申请的项目无法设置指定负责人");
+        if (growType != GrowGathererEnum.TEACHER.getValue() && growType != GrowGathererEnum.STUDENT_UNION.getValue())
+            return ResponseModel.failed("该项目类型无指定负责人");
         growUserService.remove(Wrappers.<GrowUser>lambdaQuery()
-                .eq(GrowUser::getGrowId, data.getGrowId()));
+                .eq(GrowUser::getGrowId, data.getGrowthItemId()));
         List<Long> userIds = data.getUserIds();
         List<GrowUser> growUsers = userIds.stream().map(userId -> {
             GrowUser growUser = new GrowUser();
@@ -59,20 +66,28 @@ public class GrowUserController {
             growUser.setUserId(userId);
             return growUser;
         }).collect(Collectors.toList());
-        boolean save = growUserService.saveBatch(growUsers);
-        return save ? ResponseModel.ok(null, "设置成功") : ResponseModel.failed("设置失败");
+        growthItemService.update(Wrappers.<GrowthItem>lambdaUpdate()
+                .set(GrowthItem::getGatherer, data.getAssignType())
+                .eq(GrowthItem::getId, growId));
+        growUserService.saveBatch(growUsers);
+        return ResponseModel.ok(null, "设置成功");
     }
 
     /**
      * @description: 查询项目负责人
-     * @param: growId
-     * @return: com.poho.common.custom.ResponseModel<java.util.List < com.poho.stuup.model.vo.SimpleUserVO>>
+     * @param: growthItemId
+     * @return: com.poho.common.custom.ResponseModel<java.util.List < com.poho.stuup.model.vo.GrowthItemUserVO>>
      * @author BUNGA
      * @date: 2023/6/15 14:33
      */
-    @GetMapping("/getGrowItemUser/{growId}")
-    public ResponseModel<List<SimpleUserVO>> getGrowItemUser(@PathVariable("growId") Long growId) {
-        return ResponseModel.ok(growUserService.getGrowItemUser(growId));
+    @GetMapping("/getGrowItemUser/{growthItemId}")
+    public ResponseModel<List<GrowthItemUserVO>> getGrowItemUser(@PathVariable("growthItemId") Long growthItemId) {
+        return ResponseModel.ok(growUserService.getGrowItemUser(growthItemId));
+    }
+
+    @GetMapping("/page/user")
+    public ResponseModel<IPage<GrowthItemUserVO>> paginateGrowthItemUser(Page<GrowthItemUserVO> page, GrowthItemUserDTO query) {
+        return ResponseModel.ok(userService.paginateGrowthItemUser(page, query));
     }
 
 }

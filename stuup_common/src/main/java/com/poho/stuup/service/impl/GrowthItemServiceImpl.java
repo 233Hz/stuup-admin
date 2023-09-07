@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.FloweringStageEnum;
+import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.dao.GrowUserMapper;
 import com.poho.stuup.dao.GrowthItemMapper;
@@ -21,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -42,33 +41,19 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
     private GrowUserMapper growUserMapper;
 
     @Override
-    public Map<String, Long> getGrowthItemMap() {
-        List<GrowthItem> itemList = baseMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getCode));
-        return itemList.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
-    }
-
-    @Override
-    public GrowthItem getGrowthItemByCode(String recCode) {
-        return baseMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
-                .eq(GrowthItem::getCode, recCode));
-    }
-
-    @Override
-    public ResponseModel<List<GrowthItem>> getUserGrowthItems(Long userId) {
+    public ResponseModel<List<GrowthItem>> getSelfApplyItem(String type, Long userId) {
+        Integer gatherer = null;
+        if (type.equals("teacher")) gatherer = GrowGathererEnum.TEACHER.getValue();
+        else if (type.equals("studentUnion")) gatherer = GrowGathererEnum.STUDENT_UNION.getValue();
+        else return ResponseModel.failed("类型不存在");
         if (Utils.isSuperAdmin(userId))
             return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery().select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)));
         List<Long> growIds = growUserMapper.findUserGrow(userId);
         if (CollUtil.isEmpty(growIds)) return ResponseModel.failed("您没有可导入的项目");
         return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery()
                 .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)
+                .eq(GrowthItem::getGatherer, gatherer)
                 .in(GrowthItem::getId, growIds)));
-    }
-
-    @Override
-    public boolean verifyRemainingFillNum(Long userId, String growCode) {
-        //TODO
-        return true;
     }
 
     @Override

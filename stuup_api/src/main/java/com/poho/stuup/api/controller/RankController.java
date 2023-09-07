@@ -2,6 +2,7 @@ package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.vo.*;
+import com.poho.stuup.service.IYearService;
 import com.poho.stuup.service.RankMonthService;
 import com.poho.stuup.service.RankService;
 import com.poho.stuup.service.RankYearService;
@@ -25,6 +26,9 @@ import java.util.List;
 public class RankController {
 
     @Resource
+    private IYearService yearService;
+
+    @Resource
     private RankYearService rankYearService;
 
     @Resource
@@ -39,7 +43,9 @@ public class RankController {
      */
     @GetMapping("/realTime/school")
     public ResponseModel<List<YearRankVO>> getSchoolRank() {
-        return ResponseModel.ok(rankYearService.getSchoolRank());
+        Long yearId = yearService.getCurrentYearId();
+        if (yearId == null) return ResponseModel.failed("不在当前学年时间范围内");
+        return ResponseModel.ok(rankYearService.getSchoolRank(yearId));
     }
 
     /**
@@ -47,7 +53,9 @@ public class RankController {
      */
     @GetMapping("/realTime/class")
     public ResponseModel<List<ClassRankVO>> getClassRank() {
-        return ResponseModel.ok(rankYearService.getClassRank());
+        Long yearId = yearService.getCurrentYearId();
+        if (yearId == null) return ResponseModel.failed("不在当前学年时间范围内");
+        return ResponseModel.ok(rankYearService.getClassRank(yearId));
     }
 
     /**
@@ -55,7 +63,9 @@ public class RankController {
      */
     @GetMapping("/realTime/major")
     public ResponseModel<List<MajorRankVO>> getMajorRank() {
-        return ResponseModel.ok(rankYearService.getMajorRank());
+        Long yearId = yearService.getCurrentYearId();
+        if (yearId == null) return ResponseModel.failed("不在当前学年时间范围内");
+        return ResponseModel.ok(rankYearService.getMajorRank(yearId));
     }
 
     /**
@@ -63,7 +73,9 @@ public class RankController {
      */
     @GetMapping("/realTime/faculty")
     public ResponseModel<List<FacultyRankVO>> getFacultyRank() {
-        return ResponseModel.ok(rankYearService.getFacultyRank());
+        Long yearId = yearService.getCurrentYearId();
+        if (yearId == null) return ResponseModel.failed("不在当前学年时间范围内");
+        return ResponseModel.ok(rankYearService.getFacultyRank(yearId));
     }
 
     /**

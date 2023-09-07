@@ -108,4 +108,8 @@ public interface ClassMapper {
      * @return
      */
     int countClassTotal();
+
+    Integer getTeacherIdNoByClassId(@Param("classId") Integer classId);
+
+    List<Class> getClassNameByIds(@Param("classIds") List<Integer> classIds);
 }

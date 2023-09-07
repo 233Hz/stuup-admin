@@ -46,12 +46,13 @@
                  left join t_growth first on first.id = gi.first_level_id
                  left join t_growth second on second.id = gi.second_level_id
                  left join t_growth third on third.id = gi.three_level_id
-        where gi.gatherer = 2
+        where gi.gatherer = 3
     </select>
 
     <select id="fetchMaxId" resultType="Long">
         select max(id)
         from t_growth_item
     </select>
+
 
 </mapper>

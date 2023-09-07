@@ -15,7 +15,7 @@ public class PortraitGrowthDataVO {
     /**
      * 成长值
      */
-    private BigDecimal score;
+    private BigDecimal score = BigDecimal.ZERO;
 
     /**
      * 全校排名
@@ -25,20 +25,20 @@ public class PortraitGrowthDataVO {
     /**
      * 扣除分
      */
-    private BigDecimal minusScore;
+    private BigDecimal minusScore = BigDecimal.ZERO;
 
     /**
      * 参加活动次数
      */
-    private Long activityCount;
+    private Long activityCount = 0L;
 
     /**
      * 获奖次数
      */
-    private Long awardCount;
+    private Long awardCount = 0L;
 
     /**
      * 获得证书数
      */
-    private Long certificateCount;
+    private Long certificateCount = 0L;
 }

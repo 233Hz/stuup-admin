@@ -37,14 +37,13 @@ public class ScreenController {
 
     @GetMapping("/important/data")
     public ResponseModel<ScreenImportantDataVO> getImportantData() {
-
         // 统计社团总数
         StopWatch stopWatch = new StopWatch("学生成长可视化大屏数据接口");
         stopWatch.start("社团总数统计");
         ResponseModel<Integer> remoteOpenCommunityTotal = syncInfoService.getRemoteOpenCommunityTotal(propertiesConfig.getCommunityUrl());
         stopWatch.stop();
 
-        ScreenImportantDataVO importantData = screenService.getImportantData(stopWatch );
+        ScreenImportantDataVO importantData = screenService.getImportantData(stopWatch);
         log.info(StrUtil.format("可视化大屏数据接口花费时间：{}", stopWatch.prettyPrint(TimeUnit.SECONDS)));
 
         if (remoteOpenCommunityTotal.getCode() == 0 && remoteOpenCommunityTotal.getData() != null) {

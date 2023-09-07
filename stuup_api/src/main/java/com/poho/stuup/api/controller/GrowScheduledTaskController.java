@@ -105,6 +105,7 @@ public class GrowScheduledTaskController {
             year = yearService.findYearForStartAndEndTime(yearStart, yearEnd);
             if (year == null) {
                 year = new Year();
+                year.setYear(now.getYear() - 1);
                 year.setYearName(StrUtil.format("{}学年", now.getYear() - 1));
                 year.setYearStart(yearStart);
                 year.setYearEnd(yearEnd);
@@ -119,6 +120,7 @@ public class GrowScheduledTaskController {
             if (semester == null) {
                 semester = new Semester();
                 semester.setYearId(year.getOid());
+                semester.setYear(now.getYear() - 1);
                 semester.setName(StrUtil.format("{}学年上学期", now.getYear() - 1));
                 semester.setStartTime(semesterStart);
                 semester.setEndTime(semesterEnd);
@@ -131,6 +133,7 @@ public class GrowScheduledTaskController {
             year = yearService.findYearForStartAndEndTime(yearStart, yearEnd);
             if (year == null) {
                 year = new Year();
+                year.setYear(now.getYear() - 1);
                 year.setYearName(StrUtil.format("{}学年", now.getYear() - 1));
                 year.setYearStart(yearStart);
                 year.setYearEnd(yearEnd);
@@ -145,6 +148,7 @@ public class GrowScheduledTaskController {
             if (semester == null) {
                 semester = new Semester();
                 semester.setYearId(year.getOid());
+                semester.setYear(now.getYear() - 1);
                 semester.setName(StrUtil.format("{}学年下学期", now.getYear() - 1));
                 semester.setStartTime(semesterStart);
                 semester.setEndTime(semesterEnd);
@@ -157,6 +161,7 @@ public class GrowScheduledTaskController {
             year = yearService.findYearForStartAndEndTime(yearStart, yearEnd);
             if (year == null) {
                 year = new Year();
+                year.setYear(now.getYear());
                 year.setYearName(StrUtil.format("{}学年", now.getYear()));
                 year.setYearStart(yearStart);
                 year.setYearEnd(yearEnd);
@@ -171,7 +176,8 @@ public class GrowScheduledTaskController {
             if (semester == null) {
                 semester = new Semester();
                 semester.setYearId(year.getOid());
-                semester.setName(StrUtil.format("{}学年下学期", now.getYear()));
+                semester.setYear(now.getYear());
+                semester.setName(StrUtil.format("{}学年上学期", now.getYear()));
                 semester.setStartTime(semesterStart);
                 semester.setEndTime(semesterEnd);
                 semesterService.save(semester);

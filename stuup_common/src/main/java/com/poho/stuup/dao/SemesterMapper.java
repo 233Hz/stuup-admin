@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -24,6 +25,8 @@ public interface SemesterMapper extends BaseMapper<Semester> {
 
     IPage<SemesterVO> pageSemester(Page<SemesterVO> page, @Param("query") SemesterDTO query);
 
+    Semester getCurrentSemester();
+
     Long getCurrentSemesterId();
 
     Semester findTimeBelongYear(@Param("date") Date date);
@@ -31,4 +34,6 @@ public interface SemesterMapper extends BaseMapper<Semester> {
     String getCurrTermName();
 
     Semester findByRange(@Param("date") Date date);
+
+    List<Semester> getSemesterNameByIds(@Param("semesterIds") List<Long> semesterIds);
 }

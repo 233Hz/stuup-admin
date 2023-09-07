@@ -14,4 +14,24 @@ public class ValidationGroups {
     public interface Delete {
     }
 
+    public interface Audit {
+
+        interface Single {
+            interface Pass {
+            }
+
+            interface NoPass {
+            }
+        }
+
+        interface Batch {
+            interface Pass {
+            }
+
+            interface NoPass {
+            }
+        }
+
+    }
+
 }

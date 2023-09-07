@@ -193,9 +193,12 @@ public class YearServiceImpl implements IYearService {
 
     @Override
     public Year getCurrentYear() {
-        Year year = yearMapper.findCurrYear();
-        if (year == null) throw new RuntimeException("当前时间不在学年设置时间范围内");
-        return year;
+        return yearMapper.getCurrentYear();
+    }
+
+    @Override
+    public Long getCurrentYearId() {
+        return yearMapper.getCurrentYearId();
     }
 
     @Override

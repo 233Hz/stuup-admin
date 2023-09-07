@@ -113,7 +113,7 @@ public class ScreenServiceImpl implements ScreenService {
     @Override
     public List<AllKindsOfCompetitionAwardNumVO> countAllKindsOfCompetitionAwardNum() {
         List<AllKindsOfCompetitionAwardNumVO> resultList = new ArrayList<>();
-        Year currYear = yearMapper.findCurrYear();
+        Year currYear = yearMapper.getCurrentYear();
 
         for (Map.Entry<String, String> entry : COMPETITION_AWARD_LEVEL_OF_CONFIG_KEY_MAP.entrySet()) {
             AllKindsOfCompetitionAwardNumVO allKindsOfCompetitionAwardNumVO = new AllKindsOfCompetitionAwardNumVO();
@@ -145,7 +145,7 @@ public class ScreenServiceImpl implements ScreenService {
     @Override
     public Long countScholarshipNum() {
         long count = 0;
-        Year currYear = yearMapper.findCurrYear();
+        Year currYear = yearMapper.getCurrentYear();
         if (currYear != null) {
             Config config = configService.selectByPrimaryKey(ConfigKeyEnum.SCHOLARSHIP_GROWTH_CODE.getKey());
             String configValue = config.getConfigValue();
@@ -170,7 +170,7 @@ public class ScreenServiceImpl implements ScreenService {
     @Override
     public Long countHoldAnActivityNum() {
         long count = 0;
-        Year currYear = yearMapper.findCurrYear();
+        Year currYear = yearMapper.getCurrentYear();
         if (currYear != null) {
             Config config = configService.selectByPrimaryKey(ConfigKeyEnum.HOLD_AN_ACTIVITY_GROWTH_CODE.getKey());
             String configValue = config.getConfigValue();
@@ -265,21 +265,16 @@ public class ScreenServiceImpl implements ScreenService {
     }
 
     @Override
-    public ScreenImportantDataVO getImportantData( StopWatch stopWatch ) {
+    public ScreenImportantDataVO getImportantData(StopWatch stopWatch) {
         stopWatch.start("男女统计");
         ScreenImportantDataVO screenImportantDataVO = new ScreenImportantDataVO();
-        List<Student> students = studentMapper.getAllStudent();
-        if (CollUtil.isNotEmpty(students)) {
-            // 统计在校生人数
-            screenImportantDataVO.setAtSchoolNum(students.size());
-            int boyNum = 0, girlNum = 0;
-            int size = students.size();
-            for (int i = 0; i < size; i++) {
-                Student student = students.get(i);
-                Integer sex = student.getSex();
-                if (sex == 1) boyNum++;
-                if (sex == 2) girlNum++;
-            }
+        // 统计在校生人数
+        Integer atSchoolNum = studentMapper.countAtSchoolNum();
+        if (atSchoolNum != null) screenImportantDataVO.setAtSchoolNum(atSchoolNum);
+        // 统计男女比例
+        Integer boyNum = studentMapper.countSexNum(1);
+        Integer girlNum = studentMapper.countSexNum(2);
+        if (boyNum != null && girlNum != null) {
             // 统计男女比例
             int gcd = Utils.calculatorGCD(boyNum, girlNum);
             String sexRatio = StrUtil.format("{}:{}", boyNum / gcd, girlNum / gcd);

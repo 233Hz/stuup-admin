@@ -42,14 +42,14 @@ public interface RecAddScoreMapper extends BaseMapper<RecAddScore> {
 
     /**
      * @description: 查找时间段内的记录
-     * @param: growId
+     * @param: growthItemId
      * @param: startTime
      * @param: endTime
      * @return: java.util.List<com.poho.stuup.model.RecAddScore>
      * @author BUNGA
      * @date: 2023/6/12 19:08
      */
-    List<RecAddScore> findTimePeriodRecordForGrow(@Param("growId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+    List<RecAddScore> findTimePeriodRecordForGrow(@Param("growthItemId") Long growId, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     List<RecScoreYearRankDTO> findRecScoreForYear(@Param("yearId") Long yearId);
 

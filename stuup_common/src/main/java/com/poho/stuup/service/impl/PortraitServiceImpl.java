@@ -163,9 +163,9 @@ public class PortraitServiceImpl implements PortraitService {
     public ResponseModel<List<PortraitCapacityEvaluatorVO>> getCapacityEvaluator(Long userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Year currYear = yearMapper.findCurrYear();
+        Year currYear = yearMapper.getCurrentYear();
         if (currYear == null) return ResponseModel.failed("不在当前学年时间范围内");
-        Long studentId = studentMapper.findStudentId(user.getLoginName());
+        Long studentId = studentMapper.getIdByStudentNo(user.getLoginName());
         if (studentId == null) return ResponseModel.failed("未查询到您的学生信息");
         Long yearId = currYear.getOid();
         Integer totalStudentNum = studentMapper.countAtSchoolNum();
@@ -199,7 +199,7 @@ public class PortraitServiceImpl implements PortraitService {
     public ResponseModel<List<PortraitAwardRecordVO>> getAwardRecord(Long userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Long studentId = studentMapper.findStudentId(user.getLoginName());
+        Long studentId = studentMapper.getIdByStudentNo(user.getLoginName());
         if (studentId == null) return ResponseModel.failed("未查询到您的学生信息");
         List<PortraitAwardRecordVO> result = new ArrayList<>();
         Map<String, Integer> configKeyMap = new HashMap<>();
@@ -228,29 +228,29 @@ public class PortraitServiceImpl implements PortraitService {
                 List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                         .select(RecAddScore::getGrowId, RecAddScore::getCreateTime)
                         .eq(RecAddScore::getStudentId, studentId)
-                        .in(RecAddScore::getGrowId, growthItemIds));
+                        .in(RecAddScore::getGrowId, growthItemIds)
+                        .orderByDesc(RecAddScore::getCreateTime));
                 growthItemIds.clear();
-                int size2 = recAddScores.size();
-                for (int j = 0; j < size2; j++) {
+                for (RecAddScore recAddScore : recAddScores) {
                     PortraitAwardRecordVO portraitAwardRecordVO = new PortraitAwardRecordVO();
-                    RecAddScore recAddScore = recAddScores.get(j);
                     Long growId = recAddScore.getGrowId();
                     GrowthItem growthItem = growthItemMap.get(growId);
                     if (growthItem == null) continue;
                     String growthItemName = "";
-                    Long firstLevelId = growthItem.getFirstLevelId();
-                    if (firstLevelId != null) {
-                        growthItemName = growthMap.get(firstLevelId);
-                    }
-                    Long secondLevelId = growthItem.getSecondLevelId();
-                    if (secondLevelId != null) {
-                        String growthName = growthMap.get(secondLevelId);
-                        growthItemName = growthItemName + "--" + growthName;
-                    }
+
                     Long threeLevelId = growthItem.getThreeLevelId();
                     if (threeLevelId != null) {
-                        String growthName = growthMap.get(threeLevelId);
-                        growthItemName = growthItemName + "--" + growthName;
+                        growthItemName = growthMap.get(threeLevelId);
+                    } else {
+                        Long secondLevelId = growthItem.getSecondLevelId();
+                        if (secondLevelId != null) {
+                            growthItemName = growthMap.get(secondLevelId);
+                        } else {
+                            Long firstLevelId = growthItem.getFirstLevelId();
+                            if (firstLevelId != null) {
+                                growthItemName = growthMap.get(firstLevelId);
+                            }
+                        }
                     }
                     growthItemName = growthItemName + "--" + growthItem.getName();
                     Date createTime = recAddScore.getCreateTime();
@@ -270,7 +270,7 @@ public class PortraitServiceImpl implements PortraitService {
     public ResponseModel<List<PortraitActivityRecordVO>> getActivityRecord(Long userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Long studentId = studentMapper.findStudentId(user.getLoginName());
+        Long studentId = studentMapper.getIdByStudentNo(user.getLoginName());
         if (studentId == null) return ResponseModel.failed("未查询到您的学生信息");
         List<PortraitActivityRecordVO> result = new ArrayList<>();
         Config config = configService.selectByPrimaryKey(ConfigKeyEnum.HOLD_AN_ACTIVITY_GROWTH_CODE.getKey());
@@ -290,29 +290,28 @@ public class PortraitServiceImpl implements PortraitService {
             List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                     .select(RecAddScore::getGrowId, RecAddScore::getCreateTime)
                     .eq(RecAddScore::getStudentId, studentId)
-                    .in(RecAddScore::getGrowId, growthItemIds));
+                    .in(RecAddScore::getGrowId, growthItemIds)
+                    .orderByDesc(RecAddScore::getCreateTime));
             growthItemIds.clear();
-            int size = recAddScores.size();
-            for (int i = 0; i < size; i++) {
+            for (RecAddScore recAddScore : recAddScores) {
                 PortraitActivityRecordVO portraitActivityRecordVO = new PortraitActivityRecordVO();
-                RecAddScore recAddScore = recAddScores.get(i);
                 Long growId = recAddScore.getGrowId();
                 GrowthItem growthItem = growthItemMap.get(growId);
                 if (growthItem == null) continue;
                 String growthItemName = "";
-                Long firstLevelId = growthItem.getFirstLevelId();
-                if (firstLevelId != null) {
-                    growthItemName = growthMap.get(firstLevelId);
-                }
-                Long secondLevelId = growthItem.getSecondLevelId();
-                if (secondLevelId != null) {
-                    String growthName = growthMap.get(secondLevelId);
-                    growthItemName = growthItemName + "--" + growthName;
-                }
                 Long threeLevelId = growthItem.getThreeLevelId();
                 if (threeLevelId != null) {
-                    String growthName = growthMap.get(threeLevelId);
-                    growthItemName = growthItemName + "--" + growthName;
+                    growthItemName = growthMap.get(threeLevelId);
+                } else {
+                    Long secondLevelId = growthItem.getSecondLevelId();
+                    if (secondLevelId != null) {
+                        growthItemName = growthMap.get(secondLevelId);
+                    } else {
+                        Long firstLevelId = growthItem.getFirstLevelId();
+                        if (firstLevelId != null) {
+                            growthItemName = growthMap.get(firstLevelId);
+                        }
+                    }
                 }
                 growthItemName = growthItemName + "--" + growthItem.getName();
                 Date createTime = recAddScore.getCreateTime();
@@ -351,9 +350,7 @@ public class PortraitServiceImpl implements PortraitService {
         if (CollUtil.isEmpty(semesters)) return ResponseModel.failed("未查询到学期信息");
         ArrayList<PortraitRankingCurveVO> result = new ArrayList<>();
         Integer studentId = student.getId();
-        int size = semesters.size();
-        for (int i = 0; i < size; i++) {
-            Semester semester = semesters.get(i);
+        for (Semester semester : semesters) {
             Long semesterId = semester.getId();
             String semesterName = semester.getName();
             PortraitRankingCurveVO portraitRankingCurveVO = new PortraitRankingCurveVO();
@@ -516,47 +513,56 @@ public class PortraitServiceImpl implements PortraitService {
     }
 
     @Override
-    public ResponseModel<List<PortraitGrowthComparisonVO>> getGrowthComparison(Long userId, Long semesterId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-        if (student == null) return ResponseModel.failed("未查询到您的学生信息");
+    public List<PortraitGrowthComparisonVO> getGrowthComparison(Long semesterId, Long studentId) {
         List<PortraitGrowthComparisonVO> result = new ArrayList<>();
-        // 查询所有学生人数
-        Integer countStudent = studentMapper.countAtSchoolNum();
+        // 查询所有一级项目
+        List<Growth> firstLevelList = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
+                .select(Growth::getId, Growth::getName)
+                .eq(Growth::getPid, 0));
+        Map<Long, String> firstLevelMap = firstLevelList.stream().collect(Collectors.toMap(Growth::getId, Growth::getName));
+        firstLevelList.clear();
         // 查询所有成长项
         List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getName));
-        // 查询当前学期所有的成长项记录
+                .select(GrowthItem::getId, GrowthItem::getFirstLevelId)
+                .isNotNull(GrowthItem::getFirstLevelId));
+        Map<Long, Long> getFirstLevelByIdMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getId, GrowthItem::getFirstLevelId));
+        growthItems.clear();
+        // 查询当前学期所有的得分记录
         List<RecAddScore> allRecAddScore = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                 .select(RecAddScore::getGrowId, RecAddScore::getScore, RecAddScore::getStudentId)
                 .eq(RecAddScore::getSemesterId, semesterId));
         // 过滤出当前学生的记录
-        List<RecAddScore> studentRecAddScore = allRecAddScore.stream().filter(recAddScore -> Objects.equals(recAddScore.getStudentId(), Long.valueOf(student.getId()))).collect(Collectors.toList());
-        // 按项目分组求和
-        Map<Long, BigDecimal> allScoreSumByGrowId = allRecAddScore.stream().collect(Collectors.groupingBy(RecAddScore::getGrowId, Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+        List<RecAddScore> studentRecAddScore = allRecAddScore.stream().filter(recAddScore -> Objects.equals(recAddScore.getStudentId(), studentId)).collect(Collectors.toList());
+        // 按一级项目分组求和
+        Map<Long, BigDecimal> allScoreSumByGrowId = allRecAddScore.stream()
+                .filter(recAddScore -> getFirstLevelByIdMap.containsKey(recAddScore.getGrowId()))   // 过滤掉为空的结果
+                .collect(Collectors.groupingBy(recAddScore -> getFirstLevelByIdMap.get(recAddScore.getGrowId()),
+                        Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
         Map<Long, BigDecimal> newAllScoreSumByGrowId = new HashMap<>();
+        // 查询所有学生人数
+        Integer countStudent = studentMapper.countAtSchoolNum();
         allScoreSumByGrowId.forEach((growthItemId, sumScore) -> {
             BigDecimal avgScore = sumScore.divide(new BigDecimal(countStudent), 2, RoundingMode.HALF_UP);
             newAllScoreSumByGrowId.put(growthItemId, avgScore);
         });
         // 按项目分组求和
-        Map<Long, BigDecimal> studentScoreSumByGrowId = studentRecAddScore.stream().collect(Collectors.groupingBy(RecAddScore::getGrowId, Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+        Map<Long, BigDecimal> studentScoreSumByGrowId = studentRecAddScore.stream()
+                .filter(recAddScore -> getFirstLevelByIdMap.containsKey(recAddScore.getGrowId()))   // 过滤掉为空的结果
+                .collect(Collectors.groupingBy(recAddScore -> getFirstLevelByIdMap.get(recAddScore.getGrowId()),
+                        Collectors.mapping(RecAddScore::getScore, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
         // 遍历所有项目
-        int size = growthItems.size();
-        for (int i = 0; i < size; i++) {
-            GrowthItem growthItem = growthItems.get(i);
-            Long growthItemId = growthItem.getId();
-            String growthItemName = growthItem.getName();
+        for (Map.Entry<Long, String> entry : firstLevelMap.entrySet()) {
+            Long growthId = entry.getKey();
+            String growthName = entry.getValue();
             PortraitGrowthComparisonVO portraitGrowthComparisonVO = new PortraitGrowthComparisonVO();
-            portraitGrowthComparisonVO.setGrowthItemName(growthItemName);
-            BigDecimal avgScore = newAllScoreSumByGrowId.getOrDefault(growthItemId, BigDecimal.ZERO);
+            portraitGrowthComparisonVO.setGrowthName(growthName);
+            BigDecimal avgScore = newAllScoreSumByGrowId.getOrDefault(growthId, BigDecimal.ZERO);
             portraitGrowthComparisonVO.setAvgScore(avgScore);
-            BigDecimal score = studentScoreSumByGrowId.getOrDefault(growthItemId, BigDecimal.ZERO);
-            portraitGrowthComparisonVO.setScore(score);
+            BigDecimal score = studentScoreSumByGrowId.getOrDefault(growthId, BigDecimal.ZERO);
+            portraitGrowthComparisonVO.setMyScore(score);
             result.add(portraitGrowthComparisonVO);
         }
-        return ResponseModel.ok(result);
+        return result;
     }
 
     @Override

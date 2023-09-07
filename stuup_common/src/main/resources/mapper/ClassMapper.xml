@@ -310,4 +310,19 @@
         from t_class
         where is_valid = 1
     </select>
+
+    <select id="getTeacherIdNoByClassId" resultType="integer">
+        select teacher_id
+        from t_class
+        where id = #{classId}
+    </select>
+
+    <select id="getClassNameByIds" resultMap="BaseResultMap">
+        select id, name from t_class
+        where id in
+        <foreach collection="classIds" item="classId" open="(" separator="," close=")">
+            #{classId}
+        </foreach>
+    </select>
+
 </mapper>

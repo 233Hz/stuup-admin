@@ -236,7 +236,7 @@
         from t_student
     </select>
 
-    <select id="findStudentId" resultType="Long">
+    <select id="getIdByStudentNo" resultType="Long">
         select id
         from t_student
         where student_no = #{studentNo}
@@ -304,4 +304,23 @@
         where major_id is not null
         group by major_id
     </select>
+
+    <select id="countSexNum" resultType="integer">
+        select count(*)
+        from t_student
+        where status = 1
+        and is_valid = 1
+        <if test="sex != null and sex != ''">
+            and sex = #{sex}
+        </if>
+    </select>
+
+    <select id="getClassIdByStudentNo" resultMap="BaseResultMap">
+        select student_no, class_id from t_student
+        where student_no in
+        <foreach collection="studentNoList" item="studentNo" open="(" separator="," close=")">
+            #{studentNo}
+        </foreach>
+    </select>
+
 </mapper>

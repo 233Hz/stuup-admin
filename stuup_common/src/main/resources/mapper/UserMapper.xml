@@ -281,25 +281,30 @@
         </where>
     </select>
 
-    <resultMap id="SimpleUserVOMap" type="com.poho.stuup.model.vo.SimpleUserVO">
+    <resultMap id="SimpleUserVOMap" type="com.poho.stuup.model.vo.GrowthItemUserVO">
         <id column="oid" property="id"/>
         <result column="user_name" property="username"/>
-        <result column="teacher_no" property="teacherNo"/>
+        <result column="login_name" property="loginName"/>
         <result column="dept_name" property="deptName"/>
+        <result column="class_name" property="className"/>
     </resultMap>
 
-    <select id="getSimpleUserPage" resultMap="SimpleUserVOMap">
+    <select id="paginateGrowthItemUser" resultMap="SimpleUserVOMap">
         select
         u.oid,
         u.user_name,
-        u.login_name as teacher_no,
-        d.dept_name
+        u.login_name,
+        d.dept_name,
+        c.name as class_name
         from t_user u
         left join t_dept d on d.oid = u.dept_id
+        left join t_student s on s.student_no = u.login_name
+        left join t_class c on c.id = s.class_id
         <where>
-            u.user_type = 2
-            and
             u.state = 1
+            <if test="query.userType != null and query.userType != ''">
+                and u.user_type = #{query.userType}
+            </if>
             <if test="query.username != null and query.username != ''">
                 and u.user_name like concat('%',#{query.username},'%')
             </if>
@@ -308,6 +313,9 @@
             </if>
             <if test="query.deptId != null and query.deptId != ''">
                 and d.oid = #{query.deptId}
+            </if>
+            <if test="query.classId != null and query.classId != ''">
+                and s.class_id = #{query.classId}
             </if>
         </where>
         order by u.oid
@@ -327,5 +335,25 @@
         set avatar_id = #{avatarId}
         where oid = #{userId}
     </update>
+
+    <select id="getIdByLoginName" resultType="Long">
+        select oid
+        from t_user
+        where login_name = #{loginName}
+    </select>
+
+    <select id="getUserNameByIds" resultMap="BaseResultMap">
+        select oid, user_name from t_user
+        where oid in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <select id="getLoginNameById" resultType="string">
+        select login_name
+        from t_user
+        where oid = #{id}
+    </select>
 
 </mapper>

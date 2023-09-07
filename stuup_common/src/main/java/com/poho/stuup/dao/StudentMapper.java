@@ -50,12 +50,12 @@ public interface StudentMapper {
     List<Student> findAllStudent(Map<String, Object> map);
 
     /**
-     * 查找学时id
+     * 通过学号查找学生id
      *
-     * @param studentNo
-     * @return
+     * @param studentNo 学号
+     * @return studentId 学生id
      */
-    Long findStudentId(@Param("studentNo") String studentNo);
+    Long getIdByStudentNo(@Param("studentNo") String studentNo);
 
     List<Long> selectIdList();
 
@@ -77,4 +77,13 @@ public interface StudentMapper {
     Integer countAtSchoolNum();
 
     List<MajorPopulationsVO> countMajorPopulations();
+
+    /**
+     * 统计性别人数
+     *
+     * @return
+     */
+    Integer countSexNum(@Param("sex") Integer sex);
+
+    List<Student> getClassIdByStudentNo(@Param("studentNoList") List<String> studentNoList);
 }

@@ -41,7 +41,7 @@ public class RecLaborTimeHandle implements RecExcelHandle {
             RecLaborTimeService recLaborTimeService = SpringContextHolder.getBean(RecLaborTimeService.class);
             YearMapper yearMapper = SpringContextHolder.getBean(YearMapper.class);
             SemesterMapper semesterMapper = SpringContextHolder.getBean(SemesterMapper.class);
-            Year year = yearMapper.findCurrYear();
+            Year year = yearMapper.getCurrentYear();
             if (year == null) return ResponseModel.failed("不在当前学年时间段内");
             Semester semester = semesterMapper.selectOne(Wrappers.<Semester>lambdaQuery().eq(Semester::getIsCurrent, WhetherEnum.YES.getValue()));
             if (semester == null) return ResponseModel.failed("不在当前学期时间段内");

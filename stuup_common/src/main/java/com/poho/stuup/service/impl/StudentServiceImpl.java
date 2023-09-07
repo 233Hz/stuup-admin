@@ -57,4 +57,14 @@ public class StudentServiceImpl implements IStudentService {
     public Integer countAtSchoolNum() {
         return studentMapper.countAtSchoolNum();
     }
+
+    @Override
+    public Long findIdByStudentNo(String studentNo) {
+        return studentMapper.getIdByStudentNo(studentNo);
+    }
+
+    public List<Student> getAllStudent() {
+        return studentMapper.getAllStudent();
+    }
+
 }

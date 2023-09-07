@@ -1,6 +1,7 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.custom.CusUserLogin;
 import com.poho.stuup.service.IUserService;
 import io.swagger.annotations.Api;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * @Author: wupeng
@@ -26,11 +26,10 @@ public class MainController {
     private IUserService userService;
 
     /**
-     *
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseModel login(@RequestBody CusUserLogin user) {
+    public ResponseModel<CusUser> login(@RequestBody CusUserLogin user) {
         return userService.checkLogin(user.getLoginName(), user.getPassword());
     }
 }

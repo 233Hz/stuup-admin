@@ -1,5 +1,6 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -18,10 +19,11 @@ import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
-import com.poho.stuup.model.dto.SimpleUserDTO;
-import com.poho.stuup.model.vo.SimpleUserVO;
+import com.poho.stuup.model.dto.GrowthItemUserDTO;
+import com.poho.stuup.model.vo.GrowthItemUserVO;
 import com.poho.stuup.service.IUserService;
 import com.poho.stuup.service.RecAddScoreService;
+import com.poho.stuup.service.SemesterService;
 import com.poho.stuup.service.StuScoreService;
 import com.poho.stuup.util.MinioUtils;
 import com.poho.stuup.util.ProjectUtil;
@@ -84,6 +86,9 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private FileMapper fileMapper;
 
+    @Resource
+    private SemesterService semesterService;
+
     @Override
     public int deleteByPrimaryKey(Long oid) {
         return userMapper.deleteByPrimaryKey(oid);
@@ -117,8 +122,8 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseModel checkLogin(String loginName, String password) {
-        ResponseModel model = new ResponseModel();
+    public ResponseModel<CusUser> checkLogin(String loginName, String password) {
+        ResponseModel<CusUser> model = new ResponseModel<>();
         model.setCode(CommonConstants.CODE_EXCEPTION);
         model.setMessage("账号或密码错误");
         if (StrUtil.isBlank(loginName)) {
@@ -136,7 +141,7 @@ public class UserServiceImpl implements IUserService {
                     if (MicrovanUtil.isNotEmpty(roleIds)) {
                         String message = "登录成功";
 
-                        Long yearId = yearMapper.findCurrYearId();
+                        Long yearId = yearMapper.getCurrentYearId();
                         Long semesterId = semesterMapper.getCurrentSemesterId();
 
                         CusUser cusUser = new CusUser();
@@ -158,17 +163,18 @@ public class UserServiceImpl implements IUserService {
                                 String url = MinioUtils.getPreSignedObjectUrl(bucket, storageName);
                                 cusUser.setAvatar(url);
                             } catch (Exception e) {
-                                logger.error("获取用户头像url失败！");
-                                e.printStackTrace();
+                                logger.error("获取用户头像url失败！{}", e.getMessage());
                             }
                         }
 
                         if (yearId != null) cusUser.setYearId(yearId);
+                        if (semesterId != null) cusUser.setSemesterId(semesterId);
                         // 每日登入
                         if (user.getUserType() == UserTypeEnum.STUDENT.getValue()) {
                             Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
                             if (student != null) {
                                 Integer studentId = student.getId();
+                                cusUser.setStudentId(studentId);
                                 // 获取用户总积分
                                 StuScore stuScore = stuScoreService.getOne(Wrappers.<StuScore>lambdaQuery()
                                         .select(StuScore::getScore)
@@ -187,6 +193,10 @@ public class UserServiceImpl implements IUserService {
                                 // 获取排名
                                 Integer ranking = recAddScoreService.getStudentNowRanking(Long.valueOf(studentId));
                                 if (ranking != null) cusUser.setRanking(ranking);
+
+                                // 获取该学生的学期
+                                List<Semester> studentSemester = semesterService.getStudentSemester(studentId);
+                                if (CollUtil.isNotEmpty(studentSemester)) cusUser.setSemesters(studentSemester);
 
                                 // 查询当天的登入次数
                                 int count = loginLogMapper.findTodayLoginCount(cusUser.getUserId());
@@ -518,15 +528,15 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public IPage<SimpleUserVO> getSimpleUserPage(Page<SimpleUserVO> page, SimpleUserDTO query) {
+    public IPage<GrowthItemUserVO> paginateGrowthItemUser(Page<GrowthItemUserVO> page, GrowthItemUserDTO query) {
         Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("userType", 2);
+        queryMap.put("userType", query.getUserType());
         queryMap.put("state", 1);
         int total = userMapper.queryTotal(queryMap);
         long start = page.getCurrent() == 1 ? 1 : page.getCurrent() * page.getSize();
-        List<SimpleUserVO> simpleUserPage = userMapper.getSimpleUserPage(start, page.getSize(), query);
+        List<GrowthItemUserVO> users = userMapper.paginateGrowthItemUser(start, page.getSize(), query);
         page.setTotal(total);
-        page.setRecords(simpleUserPage);
+        page.setRecords(users);
         return page;
     }
 

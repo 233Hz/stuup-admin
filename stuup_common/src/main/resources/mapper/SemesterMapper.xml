@@ -48,11 +48,23 @@
         </where>
     </select>
 
+
+    <select id="getCurrentSemester" resultMap="BaseResultMap">
+        select *
+        from t_semester
+        where is_current = 1
+        order by start_time desc
+        limit 1
+    </select>
+
     <select id="getCurrentSemesterId" resultType="Long">
         select id
         from t_semester
         where is_current = 1
+        order by start_time desc
+        limit 1
     </select>
+
     <select id="getCurrTermName" resultType="java.lang.String">
         select name
         from t_semester
@@ -76,6 +88,14 @@
         where #{date} between start_time and end_time
         order by start_time desc
         limit 1
+    </select>
+
+    <select id="getSemesterNameByIds" resultMap="BaseResultMap">
+        select id, name from t_semester
+        where id in
+        <foreach collection="semesterIds" item="semesterId" open="(" separator="," close=")" index="index">
+            #{semesterId}
+        </foreach>
     </select>
 
 </mapper>

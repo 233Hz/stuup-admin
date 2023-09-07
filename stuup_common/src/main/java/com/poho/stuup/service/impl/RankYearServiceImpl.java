@@ -71,10 +71,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
 
 
     @Override
-    public List<YearRankVO> getSchoolRank() {
-        // 获取当前学年
-        Year year = yearService.getCurrentYear();
-
+    public List<YearRankVO> getSchoolRank(Long yearId) {
         // 所有学生
         List<Student> students = studentMapper.getAllStudent();
 
@@ -86,7 +83,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
 
         List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                 .select(RecAddScore::getStudentId, RecAddScore::getScore)
-                .eq(RecAddScore::getYearId, year.getOid()));
+                .eq(RecAddScore::getYearId, yearId));
         int recordSize = recAddScores.size();
 
         // 对学生进行分组求和
@@ -146,10 +143,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
     }
 
     @Override
-    public List<ClassRankVO> getClassRank() {
-        // 获取当前学年
-        Year year = yearService.getCurrentYear();
-
+    public List<ClassRankVO> getClassRank(Long yearId) {
         // 所有班级
         List<Class> classes = classMapper.selectAll();
 
@@ -159,7 +153,7 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
         Map<Integer, Major> majorMap = majorService.majorMap();            // 专业
         Map<Integer, Faculty> facultyMap = facultyService.facultyMap();    // 系部
 
-        List<ClassRankVO> recScores = recAddScoreMapper.getClassRank(year.getOid());
+        List<ClassRankVO> recScores = recAddScoreMapper.getClassRank(yearId);
         int recordSize = recScores.size();
 
         // 按班级进行分组求和
@@ -216,17 +210,14 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
     }
 
     @Override
-    public List<MajorRankVO> getMajorRank() {
-        // 获取当前学年
-        Year year = yearService.getCurrentYear();
-
+    public List<MajorRankVO> getMajorRank(Long yearId) {
         // 所有专业
         List<Major> majors = majorMapper.selectAll();
 
         Map<Integer, Major> majorMap = majors.stream().collect(Collectors.toMap(Major::getOid, Function.identity()));   // 专业
         Map<Integer, Faculty> facultyMap = facultyService.facultyMap();    // 系部
 
-        List<MajorRankVO> recScores = recAddScoreMapper.getMajorRank(year.getOid());
+        List<MajorRankVO> recScores = recAddScoreMapper.getMajorRank(yearId);
         int recordSize = recScores.size();
 
         // 按专业进行分组求和
@@ -275,17 +266,14 @@ public class RankYearServiceImpl extends ServiceImpl<RankYearMapper, RankYear> i
     }
 
     @Override
-    public List<FacultyRankVO> getFacultyRank() {
-        // 获取当前学年
-        Year year = yearService.getCurrentYear();
-
+    public List<FacultyRankVO> getFacultyRank(Long yearId) {
         // 所有专业
         List<Faculty> faculties = facultyMapper.selectAll();
 
         Map<Integer, String> facultyMap = faculties.stream().collect(Collectors.toMap(Faculty::getOid, Faculty::getFacultyName));   // 系部
         Map<Integer, Class> classMap = classService.classMap();            // 班级
 
-        List<FacultyRankVO> recScores = recAddScoreMapper.getFacultyRank(year.getOid());
+        List<FacultyRankVO> recScores = recAddScoreMapper.getFacultyRank(yearId);
         int recordSize = recScores.size();
 
         // 按专业进行分组求和

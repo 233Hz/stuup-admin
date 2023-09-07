@@ -72,11 +72,11 @@ public interface PortraitService {
     /**
      * 成长对比
      *
-     * @param userId
      * @param semesterId
+     * @param studentId
      * @return
      */
-    ResponseModel<List<PortraitGrowthComparisonVO>> getGrowthComparison(Long userId, Long semesterId);
+    List<PortraitGrowthComparisonVO> getGrowthComparison(Long semesterId, Long studentId);
 
     /**
      * 学习成绩

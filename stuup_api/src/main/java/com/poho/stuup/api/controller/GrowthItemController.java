@@ -56,15 +56,15 @@ public class GrowthItemController {
         return growthItemService.removeById(id) ? ResponseModel.ok(true, "删除成功！") : ResponseModel.failed("删除失败！");
     }
 
-    @GetMapping("/myGrowthItems")
-    public ResponseModel<List<GrowthItem>> getUserGrowthItems() {
+    @GetMapping("/self/apply")
+    public ResponseModel<List<GrowthItem>> getSelfApplyItem(@RequestParam("type") String type) {
         String userId = ProjectUtil.obtainLoginUser(request);
-        return growthItemService.getUserGrowthItems(Long.valueOf(userId));
+        return growthItemService.getSelfApplyItem(type, Long.valueOf(userId));
     }
+
 
     @GetMapping("/studentGrowthItems")
     public ResponseModel<List<GrowthItemSelectVO>> getStudentGrowthItems() {
         return ResponseModel.ok(growthItemService.getStudentGrowthItems());
     }
-
 }

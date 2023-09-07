@@ -15,12 +15,12 @@ public class PortraitGrowthComparisonVO {
     /**
      * 成长项名称
      */
-    private String growthItemName;
+    private String growthName;
 
     /**
      * 我的积分
      */
-    private BigDecimal score;
+    private BigDecimal myScore;
 
     /**
      * 平均积分

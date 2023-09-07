@@ -49,7 +49,7 @@ public interface RecAddScoreService extends IService<RecAddScore> {
 
     /**
      * @description: 计算该学生积分
-     * @param: growId
+     * @param: growthItemId
      * @param: studentId
      * @return: void
      * @author BUNGA

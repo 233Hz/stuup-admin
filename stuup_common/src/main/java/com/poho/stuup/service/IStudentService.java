@@ -30,4 +30,19 @@ public interface IStudentService {
      * @date: 2023/7/19 19:28
      */
     Integer countAtSchoolNum();
+
+    /**
+     * 通过学号获取学生id
+     *
+     * @param studentNo 学号
+     * @return studentId 学生id
+     */
+    Long findIdByStudentNo(String studentNo);
+
+    /**
+     * 获取所有学生列表
+     *
+     * @return 学生列表
+     */
+    List<Student> getAllStudent();
 }

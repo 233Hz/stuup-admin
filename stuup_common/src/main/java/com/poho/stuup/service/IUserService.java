@@ -6,8 +6,8 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
-import com.poho.stuup.model.dto.SimpleUserDTO;
-import com.poho.stuup.model.vo.SimpleUserVO;
+import com.poho.stuup.model.dto.GrowthItemUserDTO;
+import com.poho.stuup.model.vo.GrowthItemUserVO;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ public interface IUserService {
     int updateByPrimaryKey(User record);
 
 
-    ResponseModel checkLogin(String loginName, String password);
+    ResponseModel<CusUser> checkLogin(String loginName, String password);
 
     /**
      * @param key
@@ -99,14 +99,14 @@ public interface IUserService {
     ResponseModel<List<Menu>> queryUserAuthority(long userId);
 
     /**
-     * @description: 简单的用户列表查询
+     * @description: 用户分页（设置成长项目负责人）
      * @param: page
      * @param: query
-     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.SimpleUserVO>
+     * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.poho.stuup.model.vo.GrowthItemUserVO>
      * @author BUNGA
-     * @date: 2023/6/14 19:18
+     * @date: 2023/9/4 17:05
      */
-    IPage<SimpleUserVO> getSimpleUserPage(Page<SimpleUserVO> page, SimpleUserDTO query);
+    IPage<GrowthItemUserVO> paginateGrowthItemUser(Page<GrowthItemUserVO> page, GrowthItemUserDTO query);
 
     ResponseModel<String> updateUserAvatar(Long userId, Long avatarId);
 }

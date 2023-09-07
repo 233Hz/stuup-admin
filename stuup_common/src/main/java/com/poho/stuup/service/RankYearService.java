@@ -20,13 +20,13 @@ import java.util.List;
  */
 public interface RankYearService extends IService<RankYear> {
 
-    List<YearRankVO> getSchoolRank();
+    List<YearRankVO> getSchoolRank(Long yearId);
 
-    List<ClassRankVO> getClassRank();
+    List<ClassRankVO> getClassRank(Long yearId);
 
-    List<MajorRankVO> getMajorRank();
+    List<MajorRankVO> getMajorRank(Long yearId);
 
-    List<FacultyRankVO> getFacultyRank();
+    List<FacultyRankVO> getFacultyRank(Long yearId);
 
     void generateRank(Date date);
 }

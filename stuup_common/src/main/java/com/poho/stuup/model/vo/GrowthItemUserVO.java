@@ -2,13 +2,8 @@ package com.poho.stuup.model.vo;
 
 import lombok.Data;
 
-/**
- * @author BUNGA
- * @description: 简化用户页面对象
- * @date 2023/6/14 19:11
- */
 @Data
-public class SimpleUserVO {
+public class GrowthItemUserVO {
 
     /**
      * id
@@ -23,10 +18,15 @@ public class SimpleUserVO {
     /**
      * 教师工号
      */
-    private String teacherNo;
+    private String loginName;
 
     /**
      * 所属部门
      */
     private String deptName;
+
+    /**
+     * 班级名称
+     */
+    private String className;
 }

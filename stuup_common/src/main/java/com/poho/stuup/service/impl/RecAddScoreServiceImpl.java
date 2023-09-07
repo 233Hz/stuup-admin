@@ -88,7 +88,7 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) return ResponseModel.failed("未查询到您的用户信息，请联系管理员");
         String loginName = user.getLoginName();
-        Long studentId = studentMapper.findStudentId(loginName);
+        Long studentId = studentMapper.getIdByStudentNo(loginName);
         if (studentId == null) return ResponseModel.failed("未查询到您的学生信息，请联系管理员");
         return ResponseModel.ok(baseMapper.pageStudentRecScore(page, studentId, query));
     }
@@ -294,7 +294,7 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
         Integer scorePeriod = growthItem.getScorePeriod();    // 积分刷新周期
         PeriodEnum periodEnum = PeriodEnum.getByValue(scorePeriod);
         if (periodEnum == null) throw new RuntimeException("项目积分刷新周期设置错误，请联系管理员");
-        Year year = yearMapper.findCurrYear();
+        Year year = yearMapper.getCurrentYear();
         if (year == null) throw new RuntimeException("不在学年时间范围内，无法完成计算");
         Long yearId = year.getOid();
         Long semesterId = semesterMapper.getCurrentSemesterId();
@@ -342,7 +342,7 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
 
     @Override
     public Integer getStudentNowRanking(Long studentId) {
-        Long yearId = yearMapper.findCurrYearId();
+        Long yearId = yearMapper.getCurrentYearId();
         if (yearId != null) {
             List<RecAddScore> recAddScores = baseMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                     .select(RecAddScore::getStudentId, RecAddScore::getScore)

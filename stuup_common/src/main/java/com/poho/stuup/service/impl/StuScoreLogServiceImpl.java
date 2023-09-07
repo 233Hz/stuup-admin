@@ -47,7 +47,7 @@ public class StuScoreLogServiceImpl extends ServiceImpl<StuScoreLogMapper, StuSc
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) return ResponseModel.failed("未查询到您的用户信息，请联系管理员");
         String loginName = user.getLoginName();
-        Long studentId = studentMapper.findStudentId(loginName);
+        Long studentId = studentMapper.getIdByStudentNo(loginName);
         if (studentId == null) return ResponseModel.failed("未查询到您的学生信息，请联系管理员");
         StudentScoreDetailsVO studentScoreDetailsVO = new StudentScoreDetailsVO();
         StuScore stuScore = stuScoreMapper.selectOne(Wrappers.<StuScore>lambdaQuery()

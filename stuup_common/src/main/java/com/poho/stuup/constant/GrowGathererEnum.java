@@ -7,8 +7,9 @@ import lombok.Getter;
  */
 @Getter
 public enum GrowGathererEnum {
-    ASSIGN("指定用户", 1),
-    STUDENT("学生", 2);
+    TEACHER("老师", 1),
+    STUDENT_UNION("学生会", 2),
+    STUDENT("学生", 3);
 
     private final String type;
 

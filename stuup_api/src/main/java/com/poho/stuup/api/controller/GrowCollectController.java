@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.api.config.MinioConfig;
+import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.constant.RecEnum;
 import com.poho.stuup.handle.RecDefaultHandle;
 import com.poho.stuup.handle.RecExcelHandle;
@@ -51,6 +52,9 @@ public class GrowCollectController {
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, recCode));
         if (growthItem == null) return ResponseModel.failed("导入项目不存在");
+        Integer gatherer = growthItem.getGatherer();
+        if (gatherer != GrowGathererEnum.TEACHER.getValue())
+            return ResponseModel.failed("当前项目采集类型无法通过该入口导入");
         Long growId = growthItem.getId();
         // 查询项目负责人
         boolean isGrowUser = growUserService.isGrowUser(Long.parseLong(userId), growId);
@@ -88,7 +92,7 @@ public class GrowCollectController {
      * @date: 2023/6/14 17:07
      */
     @GetMapping("/downTemp")
-    public void downTemp(@RequestParam("rec_code") String recCode, HttpServletResponse res) {
+    public void downTemp(@RequestParam("recCode") String recCode, HttpServletResponse res) {
         RecEnum recEnum = RecEnum.getEnumByCode(recCode);
         if (recEnum == null) recCode = "CZ_DEFAULT";
         String growthItemName = growthItemService.getObj(Wrappers.<GrowthItem>lambdaQuery().select(GrowthItem::getName).eq(GrowthItem::getCode, recCode), Object::toString);

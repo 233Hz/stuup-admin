@@ -2,7 +2,7 @@ package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.GrowUser;
-import com.poho.stuup.model.vo.SimpleUserVO;
+import com.poho.stuup.model.vo.GrowthItemUserVO;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ public interface GrowUserService extends IService<GrowUser> {
 
     boolean isGrowUser(Long userId, Long growId);
 
-    List<SimpleUserVO> getGrowItemUser(Long growId);
+    List<GrowthItemUserVO> getGrowItemUser(Long growthItemId);
 }

@@ -35,13 +35,28 @@ public class AudGrow implements Serializable {
     private Long id;
 
     /**
+     * 年份id
+     */
+    private Long yearId;
+
+    /**
+     * 学期id
+     */
+    private Long semesterId;
+
+    /**
      * 项目id
      */
     @NotNull(message = "申请项目不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
     private Long growId;
 
     /**
-     * 审核状态（0.待提交 1.待审核 2.审核通过 3.审核失败 4.退回）
+     * 类型（1.本人申请 2.他人导入）
+     */
+    private Integer type;
+
+    /**
+     * 审核状态（0.待提交 1.待审核 2.审核通过 3.审核不通过）
      */
     private Integer state;
 
@@ -54,6 +69,11 @@ public class AudGrow implements Serializable {
      * 审核人
      */
     private Long auditor;
+
+    /**
+     * 提交人
+     */
+    private Long submitter;
 
     /**
      * 创建时间
@@ -74,6 +94,7 @@ public class AudGrow implements Serializable {
     /**
      * 附件id
      */
+    @NotBlank(message = "必须上传证明附件", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
     private String fileIds;
 
 

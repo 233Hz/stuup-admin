@@ -1,7 +1,5 @@
 package com.poho.stuup.api.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
@@ -10,8 +8,6 @@ import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
-import com.poho.stuup.model.dto.SimpleUserDTO;
-import com.poho.stuup.model.vo.SimpleUserVO;
 import com.poho.stuup.service.IUserService;
 import com.poho.stuup.util.ExcelUtil;
 import com.poho.stuup.util.ProjectUtil;
@@ -190,19 +186,6 @@ public class UserController {
             e.printStackTrace();
         }
         return model;
-    }
-
-    /**
-     * @description: 简单的用户列表查询
-     * @param: page
-     * @param: query
-     * @return: com.poho.common.custom.ResponseModel<com.baomidou.mybatisplus.core.metadata.IPage < com.poho.stuup.model.vo.SimpleUserVO>>
-     * @author BUNGA
-     * @date: 2023/6/14 19:18
-     */
-    @GetMapping("/getSimpleUserPage")
-    public ResponseModel<IPage<SimpleUserVO>> getSimpleUserPage(Page<SimpleUserVO> page, SimpleUserDTO query) {
-        return ResponseModel.ok(userService.getSimpleUserPage(page, query));
     }
 
     @GetMapping("/updateAvatar")

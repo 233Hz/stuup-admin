@@ -3,6 +3,7 @@
 <mapper namespace="com.poho.stuup.dao.YearMapper">
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.Year">
         <id column="oid" jdbcType="BIGINT" property="oid"/>
+        <result column="year" jdbcType="INTEGER" property="year"/>
         <result column="year_name" jdbcType="VARCHAR" property="yearName"/>
         <result column="year_start" jdbcType="TIMESTAMP" property="yearStart"/>
         <result column="year_end" jdbcType="TIMESTAMP" property="yearEnd"/>
@@ -11,7 +12,7 @@
         <result column="create_user" jdbcType="BIGINT" property="createUser"/>
     </resultMap>
     <sql id="Base_Column_List">
-        oid, year_name, year_start, year_end, curr, create_time, create_user
+        oid, `year`, year_name, year_start, year_end, curr, create_time, create_user
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -26,6 +27,7 @@
     </delete>
     <insert id="insert" parameterType="com.poho.stuup.model.Year">
         insert into t_year (oid,
+                            year,
                             year_name,
                             year_start,
                             year_end,
@@ -33,6 +35,7 @@
                             create_time,
                             create_user)
         values (#{oid,jdbcType=BIGINT},
+                #{year,jdbcType=INTEGER},
                 #{yearName,jdbcType=VARCHAR},
                 #{yearStart,jdbcType=TIMESTAMP},
                 #{yearEnd,jdbcType=TIMESTAMP},
@@ -46,6 +49,9 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="oid != null">
                 oid,
+            </if>
+            <if test="year != null">
+                year,
             </if>
             <if test="yearName != null">
                 year_name,
@@ -70,6 +76,9 @@
             <if test="oid != null">
                 #{oid,jdbcType=BIGINT},
             </if>
+            <if test="year != null">
+                #{year,jdbcType=INTEGER},
+            </if>
             <if test="yearName != null">
                 #{yearName,jdbcType=VARCHAR},
             </if>
@@ -93,6 +102,9 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Year">
         update t_year
         <set>
+            <if test="year != null">
+                year = #{year,jdbcType=INTEGER},
+            </if>
             <if test="yearName != null">
                 year_name = #{yearName,jdbcType=VARCHAR},
             </if>
@@ -116,7 +128,8 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Year">
         update t_year
-        set year_name   = #{yearName,jdbcType=VARCHAR},
+        set year        = #{year,jdbcType=INTEGER},
+            year_name   = #{yearName,jdbcType=VARCHAR},
             year_start  = #{yearStart,jdbcType=TIMESTAMP},
             year_end    = #{yearEnd,jdbcType=TIMESTAMP},
             curr        = #{curr,jdbcType=INTEGER},
@@ -170,15 +183,19 @@
             #{id}
         </foreach>
     </delete>
-    <select id="findCurrYear" resultMap="BaseResultMap">
+    <select id="getCurrentYear" resultMap="BaseResultMap">
         select *
-        from t_year y
+        from t_year
         where curr = 1
+        order by year_start desc
+        limit 1
     </select>
-    <select id="findCurrYearId" resultType="Long">
-        SELECT ty.oid
-        FROM t_year AS ty
-        WHERE ty.curr = 1
+    <select id="getCurrentYearId" resultType="Long">
+        select oid
+        from t_year
+        where curr = 1
+        order by year_start desc
+        limit 1
     </select>
     <update id="updateSetCurrYear" parameterType="java.lang.Long">
         update t_year
@@ -228,6 +245,14 @@
         where #{date} between year_start and year_end
         order by year_start desc
         limit 1
+    </select>
+
+    <select id="getYearNameByIds" resultMap="BaseResultMap">
+        select oid, year_name from t_year
+        where oid in
+        <foreach collection="yearIds" item="yearId" open="(" separator="," close=")" index="index">
+            #{yearId}
+        </foreach>
     </select>
 
 </mapper>

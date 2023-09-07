@@ -47,8 +47,8 @@ public class GrowthController {
     }
 
     @DeleteMapping("/del/{id}")
-    public ResponseModel delGrowthById(@PathVariable("id") Long id) {
-        return growthService.removeById(id) ? ResponseModel.ok("删除成功！") : ResponseModel.failed("删除失败！");
+    public ResponseModel<Long> delGrowthById(@PathVariable("id") Long id) {
+        return growthService.removeById(id) ? ResponseModel.ok(id, "删除成功！") : ResponseModel.failed("删除失败！");
     }
 
 

@@ -44,7 +44,7 @@ public class RankServiceImpl implements RankService {
 
     @Override
     public List<WholeSchoolTop10VO> getWholeSchoolTop10Ranking() {
-        Long yearId = yearMapper.findCurrYearId();
+        Long yearId = yearMapper.getCurrentYearId();
         if (yearId == null) return new ArrayList<>();
         List<WholeSchoolTop10VO> list = recAddScoreMapper.findWholeSchoolTop10Ranking(yearId);
         if (CollUtil.isNotEmpty(list)) {
@@ -83,7 +83,7 @@ public class RankServiceImpl implements RankService {
 
     @Override
     public List<WholeClassTop10VO> getWholeClassTop10Ranking() {
-        Long yearId = yearMapper.findCurrYearId();
+        Long yearId = yearMapper.getCurrentYearId();
         if (yearId == null) return new ArrayList<>();
         List<WholeClassTop10VO> list = recAddScoreMapper.findWholeClassTop10Ranking(yearId);
         if (CollUtil.isNotEmpty(list)) {

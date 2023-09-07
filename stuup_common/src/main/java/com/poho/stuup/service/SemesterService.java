@@ -3,7 +3,6 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Semester;
 import com.poho.stuup.model.dto.SemesterDTO;
 import com.poho.stuup.model.vo.SemesterVO;
@@ -53,8 +52,8 @@ public interface SemesterService extends IService<Semester> {
     /**
      * 获取学生的学期信息
      *
-     * @param userId
+     * @param studentId
      * @return
      */
-    ResponseModel<List<Semester>> getStudentSemester(Long userId);
+    List<Semester> getStudentSemester(Integer studentId);
 }

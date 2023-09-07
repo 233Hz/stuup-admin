@@ -9,9 +9,8 @@ import lombok.Getter;
 public enum AudStateEnum {
     TO_BE_SUBMITTED("待提交", 1),
     PENDING_REVIEW("待审核", 2),
-    PASS("通过", 3),
-    REFUSE("拒绝", 4),
-    RETURN("退回", 5);
+    PASS("审核通过", 3),
+    NO_PASS("审核不通过", 4);
 
     private final String state;
     private final int code;

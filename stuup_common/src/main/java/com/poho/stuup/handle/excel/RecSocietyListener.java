@@ -67,7 +67,7 @@ public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
         }
         Long studentId = studentMap.get(studentNo);
         if (studentId == null) {
-            studentId = studentMapper.findStudentId(studentNo);
+            studentId = studentMapper.getIdByStudentNo(studentNo);
         }
         if (studentId == null) {
             errorMessages.add("该学生不存在");

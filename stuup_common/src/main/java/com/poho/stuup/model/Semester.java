@@ -39,6 +39,11 @@ public class Semester implements Serializable {
     private Long yearId;
 
     /**
+     * 年份
+     */
+    private Integer year;
+
+    /**
      * 学期名称
      */
     @NotBlank(message = "学期名称不能为空")

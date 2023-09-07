@@ -2,6 +2,7 @@ package com.poho.stuup.dao;
 
 
 import com.poho.stuup.model.Teacher;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -108,4 +109,6 @@ public interface TeacherMapper {
     List<Teacher> selectAll();
 
     List<Teacher> getAllTeacherJobNosAndIds();
+
+    String getJobNoById(@Param("id") Integer id);
 }

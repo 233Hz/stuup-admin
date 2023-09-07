@@ -2,12 +2,11 @@ package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.vo.*;
+import com.poho.stuup.service.IStudentService;
+import com.poho.stuup.service.IUserService;
 import com.poho.stuup.service.PortraitService;
 import com.poho.stuup.util.ProjectUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +27,12 @@ public class PortraitController {
 
     @Resource
     private PortraitService portraitService;
+
+    @Resource
+    private IUserService userService;
+
+    @Resource
+    private IStudentService studentService;
 
     @GetMapping("/basicInfo")
     public ResponseModel<PortraitBasicInfoVO> getBasicInfo() {
@@ -71,10 +76,9 @@ public class PortraitController {
         return portraitService.getGrowthData(Long.valueOf(userId), semesterId);
     }
 
-    @GetMapping("/growthComparison/{semesterId}")
-    public ResponseModel<List<PortraitGrowthComparisonVO>> getGrowthComparison(@PathVariable("semesterId") Long semesterId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
-        return portraitService.getGrowthComparison(Long.valueOf(userId), semesterId);
+    @GetMapping("/growthComparison")
+    public ResponseModel<List<PortraitGrowthComparisonVO>> getGrowthComparison(@RequestParam("semesterId") Long semesterId, @RequestParam("studentId") Long studentId) {
+        return ResponseModel.ok(portraitService.getGrowthComparison(semesterId, studentId));
     }
 
     @GetMapping("/studyGrade")

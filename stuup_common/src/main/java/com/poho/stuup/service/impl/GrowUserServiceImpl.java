@@ -3,7 +3,7 @@ package com.poho.stuup.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.dao.GrowUserMapper;
 import com.poho.stuup.model.GrowUser;
-import com.poho.stuup.model.vo.SimpleUserVO;
+import com.poho.stuup.model.vo.GrowthItemUserVO;
 import com.poho.stuup.service.GrowUserService;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class GrowUserServiceImpl extends ServiceImpl<GrowUserMapper, GrowUser> i
 
 
     @Override
-    public List<SimpleUserVO> getGrowItemUser(Long growId) {
-        return baseMapper.getGrowItemUser(growId);
+    public List<GrowthItemUserVO> getGrowItemUser(Long growthItemId) {
+        return baseMapper.getGrowItemUser(growthItemId);
     }
 }

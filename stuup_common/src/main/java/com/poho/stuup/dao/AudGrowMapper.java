@@ -5,12 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.AudGrow;
 import com.poho.stuup.model.dto.GrowRecordDTO;
-import com.poho.stuup.model.vo.GrowApplyRecordVO;
-import com.poho.stuup.model.vo.GrowAuditRecordVO;
+import com.poho.stuup.model.vo.AudGrowthVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * <p>
@@ -23,8 +20,7 @@ import java.util.List;
 @Mapper
 public interface AudGrowMapper extends BaseMapper<AudGrow> {
 
-    IPage<GrowApplyRecordVO> pageGrowApplyRecord(Page<GrowApplyRecordVO> page, @Param("query") GrowRecordDTO query);
+    IPage<AudGrowthVO> pageAud(Page<AudGrowthVO> page, @Param("query") GrowRecordDTO query);
 
-    IPage<GrowAuditRecordVO> pageGrowAuditRecord(Page<GrowAuditRecordVO> page, @Param("userIds") List<Long> userIds, @Param("query") GrowRecordDTO query);
-
+    int updateState(@Param("id") Long id, @Param("state") Integer state);
 }

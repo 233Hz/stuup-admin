@@ -59,7 +59,7 @@ public class CommunityMemberListener implements ApplicationListener<CommunityMem
         }
         //调用积分功能模块
         long batchCode = System.currentTimeMillis();
-        Long currYearId = yearMapper.findCurrYearId();
+        Long currYearId = yearMapper.getCurrentYearId();
         Long currentSemesterId = semesterMapper.getCurrentSemesterId();
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, ProjectConstants.COMMUNITY_CODE));
@@ -71,7 +71,7 @@ public class CommunityMemberListener implements ApplicationListener<CommunityMem
         String stuNo;
         for (SyncCommunityMember communityMember : memberList) {
             stuNo = communityMember.getStuNo();
-            Long stuId = studentMapper.findStudentId(stuNo);
+            Long stuId = studentMapper.getIdByStudentNo(stuNo);
             if (stuId != null) {
                 SocietySaveDTO societySaveDTO = SocietySaveDTO.builder()
                         .communityMemberId(communityMember.getId())
