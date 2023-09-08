@@ -76,4 +76,11 @@ public interface ScreenService {
      * @return
      */
     List<ReviewOfEachClassVO> countReviewOfEachClass();
+
+    /**
+     * 统计本月访问量
+     *
+     * @return
+     */
+    Integer countVisitsThisMonth();
 }

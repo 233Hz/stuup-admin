@@ -83,5 +83,10 @@ public class ScreenController {
         return ResponseModel.ok(screenService.countReviewOfEachClass());
     }
 
+    @GetMapping("/countVisitsThisMonth")
+    public ResponseModel<Integer> countVisitsThisMonth() {
+        return ResponseModel.ok(screenService.countVisitsThisMonth());
+    }
+
 
 }

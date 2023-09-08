@@ -25,9 +25,9 @@ public class GardenController {
     private StuScoreService stuScoreService;
 
     @GetMapping("/page")
-    private ResponseModel<IPage<GrowGardenVO>> getGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query) {
+    private ResponseModel<IPage<GrowGardenVO>> pageGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query) {
         String userId = ProjectUtil.obtainLoginUser(request);
-        return stuScoreService.getGrowGarden(page, query, Long.valueOf(userId));
+        return stuScoreService.pageGrowGarden(page, query, Long.valueOf(userId));
     }
 
 

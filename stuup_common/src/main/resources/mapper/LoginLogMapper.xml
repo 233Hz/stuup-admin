@@ -30,4 +30,13 @@
         order by date;
     </select>
 
+    <select id="countVisitsThisMonth" resultType="integer">
+        select count(*)
+        from t_login_log
+        where month(create_time) = month(
+                current_date())
+          and year(create_time) = year(
+                current_date())
+    </select>
+
 </mapper>

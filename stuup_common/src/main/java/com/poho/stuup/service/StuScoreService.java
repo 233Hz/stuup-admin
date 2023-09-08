@@ -37,6 +37,6 @@ public interface StuScoreService extends IService<StuScore> {
      * @author BUNGA
      * @date: 2023/6/9 10:02
      */
-    ResponseModel<IPage<GrowGardenVO>> getGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query, Long userId);
+    ResponseModel<IPage<GrowGardenVO>> pageGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query, Long userId);
 
 }

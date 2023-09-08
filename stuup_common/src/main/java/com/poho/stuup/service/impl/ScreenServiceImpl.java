@@ -354,4 +354,9 @@ public class ScreenServiceImpl implements ScreenService {
         }
         return result;
     }
+
+    @Override
+    public Integer countVisitsThisMonth() {
+        return loginLogMapper.countVisitsThisMonth();
+    }
 }

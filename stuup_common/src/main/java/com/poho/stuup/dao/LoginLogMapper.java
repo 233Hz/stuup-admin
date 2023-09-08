@@ -21,4 +21,6 @@ public interface LoginLogMapper extends BaseMapper<LoginLog> {
     int findTodayLoginCount(Long userId);
 
     List<DailyVisitsVO> countDailyVisits();
+
+    Integer countVisitsThisMonth();
 }

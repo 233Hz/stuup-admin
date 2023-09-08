@@ -70,7 +70,7 @@ public class StuScoreServiceImpl extends ServiceImpl<StuScoreMapper, StuScore> i
     }
 
     @Override
-    public ResponseModel<IPage<GrowGardenVO>> getGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query, Long userId) {
+    public ResponseModel<IPage<GrowGardenVO>> pageGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query, Long userId) {
         int startScore, endScore;
         FlowerVO flowerConfig = growthItemService.getFlowerConfig();
         int gardenType = query.getGardenType();
