@@ -287,7 +287,7 @@
         where tc.teacher_id = #{_parameter,jdbcType=INTEGER}
     </select>
 
-    <select id="getClassIdForTeacher" resultType="integer">
+    <select id="getClassIdFormTeacherId" resultType="integer">
         select id
         from t_class
         where teacher_id = #{teacherId}

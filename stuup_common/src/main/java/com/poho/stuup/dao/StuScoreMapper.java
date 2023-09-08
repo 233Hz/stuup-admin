@@ -20,10 +20,6 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface StuScoreMapper extends BaseMapper<StuScore> {
 
-    IPage<GrowGardenVO> getGrowGardenForStudent(Page<GrowGardenVO> page,
-                                                @Param("query") GrowGardenDTO query,
-                                                @Param("userClassId") Integer userClassId,
-                                                @Param("startScore") Integer startScore,
-                                                @Param("endScore") Integer endScore);
+    IPage<GrowGardenVO> pageGrowGarden(Page<GrowGardenVO> page, @Param("query") GrowGardenDTO query);
 
 }

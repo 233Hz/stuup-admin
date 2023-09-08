@@ -13,4 +13,5 @@ import com.poho.stuup.model.File;
  */
 public interface FileService extends IService<File> {
 
+    String getFileUrl(Long id) throws Exception;
 }

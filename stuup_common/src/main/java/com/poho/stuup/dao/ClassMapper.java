@@ -96,7 +96,7 @@ public interface ClassMapper {
      * @author BUNGA
      * @date: 2023/6/9 10:50
      */
-    Integer getClassIdForTeacher(@Param("teacherId") Long teacherId);
+    List<Integer> getClassIdFormTeacherId(@Param("teacherId") Integer teacherId);
 
     List<Class> selectAll();
 

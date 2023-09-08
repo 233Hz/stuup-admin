@@ -159,10 +159,7 @@ public class Utils {
             return false;
         }
         List<Long> roleIds = userRoleMapper.queryUserRoleId(userId);
-        if (CollUtil.isEmpty(roleIds)) {
-            log.error("当前用户未设置角色");
-            return false;
-        }
+        if (CollUtil.isEmpty(roleIds)) return false;
         return roleIds.contains(roleId);
     }
 
@@ -178,10 +175,7 @@ public class Utils {
         RoleMapper roleMapper = SpringContextHolder.getBean(RoleMapper.class);
         UserRoleMapper userRoleMapper = SpringContextHolder.getBean(UserRoleMapper.class);
         List<Long> roleIds = userRoleMapper.queryUserRoleId(userId);
-        if (CollUtil.isEmpty(roleIds)) {
-            log.error("当前用户未设置角色");
-            return false;
-        }
+        if (CollUtil.isEmpty(roleIds)) return false;
 
         for (RoleEnum roleEnum : roleEnums) {
             Long roleId = roleMapper.findRoleIdByName(roleEnum.getRoleName());
@@ -189,8 +183,6 @@ public class Utils {
                 if (roleIds.contains(roleId)) {
                     return true;
                 }
-            } else {
-                log.error("{}角色不存在", roleEnum.getRoleName());
             }
         }
         return false;

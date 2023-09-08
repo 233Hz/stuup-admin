@@ -85,5 +85,5 @@ public interface StudentMapper {
      */
     Integer countSexNum(@Param("sex") Integer sex);
 
-    List<Student> getClassIdByStudentNo(@Param("studentNoList") List<String> studentNoList);
+    Integer getClassIdByStudentNo(@Param("studentNo") String studentNo);
 }

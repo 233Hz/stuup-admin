@@ -630,4 +630,10 @@
         from t_teacher
         where id = #{id}
     </select>
+
+    <select id="getIdByJobNo" resultType="integer">
+        select id
+        from t_teacher
+        where job_no = #{jobNo}
+    </select>
 </mapper>

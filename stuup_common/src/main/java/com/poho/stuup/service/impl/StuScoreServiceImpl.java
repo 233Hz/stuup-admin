@@ -1,23 +1,20 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.constant.GardenTypeEnum;
 import com.poho.stuup.constant.RoleEnum;
 import com.poho.stuup.constant.UserTypeEnum;
 import com.poho.stuup.dao.ClassMapper;
 import com.poho.stuup.dao.StuScoreMapper;
 import com.poho.stuup.dao.StudentMapper;
-import com.poho.stuup.dao.UserMapper;
+import com.poho.stuup.dao.TeacherMapper;
 import com.poho.stuup.model.StuScore;
-import com.poho.stuup.model.Student;
-import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.GrowGardenDTO;
-import com.poho.stuup.model.vo.FlowerVO;
 import com.poho.stuup.model.vo.GrowGardenVO;
+import com.poho.stuup.service.FileService;
 import com.poho.stuup.service.StuScoreService;
 import com.poho.stuup.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <p>
@@ -39,16 +38,16 @@ import java.math.BigDecimal;
 public class StuScoreServiceImpl extends ServiceImpl<StuScoreMapper, StuScore> implements StuScoreService {
 
     @Resource
-    private UserMapper userMapper;
-
-    @Resource
     private StudentMapper studentMapper;
 
     @Resource
     private ClassMapper classMapper;
 
     @Resource
-    private GrowthItemServiceImpl growthItemService;
+    private TeacherMapper teacherMapper;
+
+    @Resource
+    private FileService fileService;
 
 
     @Override
@@ -70,40 +69,36 @@ public class StuScoreServiceImpl extends ServiceImpl<StuScoreMapper, StuScore> i
     }
 
     @Override
-    public ResponseModel<IPage<GrowGardenVO>> pageGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query, Long userId) {
-        int startScore, endScore;
-        FlowerVO flowerConfig = growthItemService.getFlowerConfig();
-        int gardenType = query.getGardenType();
-        if (gardenType == GardenTypeEnum.BMH.getValue()) {
-            startScore = flowerConfig.getBmhSeed();
-            endScore = flowerConfig.getBmhFruit();
-        } else if (gardenType == GardenTypeEnum.XCJ.getValue()) {
-            startScore = flowerConfig.getXcjSeed();
-            endScore = flowerConfig.getXcjFruit();
-        } else if (gardenType == GardenTypeEnum.XHH.getValue()) {
-            startScore = flowerConfig.getXhhSeed();
-            endScore = flowerConfig.getXhhFruit();
-        } else {
-            return ResponseModel.failed("查询的花园类型不存在");
+    public IPage<GrowGardenVO> pageGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query) {
+        Long userId = query.getUser().getOid();
+        boolean hasRolePermission = Utils.hasRole(userId, RoleEnum.ADMIN, RoleEnum.SCHOOL_LEADERS, RoleEnum.DEPT_LEADERS);
+        if (!hasRolePermission) {
+            Integer userType = query.getUser().getUserType();
+            String loginName = query.getUser().getLoginName();
+            if (userType == UserTypeEnum.STUDENT.getValue()) {
+                Integer classId = studentMapper.getClassIdByStudentNo(loginName);
+                query.setClassIds(Collections.singletonList(classId));
+            } else if (userType == UserTypeEnum.TEACHER.getValue()) {
+                Integer teacherId = teacherMapper.getIdByJobNo(loginName);
+                if (teacherId == null) return page;
+                List<Integer> classIds = classMapper.getClassIdFormTeacherId(teacherId);
+                if (CollUtil.isEmpty(classIds)) return page;
+                query.setClassIds(classIds);
+            } else {
+                return page;
+            }
         }
-        Integer userClassId;   // 用户所属班级id
-        User user = userMapper.selectByPrimaryKey(userId);
-        Integer userType = user.getUserType();
-        if (userType == UserTypeEnum.STUDENT.getValue()) {
-            Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-            userClassId = student.getClassId();
-        } else if (userType == UserTypeEnum.TEACHER.getValue()) {
-            userClassId = classMapper.getClassIdForTeacher(userId);
-        } else {
-            log.error("用户类型不存在，用户id:{}", userId);
-            return ResponseModel.failed("用户类型不存在,请联系管理员");
+        IPage<GrowGardenVO> resultPage = baseMapper.pageGrowGarden(page, query);
+        List<GrowGardenVO> pageRecords = resultPage.getRecords();
+        for (GrowGardenVO record : pageRecords) {
+            Long avatarId = record.getAvatarId();
+            try {
+                record.setAvatar(fileService.getFileUrl(avatarId));
+            } catch (Exception e) {
+                log.error(e.getMessage(), (Object) e.getStackTrace());
+            }
         }
-        if (Utils.hasRole(userId, RoleEnum.ADMIN, RoleEnum.SCHOOL_LEADERS, RoleEnum.DEPT_LEADERS)) {
-            userClassId = null;
-        } else {
-            if (userClassId == null) return ResponseModel.failed("没有查看权限");
-        }
-        return ResponseModel.ok(baseMapper.getGrowGardenForStudent(page, query, userClassId, startScore, endScore));
+        return resultPage;
     }
 
 

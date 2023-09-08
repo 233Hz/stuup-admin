@@ -1,8 +1,9 @@
 package com.poho.stuup.model.dto;
 
+import com.poho.stuup.model.User;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class GrowGardenDTO {
@@ -10,8 +11,7 @@ public class GrowGardenDTO {
     /**
      * 花园类型
      */
-    @NotNull(message = "花园类型不能为空")
-    private int gardenType;
+    private Integer gardenType;
 
     /**
      * 学生姓名
@@ -33,5 +33,11 @@ public class GrowGardenDTO {
      */
     private String className;
 
+    /**
+     * 班级id
+     */
+    private List<Integer> classIds;
+
+    private User user;
 
 }

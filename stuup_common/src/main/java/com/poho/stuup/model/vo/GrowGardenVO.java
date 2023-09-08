@@ -1,6 +1,9 @@
 package com.poho.stuup.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 public class GrowGardenVO {
@@ -33,6 +36,17 @@ public class GrowGardenVO {
     /**
      * 成长值
      */
-    private Integer score;
+    private BigDecimal score;
+
+    /**
+     * 头像
+     */
+    private String avatar;
+
+    /**
+     * 头像id
+     */
+    @JsonIgnore
+    private Long avatarId;
 
 }

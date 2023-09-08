@@ -315,12 +315,10 @@
         </if>
     </select>
 
-    <select id="getClassIdByStudentNo" resultMap="BaseResultMap">
-        select student_no, class_id from t_student
-        where student_no in
-        <foreach collection="studentNoList" item="studentNo" open="(" separator="," close=")">
-            #{studentNo}
-        </foreach>
+    <select id="getClassIdByStudentNo" resultType="integer">
+        select class_id
+        from t_student
+        where student_no = #{studentNo}
     </select>
 
 </mapper>

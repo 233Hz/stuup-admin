@@ -111,4 +111,6 @@ public interface TeacherMapper {
     List<Teacher> getAllTeacherJobNosAndIds();
 
     String getJobNoById(@Param("id") Integer id);
+
+    Integer getIdByJobNo(@Param("jobNo") String jobNo);
 }

@@ -17,29 +17,40 @@
         <result column="class_name" property="className"/>
         <result column="class_teacher" property="classTeacher"/>
         <result column="score" property="score"/>
+        <result column="avatar_id" property="avatarId"/>
     </resultMap>
 
-    <select id="getGrowGardenForStudent" resultMap="GrowGardenVOMap">
+    <select id="pageGrowGarden" resultMap="GrowGardenVOMap">
         select ss.student_id,
         s.name as student_name,
         g.grade_name,
         c.name as class_name,
         t.name as class_teacher,
-        ss.score
-        from t_stu_score ss
-        left join t_student s on s.id = ss.student_id
-        left join t_grade g on g.oid = s.grade_id
-        left join t_class c on s.class_id = c.id
-        left join t_teacher t on t.id = c.teacher_id
+        ss.score,
+        u.avatar_id
+        from t_student s
+        left join t_stu_score ss on s.id = ss.student_id
+        left join t_grade g on s.grade_id = g.oid
+        left join t_class c on c.id = s.class_id
+        left join t_teacher t on c.teacher_id = t.id
+        left join t_user u on s.student_no = u.login_name
         <where>
-            <if test="startScore != null">
-                ss.score &gt;= #{startScore} and
+            <if test="query.gardenType == 1">
+                ss.score &gt;= 0
+                and ss.score &lt;= (select config_value from t_config where config_key ='bmh_seed_required_points')
             </if>
-            <if test="startScore == null">
-                ss.score &gt; 0 and
+            <if test="query.gardenType == 2">
+                ss.score &gt;= (select config_value from t_config where config_key = 'bmh_seed_required_points')
+                and ss.score &lt;= (select config_value from t_config where config_key = 'xhh_seed_required_points')
             </if>
-            <if test="endScore != null">
-                ss.score &lt;= #{endScore}
+            <if test="query.gardenType == 3">
+                ss.score &gt;= (select config_value from t_config where config_key = 'xhh_seed_required_points')
+            </if>
+            <if test="query.classIds != null and query.classIds.size > 0">
+                and s.class_id in
+                <foreach collection="query.classIds" item="classId" open="(" separator="," close=")">
+                    #{classId}
+                </foreach>
             </if>
             <if test="query.studentName != null and query.studentName != ''">
                 and s.name like concat('%', #{query.studentName}, '%')
@@ -54,7 +65,7 @@
                 and c.name like concat('%', #{query.className}, '%')
             </if>
         </where>
-        order by score desc
+        order by ss.score desc
     </select>
 
 </mapper>
