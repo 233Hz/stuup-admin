@@ -61,7 +61,19 @@ public interface ScreenService {
      *
      * @return
      */
-    ScreenImportantDataVO getImportantData( StopWatch stopWatch );
+    ScreenImportantDataVO getImportantData(StopWatch stopWatch);
 
+    /**
+     * 统计近30天每日访问量
+     *
+     * @return
+     */
     List<DailyVisitsVO> countDailyVisits();
+
+    /**
+     * 统计各班级的申请数和审核数
+     *
+     * @return
+     */
+    List<ReviewOfEachClassVO> countReviewOfEachClass();
 }

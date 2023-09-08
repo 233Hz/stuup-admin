@@ -112,4 +112,6 @@ public interface ClassMapper {
     Integer getTeacherIdNoByClassId(@Param("classId") Integer classId);
 
     List<Class> getClassNameByIds(@Param("classIds") List<Integer> classIds);
+
+    List<Class> getAllClassNameAndTeacherId();
 }

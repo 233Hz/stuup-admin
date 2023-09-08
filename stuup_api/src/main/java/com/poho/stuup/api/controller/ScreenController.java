@@ -78,4 +78,10 @@ public class ScreenController {
         return ResponseModel.ok(screenService.countDailyVisits());
     }
 
+    @GetMapping("/countReviewOfEachClass")
+    public ResponseModel<List<ReviewOfEachClassVO>> countReviewOfEachClass() {
+        return ResponseModel.ok(screenService.countReviewOfEachClass());
+    }
+
+
 }

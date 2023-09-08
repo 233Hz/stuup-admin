@@ -41,4 +41,22 @@
         where rd.batch_code = #{batchCode}
     </select>
 
+    <resultMap id="StudentGrowthMonitorVOMap" type="com.poho.stuup.model.vo.StudentGrowthMonitorVO">
+        <result column="growth_item_id" property="growthItemId"/>
+        <result column="person_num" property="personNum"/>
+    </resultMap>
+
+    <select id="countViolationsTop3" resultMap="StudentGrowthMonitorVOMap">
+        select grow_id as growth_item_id, count(*) as person_num
+        from t_rec_default
+        where grow_id in
+        <foreach collection="growthItemIds" item="growthItemId" open="(" separator="," close=")">
+            #{growthItemId}
+        </foreach>
+        and create_time &gt;= #{startTime} and create_time &lt;= #{endTime}
+        group by grow_id
+        order by person_num desc
+        limit 3
+    </select>
+
 </mapper>

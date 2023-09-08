@@ -3,10 +3,13 @@ package com.poho.stuup.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.vo.RecLogDetailsVO;
+import com.poho.stuup.model.vo.StudentGrowthMonitorVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -20,4 +23,6 @@ import java.util.List;
 public interface RecDefaultMapper extends BaseMapper<RecDefault> {
 
     List<RecLogDetailsVO> getRecLogDetails(@Param("batchCode") Long batchCode);
+
+    List<StudentGrowthMonitorVO> countViolationsTop3(@Param("growthItemIds") Set<Long> growthItemIds, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

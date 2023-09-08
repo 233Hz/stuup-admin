@@ -23,17 +23,17 @@ public class ScreenImportantDataVO {
     /**
      * 班级总数
      */
-    private Integer classNum;
+    private int classNum;
 
     /**
      * 社团总数
      */
-    private Integer clubNum;
+    private int clubNum;
 
     /**
      * 专业总数
      */
-    private Integer majorNum;
+    private int majorNum;
 
     /**
      * 成长项目总数
@@ -46,12 +46,17 @@ public class ScreenImportantDataVO {
     private Long activityNum;
 
     /**
-     * 合格率
-     */
-    private String passRate;
-
-    /**
      * 获得奖学金人数
      */
     private Long scholarshipNum;
+
+    /**
+     * 学生申请项目数
+     */
+    private int applyCount;
+
+    /**
+     * 班主任审核项目数
+     */
+    private int auditCount;
 }

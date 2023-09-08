@@ -11,6 +11,7 @@ import com.poho.stuup.constant.CalculateTypeEnum;
 import com.poho.stuup.constant.ChangeTypeEnum;
 import com.poho.stuup.constant.ConfigKeyEnum;
 import com.poho.stuup.dao.*;
+import com.poho.stuup.model.Class;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.*;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +42,8 @@ public class ScreenServiceImpl implements ScreenService {
     @Resource
     private RecDefaultService recDefaultService;
     @Resource
+    private RecDefaultMapper recDefaultMapper;
+    @Resource
     private YearInfoMapper yearInfoMapper;
     @Resource
     private IConfigService configService;
@@ -59,55 +63,41 @@ public class ScreenServiceImpl implements ScreenService {
     private LoginLogMapper loginLogMapper;
     @Resource
     private RecLogService recLogService;
+    @Resource
+    private AudGrowMapper audGrowMapper;
+
 
     @Override
     public List<StudentGrowthMonitorVO> studentGrowthMonitor() {
-        List<StudentGrowthMonitorVO> resultList = new ArrayList<>();
-
         // 查询扣分项
         List<GrowthItem> growthItems = growthItemService.list(Wrappers.<GrowthItem>lambdaQuery()
                 .select(GrowthItem::getName, GrowthItem::getId)
                 .eq(GrowthItem::getCalculateType, CalculateTypeEnum.MINUS.getValue()));
         if (CollUtil.isNotEmpty(growthItems)) {
-            Map<Long, String> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getId, GrowthItem::getName));
+            Map<Long, String> growthItemIdForNameMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getId, GrowthItem::getName));
             growthItems.clear();
             // 获取本月起止时间
             Date date = new Date();
             DateTime startTime = DateUtil.beginOfMonth(date);
             DateTime endTime = DateUtil.endOfMonth(date);
             // 查询时间段内的违规人次
-            List<Long> growIds = recDefaultService.listObjs(Wrappers.<RecDefault>lambdaQuery()
-                    .select(RecDefault::getGrowId)
-                    .in(RecDefault::getGrowId, growthItemMap.keySet())
-                    .between(RecDefault::getCreateTime, startTime, endTime), id -> Long.valueOf(String.valueOf(id)));
-            if (CollUtil.isNotEmpty(growIds)) {
-                // 统计排序
-                Map<Long, Long> growIdFfrequencyMap = growIds.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
-                growIds.clear();
-                Map<Long, Long> sortedGrowIdFrequencyMap = growIdFfrequencyMap.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue())
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-                growIdFfrequencyMap.clear();
-                int index = 1;
-                for (Map.Entry<Long, Long> entry : sortedGrowIdFrequencyMap.entrySet()) {
-                    // 只取前三条
-                    if (index > 3) continue;
-                    StudentGrowthMonitorVO studentGrowthMonitorVO = new StudentGrowthMonitorVO();
-                    studentGrowthMonitorVO.setGrowItemName(growthItemMap.get(entry.getKey()));
-                    studentGrowthMonitorVO.setPersonNum(entry.getValue());
-                    resultList.add(studentGrowthMonitorVO);
-                    index++;
-                }
-                growthItemMap.clear();
-                sortedGrowIdFrequencyMap.clear();
-            }
+            List<StudentGrowthMonitorVO> result = recDefaultMapper.countViolationsTop3(growthItemIdForNameMap.keySet(), startTime, endTime);
+            result
+                    .forEach(item -> {
+                        Long growthItemId = item.getGrowthItemId();
+                        String growthItemName = growthItemIdForNameMap.get(growthItemId);
+                        item.setGrowItemName(growthItemName);
+                    });
+            return result;
         }
-        return resultList;
+        return Collections.emptyList();
     }
 
     @Override
     public List<YearAtSchoolNumVO> countNear3YearsAtSchoolNum() {
-        return yearInfoMapper.countNear3YearsAtSchoolNum();
+        List<YearAtSchoolNumVO> result = yearInfoMapper.countNear3YearsAtSchoolNum();
+        Collections.reverse(result);
+        return result;
     }
 
     @Override
@@ -266,6 +256,8 @@ public class ScreenServiceImpl implements ScreenService {
 
     @Override
     public ScreenImportantDataVO getImportantData(StopWatch stopWatch) {
+
+
         stopWatch.start("男女统计");
         ScreenImportantDataVO screenImportantDataVO = new ScreenImportantDataVO();
         // 统计在校生人数
@@ -301,7 +293,7 @@ public class ScreenServiceImpl implements ScreenService {
         stopWatch.stop();
 
         // 统计举办活动次数
-        stopWatch.start("男女统计");
+        stopWatch.start("统计举办活动次数");
         Long activityNum = countHoldAnActivityNum();
         screenImportantDataVO.setActivityNum(activityNum);
         stopWatch.stop();
@@ -312,11 +304,54 @@ public class ScreenServiceImpl implements ScreenService {
         screenImportantDataVO.setScholarshipNum(scholarshipNum);
         stopWatch.stop();
 
+        Year year = yearMapper.getCurrentYear();
+        if (year != null) {
+            Date start = year.getYearStart();
+            Date end = year.getYearEnd();
+            // 统计学生申请项目数
+            stopWatch.start("学生申请项目数统计");
+            int applyCount = audGrowMapper.countApplyInRange(start, end);
+            screenImportantDataVO.setApplyCount(applyCount);
+            stopWatch.stop();
+            // 统计班主任审核项目数
+            stopWatch.start("统计班主任审核项目数");
+            int auditApply = audGrowMapper.countAuditInRange(start, end);
+            screenImportantDataVO.setAuditCount(auditApply);
+            stopWatch.stop();
+        }
+
         return screenImportantDataVO;
     }
 
     @Override
     public List<DailyVisitsVO> countDailyVisits() {
         return loginLogMapper.countDailyVisits();
+    }
+
+    @Override
+    public List<ReviewOfEachClassVO> countReviewOfEachClass() {
+        Year year = yearMapper.getCurrentYear();
+        if (year == null) return Collections.emptyList();
+        Date startTime = year.getYearStart();
+        Date endTime = year.getYearEnd();
+        List<ReviewOfEachClassVO> result = audGrowMapper.countReviewOfEachClass(startTime, endTime);
+        if (CollUtil.isNotEmpty(result)) {
+            Map<Long, ReviewOfEachClassVO> map = result.stream().collect(Collectors.toMap(ReviewOfEachClassVO::getClassTeacherId, Function.identity()));
+            result.clear();
+            List<Class> classList = classMapper.getAllClassNameAndTeacherId();
+            for (Class _class : classList) {
+                Optional.ofNullable(_class.getTeacherId())
+                        .map(classId -> {
+                            ReviewOfEachClassVO reviewOfEachClass = map.get(classId.longValue());
+                            if (reviewOfEachClass == null) {
+                                reviewOfEachClass = new ReviewOfEachClassVO();
+                            }
+                            reviewOfEachClass.setClassName(_class.getName());
+                            return reviewOfEachClass;
+                        })
+                        .ifPresent(result::add);
+            }
+        }
+        return result;
     }
 }

@@ -1,5 +1,6 @@
 package com.poho.stuup.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -19,5 +20,11 @@ public class StudentGrowthMonitorVO {
      * 违规人次
      */
     private Long personNum;
+
+    /**
+     * 项目id
+     */
+    @JsonIgnore
+    private Long growthItemId;
 
 }

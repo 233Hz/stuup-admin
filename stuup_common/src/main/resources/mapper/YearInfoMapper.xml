@@ -18,7 +18,8 @@
                ifnull(yi.student_num, 0) as person_num
         from t_year y
                  left join t_year_info yi on yi.year_id = y.oid
-        order by y.year_start
+        order by y.year_start desc
+        limit 3
     </select>
 
 </mapper>

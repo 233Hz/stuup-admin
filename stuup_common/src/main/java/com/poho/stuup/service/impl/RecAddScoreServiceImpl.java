@@ -309,7 +309,7 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
             Integer calculateType = growthItem.getCalculateType();
             Integer collectLimit = growthItem.getCollectLimit();
             if (calculateType != CalculateTypeEnum.PLUS.getValue())
-                throw new RuntimeException("当前项目设置计算方式设置为扣分不符合逻辑，请联系管理员修改");
+                throw new RuntimeException("学生申请不能未扣分项目");
             if (collectLimit != null && collectLimit > 0) {
                 StuGrowth stuGrowth = stuGrowthMapper.selectOne(Wrappers.<StuGrowth>lambdaQuery()
                         .select(StuGrowth::getCount)

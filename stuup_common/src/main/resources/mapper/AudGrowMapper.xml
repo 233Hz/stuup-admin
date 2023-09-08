@@ -119,4 +119,37 @@
     </update>
 
 
+    <resultMap id="ReviewOfEachClassVOMap" type="com.poho.stuup.model.vo.ReviewOfEachClassVO">
+        <result column="class_teacher_id" property="classTeacherId"/>
+        <result column="apply_count" property="applyCount"/>
+        <result column="audit_count" property="auditCount"/>
+    </resultMap>
+
+
+    <select id="countReviewOfEachClass" resultMap="ReviewOfEachClassVOMap">
+        select t.id                                                          as class_teacher_id,
+               count(*)                                                      as apply_count,
+               sum(case when ag.state = 3 or ag.state = 4 then 1 else 0 end) as audit_count
+        from t_aud_grow ag
+                 left join t_user u on ag.auditor = u.oid
+                 left join t_teacher t on u.login_name = t.job_no
+        group by ag.auditor;
+    </select>
+
+    <select id="countApplyInRange" resultType="int">
+        select count(*)
+        from t_aud_grow
+        where create_time &gt;= #{startTime}
+          and create_time &lt;= #{endTime}
+    </select>
+
+    <select id="countAuditInRange" resultType="int">
+        select count(*)
+        from t_aud_grow
+        where create_time &gt;= #{startTime}
+            and create_time &lt;= #{endTime}
+            and state = 3
+           or state = 4
+    </select>
+
 </mapper>

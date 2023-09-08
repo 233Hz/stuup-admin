@@ -1,5 +1,6 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -83,7 +84,7 @@ public class AudGrowServiceImpl extends ServiceImpl<AudGrowMapper, AudGrow> impl
         IPage<AudGrowthVO> pageResult = baseMapper.pageAud(page, query);
         stopWatch.stop();
         List<AudGrowthVO> pageRecords = pageResult.getRecords();
-        if (!pageRecords.isEmpty()) {
+        if (CollUtil.isNotEmpty(pageRecords)) {
             stopWatch.start("处理名称");
             List<Growth> growths = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
                     .select(Growth::getId, Growth::getName));
@@ -129,19 +130,19 @@ public class AudGrowServiceImpl extends ServiceImpl<AudGrowMapper, AudGrow> impl
             List<User> users = userMapper.getUserNameByIds(mergedIds);
             Map<Long, String> userIdForNameMap = users.stream().collect(Collectors.toMap(User::getOid, User::getUserName));
             users.clear();
-            if (!yearIds.isEmpty()) {
+            if (CollUtil.isNotEmpty(yearIds)) {
                 List<Year> yearList = yearMapper.getYearNameByIds(yearIds);
                 yearIdForNameMap = yearList.stream().collect(Collectors.toMap(Year::getOid, Year::getYearName));
                 yearIds.clear();
                 yearList.clear();
             }
-            if (!semesterIds.isEmpty()) {
+            if (CollUtil.isNotEmpty(semesterIds)) {
                 List<Semester> semesterList = semesterMapper.getSemesterNameByIds(semesterIds);
                 semesterIdForNameMap = semesterList.stream().collect(Collectors.toMap(Semester::getId, Semester::getName));
                 semesterIds.clear();
                 semesterList.clear();
             }
-            if (!classIds.isEmpty()) {
+            if (CollUtil.isNotEmpty(classIds)) {
                 List<Class> classList = classMapper.getClassNameByIds(classIds);
                 classIdForNameMap = classList.stream().collect(Collectors.toMap(Class::getId, Class::getName));
                 classIds.clear();

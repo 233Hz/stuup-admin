@@ -325,4 +325,10 @@
         </foreach>
     </select>
 
+    <select id="getAllClassNameAndTeacherId" resultMap="BaseResultMap">
+        select name, teacher_id
+        from t_class
+        where is_valid = 1
+    </select>
+
 </mapper>

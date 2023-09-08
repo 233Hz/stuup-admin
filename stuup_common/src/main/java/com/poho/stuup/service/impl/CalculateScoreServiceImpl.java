@@ -153,6 +153,7 @@ public class CalculateScoreServiceImpl implements CalculateScoreService {
             stuScoreLog.setGrowId(growthItemId);
             stuScoreLog.setScore(addScore);
             stuScoreLog.setCreateTime(time);
+            stuScoreLog.setDescription(StrUtil.format("默认分：{}，违规次数：{}，扣除分：{}，剩余分：{}", growthItemScore, count, deductScore, addScore));
             stuScoreLogMapper.insert(stuScoreLog);
             stuScoreService.updateTotalScore(studentId, addScore);
         }
