@@ -55,9 +55,6 @@
             <if test="query.studentName != null and query.studentName != ''">
                 and s.name like concat('%', #{query.studentName}, '%')
             </if>
-            <if test="query.studentNo != null and query.studentNo != ''">
-                and s.student_no like concat('%', #{query.studentNo}, '%')
-            </if>
             <if test="query.gradeId != null and query.gradeId != ''">
                 and g.oid = #{query.gradeId}
             </if>

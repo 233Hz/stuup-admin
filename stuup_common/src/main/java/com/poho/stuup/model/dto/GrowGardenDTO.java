@@ -19,11 +19,6 @@ public class GrowGardenDTO {
     private String studentName;
 
     /**
-     * 学号
-     */
-    private String studentNo;
-
-    /**
      * 所属年级
      */
     private Long gradeId;
