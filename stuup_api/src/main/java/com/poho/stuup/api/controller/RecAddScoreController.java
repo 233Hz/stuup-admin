@@ -45,7 +45,7 @@ public class RecAddScoreController {
     private RecAddScoreService recAddScoreService;
 
     @GetMapping("/page")
-    public ResponseModel<IPage<RecScoreVO>> getRecScorePage(Page<RecScoreVO> page, RecScoreDTO query) {
+    public ResponseModel<IPage<RecScoreVO>> pageRecAddScore(Page<RecScoreVO> page, RecScoreDTO query) {
         if (StrUtil.isNotBlank(query.getStartTime())) {
             boolean isDateTime = Utils.isDateTime(query.getStartTime());
             if (!isDateTime) return ResponseModel.failed("开始时间格式错误");
@@ -54,7 +54,7 @@ public class RecAddScoreController {
             boolean isDateTime = Utils.isDateTime(query.getEndTime());
             if (!isDateTime) return ResponseModel.failed("结束时间格式错误");
         }
-        return ResponseModel.ok(recAddScoreService.getRecScorePage(page, query));
+        return ResponseModel.ok(recAddScoreService.pageRecAddScore(page, query));
     }
 
     @GetMapping("/student/page")

@@ -17,24 +17,29 @@ public class RecScoreDTO {
     private Long yearId;
 
     /**
+     * 学期id
+     */
+    private Long semesterId;
+
+    /**
      * 一级名称
      */
-    private Long firstLevelId;
+    private Long l1Id;
 
     /**
      * 二级名称
      */
-    private Long secondLevelId;
+    private Long l2Id;
 
     /**
      * 三级名称
      */
-    private Long threeLevelId;
+    private Long l3Id;
 
     /**
      * 成长项目
      */
-    private String growName;
+    private String growthItemName;
 
     /**
      * 年级

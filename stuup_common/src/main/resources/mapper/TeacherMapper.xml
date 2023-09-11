@@ -619,8 +619,8 @@
         from t_teacher
     </select>
 
-    <select id="getAllTeacherJobNosAndIds" resultMap="BaseResultMap">
-        select job_no, id
+    <select id="getAllTeacherJobNoAndName" resultMap="BaseResultMap">
+        select id, job_no, name
         from t_teacher
         where is_valid = 1
     </select>

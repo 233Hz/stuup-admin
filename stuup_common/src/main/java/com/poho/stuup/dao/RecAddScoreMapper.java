@@ -26,7 +26,7 @@ import java.util.List;
 @Mapper
 public interface RecAddScoreMapper extends BaseMapper<RecAddScore> {
 
-    IPage<RecScoreVO> getRecScorePage(Page<RecScoreVO> page, @Param("query") RecScoreDTO query);
+    IPage<RecScoreVO> pageRecAddScore(Page<RecScoreVO> page, @Param("query") RecScoreDTO query);
 
     IPage<StudentRecScoreVO> pageStudentRecScore(Page<StudentRecScoreVO> page, @Param("studentId") Long studentId, @Param("query") StudentRecScoreDTO query);
 

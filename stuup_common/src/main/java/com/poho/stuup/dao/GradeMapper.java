@@ -1,6 +1,7 @@
 package com.poho.stuup.dao;
 
 import com.poho.stuup.model.Grade;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -52,4 +53,6 @@ public interface GradeMapper {
     Grade findGradeByYear(String year);
 
     List<Grade> selectAll();
+
+    List<Grade> getGradeNameByIds(@Param("gradeIds") List<Integer> gradeIds);
 }

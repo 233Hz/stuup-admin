@@ -174,12 +174,12 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
         Map<Long, RankMonth> lastRankMonthMap = lastRankMonths.stream().collect(Collectors.toMap(RankMonth::getStudentId, Function.identity()));
 
         List<User> users = userMapper.getAllUserLoginNamesAndIds();             //用户
-        List<Teacher> teachers = teacherMapper.getAllTeacherJobNosAndIds();     //教师
+        List<Teacher> teachers = teacherMapper.getAllTeacherJobNoAndName();     //教师
         List<Class> classes = classMapper.getClassTeacherIdsAndIds();           //班级
 
         Map<Integer, Student> studentMap = students.stream().collect(Collectors.toMap(Student::getId, Function.identity()));            //学生
         Map<String, Long> userLoginNameToIdMap = users.stream().filter(user -> user.getLoginName() != null).collect(Collectors.toMap(User::getLoginName, User::getOid));            //用户
-        Map<Integer, String> teacherIdToJobNoMap = teachers.stream().filter(teacher -> teacher.getJobNo() != null).collect(Collectors.toMap(Teacher::getId, Teacher::getJobNo));      //教师
+        Map<Integer, Teacher> teacherMap = teachers.stream().filter(teacher -> teacher.getJobNo() != null).collect(Collectors.toMap(Teacher::getId, Function.identity()));      //教师
         Map<Integer, Integer> classIdToTeacherIdMap = classes.stream().filter(_class -> _class.getTeacherId() != null).collect(Collectors.toMap(Class::getId, Class::getTeacherId));    //班级
 
         students.clear();
@@ -197,8 +197,8 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
             if (lastStudentScore.compareTo(rankMonth.getScore()) != 0) rank++;
             lastStudentScore = rankMonth.getScore();
             //============测试生成随机排名============
-//            Random random = new Random();
-//            rank = random.nextInt(100);
+            Random random = new Random();
+            rank = random.nextInt(100);
             //============测试生成随机排名============
             rankMonth.setRank(rank);
             RankMonth value = lastRankMonthMap.get(studentId);
@@ -207,6 +207,7 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
                 Integer lastRank = value.getRank();
                 AtomicReference<Long> studentUserId = new AtomicReference<>();
                 AtomicReference<Long> classTeacherUserId = new AtomicReference<>();
+                AtomicReference<String> classTeacherName = new AtomicReference<>();
                 String studentName = null;
                 Student student = studentMap.get(studentId.intValue());
                 if (student != null) {
@@ -218,8 +219,11 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
                     // 获取该学生班主任userId
                     Optional.of(student.getClassId())
                             .flatMap(classId -> Optional.ofNullable(classIdToTeacherIdMap.get(classId)))
-                            .flatMap(teacherId -> Optional.ofNullable(teacherIdToJobNoMap.get(teacherId)))
-                            .flatMap(teacherJobNo -> Optional.ofNullable(userLoginNameToIdMap.get(teacherJobNo)))
+                            .flatMap(teacherId -> Optional.ofNullable(teacherMap.get(teacherId)))
+                            .flatMap(teacher -> {
+                                classTeacherName.set(teacher.getName());
+                                return Optional.ofNullable(userLoginNameToIdMap.get(teacher.getJobNo()));
+                            })
                             .ifPresent(classTeacherUserId::set);
                 }
                 // 设置排名相关形象
@@ -238,7 +242,7 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
                         // 发布通知
                         if (classTeacherUserId.get() != null) {
                             SystemMagVO teacherSystemMagVO = new SystemMagVO();
-                            teacherSystemMagVO.setTitle(StrUtil.format("您班{}同学上月进步{}名", studentName, progressRanking));
+                            teacherSystemMagVO.setTitle(StrUtil.format("{}老师，恭喜您，本班同学{}上月进步{}名", classTeacherName, studentName, progressRanking));
                             teacherSystemMagVO.setUserId(classTeacherUserId.get());
                             eventPublish.publishEvent(new SystemMsgEvent(teacherSystemMagVO));
                         }
@@ -283,7 +287,7 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
 
         students.clear();
         userLoginNameToIdMap.clear();
-        teacherIdToJobNoMap.clear();
+        teacherMap.clear();
         classIdToTeacherIdMap.clear();
         lastRankMonths.clear();
         lastRankMonthMap.clear();

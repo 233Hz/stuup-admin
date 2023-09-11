@@ -24,4 +24,5 @@ public interface GrowthService extends IService<Growth> {
      * @date: 2023/5/24 14:24
      */
     List<GrowthTreeVO> getGrowthTree();
+
 }

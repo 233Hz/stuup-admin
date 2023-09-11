@@ -31,6 +31,7 @@ public class GrowthController {
     @Resource
     private GrowthService growthService;
 
+
     @GetMapping("/tree")
     public ResponseModel<List<GrowthTreeVO>> tree() {
         return ResponseModel.ok(growthService.getGrowthTree());

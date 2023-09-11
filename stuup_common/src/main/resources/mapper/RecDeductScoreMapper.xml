@@ -25,4 +25,81 @@
         </if>
     </select>
 
+    <resultMap id="RecScoreVOMap" type="com.poho.stuup.model.vo.RecScoreVO">
+        <id column="id" property="id"/>
+        <result column="year_id" property="yearId"/>
+        <result column="semester_id" property="semesterId"/>
+        <result column="l1_id" property="l1Id"/>
+        <result column="l2_id" property="l2Id"/>
+        <result column="l3_id" property="l3Id"/>
+        <result column="grade_id" property="gradeId"/>
+        <result column="growth_item_name" property="growthItemName"/>
+        <result column="class_name" property="className"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="id_card" property="idCard"/>
+        <result column="student_id" property="studentId"/>
+        <result column="score" property="score"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="pageRecDeductScore" resultMap="RecScoreVOMap">
+        select
+        rds.id,
+        rds.year_id,
+        rds.semester_id,
+        rds.student_id,
+        rds.score,
+        rds.create_time,
+        gi.first_level_id as l1_id,
+        gi.second_level_id as l2_id,
+        gi.three_level_id as l3_id,
+        gi.name as growth_item_name,
+        c.name as class_name,
+        s.name as student_name,
+        s.student_no,
+        s.id_card,
+        s.grade_id
+        from t_rec_deduct_score rds
+        left join t_growth_item gi on rds.grow_id = gi.id
+        left join t_student s on rds.student_id = s.id
+        left join t_class c on s.class_id = c.id
+        <where>
+            <if test="query.yearId != null and query.yearId != ''">
+                and rds.year_id = #{query.yearId}
+            </if>
+            <if test="query.semesterId != null and query.semesterId != ''">
+                and rds.semester_id = #{query.semesterId}
+            </if>
+            <if test="query.startTime != null and query.endTime != null and query.startTime != '' and query.endTime != '' ">
+                and rds.create_time between #{query.startTime} and #{query.endTime}
+            </if>
+            <if test="query.l1Id != null and query.l1Id != ''">
+                and gi.first_level_id = #{query.l1Id}
+            </if>
+            <if test="query.l2Id != null and query.l2Id != ''">
+                and gi.second_level_id = #{query.l2Id}
+            </if>
+            <if test="query.l3Id != null and query.l3Id != ''">
+                and gi.three_level_id = #{query.l3Id}
+            </if>
+            <if test="query.growthItemName != null and query.growthItemName != ''">
+                and gi.name like concat('%',#{query.growthItemName},'%')
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%',#{query.studentName},'%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%',#{query.studentNo},'%')
+            </if>
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and s.grade_id = #{query.gradeId}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                and c.name like concat('%',#{query.className},'%')
+            </if>
+        </where>
+        order by rds.create_time desc
+    </select>
+
 </mapper>

@@ -5,6 +5,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.vo.FlowerVO;
 import com.poho.stuup.model.vo.GrowthItemSelectVO;
+import com.poho.stuup.model.vo.GrowthRuleDescVO;
 
 import java.util.List;
 
@@ -42,4 +43,5 @@ public interface GrowthItemService extends IService<GrowthItem> {
 
     ResponseModel<Long> saveOrUpdateGrowthItem(GrowthItem data);
 
+    List<GrowthRuleDescVO> getGrowthRuleDesc();
 }

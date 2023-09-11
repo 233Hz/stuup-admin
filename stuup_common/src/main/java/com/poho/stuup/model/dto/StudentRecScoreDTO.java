@@ -12,7 +12,7 @@ import lombok.Data;
 public class StudentRecScoreDTO {
 
     /**
-     * 获取学年
+     * 学年id
      */
     private Long yearId;
 

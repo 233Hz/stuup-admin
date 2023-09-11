@@ -21,5 +21,4 @@ public interface GrowthItemMapper extends BaseMapper<GrowthItem> {
     List<GrowthItemSelectVO> getStudentGrowthItems();
 
     Long fetchMaxId();
-
 }

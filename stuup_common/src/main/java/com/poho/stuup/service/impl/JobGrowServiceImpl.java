@@ -89,7 +89,7 @@ public class JobGrowServiceImpl extends ServiceImpl<JobGrowMapper, JobGrow> impl
             jobGrow.setGrowId(growthItem.getId());
             LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             jobGrow.setExecDate(localDate);
-            if (error.length() > 0) {
+            if (!error.isEmpty()) {
                 jobGrow.setError(error.toString());
                 baseMapper.insert(jobGrow);
                 continue;

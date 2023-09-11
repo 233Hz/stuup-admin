@@ -112,4 +112,13 @@
         select *
         from t_grade
     </select>
+
+    <select id="getGradeNameByIds" resultMap="BaseResultMap">
+        select oid, grade_name
+        from t_grade
+        where oid in
+        <foreach collection="gradeIds" item="gradeId" open="(" separator="," close=")" index="index">
+            #{gradeId}
+        </foreach>
+    </select>
 </mapper>

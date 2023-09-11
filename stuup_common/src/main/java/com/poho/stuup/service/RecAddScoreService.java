@@ -33,7 +33,7 @@ public interface RecAddScoreService extends IService<RecAddScore> {
      * @author BUNGA
      * @date: 2023/6/1 18:07
      */
-    IPage<RecScoreVO> getRecScorePage(Page<RecScoreVO> page, RecScoreDTO query);
+    IPage<RecScoreVO> pageRecAddScore(Page<RecScoreVO> page, RecScoreDTO query);
 
     /**
      * @description: 查询学生积分获取记录（分页）

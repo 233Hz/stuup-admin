@@ -1,7 +1,11 @@
 package com.poho.stuup.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.stuup.model.RecDeductScore;
+import com.poho.stuup.model.dto.RecScoreDTO;
+import com.poho.stuup.model.vo.RecScoreVO;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.poho.stuup.model.RecDeductScore;
  */
 public interface RecDeductScoreService extends IService<RecDeductScore> {
 
+    IPage<RecScoreVO> pageRecDeductScore(Page<RecScoreVO> page, RecScoreDTO query);
 }

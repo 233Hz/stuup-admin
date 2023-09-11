@@ -108,7 +108,7 @@ public interface TeacherMapper {
 
     List<Teacher> selectAll();
 
-    List<Teacher> getAllTeacherJobNosAndIds();
+    List<Teacher> getAllTeacherJobNoAndName();
 
     String getJobNoById(@Param("id") Integer id);
 
