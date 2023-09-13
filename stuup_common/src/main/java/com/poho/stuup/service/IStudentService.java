@@ -11,6 +11,8 @@ public interface IStudentService {
 
     ResponseModel findDataPageResult(String grade, String major, String key, int page, int pageSize);
 
+    Student selectByPrimaryKey(Integer id);
+
     /**
      * @description: 通过学号获取学生信息
      * @param: loginName
@@ -45,4 +47,7 @@ public interface IStudentService {
      * @return 学生列表
      */
     List<Student> getAllStudent();
+
+    Long getIdByStudentNo(String studentNo);
+
 }

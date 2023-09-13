@@ -51,6 +51,7 @@ public class ConfigServiceImpl implements IConfigService {
         return configMapper.updateByPrimaryKey(record);
     }
 
+
     @Override
     public ResponseModel saveOrUpdate(String key, String value) {
         ResponseModel model = new ResponseModel();

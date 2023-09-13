@@ -11,9 +11,9 @@ import com.poho.stuup.model.RecAddScore;
 import com.poho.stuup.model.Semester;
 import com.poho.stuup.model.Student;
 import com.poho.stuup.service.RankSemesterService;
+import com.poho.stuup.service.manager.RankSemesterManger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -44,8 +44,10 @@ public class RankSemesterServiceImpl extends ServiceImpl<RankSemesterMapper, Ran
     @Resource
     private RecAddScoreMapper recAddScoreMapper;
 
+    @Resource
+    private RankSemesterManger rankSemesterManger;
+
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void generateRank(Date date) {
         log.info("====================开始统计学期排行榜====================");
         long start = System.currentTimeMillis();
@@ -83,16 +85,7 @@ public class RankSemesterServiceImpl extends ServiceImpl<RankSemesterMapper, Ran
             rankSemesterList.sort(Comparator.comparing(RankSemester::getScore).reversed());
         }
 
-        // 设置排名
-        int rank = 1;
-        BigDecimal lastStudentScore = rankSemesterList.get(0).getScore();
-
-        for (RankSemester rankSemester : rankSemesterList) {
-            if (lastStudentScore.compareTo(rankSemester.getScore()) != 0) rank++;
-            rankSemester.setRanking(rank);
-            lastStudentScore = rankSemester.getScore();
-            baseMapper.insert(rankSemester);
-        }
+        rankSemesterManger.saveRank(rankSemesterList);
 
         long end = System.currentTimeMillis();
         log.info("====================任务执行完毕====================");

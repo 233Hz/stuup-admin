@@ -321,4 +321,17 @@
         where student_no = #{studentNo}
     </select>
 
+    <resultMap id="StudentIdAndUserIdDTOMap" type="com.poho.stuup.model.dto.StudentIdAndUserIdDTO">
+        <result column="student_id" property="studentId"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+    <select id="selectAllStudentIdUserId" resultMap="StudentIdAndUserIdDTOMap">
+        select ts.id as student_id, tu.oid as user_id
+        from t_student ts
+                 inner join t_user tu on ts.student_no = tu.login_name
+        where ts.`status`
+          and ts.is_valid = 1
+    </select>
+
 </mapper>

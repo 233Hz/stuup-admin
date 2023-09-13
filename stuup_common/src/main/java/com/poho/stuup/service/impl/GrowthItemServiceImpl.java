@@ -21,6 +21,7 @@ import com.poho.stuup.model.vo.GrowthRuleDescVO;
 import com.poho.stuup.service.GrowthItemService;
 import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.util.Utils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -66,6 +67,7 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
                 .in(GrowthItem::getId, growIds)));
     }
 
+    @Cacheable(value = "flower", key = "#root.methodName")
     @Override
     public FlowerVO getFlowerConfig() {
         FlowerVO flowerVO = new FlowerVO();

@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class FlowerVO {
-    
+
     /**
      * 白梅花种子数量
      */
@@ -58,6 +58,5 @@ public class FlowerVO {
      * 西红花结果数量
      */
     private int xhhFruit;
-
 
 }

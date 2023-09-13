@@ -1,6 +1,8 @@
 package com.poho.stuup.service;
 
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.model.Student;
+import com.poho.stuup.model.User;
 import com.poho.stuup.model.vo.*;
 
 import java.util.List;
@@ -15,59 +17,59 @@ public interface PortraitService {
     /**
      * 基础信息
      *
-     * @param userId
+     * @param student
      * @return
      */
-    ResponseModel<PortraitBasicInfoVO> getBasicInfo(Long userId);
+    PortraitBasicInfoVO getBasicInfo(Student student, User user);
 
     /**
      * 成长能力
      *
-     * @param userId
+     * @param studentId
      * @return
      */
-    ResponseModel<List<PortraitCapacityEvaluatorVO>> getCapacityEvaluator(Long userId);
+    List<PortraitCapacityEvaluatorVO> getCapacityEvaluator(Long studentId);
 
     /**
      * 获奖记录
      *
-     * @param userId
+     * @param studentId
      * @return
      */
-    ResponseModel<List<PortraitAwardRecordVO>> getAwardRecord(Long userId);
+    List<PortraitAwardRecordVO> getAwardRecord(Long studentId);
 
     /**
      * 参加活动记录
      *
-     * @param userId
+     * @param studentId
      * @return
      */
-    ResponseModel<List<PortraitActivityRecordVO>> getActivityRecord(Long userId);
+    List<PortraitActivityRecordVO> getActivityRecord(Long studentId);
 
     /**
      * 学期成长排名曲线图
      *
-     * @param userId
+     * @param student
      * @return
      */
-    ResponseModel<List<PortraitRankingCurveVO>> getRankingCurve(Long userId);
+    ResponseModel<List<PortraitRankingCurveVO>> getRankingCurve(Student student);
 
     /**
      * 成长分析
      *
-     * @param userId
+     * @param student
      * @return
      */
-    ResponseModel<List<PortraitGrowthAnalysisVO>> getGrowthAnalysis(Long userId);
+    ResponseModel<List<PortraitGrowthAnalysisVO>> getGrowthAnalysis(Student student);
 
     /**
      * 成长数据
      *
-     * @param userId
+     * @param studentId
      * @param semesterId
      * @return
      */
-    ResponseModel<PortraitGrowthDataVO> getGrowthData(Long userId, Long semesterId);
+    PortraitGrowthDataVO getGrowthData(Integer studentId, Long semesterId);
 
     /**
      * 成长对比
@@ -76,22 +78,22 @@ public interface PortraitService {
      * @param studentId
      * @return
      */
-    List<PortraitGrowthComparisonVO> getGrowthComparison(Long semesterId, Long studentId);
+    List<PortraitGrowthComparisonVO> getGrowthComparison(Long studentId, Long semesterId);
 
     /**
      * 学习成绩
      *
-     * @param userId
+     * @param student
      * @return
      */
-    ResponseModel<List<PortraitStudyGradeVO>> getStudyGrade(Long userId);
+    ResponseModel<List<PortraitStudyGradeVO>> getStudyGrade(Student student);
 
     /**
      * 学习课程
      *
-     * @param userId
+     * @param studentId
      * @param semesterId
      * @return
      */
-    ResponseModel<List<PortraitStudyCourseVO>> getStudyCourse(Long userId, Long semesterId);
+    ResponseModel<List<PortraitStudyCourseVO>> getStudyCourse(Long studentId, Long semesterId);
 }

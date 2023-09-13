@@ -4,8 +4,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.FloweringStageEnum;
 import com.poho.stuup.model.dto.FlowerDTO;
 import com.poho.stuup.model.vo.FlowerVO;
-import com.poho.stuup.service.GrowthItemService;
-import com.poho.stuup.service.IConfigService;
+import com.poho.stuup.service.FlowerModelService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,24 +20,20 @@ import javax.validation.Valid;
 public class GrowthModelController {
 
     @Resource
-    private IConfigService configService;
+    private FlowerModelService flowerModelService;
 
-    @Resource
-    private GrowthItemService growthItemService;
-
-    @GetMapping("/flowers")
-    public ResponseModel<FlowerVO> getFlowerConfig() {
-        return ResponseModel.ok(growthItemService.getFlowerConfig());
+    @GetMapping
+    public ResponseModel<FlowerVO> getFlowerModel() {
+        return ResponseModel.ok(flowerModelService.getFlowerModel());
     }
 
-    @PostMapping("/setFlowerConfig")
-    public ResponseModel setFlowerConfig(@Valid @RequestBody FlowerDTO flowerDTO) {
+    @PostMapping
+    public ResponseModel<FlowerVO> setFlowerModel(@Valid @RequestBody FlowerDTO flowerDTO) {
         FloweringStageEnum floweringStageEnum = FloweringStageEnum.getByFieldName(flowerDTO.getKey());
         if (floweringStageEnum == null) {
             return ResponseModel.failed("设置的成长阶段不存在");
         }
-        String configKey = floweringStageEnum.getConfigKey();
-        return ResponseModel.ok(configService.saveOrUpdate(configKey, flowerDTO.getValue()));
+        return ResponseModel.ok(flowerModelService.setFlowerModel(flowerDTO));
     }
 
 }

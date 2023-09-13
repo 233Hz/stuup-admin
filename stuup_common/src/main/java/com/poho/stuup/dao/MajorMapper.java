@@ -60,4 +60,6 @@ public interface MajorMapper {
      * @return
      */
     int countMajorTotal();
+
+    List<Major> selectAllIdName();
 }

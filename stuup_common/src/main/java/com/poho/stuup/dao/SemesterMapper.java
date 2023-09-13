@@ -36,4 +36,6 @@ public interface SemesterMapper extends BaseMapper<Semester> {
     Semester findByRange(@Param("date") Date date);
 
     List<Semester> getSemesterNameByIds(@Param("semesterIds") List<Long> semesterIds);
+
+    Semester selectLastById(@Param("semesterId") Long semesterId);
 }

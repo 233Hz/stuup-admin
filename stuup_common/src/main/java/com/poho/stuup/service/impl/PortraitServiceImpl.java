@@ -54,9 +54,6 @@ public class PortraitServiceImpl implements PortraitService {
     private StuScoreMapper stuScoreMapper;
 
     @Resource
-    private StuScoreLogMapper stuScoreLogMapper;
-
-    @Resource
     private YearMapper yearMapper;
 
     @Resource
@@ -96,12 +93,7 @@ public class PortraitServiceImpl implements PortraitService {
     private FileMapper fileMapper;
 
     @Override
-    public ResponseModel<PortraitBasicInfoVO> getBasicInfo(Long userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        String studentNo = user.getLoginName();
-        Student student = studentMapper.getStudentForStudentNO(studentNo);
-        if (student == null) return ResponseModel.failed("未查询到您的学生信息");
+    public PortraitBasicInfoVO getBasicInfo(Student student, User user) {
         PortraitBasicInfoVO portraitBasicInfoVO = new PortraitBasicInfoVO();
         portraitBasicInfoVO.setStudentName(student.getName());
         portraitBasicInfoVO.setStudentNo(student.getStudentNo());
@@ -156,18 +148,13 @@ public class PortraitServiceImpl implements PortraitService {
                 .eq(RecSociety::getStudentId, studentId));
         List<String> communityMemberNames = recSocieties.stream().map(RecSociety::getName).collect(Collectors.toList());
         portraitBasicInfoVO.setAssociations(communityMemberNames);
-        return ResponseModel.ok(portraitBasicInfoVO);
+        return portraitBasicInfoVO;
     }
 
     @Override
-    public ResponseModel<List<PortraitCapacityEvaluatorVO>> getCapacityEvaluator(Long userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Year currYear = yearMapper.getCurrentYear();
-        if (currYear == null) return ResponseModel.failed("不在当前学年时间范围内");
-        Long studentId = studentMapper.getIdByStudentNo(user.getLoginName());
-        if (studentId == null) return ResponseModel.failed("未查询到您的学生信息");
-        Long yearId = currYear.getOid();
+    public List<PortraitCapacityEvaluatorVO> getCapacityEvaluator(Long studentId) {
+        Long yearId = yearMapper.getCurrentYearId();
+        if (yearId == null) return Collections.emptyList();
         Integer totalStudentNum = studentMapper.countAtSchoolNum();
         List<Growth> growths = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
                 .select(Growth::getId, Growth::getName)
@@ -192,15 +179,11 @@ public class PortraitServiceImpl implements PortraitService {
             portraitCapacityEvaluatorVO.setIndicatorAvgScore(all_total_score);
             result.add(portraitCapacityEvaluatorVO);
         }
-        return ResponseModel.ok(result);
+        return result;
     }
 
     @Override
-    public ResponseModel<List<PortraitAwardRecordVO>> getAwardRecord(Long userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Long studentId = studentMapper.getIdByStudentNo(user.getLoginName());
-        if (studentId == null) return ResponseModel.failed("未查询到您的学生信息");
+    public List<PortraitAwardRecordVO> getAwardRecord(Long studentId) {
         List<PortraitAwardRecordVO> result = new ArrayList<>();
         Map<String, Integer> configKeyMap = new HashMap<>();
         configKeyMap.put(ConfigKeyEnum.NATIONAL_LEVEL_COMPETITION_AWARD_GROWTH_CODE.getKey(), RecLevelEnum.COUNTRY.getValue());
@@ -261,17 +244,12 @@ public class PortraitServiceImpl implements PortraitService {
                 }
             }
         }
-        if (CollUtil.isEmpty(result)) return ResponseModel.ok(result);
-        List<PortraitAwardRecordVO> sortedResult = result.stream().sorted(Comparator.comparing(PortraitAwardRecordVO::getAwardTime, Comparator.reverseOrder())).collect(Collectors.toList());
-        return ResponseModel.ok(sortedResult);
+        if (CollUtil.isEmpty(result)) return result;
+        return result.stream().sorted(Comparator.comparing(PortraitAwardRecordVO::getAwardTime, Comparator.reverseOrder())).collect(Collectors.toList());
     }
 
     @Override
-    public ResponseModel<List<PortraitActivityRecordVO>> getActivityRecord(Long userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Long studentId = studentMapper.getIdByStudentNo(user.getLoginName());
-        if (studentId == null) return ResponseModel.failed("未查询到您的学生信息");
+    public List<PortraitActivityRecordVO> getActivityRecord(Long studentId) {
         List<PortraitActivityRecordVO> result = new ArrayList<>();
         Config config = configService.selectByPrimaryKey(ConfigKeyEnum.HOLD_AN_ACTIVITY_GROWTH_CODE.getKey());
         if (config != null) {
@@ -320,17 +298,12 @@ public class PortraitServiceImpl implements PortraitService {
                 result.add(portraitActivityRecordVO);
             }
         }
-        if (CollUtil.isEmpty(result)) return ResponseModel.ok(result);
-        List<PortraitActivityRecordVO> sortedResult = result.stream().sorted(Comparator.comparing(PortraitActivityRecordVO::getActivityTime, Comparator.reverseOrder())).collect(Collectors.toList());
-        return ResponseModel.ok(sortedResult);
+        if (CollUtil.isEmpty(result)) return result;
+        return result.stream().sorted(Comparator.comparing(PortraitActivityRecordVO::getActivityTime, Comparator.reverseOrder())).collect(Collectors.toList());
     }
 
     @Override
-    public ResponseModel<List<PortraitRankingCurveVO>> getRankingCurve(Long userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-        if (student == null) return ResponseModel.failed("未查询到您的学生信息");
+    public ResponseModel<List<PortraitRankingCurveVO>> getRankingCurve(Student student) {
         Integer gradeId = student.getGradeId();
         Grade grade = gradeMapper.selectByPrimaryKey(gradeId);
         if (gradeId == null) return ResponseModel.failed("未查询到您的年级信息");
@@ -370,11 +343,7 @@ public class PortraitServiceImpl implements PortraitService {
     }
 
     @Override
-    public ResponseModel<List<PortraitGrowthAnalysisVO>> getGrowthAnalysis(Long userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-        if (student == null) return ResponseModel.failed("未查询到您的学生信息");
+    public ResponseModel<List<PortraitGrowthAnalysisVO>> getGrowthAnalysis(Student student) {
         Integer gradeId = student.getGradeId();
         Grade grade = gradeMapper.selectByPrimaryKey(gradeId);
         if (gradeId == null) return ResponseModel.failed("未查询到您的年级信息");
@@ -425,14 +394,10 @@ public class PortraitServiceImpl implements PortraitService {
         return ResponseModel.ok(result);
     }
 
+
     @Override
-    public ResponseModel<PortraitGrowthDataVO> getGrowthData(Long userId, Long semesterId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-        if (student == null) return ResponseModel.failed("未查询到您的学生信息");
+    public PortraitGrowthDataVO getGrowthData(Integer studentId, Long semesterId) {
         PortraitGrowthDataVO portraitGrowthDataVO = new PortraitGrowthDataVO();
-        Integer studentId = student.getId();
         // 查询成长值和排名
         RankSemester rankSemester = rankSemesterMapper.selectOne(Wrappers.<RankSemester>lambdaQuery()
                 .select(RankSemester::getScore, RankSemester::getRanking)
@@ -509,11 +474,11 @@ public class PortraitServiceImpl implements PortraitService {
                 portraitGrowthDataVO.setCertificateCount(certificateCount);
             }
         }
-        return ResponseModel.ok(portraitGrowthDataVO);
+        return portraitGrowthDataVO;
     }
 
     @Override
-    public List<PortraitGrowthComparisonVO> getGrowthComparison(Long semesterId, Long studentId) {
+    public List<PortraitGrowthComparisonVO> getGrowthComparison(Long studentId, Long semesterId) {
         List<PortraitGrowthComparisonVO> result = new ArrayList<>();
         // 查询所有一级项目
         List<Growth> firstLevelList = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
@@ -566,11 +531,7 @@ public class PortraitServiceImpl implements PortraitService {
     }
 
     @Override
-    public ResponseModel<List<PortraitStudyGradeVO>> getStudyGrade(Long userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-        if (student == null) return ResponseModel.failed("未查询到您的学生信息");
+    public ResponseModel<List<PortraitStudyGradeVO>> getStudyGrade(Student student) {
         Integer gradeId = student.getGradeId();
         Grade grade = gradeMapper.selectByPrimaryKey(gradeId);
         if (gradeId == null) return ResponseModel.failed("未查询到您的年级信息");
@@ -609,12 +570,7 @@ public class PortraitServiceImpl implements PortraitService {
     }
 
     @Override
-    public ResponseModel<List<PortraitStudyCourseVO>> getStudyCourse(Long userId, Long semesterId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null) return ResponseModel.failed("未查询到您的用户信息");
-        Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-        if (student == null) return ResponseModel.failed("未查询到您的学生信息");
-        Integer studentId = student.getId();
+    public ResponseModel<List<PortraitStudyCourseVO>> getStudyCourse(Long studentId, Long semesterId) {
         List<Course> courses = courseMapper.selectList(Wrappers.<Course>lambdaQuery()
                 .select(Course::getCourseName, Course::getCourseScore)
                 .eq(Course::getSemesterId, semesterId)

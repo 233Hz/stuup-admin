@@ -2,6 +2,7 @@ package com.poho.stuup.dao;
 
 
 import com.poho.stuup.model.Student;
+import com.poho.stuup.model.dto.StudentIdAndUserIdDTO;
 import com.poho.stuup.model.vo.MajorPopulationsVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -86,4 +87,6 @@ public interface StudentMapper {
     Integer countSexNum(@Param("sex") Integer sex);
 
     Integer getClassIdByStudentNo(@Param("studentNo") String studentNo);
+
+    List<StudentIdAndUserIdDTO> selectAllStudentIdUserId();
 }

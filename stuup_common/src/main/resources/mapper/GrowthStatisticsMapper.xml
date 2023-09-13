@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.GrowthStatisticsMapper">
+
+    <resultMap id="GrowthStatisticsVOMap" type="com.poho.stuup.model.vo.GrowthStatisticsVO">
+        <result column="student_id" property="studentId"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="major_id" property="majorId"/>
+        <result column="class_id" property="classId"/>
+        <result column="grade_id" property="gradeId"/>
+        <result column="semester_score" property="semesterScore"/>
+        <result column="semester_rank" property="semesterRank"/>
+    </resultMap>
+
+    <select id="list" resultMap="GrowthStatisticsVOMap">
+        select ts.id as student_id,
+        ts.name as student_name,
+        ts.student_no,
+        ts.class_id,
+        ts.major_id,
+        ts.grade_id,
+        trs.ranking as semester_rank,
+        trs.score as semester_score
+        from t_rank_semester trs
+        left join t_student ts on trs.student_id = ts.id
+        where ts.is_valid = 1
+        and ts.`status` = 1
+        and trs.semester_id = #{semesterId}
+        <if test="classIds != null and classIds.size > 0">
+            and ts.class_id in
+            <foreach collection="classIds" item="classId" open="(" separator="," close=")">
+                #{classId}
+            </foreach>
+        </if>
+        group by ts.id;
+    </select>
+
+</mapper>

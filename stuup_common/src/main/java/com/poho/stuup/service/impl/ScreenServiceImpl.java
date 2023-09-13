@@ -8,7 +8,7 @@ import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.constant.CalculateTypeEnum;
-import com.poho.stuup.constant.ChangeTypeEnum;
+import com.poho.stuup.constant.CompareEnum;
 import com.poho.stuup.constant.ConfigKeyEnum;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
@@ -232,13 +232,13 @@ public class ScreenServiceImpl implements ScreenService {
                     if (CollUtil.isNotEmpty(offset2MonthScores)) {
                         BigDecimal lastTotalScore = offset2MonthScores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
                         if (totalScore.compareTo(lastTotalScore) > 0) {
-                            growthScoreCountVO.setScoreChangeType(ChangeTypeEnum.UP.getValue());
+                            growthScoreCountVO.setScoreChangeType(CompareEnum.UP.getValue());
                             growthScoreCountVO.setChangeValue(totalScore.subtract(lastTotalScore));
                         } else if (totalScore.compareTo(lastTotalScore) < 0) {
-                            growthScoreCountVO.setScoreChangeType(ChangeTypeEnum.DOWN.getValue());
+                            growthScoreCountVO.setScoreChangeType(CompareEnum.DOWN.getValue());
                             growthScoreCountVO.setChangeValue(lastTotalScore.subtract(totalScore));
                         } else {
-                            growthScoreCountVO.setScoreChangeType(ChangeTypeEnum.SAME.getValue());
+                            growthScoreCountVO.setScoreChangeType(CompareEnum.SAME.getValue());
                         }
                     }
                 }

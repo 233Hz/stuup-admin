@@ -6,8 +6,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.poho.stuup.constant.ChangeTypeEnum;
 import com.poho.stuup.constant.CommonConstants;
+import com.poho.stuup.constant.CompareEnum;
 import com.poho.stuup.constant.ConfigKeyEnum;
 import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.dao.*;
@@ -151,6 +151,8 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
                     rankMonth.setMonth(month);
                     rankMonth.setStudentId(studentId);
                     rankMonth.setScore(recScoresSumScore.getOrDefault(student.getId().longValue(), BigDecimal.ZERO));
+                    // 测试生成随机数据
+//                    rankMonth.setScore(BigDecimal.valueOf(Math.random() * 100));
                     return rankMonth;
                 })
                 .collect(Collectors.toList());
@@ -197,8 +199,8 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
             if (lastStudentScore.compareTo(rankMonth.getScore()) != 0) rank++;
             lastStudentScore = rankMonth.getScore();
             //============测试生成随机排名============
-            Random random = new Random();
-            rank = random.nextInt(100);
+//            Random random = new Random();
+//            rank = random.nextInt(100);
             //============测试生成随机排名============
             rankMonth.setRank(rank);
             RankMonth value = lastRankMonthMap.get(studentId);
@@ -228,11 +230,11 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
                 }
                 // 设置排名相关形象
                 if (rank == lastRank) {
-                    rankMonth.setRankTrend(ChangeTypeEnum.SAME.getValue());
+                    rankMonth.setRankTrend(CompareEnum.SAME.getValue());
                     rankMonth.setRankChange(0);
                 } else if (rank > lastRank) {
                     int progressRanking = rank - lastRank; // 进步名次
-                    rankMonth.setRankTrend(ChangeTypeEnum.UP.getValue());
+                    rankMonth.setRankTrend(CompareEnum.UP.getValue());
                     rankMonth.setRankChange(progressRanking);
                     // 发送进步提醒个班主任
                     int ranking = CommonConstants.DEFAULT_NOTIFY_RANKING; // 获取不到默认10名
@@ -255,7 +257,7 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
                     }
                 } else {
                     int retrogress = lastRank - rank;  // 退步名次
-                    rankMonth.setRankTrend(ChangeTypeEnum.DOWN.getValue());
+                    rankMonth.setRankTrend(CompareEnum.DOWN.getValue());
                     rankMonth.setRankChange(retrogress);
 
                     // 发送退步提醒个学生个人和班主任

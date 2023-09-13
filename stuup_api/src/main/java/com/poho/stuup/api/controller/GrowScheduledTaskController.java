@@ -245,14 +245,14 @@ public class GrowScheduledTaskController {
     @Scheduled(cron = "0 15 10 28-31 * ?")  // 每月最后一天晚上 22:40
     public void calculateScoreForMonth() {
         Calendar calendar = Calendar.getInstance();
-        if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
-            calendar.set(Calendar.HOUR_OF_DAY, 23);
-            calendar.set(Calendar.MINUTE, 59);
-            calendar.set(Calendar.SECOND, 59);
-            Date date = calendar.getTime();
-            jobGrowService.executeGrowJob(PeriodEnum.MONTH, date);
-            rankMonthService.generateRank(date);
-        }
+//        if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        Date date = calendar.getTime();
+        jobGrowService.executeGrowJob(PeriodEnum.MONTH, date);
+        rankMonthService.generateRank(date);
+//        }
     }
 
     /**

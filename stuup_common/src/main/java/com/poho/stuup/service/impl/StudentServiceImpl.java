@@ -43,6 +43,10 @@ public class StudentServiceImpl implements IStudentService {
         return model;
     }
 
+    public Student selectByPrimaryKey(Integer id) {
+        return studentMapper.selectByPrimaryKey(id);
+    }
+
     @Override
     public Student getStudentForStudentNO(String studentNo) {
         return studentMapper.getStudentForStudentNO(studentNo);
@@ -65,6 +69,11 @@ public class StudentServiceImpl implements IStudentService {
 
     public List<Student> getAllStudent() {
         return studentMapper.getAllStudent();
+    }
+
+    @Override
+    public Long getIdByStudentNo(String studentNo) {
+        return studentMapper.getIdByStudentNo(studentNo);
     }
 
 }

@@ -16,6 +16,7 @@ import com.poho.stuup.model.dto.GrowGardenDTO;
 import com.poho.stuup.model.vo.GrowGardenVO;
 import com.poho.stuup.service.FileService;
 import com.poho.stuup.service.StuScoreService;
+import com.poho.stuup.service.manager.FlowerModelManager;
 import com.poho.stuup.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,9 @@ public class StuScoreServiceImpl extends ServiceImpl<StuScoreMapper, StuScore> i
 
     @Resource
     private FileService fileService;
+
+    @Resource
+    private FlowerModelManager flowerModelManager;
 
 
     @Override

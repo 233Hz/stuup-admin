@@ -3,14 +3,17 @@ package com.poho.stuup.api.controller;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
+import com.poho.stuup.model.Semester;
 import com.poho.stuup.service.IStudentService;
+import com.poho.stuup.service.SemesterService;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 学生信息维护
@@ -26,6 +29,9 @@ public class StudentController {
     @Autowired
     private IStudentService studentService;
 
+    @Resource
+    private SemesterService semesterService;
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel studentList(String gradeId, String majorId, String key, String current, String size) {
         int page = 1;
@@ -38,6 +44,11 @@ public class StudentController {
         }
         return studentService.findDataPageResult(gradeId, majorId, key, page, pageSize);
 
+    }
+
+    @GetMapping("/semesters")
+    public ResponseModel<List<Semester>> studentSemester(@RequestParam("studentId") Integer studentId) {
+        return ResponseModel.ok(semesterService.getStudentSemester(studentId));
     }
 
 }

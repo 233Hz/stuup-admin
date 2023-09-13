@@ -331,4 +331,10 @@
         where is_valid = 1
     </select>
 
+    <select id="selectAllIdNameTeacherId" resultMap="BaseResultMap">
+        select id, name, teacher_id
+        from t_class
+        where is_valid = 1
+    </select>
+
 </mapper>

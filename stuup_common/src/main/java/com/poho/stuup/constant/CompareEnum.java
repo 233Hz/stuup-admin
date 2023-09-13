@@ -8,7 +8,7 @@ import lombok.Getter;
  * @date 2023/6/9 9:57
  */
 @Getter
-public enum ChangeTypeEnum {
+public enum CompareEnum {
 
     UP("上升", 1),
     DOWN("下降", 2),
@@ -18,7 +18,7 @@ public enum ChangeTypeEnum {
     private final int value;
 
 
-    ChangeTypeEnum(String type, int value) {
+    CompareEnum(String type, int value) {
         this.type = type;
         this.value = value;
     }

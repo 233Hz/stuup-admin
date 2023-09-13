@@ -55,4 +55,6 @@ public interface GradeMapper {
     List<Grade> selectAll();
 
     List<Grade> getGradeNameByIds(@Param("gradeIds") List<Integer> gradeIds);
+
+    List<Grade> selectAllIdName();
 }

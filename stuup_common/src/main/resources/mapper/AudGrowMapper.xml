@@ -152,4 +152,23 @@
            or state = 4
     </select>
 
+    <resultMap id="CountStudentApplyDTOMap" type="com.poho.stuup.model.dto.CountStudentApplyDTO">
+        <result column="student_id" property="studentId"/>
+        <result column="apply_count" property="count"/>
+    </resultMap>
+
+    <select id="countStudentApply" resultMap="CountStudentApplyDTOMap">
+        select count(id) as apply_count, applicant as student_id
+        from t_aud_grow
+        <where>
+            <if test="query.studentId != null and query.studentId != '' ">
+                and year_id = #{query.yearId}
+            </if>
+            <if test="query.semesterId != null and query.semesterId != '' ">
+                and semester_id = #{query.semesterId}
+            </if>
+        </where>
+        group by applicant
+    </select>
+
 </mapper>

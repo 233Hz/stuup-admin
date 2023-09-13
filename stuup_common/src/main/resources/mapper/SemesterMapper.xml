@@ -98,4 +98,12 @@
         </foreach>
     </select>
 
+    <select id="selectLastById" resultMap="BaseResultMap">
+        select *
+        from t_semester
+        where start_time &lt; (select start_time from t_semester where id = #{semesterId})
+        order by start_time desc
+        limit 1;
+    </select>
+
 </mapper>

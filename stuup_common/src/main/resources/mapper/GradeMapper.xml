@@ -121,4 +121,9 @@
             #{gradeId}
         </foreach>
     </select>
+
+    <select id="selectAllIdName" resultMap="BaseResultMap">
+        select oid, grade_name
+        from t_grade
+    </select>
 </mapper>

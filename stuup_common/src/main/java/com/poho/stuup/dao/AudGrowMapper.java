@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.AudGrow;
+import com.poho.stuup.model.dto.CountStudentApplyDTO;
 import com.poho.stuup.model.dto.GrowRecordDTO;
 import com.poho.stuup.model.vo.AudGrowthVO;
 import com.poho.stuup.model.vo.ReviewOfEachClassVO;
@@ -12,6 +13,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,4 +35,6 @@ public interface AudGrowMapper extends BaseMapper<AudGrow> {
     int countApplyInRange(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     int countAuditInRange(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    List<CountStudentApplyDTO> countStudentApply(@Param("query") Map<String, Object> query);
 }
