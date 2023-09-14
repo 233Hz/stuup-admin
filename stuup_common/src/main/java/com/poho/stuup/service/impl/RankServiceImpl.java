@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,6 +55,7 @@ public class RankServiceImpl implements RankService {
                 }
                 files.clear();
             }
+            int ranking = 1;
             int size = list.size();
             for (int i = 0; i < size; i++) {
                 WholeSchoolTop10VO wholeSchoolTop10 = list.get(i);
@@ -75,7 +73,10 @@ public class RankServiceImpl implements RankService {
                         }
                     }
                 }
-                wholeSchoolTop10.setRanking(i + 1);
+                if (i != 0 && !Objects.equals(wholeSchoolTop10.getScore(), list.get(i - 1).getScore())) {
+                    ranking++;
+                }
+                wholeSchoolTop10.setRanking(ranking);
             }
         }
         return list;
@@ -97,6 +98,7 @@ public class RankServiceImpl implements RankService {
                 }
                 files.clear();
             }
+            int ranking = 1;
             int size = list.size();
             for (int i = 0; i < size; i++) {
                 WholeClassTop10VO wholeClassTop10VO = list.get(i);
@@ -114,7 +116,10 @@ public class RankServiceImpl implements RankService {
                         }
                     }
                 }
-                wholeClassTop10VO.setRanking(i + 1);
+                if (i != 0 && !Objects.equals(wholeClassTop10VO.getScore(), list.get(i - 1).getScore())) {
+                    ranking++;
+                }
+                wholeClassTop10VO.setRanking(ranking);
             }
         }
         return list;

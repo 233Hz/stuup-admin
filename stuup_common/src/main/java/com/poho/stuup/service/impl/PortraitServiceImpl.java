@@ -551,9 +551,7 @@ public class PortraitServiceImpl implements PortraitService {
         if (CollUtil.isEmpty(semesters)) return ResponseModel.failed("未查询到学期信息");
         List<PortraitStudyGradeVO> result = new ArrayList<>();
         Integer studentId = student.getId();
-        int size = semesters.size();
-        for (int i = 0; i < size; i++) {
-            Semester semester = semesters.get(i);
+        for (Semester semester : semesters) {
             Long semesterId = semester.getId();
             String semesterName = semester.getName();
             List<Course> courses = courseMapper.selectList(Wrappers.<Course>lambdaQuery()
@@ -576,9 +574,7 @@ public class PortraitServiceImpl implements PortraitService {
                 .eq(Course::getSemesterId, semesterId)
                 .eq(Course::getStudentId, studentId));
         List<PortraitStudyCourseVO> result = new ArrayList<>();
-        int size = courses.size();
-        for (int i = 0; i < size; i++) {
-            Course course = courses.get(i);
+        for (Course course : courses) {
             String courseName = course.getCourseName();
             Float courseScore = course.getCourseScore();
             PortraitStudyCourseVO portraitStudyCourseVO = new PortraitStudyCourseVO();

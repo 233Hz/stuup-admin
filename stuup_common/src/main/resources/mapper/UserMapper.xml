@@ -302,6 +302,9 @@
         left join t_class c on c.id = s.class_id
         <where>
             u.state = 1
+            and u.user_type = 1
+            and s.status = 1
+            and s.is_valid = 1
             <if test="query.userType != null and query.userType != ''">
                 and u.user_type = #{query.userType}
             </if>
