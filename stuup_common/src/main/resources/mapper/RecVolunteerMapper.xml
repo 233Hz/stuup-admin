@@ -54,6 +54,7 @@
         rv.study_time,
         rv.service_time,
         rv.reason,
+        rv.post,
         rv.create_time
         from t_rec_volunteer rv
         left join t_student s on s.id = rv.student_id
