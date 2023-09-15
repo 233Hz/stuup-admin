@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -76,9 +75,5 @@ public class RecDefault implements Serializable {
      */
     private Integer state;
 
-    /**
-     * 计算分
-     */
-    private BigDecimal calculateScore;
 
 }

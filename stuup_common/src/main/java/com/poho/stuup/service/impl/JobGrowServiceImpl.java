@@ -206,7 +206,7 @@ public class JobGrowServiceImpl extends ServiceImpl<JobGrowMapper, JobGrow> impl
                         JobGrow newJobGrow = new JobGrow();
                         newJobGrow.setGrowId(growthItem.getId());
                         newJobGrow.setExecDate(localDate);
-                        if (error.length() > 0) {
+                        if (!error.isEmpty()) {
                             newJobGrow.setError(error.toString());
                             baseMapper.insert(newJobGrow);
                             continue;
@@ -241,7 +241,7 @@ public class JobGrowServiceImpl extends ServiceImpl<JobGrowMapper, JobGrow> impl
                                 .eq(JobGrow::getId, newJobGrow.getId()));
                     } else if (WhetherEnum.YES.getValue() != jobGrow.getState()) {
                         // 执行到一半中断
-                        if (error.length() > 0) {
+                        if (!error.isEmpty()) {
                             jobGrow.setError(error.toString());
                             baseMapper.updateById(jobGrow);
                         }

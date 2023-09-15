@@ -305,10 +305,10 @@ public class GrowScheduledTaskController {
     @Scheduled(cron = "0 55 23 * * ?")     // 每天晚上的 23:55
     public void collectionTimeoutScore() {
         Config config = configService.selectByPrimaryKey(ConfigKeyEnum.SCORE_TIMEOUT_AUTO_COLLECT.getKey());
-        Integer timeout;
+        int timeout;
         if (config != null) {
             try {
-                timeout = Integer.valueOf(config.getConfigValue());
+                timeout = Integer.parseInt(config.getConfigValue());
             } catch (NumberFormatException e) {
                 log.error("{}配置错误", ConfigKeyEnum.SCORE_TIMEOUT_AUTO_COLLECT.getKey());
                 timeout = 7;

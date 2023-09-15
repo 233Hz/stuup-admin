@@ -58,7 +58,9 @@ public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthI
         else if (type.equals("studentUnion")) gatherer = GrowGathererEnum.STUDENT_UNION.getValue();
         else return ResponseModel.failed("类型不存在");
         if (Utils.isSuperAdmin(userId))
-            return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery().select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)));
+            return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery()
+                    .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)
+                    .eq(GrowthItem::getGatherer, gatherer)));
         List<Long> growIds = growUserMapper.findUserGrow(userId);
         if (CollUtil.isEmpty(growIds)) return ResponseModel.failed("您没有可导入的项目");
         return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery()
