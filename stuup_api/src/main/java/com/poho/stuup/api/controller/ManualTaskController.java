@@ -1,7 +1,6 @@
 package com.poho.stuup.api.controller;
 
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.event.EventPublish;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +15,6 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/manualTask")
 public class ManualTaskController {
-
-    @Resource
-    private EventPublish eventPublish;
 
     @Resource
     private GrowScheduledTaskController growScheduledTaskController;

@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @author BUNGA
- * @description: TODO
  * @date 2023/6/7 11:12
  */
 @Data

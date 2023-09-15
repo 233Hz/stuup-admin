@@ -11,7 +11,6 @@ import java.util.List;
  * 设置角色菜单传输对象
  *
  * @author BUNGA
- * @description: TODO
  * @date 2023/5/23 19:20
  */
 

@@ -154,7 +154,7 @@
         <if test="key != null and key != ''">
             AND ty.year_name LIKE CONCAT(CONCAT('%',#{key}),'%')
         </if>
-        order by ty.curr asc, ty.oid desc
+        order by ty.curr asc, ty.year_start desc
         <if test="start != null and length != null">
             limit #{start},#{length}
         </if>

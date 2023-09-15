@@ -4,7 +4,6 @@ import lombok.Getter;
 
 /**
  * @author BUNGA
- * @description: TODO
  * @date 2023/5/29 13:16
  */
 @Getter

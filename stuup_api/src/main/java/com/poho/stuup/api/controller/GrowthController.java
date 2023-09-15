@@ -41,7 +41,7 @@ public class GrowthController {
     public ResponseModel<Long> saveOrUpdateGrowth(@Valid @RequestBody Growth growth) {
         String userId = ProjectUtil.obtainLoginUser(request);
         growth.setCreateUser(Long.parseLong(userId));
-        if (Objects.equals(growth.getId(), growth.getPid())) {
+        if (growth.getId() != null && growth.getPid() != null && Objects.equals(growth.getId(), growth.getPid())) {
             return ResponseModel.failed("父节点不能为自己");
         }
         return growthService.saveOrUpdate(growth) ? ResponseModel.ok(growth.getId(), "添加成功！") : ResponseModel.failed("添加失败！");

@@ -46,6 +46,7 @@
                 and s.name like concat('%', #{query.name}, '%')
             </if>
         </where>
+        order by s.is_current ,s.start_time desc
     </select>
 
 

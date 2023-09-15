@@ -41,7 +41,9 @@ public class SemesterController {
     @GetMapping("/list")
     public ResponseModel<List<Map<String, Object>>> getSemesterList() {
         List<Semester> semesterList = semesterService.list(Wrappers.<Semester>lambdaQuery()
-                .select(Semester::getId, Semester::getName));
+                .select(Semester::getId, Semester::getName)
+                .orderByAsc(Semester::getIsCurrent)
+                .orderByDesc(Semester::getStartTime));
         return ResponseModel.ok(semesterList.stream().map(semester -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", semester.getId());
