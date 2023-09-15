@@ -25,4 +25,6 @@ public interface RecDefaultMapper extends BaseMapper<RecDefault> {
     List<RecLogDetailsVO> getRecLogDetails(@Param("batchCode") Long batchCode);
 
     List<StudentGrowthMonitorVO> countViolationsTop3(@Param("growthItemIds") Set<Long> growthItemIds, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    int countImportGrowth(@Param("growthItemIds") List<Long> growthItemIds, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

@@ -21,4 +21,5 @@ import org.apache.ibatis.annotations.Param;
 public interface RecLogMapper extends BaseMapper<RecLog> {
 
     IPage<RecLogVO> getRecLogPage(Page<RecLogVO> page, @Param("query") RecLogDTO query);
+
 }

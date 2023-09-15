@@ -59,4 +59,23 @@
         limit 3
     </select>
 
+    <select id="countImportGrowth" resultType="int">
+        select count(distinct batch_code) as total_count
+        from t_rec_default
+        <where>
+            <if test="startTime != null">
+                and create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                and create_time &lt;= #{endTime}
+            </if>
+            <if test="growthItemIds != null and growthItemIds.size > 0">
+                and grow_id in
+                <foreach collection="growthItemIds" item="growthItemId" open="(" separator="," close=")">
+                    #{growthItemId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
 </mapper>
