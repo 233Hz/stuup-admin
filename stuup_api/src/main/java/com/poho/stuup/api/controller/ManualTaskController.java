@@ -55,13 +55,13 @@ public class ManualTaskController {
         return ResponseModel.ok();
     }
 
-    @GetMapping("/task8")
+    @GetMapping("/task7")
     public ResponseModel task8() {
         growScheduledTaskController.compensateCalculateFail();
         return ResponseModel.ok();
     }
 
-    @GetMapping("/task9")
+    @GetMapping("/task8")
     public ResponseModel task9() {
         growScheduledTaskController.collectionTimeoutScore();
         return ResponseModel.ok();

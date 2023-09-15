@@ -16,9 +16,14 @@ public class RecScoreVO {
     private Long id;
 
     /**
-     * 获取学年
+     * 学年
      */
     private String yearName;
+
+    /**
+     * 学期
+     */
+    private String semesterName;
 
     /**
      * 一级名称

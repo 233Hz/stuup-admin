@@ -96,7 +96,7 @@ public class RecDeductScoreServiceImpl extends ServiceImpl<RecDeductScoreMapper,
                         .ifPresent(record::setYearName);
                 Optional.ofNullable(record.getSemesterId())
                         .map(semesterIdForNameMap::get)
-                        .ifPresent(record::setStudentName);
+                        .ifPresent(record::setSemesterName);
                 Optional.ofNullable(record.getGradeId())
                         .map(gradeIdForNameMap::get)
                         .ifPresent(record::setGradeName);

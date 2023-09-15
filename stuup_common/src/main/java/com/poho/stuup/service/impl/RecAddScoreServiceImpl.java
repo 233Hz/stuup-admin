@@ -142,7 +142,7 @@ public class RecAddScoreServiceImpl extends ServiceImpl<RecAddScoreMapper, RecAd
                         .ifPresent(record::setYearName);
                 Optional.ofNullable(record.getSemesterId())
                         .map(semesterIdForNameMap::get)
-                        .ifPresent(record::setStudentName);
+                        .ifPresent(record::setSemesterName);
                 Optional.ofNullable(record.getGradeId())
                         .map(gradeIdForNameMap::get)
                         .ifPresent(record::setGradeName);

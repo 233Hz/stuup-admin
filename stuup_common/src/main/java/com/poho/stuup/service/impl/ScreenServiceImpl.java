@@ -62,8 +62,6 @@ public class ScreenServiceImpl implements ScreenService {
     @Resource
     private LoginLogMapper loginLogMapper;
     @Resource
-    private RecLogService recLogService;
-    @Resource
     private AudGrowMapper audGrowMapper;
 
 
@@ -183,7 +181,6 @@ public class ScreenServiceImpl implements ScreenService {
         return count;
     }
 
-    //TODO 加缓存
     @Override
     public List<GrowthScoreCountVO> countGrowthScoreCompare() {
         List<GrowthScoreCountVO> resultList = new ArrayList<>();
