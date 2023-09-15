@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.constant.CommonConstants;
 import com.poho.stuup.constant.CompareEnum;
 import com.poho.stuup.constant.ConfigKeyEnum;
-import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.event.EventPublish;
 import com.poho.stuup.event.SystemMsgEvent;
@@ -49,12 +48,6 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
 
     @Resource
     private ITeacherService teacherService;
-
-    @Resource
-    private IMajorService majorService;
-
-    @Resource
-    private IFacultyService facultyService;
 
     @Resource
     private StudentMapper studentMapper;
@@ -137,7 +130,6 @@ public class RankMonthServiceImpl extends ServiceImpl<RankMonthMapper, RankMonth
         // 查询改月时间段内的记录
         List<RecAddScore> recAddScores = recAddScoreMapper.selectList(Wrappers.<RecAddScore>lambdaQuery()
                 .select(RecAddScore::getStudentId, RecAddScore::getScore)
-                .eq(RecAddScore::getState, WhetherEnum.YES.getValue())
                 .between(RecAddScore::getCreateTime, monthBegin, monthEnd));
         int recordSize = recAddScores.size();
 
