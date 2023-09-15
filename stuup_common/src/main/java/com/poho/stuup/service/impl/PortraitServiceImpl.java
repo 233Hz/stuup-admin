@@ -15,6 +15,7 @@ import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.service.PortraitService;
 import com.poho.stuup.service.RecAddScoreService;
+import com.poho.stuup.service.SemesterService;
 import com.poho.stuup.util.MinioUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class PortraitServiceImpl implements PortraitService {
-
-    @Resource
-    private UserMapper userMapper;
 
     @Resource
     private StudentMapper studentMapper;
@@ -76,6 +74,9 @@ public class PortraitServiceImpl implements PortraitService {
 
     @Resource
     private SemesterMapper semesterMapper;
+
+    @Resource
+    private SemesterService semesterService;
 
     @Resource
     private RankSemesterMapper rankSemesterMapper;
@@ -304,22 +305,7 @@ public class PortraitServiceImpl implements PortraitService {
 
     @Override
     public ResponseModel<List<PortraitRankingCurveVO>> getRankingCurve(Student student) {
-        Integer gradeId = student.getGradeId();
-        Grade grade = gradeMapper.selectByPrimaryKey(gradeId);
-        if (gradeId == null) return ResponseModel.failed("未查询到您的年级信息");
-        String year = grade.getYear();
-        Config config = configService.selectByPrimaryKey(ConfigKeyEnum.LAST_SEMESTER_START_TIME.getKey());
-        if (config == null) return ResponseModel.failed("未查询到上学期开始时间的配置");
-        Date startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config.getConfigValue()));
-        Semester currSemester = semesterMapper.selectOne(Wrappers.<Semester>lambdaQuery()
-                .select(Semester::getStartTime)
-                .eq(Semester::getIsCurrent, WhetherEnum.YES.getValue()));
-        if (currSemester == null) return ResponseModel.failed("不在学期设置时间段内");
-        Date endTime = currSemester.getStartTime();
-        List<Semester> semesters = semesterMapper.selectList(Wrappers.<Semester>lambdaQuery()
-                .select(Semester::getId, Semester::getName, Semester::getIsCurrent)
-                .between(Semester::getStartTime, startTime, endTime)
-                .orderByAsc(Semester::getStartTime));
+        List<Semester> semesters = semesterService.getStudentSemester(student.getId());
         if (CollUtil.isEmpty(semesters)) return ResponseModel.failed("未查询到学期信息");
         ArrayList<PortraitRankingCurveVO> result = new ArrayList<>();
         Integer studentId = student.getId();
@@ -344,28 +330,11 @@ public class PortraitServiceImpl implements PortraitService {
 
     @Override
     public ResponseModel<List<PortraitGrowthAnalysisVO>> getGrowthAnalysis(Student student) {
-        Integer gradeId = student.getGradeId();
-        Grade grade = gradeMapper.selectByPrimaryKey(gradeId);
-        if (gradeId == null) return ResponseModel.failed("未查询到您的年级信息");
-        String year = grade.getYear();
-        Config config = configService.selectByPrimaryKey(ConfigKeyEnum.LAST_SEMESTER_START_TIME.getKey());
-        if (config == null) return ResponseModel.failed("未查询到上学期开始时间的配置");
-        Date startTime = DateUtil.parseDate(StrUtil.format("{}-{}", year, config.getConfigValue()));
-        Semester currSemester = semesterMapper.selectOne(Wrappers.<Semester>lambdaQuery()
-                .select(Semester::getStartTime)
-                .eq(Semester::getIsCurrent, WhetherEnum.YES.getValue()));
-        if (currSemester == null) return ResponseModel.failed("不在学期设置时间段内");
-        Date endTime = currSemester.getStartTime();
-        List<Semester> semesters = semesterMapper.selectList(Wrappers.<Semester>lambdaQuery()
-                .select(Semester::getId, Semester::getName, Semester::getIsCurrent)
-                .between(Semester::getStartTime, startTime, endTime)
-                .orderByAsc(Semester::getStartTime));
-        if (CollUtil.isEmpty(semesters)) return ResponseModel.failed("未查询到学期信息");
+        List<Semester> studentSemester = semesterService.getStudentSemester(student.getId());
+        if (CollUtil.isEmpty(studentSemester)) return ResponseModel.failed("未查询到学期信息");
         List<PortraitGrowthAnalysisVO> result = new ArrayList<>();
         Integer studentId = student.getId();
-        int size = semesters.size();
-        for (int i = 0; i < size; i++) {
-            Semester semester = semesters.get(i);
+        for (Semester semester : studentSemester) {
             Long semesterId = semester.getId();
             String semesterName = semester.getName();
             PortraitGrowthAnalysisVO portraitGrowthAnalysisVO = new PortraitGrowthAnalysisVO();

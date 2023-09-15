@@ -200,6 +200,7 @@ public class UserServiceImpl implements IUserService {
 
                                 // 查询当天的登入次数
                                 int count = loginLogMapper.findTodayLoginCount(cusUser.getUserId());
+                                count = 0;
                                 if (count == 0) {
                                     if (yearId != null && semesterId != null) {
                                         GrowthItem growthItem = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()

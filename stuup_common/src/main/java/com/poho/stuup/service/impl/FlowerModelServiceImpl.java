@@ -1,7 +1,6 @@
 package com.poho.stuup.service.impl;
 
 import cn.hutool.core.util.ReflectUtil;
-import com.poho.stuup.constant.RedisKeyConstant;
 import com.poho.stuup.model.dto.FlowerDTO;
 import com.poho.stuup.model.vo.FlowerVO;
 import com.poho.stuup.service.FlowerModelService;
@@ -9,7 +8,6 @@ import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.service.manager.FlowerModelManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,7 +28,7 @@ public class FlowerModelServiceImpl implements FlowerModelService {
         return flowerModelManager.queryFlowerModel();
     }
 
-    @CachePut(value = RedisKeyConstant.FLOWER_MODEL, key = "'getFlowerModel'")
+    //    @CachePut(value = RedisKeyConstant.FLOWER_MODEL, key = "'getFlowerModel'")
     @Override
     public FlowerVO setFlowerModel(FlowerDTO flowerDTO) {
         configService.saveOrUpdate(flowerDTO.getKey(), flowerDTO.getValue());
