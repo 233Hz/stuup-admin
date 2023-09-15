@@ -14,6 +14,7 @@ import com.poho.stuup.service.GrowUserService;
 import com.poho.stuup.service.GrowthItemService;
 import com.poho.stuup.util.MinioUtils;
 import com.poho.stuup.util.ProjectUtil;
+import com.poho.stuup.util.Utils;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,7 +59,8 @@ public class GrowCollectController {
         Long growId = growthItem.getId();
         // 查询项目负责人
         boolean isGrowUser = growUserService.isGrowUser(Long.parseLong(userId), growId);
-        if (!isGrowUser) return ResponseModel.failed("不是该项目负责人，无法导入");
+        if (!isGrowUser && !Utils.isSuperAdmin(Long.valueOf(userId)))
+            return ResponseModel.failed("不是该项目负责人，无法导入");
         RecExcelHandle handle = RecEnum.getHandle(recCode);
         return handle.recImport(file, growthItem, Long.valueOf(userId));
     }

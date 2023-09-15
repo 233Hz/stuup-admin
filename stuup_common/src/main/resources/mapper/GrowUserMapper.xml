@@ -11,7 +11,7 @@
     <select id="findGrowUser" resultType="Long">
         select user_id
         from t_grow_user
-        where grow_id = #{growId}
+        where grow_id = #{growthItemId}
     </select>
 
     <select id="findUserGrow" resultType="Long">

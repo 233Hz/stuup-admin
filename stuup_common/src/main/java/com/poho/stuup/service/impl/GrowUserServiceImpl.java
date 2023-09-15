@@ -21,8 +21,8 @@ import java.util.List;
 public class GrowUserServiceImpl extends ServiceImpl<GrowUserMapper, GrowUser> implements GrowUserService {
 
     @Override
-    public boolean isGrowUser(Long userId, Long growId) {
-        List<Long> userIds = baseMapper.findGrowUser(growId);
+    public boolean isGrowUser(Long userId, Long growthItemId) {
+        List<Long> userIds = baseMapper.findGrowUser(growthItemId);
         return userIds.contains(userId);
     }
 

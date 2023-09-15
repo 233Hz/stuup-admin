@@ -26,7 +26,7 @@ public interface GrowUserMapper extends BaseMapper<GrowUser> {
      * @author BUNGA
      * @date: 2023/5/29 15:52
      */
-    List<Long> findGrowUser(@Param("growthItemId") Long growId);
+    List<Long> findGrowUser(@Param("growthItemId") Long growthItemId);
 
     /**
      * @description: 查找用户项目
