@@ -172,9 +172,10 @@ public class ScreenServiceImpl implements ScreenService {
                                     .in(GrowthItem::getCode, growthCodes),
                             id -> Long.valueOf(String.valueOf(id)));
                     if (CollUtil.isNotEmpty(growIds)) {
-                        count = recLogService.count(Wrappers.<RecLog>lambdaQuery()
-                                .between(RecLog::getCreateTime, currYear.getYearStart(), currYear.getYearEnd())
-                                .in(RecLog::getGrowId, growIds));
+                        count = recAddScoreService.count(Wrappers.<RecAddScore>lambdaQuery()
+                                .between(RecAddScore::getCreateTime, currYear.getYearStart(), currYear.getYearEnd())
+                                .in(RecAddScore::getGrowId, growIds)
+                                .groupBy(RecAddScore::getGrowId));
                     }
                 }
             }
