@@ -74,15 +74,15 @@ public class ClassController {
             boolean ret = classService.deleteClass(ids);
             if (ret) {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("删除成功");
+                model.setMsg("删除成功");
             } else {
                 model.setCode(CommonConstants.CODE_EXCEPTION);
-                model.setMessage("删除失败");
+                model.setMsg("删除失败");
             }
         } catch (Exception e) {
             logger.error("删除班级信息失败，原因：", e);
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("系统异常，请联系管理员");
+            model.setMsg("系统异常，请联系管理员");
         }
         return model;
     }

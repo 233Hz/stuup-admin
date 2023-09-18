@@ -67,10 +67,10 @@ public class RoleServiceImpl implements IRoleService {
         if (MicrovanUtil.isNotEmpty(list)) {
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;
@@ -88,7 +88,7 @@ public class RoleServiceImpl implements IRoleService {
         Role checkRole = roleMapper.checkRole(param);
         if (MicrovanUtil.isNotEmpty(checkRole)) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("角色名称已存在");
+            model.setMsg("角色名称已存在");
             return model;
         } else {
             if (MicrovanUtil.isNotEmpty(role.getOid())) {
@@ -101,10 +101,10 @@ public class RoleServiceImpl implements IRoleService {
         }
         if (line > 0) {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("保存成功");
+            model.setMsg("保存成功");
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("保存失败，请稍后重试");
+            model.setMsg("保存失败，请稍后重试");
         }
         return model;
     }
@@ -113,13 +113,13 @@ public class RoleServiceImpl implements IRoleService {
     public ResponseModel del(String ids) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("删除失败，请稍后重试");
+        model.setMsg("删除失败，请稍后重试");
         String[] idArr = ids.split(",");
         if (MicrovanUtil.isNotEmpty(idArr)) {
             int line = roleMapper.deleteBatch(idArr);
             if (line > 0) {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("删除成功");
+                model.setMsg("删除成功");
             }
         }
         return model;
@@ -129,7 +129,7 @@ public class RoleServiceImpl implements IRoleService {
     public ResponseModel findData() {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setMessage("请求成功");
+        model.setMsg("请求成功");
         List<Role> list = roleMapper.queryList(null);
         if (MicrovanUtil.isNotEmpty(list)) {
             List<CusMap> data = new ArrayList<>();

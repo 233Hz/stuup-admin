@@ -1,7 +1,10 @@
 package com.poho.common.custom;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.alibaba.fastjson.JSON;
 import com.poho.common.constant.CommonConstants;
+
+import java.util.List;
 
 /**
  *  响应对象
@@ -16,7 +19,7 @@ public class ResponseModel<T> {
     /**
      * 响应信息
      */
-    private String message;
+    private String msg;
 
     /**
      * 返回的数据
@@ -28,23 +31,31 @@ public class ResponseModel<T> {
      */
     private String token;
 
+    /**
+     * sa-token
+     */
+    private SaTokenInfo tokenInfo;
+
+    private List<String> roleCodeList;
+    private List<String> permissionList;
+
     public ResponseModel() {
     }
 
-    public ResponseModel(Integer code, String message) {
+    public ResponseModel(Integer code, String msg) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
     }
 
-    public ResponseModel(Integer code, T data, String message) {
+    public ResponseModel(Integer code, T data, String msg) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
         this.data = data;
     }
 
     public ResponseModel(Integer code, T data, String message, String token) {
         this.code = code;
-        this.message = message;
+        this.msg = message;
         this.data = data;
         this.token = token;
     }
@@ -85,12 +96,12 @@ public class ResponseModel<T> {
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String message) {
+        this.msg = message;
     }
 
     public T getData() {
@@ -107,6 +118,30 @@ public class ResponseModel<T> {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public SaTokenInfo getTokenInfo() {
+        return tokenInfo;
+    }
+
+    public void setTokenInfo(SaTokenInfo tokenInfo) {
+        this.tokenInfo = tokenInfo;
+    }
+
+    public List<String> getRoleCodeList() {
+        return roleCodeList;
+    }
+
+    public void setRoleCodeList(List<String> roleCodeList) {
+        this.roleCodeList = roleCodeList;
+    }
+
+    public List<String> getPermissionList() {
+        return permissionList;
+    }
+
+    public void setPermissionList(List<String> permissionList) {
+        this.permissionList = permissionList;
     }
 
     /**
@@ -126,7 +161,7 @@ public class ResponseModel<T> {
         ResponseModel<T> apiResult = new ResponseModel<>();
         apiResult.setCode(code);
         apiResult.setData(data);
-        apiResult.setMessage(msg);
+        apiResult.setMsg(msg);
         return apiResult;
     }
 }

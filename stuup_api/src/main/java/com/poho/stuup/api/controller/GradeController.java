@@ -76,10 +76,10 @@ public class GradeController {
                 gradeService.deleteByPrimaryKey(Integer.valueOf(id));
             }
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("删除成功");
+            model.setMsg("删除成功");
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("请选择后点击删除");
+            model.setMsg("请选择后点击删除");
         }
         return model;
     }

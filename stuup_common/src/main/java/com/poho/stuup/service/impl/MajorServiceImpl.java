@@ -64,10 +64,10 @@ public class MajorServiceImpl implements IMajorService {
         if (MicrovanUtil.isNotEmpty(list)) {
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;
@@ -79,17 +79,17 @@ public class MajorServiceImpl implements IMajorService {
         Major checkMajor = majorMapper.checkMajor(major);
         if (checkMajor != null) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("专业名称已存在");
+            model.setMsg("专业名称已存在");
         } else {
             int line = 0;
             if (major.getOid() != null) {
                 line = majorMapper.updateByPrimaryKeySelective(major);
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("更新成功");
+                model.setMsg("更新成功");
             } else {
                 line = majorMapper.insertSelective(major);
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("添加成功");
+                model.setMsg("添加成功");
             }
         }
         return model;

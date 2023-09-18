@@ -15,5 +15,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ApiMainApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiMainApplication.class, args);
+        System.out.println("======学生成长系统启动成功=====================");
     }
 }

@@ -6,6 +6,7 @@ import com.poho.stuup.service.IUserRoleService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Author wupeng
@@ -46,5 +47,10 @@ public class UserRoleServiceImpl implements IUserRoleService {
     @Override
     public int updateByPrimaryKey(UserRole record) {
         return userRoleMapper.updateByPrimaryKey(record);
+    }
+
+    @Override
+    public List<String> getRoleCodeListByUserId(Long userId){
+        return userRoleMapper.getRoleCodeListByUserId(userId);
     }
 }

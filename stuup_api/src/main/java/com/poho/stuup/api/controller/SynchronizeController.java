@@ -69,16 +69,16 @@ public class SynchronizeController {
 
                 logger.info("----------------------------手动同步结束----------------------------");
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("同步成功");
+                model.setMsg("同步成功");
             } else {
                 model.setCode(CommonConstants.CODE_EXCEPTION);
-                model.setMessage("同步开关未开启");
+                model.setMsg("同步开关未开启");
             }
         }
         catch (Exception e) {
             logger.info("手动同步报错", e);
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("同步失败，请稍后重试");
+            model.setMsg("同步失败，请稍后重试");
         }
         return model;
     }

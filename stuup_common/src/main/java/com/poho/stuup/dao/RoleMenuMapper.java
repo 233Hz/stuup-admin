@@ -46,4 +46,7 @@ public interface RoleMenuMapper extends BaseDao<RoleMenu> {
     int removerRoleMenu(@Param("roleId") Long roleId);
 
     int setRoleMenu(@Param("roleId") Long roleId, @Param("menuIds") List<Long> menuIds);
+
+    List<String> getMenuCodeByUserId(@Param("userId") Long userId);
+    List<String> getMenuCodeByRoleCode(@Param("roleCode") String roleCode);
 }

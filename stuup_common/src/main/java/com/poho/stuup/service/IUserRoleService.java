@@ -2,6 +2,8 @@ package com.poho.stuup.service;
 
 import com.poho.stuup.model.UserRole;
 
+import java.util.List;
+
 public interface IUserRoleService {
     int deleteByPrimaryKey(Long oid);
 
@@ -14,4 +16,6 @@ public interface IUserRoleService {
     int updateByPrimaryKeySelective(UserRole record);
 
     int updateByPrimaryKey(UserRole record);
+
+    List<String> getRoleCodeListByUserId(Long userId);
 }

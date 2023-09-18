@@ -123,4 +123,12 @@
     select role_id from t_user_role where user_id = #{userId}
   </select>
 
+  <select id="getRoleCodeListByUserId" resultType="String">
+    select distinct (r.role_code) as code from t_role r
+     inner join t_user_role ur on r.oid = ur.role_id
+     where ur.user_id = #{userId}
+  </select>
+
+
+
 </mapper>

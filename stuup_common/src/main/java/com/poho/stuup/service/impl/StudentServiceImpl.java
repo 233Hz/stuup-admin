@@ -34,10 +34,10 @@ public class StudentServiceImpl implements IStudentService {
         if (MicrovanUtil.isNotEmpty(list)) {
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;

@@ -59,7 +59,7 @@ public class TeacherController {
         }
         else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("无教师信息");
+            model.setMsg("无教师信息");
         }
         return model;
     }

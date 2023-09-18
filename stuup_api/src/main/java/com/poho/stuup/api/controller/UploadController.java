@@ -47,7 +47,7 @@ public class UploadController {
     public ResponseModel<CusUploadResult> uploadPic(@ApiParam(required = true, value = "图片") @RequestParam("file") MultipartFile picFile) {
         ResponseModel model = new ResponseModel();
         if (picFile.isEmpty()) {
-            model.setMessage("请选择图片");
+            model.setMsg("请选择图片");
             model.setCode(CommonConstants.CODE_EXCEPTION);
         } else {
             try {
@@ -66,13 +66,13 @@ public class UploadController {
                     String path = ProjectConstants.PROJECT_PIC + "/" + newFileName;
                     String url = propertiesConfig.getBaseUrl() + path;
                     model.setData(new CusUploadResult(url, path, fileName));
-                    model.setMessage("上传成功");
+                    model.setMsg("上传成功");
                 } else {
-                    model.setMessage("只支持"+Arrays.toString(supportPicArr)+"格式的图片");
+                    model.setMsg("只支持"+Arrays.toString(supportPicArr)+"格式的图片");
                     model.setCode(CommonConstants.CODE_EXCEPTION);
                 }
             } catch (IOException e) {
-                model.setMessage("上传失败，请稍后重试");
+                model.setMsg("上传失败，请稍后重试");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
                 e.printStackTrace();
             }
@@ -91,7 +91,7 @@ public class UploadController {
     public ResponseModel<CusUploadResult> uploadFile(@ApiParam(required = true, value = "文件") @RequestParam("file") MultipartFile picFile) {
         ResponseModel model = new ResponseModel();
         if (picFile.isEmpty()) {
-            model.setMessage("请选择文件");
+            model.setMsg("请选择文件");
             model.setCode(CommonConstants.CODE_EXCEPTION);
         } else {
             try {
@@ -108,14 +108,14 @@ public class UploadController {
                     String path = ProjectConstants.PROJECT_COMMON + "/" + newFileName;
                     String url = propertiesConfig.getBaseUrl() + path;
                     model.setCode(CommonConstants.CODE_SUCCESS);
-                    model.setMessage("上传成功");
+                    model.setMsg("上传成功");
                     model.setData(new CusUploadResult(url, path, fileName));
                 } else {
-                    model.setMessage("只支持"+Arrays.toString(supportDocArr)+"格式的文件");
+                    model.setMsg("只支持"+Arrays.toString(supportDocArr)+"格式的文件");
                     model.setCode(CommonConstants.CODE_EXCEPTION);
                 }
             } catch (IOException e) {
-                model.setMessage("上传失败，请稍后重试");
+                model.setMsg("上传失败，请稍后重试");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
                 e.printStackTrace();
             }

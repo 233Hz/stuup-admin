@@ -1,6 +1,10 @@
 package com.poho.stuup.api.handler;
 
+import cn.dev33.satoken.exception.*;
+import cn.dev33.satoken.util.SaResult;
+import cn.hutool.core.util.StrUtil;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.saToken.SaTokenExceptionCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -42,6 +46,18 @@ public class GlobalExceptionHandler {
     public ResponseModel constraintViolationExceptionHandler(ConstraintViolationException e) {
         log.warn(e.getMessage(), e);
         return ResponseModel.failed(e.getMessage());
+    }
+
+    @ExceptionHandler(SaTokenException.class)
+    public ResponseModel handlerSaTokenException(SaTokenException e) {
+        String errorMsg = SaTokenExceptionCodeEnum.getEnumMsgByCode(e.getCode());
+        ResponseModel responseModel = ResponseModel.failed(e.getMessage());
+        responseModel.setCode(e.getCode());
+        if(StrUtil.isNotBlank(errorMsg)){
+            responseModel.setMsg(errorMsg);
+        }
+       return  responseModel;
+
     }
 
     @ExceptionHandler(value = Exception.class)

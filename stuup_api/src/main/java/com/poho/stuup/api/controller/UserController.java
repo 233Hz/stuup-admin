@@ -100,11 +100,11 @@ public class UserController {
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (MicrovanUtil.isNotEmpty(user)) {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("获取成功");
+            model.setMsg("获取成功");
             model.setData(ProjectUtil.convertCusUser(user));
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("获取失败，请稍后重试");
+            model.setMsg("获取失败，请稍后重试");
         }
         return model;
     }
@@ -156,7 +156,7 @@ public class UserController {
     public ResponseModel importData(@RequestParam("importFile") MultipartFile importFile) {
         ResponseModel<Map<String, Object>> model = new ResponseModel<>();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("导入失败，请稍后重试");
+        model.setMsg("导入失败，请稍后重试");
         try {
             String path = config.getBaseDoc() + File.separator + ProjectConstants.PROJECT_TEMP;
             MicrovanUtil.createFolder(path);
@@ -170,14 +170,14 @@ public class UserController {
                 if (MicrovanUtil.isNotEmpty(userList)) {
                     Map<String, Object> result = userService.importUserList(userList);
                     model.setCode(CommonConstants.CODE_SUCCESS);
-                    model.setMessage("导入成功");
+                    model.setMsg("导入成功");
                     model.setData(result);
                 } else {
-                    model.setMessage("未读取到数据");
+                    model.setMsg("未读取到数据");
                     model.setCode(CommonConstants.CODE_EXCEPTION);
                 }
             } else {
-                model.setMessage("请选择Excel文件");
+                model.setMsg("请选择Excel文件");
                 model.setCode(CommonConstants.CODE_EXCEPTION);
             }
         } catch (IOException e) {

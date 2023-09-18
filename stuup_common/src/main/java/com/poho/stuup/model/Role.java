@@ -5,6 +5,7 @@ import java.util.Date;
 public class Role {
     private Long oid;
 
+    private String roleCode;
     private String roleName;
 
     private String roleDesc;
@@ -19,6 +20,14 @@ public class Role {
 
     public void setOid(Long oid) {
         this.oid = oid;
+    }
+
+    public String getRoleCode() {
+        return roleCode;
+    }
+
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
     }
 
     public String getRoleName() {

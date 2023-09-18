@@ -67,10 +67,10 @@ public class YearServiceImpl implements IYearService {
         if (MicrovanUtil.isNotEmpty(list)) {
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;
@@ -88,7 +88,7 @@ public class YearServiceImpl implements IYearService {
         Year checkYear = yearMapper.checkYear(param);
         if (MicrovanUtil.isNotEmpty(checkYear)) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("学年已存在");
+            model.setMsg("学年已存在");
             return model;
         } else {
             if (MicrovanUtil.isNotEmpty(year.getOid())) {
@@ -101,10 +101,10 @@ public class YearServiceImpl implements IYearService {
         }
         if (line > 0) {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("保存成功");
+            model.setMsg("保存成功");
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("保存失败，请稍后重试");
+            model.setMsg("保存失败，请稍后重试");
         }
         return model;
     }
@@ -113,13 +113,13 @@ public class YearServiceImpl implements IYearService {
     public ResponseModel del(String ids) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("删除失败，请稍后重试");
+        model.setMsg("删除失败，请稍后重试");
         String[] idArr = ids.split(",");
         if (MicrovanUtil.isNotEmpty(idArr)) {
             int line = yearMapper.deleteBatch(idArr);
             if (line > 0) {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("删除成功");
+                model.setMsg("删除成功");
             }
         }
         return model;
@@ -129,7 +129,7 @@ public class YearServiceImpl implements IYearService {
     public ResponseModel queryList() {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setMessage("请求成功");
+        model.setMsg("请求成功");
         List<Year> years = yearMapper.queryList(null);
         if (MicrovanUtil.isNotEmpty(years)) {
             List<CusMap> data = new ArrayList<>();
@@ -146,13 +146,13 @@ public class YearServiceImpl implements IYearService {
     public ResponseModel updateCurrYear(Long oid) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("设置失败，请稍后重试");
+        model.setMsg("设置失败，请稍后重试");
         Year year = yearMapper.selectByPrimaryKey(oid);
         if (MicrovanUtil.isNotEmpty(year)) {
             int line = yearMapper.updateSetCurrYear(oid);
             if (line > 0) {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("设置成功");
+                model.setMsg("设置成功");
             }
         }
         return model;
@@ -164,14 +164,14 @@ public class YearServiceImpl implements IYearService {
         Year year = yearMapper.selectByPrimaryKey(yearId);
         if (MicrovanUtil.isNotEmpty(year)) {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
             Map<String, Object> map = new HashMap<>();
             map.put("yearStart", MicrovanUtil.formatDateToStr("yyyy-MM-dd HH:mm", year.getYearStart()));
             map.put("yearEnd", MicrovanUtil.formatDateToStr("yyyy-MM-dd HH:mm", year.getYearEnd()));
             model.setData(map);
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("请求失败，请稍后重试");
+            model.setMsg("请求失败，请稍后重试");
         }
         return model;
     }

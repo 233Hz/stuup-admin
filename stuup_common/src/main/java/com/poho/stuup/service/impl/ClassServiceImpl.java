@@ -53,10 +53,10 @@ public class ClassServiceImpl implements IClassService {
         if (MicrovanUtil.isNotEmpty(list)) {
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;
@@ -72,26 +72,26 @@ public class ClassServiceImpl implements IClassService {
         int count = classMapper.findClass(params);
         if (count > 0) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("班级信息已存在");
+            model.setMsg("班级信息已存在");
             return model;
         }
         if (clazz.getId() != null) {
             int line = classMapper.updateByPrimaryKeySelective(clazz);
             if (line <= 0) {
                 model.setCode(CommonConstants.CODE_EXCEPTION);
-                model.setMessage("修改失败");
+                model.setMsg("修改失败");
             } else {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("修改成功");
+                model.setMsg("修改成功");
             }
         } else {
             int line = classMapper.insertSelective(clazz);
             if (line <= 0) {
                 model.setCode(CommonConstants.CODE_EXCEPTION);
-                model.setMessage("添加失败");
+                model.setMsg("添加失败");
             } else {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("添加成功");
+                model.setMsg("添加成功");
             }
         }
         return model;

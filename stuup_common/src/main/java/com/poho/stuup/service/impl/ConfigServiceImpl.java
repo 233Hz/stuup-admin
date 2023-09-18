@@ -68,10 +68,10 @@ public class ConfigServiceImpl implements IConfigService {
         }
         if (line > 0) {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("保存成功");
+            model.setMsg("保存成功");
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("保存失败，请稍后重试");
+            model.setMsg("保存失败，请稍后重试");
         }
         return model;
     }

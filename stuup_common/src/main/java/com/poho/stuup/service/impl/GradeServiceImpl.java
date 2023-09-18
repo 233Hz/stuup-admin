@@ -69,10 +69,10 @@ public class GradeServiceImpl implements IGradeService {
         if (MicrovanUtil.isNotEmpty(list)) {
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;
@@ -84,17 +84,17 @@ public class GradeServiceImpl implements IGradeService {
         Grade checkGrade = gradeMapper.checkGrade(grade);
         if (checkGrade != null) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("年级名称已存在");
+            model.setMsg("年级名称已存在");
         } else {
             int line = 0;
             if (grade.getOid() != null) {
                 line = gradeMapper.updateByPrimaryKeySelective(grade);
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("更新成功");
+                model.setMsg("更新成功");
             } else {
                 line = gradeMapper.insertSelective(grade);
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("添加成功");
+                model.setMsg("添加成功");
             }
         }
         return model;

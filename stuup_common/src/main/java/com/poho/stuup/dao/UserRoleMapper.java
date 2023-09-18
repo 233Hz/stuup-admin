@@ -41,5 +41,6 @@ public interface UserRoleMapper extends BaseDao<UserRole> {
      * @return
      */
     List<Long> queryUserRoleId(@Param("userId") Long userId);
+    List<String> getRoleCodeListByUserId(@Param("userId") Long userId);
 
 }

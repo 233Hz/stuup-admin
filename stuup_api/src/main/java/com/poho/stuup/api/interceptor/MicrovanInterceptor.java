@@ -27,7 +27,7 @@ import java.util.Date;
 public class MicrovanInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
-        String token = request.getHeader("Authorization");
+        /*String token = request.getHeader("Authorization");
         if (token == null || "".equals(token)) {
             this.setErrorResponse(response, ResponseMsg.noLogin());
             return false;
@@ -47,7 +47,8 @@ public class MicrovanInterceptor implements HandlerInterceptor {
         } else {
             this.setErrorResponse(response, ResponseMsg.loginExpire());
             return false;
-        }
+        }*/
+        return true;
     }
 
     /**

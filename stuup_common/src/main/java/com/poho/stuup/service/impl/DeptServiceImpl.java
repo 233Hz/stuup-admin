@@ -67,10 +67,10 @@ public class DeptServiceImpl implements IDeptService {
         if (MicrovanUtil.isNotEmpty(list)) {
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;
@@ -88,7 +88,7 @@ public class DeptServiceImpl implements IDeptService {
         Dept checkDept = deptMapper.checkDept(param);
         if (MicrovanUtil.isNotEmpty(checkDept)) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("部门名称已存在");
+            model.setMsg("部门名称已存在");
         } else {
             if (MicrovanUtil.isNotEmpty(dept.getOid())) {
                 dept.setCreateUser(null);
@@ -100,10 +100,10 @@ public class DeptServiceImpl implements IDeptService {
         }
         if (line > 0) {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("保存成功");
+            model.setMsg("保存成功");
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("保存失败，请稍后重试");
+            model.setMsg("保存失败，请稍后重试");
         }
         return model;
     }
@@ -112,13 +112,13 @@ public class DeptServiceImpl implements IDeptService {
     public ResponseModel del(String ids) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("删除失败，请稍后重试");
+        model.setMsg("删除失败，请稍后重试");
         String[] idArr = ids.split(",");
         if (MicrovanUtil.isNotEmpty(idArr)) {
             int line = deptMapper.deleteBatch(idArr);
             if (line > 0) {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("删除成功");
+                model.setMsg("删除成功");
             }
         }
         return model;
@@ -128,7 +128,7 @@ public class DeptServiceImpl implements IDeptService {
     public ResponseModel findData() {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setMessage("请求成功");
+        model.setMsg("请求成功");
         List<Dept> list = deptMapper.queryList(null);
         if (MicrovanUtil.isNotEmpty(list)) {
             List<CusMap> data = new ArrayList<>();

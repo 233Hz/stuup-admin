@@ -1,5 +1,7 @@
 package com.poho.stuup.service.impl;
 
+import cn.dev33.satoken.stp.StpInterface;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -9,7 +11,6 @@ import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.CusMap;
 import com.poho.common.custom.PageData;
 import com.poho.common.custom.ResponseModel;
-import com.poho.common.util.JwtUtil;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.common.util.PasswordUtil;
 import com.poho.common.util.Validator;
@@ -89,6 +90,9 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private SemesterService semesterService;
 
+    @Resource
+    private StpInterface stpInterface;
+
     @Override
     public int deleteByPrimaryKey(Long oid) {
         return userMapper.deleteByPrimaryKey(oid);
@@ -125,7 +129,7 @@ public class UserServiceImpl implements IUserService {
     public ResponseModel<CusUser> checkLogin(String loginName, String password) {
         ResponseModel<CusUser> model = new ResponseModel<>();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("账号或密码错误");
+        model.setMsg("账号或密码错误");
         if (StrUtil.isBlank(loginName)) {
             return model;
         }
@@ -226,8 +230,6 @@ public class UserServiceImpl implements IUserService {
                                         }
                                     }
                                 }
-
-
                             }
                         }
                         // 保存登入日志
@@ -236,16 +238,21 @@ public class UserServiceImpl implements IUserService {
                         loginLogMapper.insert(loginLog);
 
                         model.setCode(CommonConstants.CODE_SUCCESS);
-                        model.setMessage(message);
-                        model.setToken(JwtUtil.createJwt(user.getOid().toString(), CommonConstants.JWT_TTL_COMMON));
+                        model.setMsg(message);
+                        //model.setToken(JwtUtil.createJwt(user.getOid().toString(), CommonConstants.JWT_TTL_COMMON));
                         model.setData(cusUser);
+                        //sa-token
+                        StpUtil.login(user.getOid());
+                        model.setTokenInfo(StpUtil.getTokenInfo());
+                        model.setRoleCodeList(stpInterface.getRoleList(user.getOid(), null));
+                        model.setPermissionList(stpInterface.getPermissionList(user.getOid(), null));
                     } else {
                         model.setCode(CommonConstants.CODE_EXCEPTION);
-                        model.setMessage("用户未设置角色，暂无法登录");
+                        model.setMsg("用户未设置角色，暂无法登录");
                     }
                 } else {
                     model.setCode(CommonConstants.CODE_EXCEPTION);
-                    model.setMessage("你的账号已被禁止登录系统");
+                    model.setMsg("你的账号已被禁止登录系统");
                 }
             }
         }
@@ -278,10 +285,10 @@ public class UserServiceImpl implements IUserService {
             }
             pageData.setRecords(list);
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("请求成功");
+            model.setMsg("请求成功");
         } else {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("无数据");
+            model.setMsg("无数据");
         }
         model.setData(pageData);
         return model;
@@ -299,7 +306,7 @@ public class UserServiceImpl implements IUserService {
         User checkUser = userMapper.checkUser(param);
         if (MicrovanUtil.isNotEmpty(checkUser)) {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("手机号码已存在");
+            model.setMsg("手机号码已存在");
             return model;
         } else {
             if (MicrovanUtil.isNotEmpty(user.getOid())) {
@@ -324,10 +331,10 @@ public class UserServiceImpl implements IUserService {
                 }
             }
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("保存成功");
+            model.setMsg("保存成功");
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("保存失败，请稍后重试");
+            model.setMsg("保存失败，请稍后重试");
         }
         return model;
     }
@@ -336,13 +343,13 @@ public class UserServiceImpl implements IUserService {
     public ResponseModel del(String ids) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("删除失败，请稍后重试");
+        model.setMsg("删除失败，请稍后重试");
         String[] idArr = ids.split(",");
         if (MicrovanUtil.isNotEmpty(idArr)) {
             int line = userMapper.deleteBatch(idArr);
             if (line > 0) {
                 model.setCode(CommonConstants.CODE_SUCCESS);
-                model.setMessage("删除成功");
+                model.setMsg("删除成功");
             }
         }
         return model;
@@ -352,7 +359,7 @@ public class UserServiceImpl implements IUserService {
     public ResponseModel queryList() {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_SUCCESS);
-        model.setMessage("请求成功");
+        model.setMsg("请求成功");
         List<User> users = userMapper.queryList(null);
         if (MicrovanUtil.isNotEmpty(users)) {
             List<CusMap> data = new ArrayList<>();
@@ -369,7 +376,7 @@ public class UserServiceImpl implements IUserService {
     public ResponseModel updatePassword(String userId, Map params) {
         ResponseModel model = new ResponseModel();
         model.setCode(CommonConstants.CODE_EXCEPTION);
-        model.setMessage("修改失败，请稍后重试");
+        model.setMsg("修改失败，请稍后重试");
         String opassword = params.get("opassword").toString();
         String npassword = params.get("npassword").toString();
         String rpassword = params.get("rpassword").toString();
@@ -382,15 +389,15 @@ public class UserServiceImpl implements IUserService {
                         int line = userMapper.updateByPrimaryKeySelective(user);
                         if (line > 0) {
                             model.setCode(CommonConstants.CODE_SUCCESS);
-                            model.setMessage("修改成功，请重新登录");
+                            model.setMsg("修改成功，请重新登录");
                         }
                     } else {
                         model.setCode(CommonConstants.CODE_EXCEPTION);
-                        model.setMessage("两次新密码输入不一致");
+                        model.setMsg("两次新密码输入不一致");
                     }
                 } else {
                     model.setCode(CommonConstants.CODE_EXCEPTION);
-                    model.setMessage("旧密码错误，请重新输入");
+                    model.setMsg("旧密码错误，请重新输入");
                 }
             }
         }
@@ -403,12 +410,12 @@ public class UserServiceImpl implements IUserService {
         User user = userMapper.selectByPrimaryKey(oid);
         if (MicrovanUtil.isNotEmpty(user)) {
             model.setCode(CommonConstants.CODE_SUCCESS);
-            model.setMessage("获取成功");
+            model.setMsg("获取成功");
             CusUser cusUser = ProjectUtil.convertCusUser(user);
             model.setData(cusUser);
         } else {
             model.setCode(CommonConstants.CODE_EXCEPTION);
-            model.setMessage("获取失败，请稍后重试");
+            model.setMsg("获取失败，请稍后重试");
         }
         return model;
     }

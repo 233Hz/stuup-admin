@@ -3,13 +3,14 @@
 <mapper namespace="com.poho.stuup.dao.RoleMapper">
     <resultMap id="BaseResultMap" type="com.poho.stuup.model.Role">
         <id column="oid" jdbcType="BIGINT" property="oid"/>
+        <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
         <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
         <result column="role_desc" jdbcType="VARCHAR" property="roleDesc"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_user" jdbcType="BIGINT" property="createUser"/>
     </resultMap>
     <sql id="Base_Column_List">
-        oid, role_name, role_desc, create_time, create_user
+        oid, role_code, role_name, role_desc, create_time, create_user
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -23,9 +24,9 @@
         where oid = #{oid,jdbcType=BIGINT}
     </delete>
     <insert id="insert" parameterType="com.poho.stuup.model.Role">
-        insert into t_role (oid, role_name, role_desc,
+        insert into t_role (oid, role_code, role_name, role_desc,
                             create_time, create_user)
-        values (#{oid,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{roleDesc,jdbcType=VARCHAR},
+        values (#{oid,jdbcType=BIGINT}, #{roleCode,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, #{roleDesc,jdbcType=VARCHAR},
                 #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT})
     </insert>
     <insert id="insertSelective" parameterType="com.poho.stuup.model.Role">
@@ -33,6 +34,9 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="oid != null">
                 oid,
+            </if>
+            <if test="roleCode != null">
+                role_code,
             </if>
             <if test="roleName != null">
                 role_name,
@@ -51,6 +55,9 @@
             <if test="oid != null">
                 #{oid,jdbcType=BIGINT},
             </if>
+            <if test="roleCode != null">
+                #{roleCode,jdbcType=VARCHAR},
+            </if>
             <if test="roleName != null">
                 #{roleName,jdbcType=VARCHAR},
             </if>
@@ -68,6 +75,9 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.Role">
         update t_role
         <set>
+            <if test="roleCode != null">
+                role_code = #{roleCode,jdbcType=VARCHAR},
+            </if>
             <if test="roleName != null">
                 role_name = #{roleName,jdbcType=VARCHAR},
             </if>
@@ -85,7 +95,8 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.Role">
         update t_role
-        set role_name   = #{roleName,jdbcType=VARCHAR},
+        set role_code   = #{roleCode,jdbcType=VARCHAR},
+            role_name   = #{roleName,jdbcType=VARCHAR},
             role_desc   = #{roleDesc,jdbcType=VARCHAR},
             create_time = #{createTime,jdbcType=TIMESTAMP},
             create_user = #{createUser,jdbcType=BIGINT}

@@ -131,10 +131,10 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
         ResponseModel res = batchSaveMembers(infoId, list);
         if(CommonConstants.CODE_FAIL == res.getCode()){ //插入记录失败
             //更新同步记录状态
-            syncInfo.setMemo(StrUtil.format("插入记录失败： {}", res.getMessage()));
+            syncInfo.setMemo(StrUtil.format("插入记录失败： {}", res.getMsg()));
             syncInfo.setState(SyncInfoStateEnum.SYNC_FAIL.getValue());
             this.updateById(syncInfo);
-            return ResponseModel.failed(StrUtil.format("同步失败 插入记录异常：{}", res.getMessage()));
+            return ResponseModel.failed(StrUtil.format("同步失败 插入记录异常：{}", res.getMsg()));
         }
         //更新同步记录状态
         syncInfo.setUpdateTime(null);
