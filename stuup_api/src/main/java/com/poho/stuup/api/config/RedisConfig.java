@@ -19,7 +19,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * @author BUNGA
- * @description TODO
+ * @description
  * @date 2023/9/12 9:12
  */
 @EnableConfigurationProperties(CacheProperties.class)

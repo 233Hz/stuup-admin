@@ -49,6 +49,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SaTokenException.class)
+    @ResponseBody
     public ResponseModel handlerSaTokenException(SaTokenException e) {
         String errorMsg = SaTokenExceptionCodeEnum.getEnumMsgByCode(e.getCode());
         ResponseModel responseModel = ResponseModel.failed(e.getMessage());
