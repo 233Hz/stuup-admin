@@ -1,9 +1,9 @@
 package com.poho.stuup.model.vo;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author BUNGA
@@ -14,5 +14,5 @@ public class StudentScoreDetailsVO {
 
     private BigDecimal totalScore;
 
-    private List<StudentRecScoreVO> records;
+    private IPage<StudentRecScoreVO> detailPage;
 }

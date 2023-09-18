@@ -60,9 +60,7 @@ public class StuScoreLogServiceImpl extends ServiceImpl<StuScoreLogMapper, StuSc
         }
         IPage<StudentRecScoreVO> iPage = baseMapper.pageStudentRecScore(page, studentId);
         List<StudentRecScoreVO> records = iPage.getRecords();
-        int size = records.size();
-        for (int i = 0; i < size; i++) {
-            StudentRecScoreVO studentRecScoreVO = records.get(i);
+        for (StudentRecScoreVO studentRecScoreVO : records) {
             String firstName = studentRecScoreVO.getFirstName();
             String secondName = studentRecScoreVO.getSecondName();
             String thirdName = studentRecScoreVO.getThirdName();
@@ -74,7 +72,7 @@ public class StuScoreLogServiceImpl extends ServiceImpl<StuScoreLogMapper, StuSc
             if (StrUtil.isNotBlank(growName)) name += StrUtil.format("{}", growName);
             studentRecScoreVO.setName(name);
         }
-        studentScoreDetailsVO.setRecords(records);
+        studentScoreDetailsVO.setDetailPage(iPage);
         return ResponseModel.ok(studentScoreDetailsVO);
     }
 }
