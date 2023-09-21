@@ -2,11 +2,12 @@ package com.poho.stuup.constant;
 
 /**
  * @author BUNGA
- * @description
  * @date 2023/9/12 13:26
  */
-public class RedisKeyConstant {
+public class CacheKeyConstant {
 
     public static final String FLOWER_MODEL = "flowerModel";
+
+    public static final String MENU_TREE_LIST = "menuTreeList";
 
 }

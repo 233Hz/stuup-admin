@@ -1,5 +1,6 @@
 package com.poho.stuup.util;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.constant.ProjectConstants;
@@ -7,17 +8,13 @@ import com.poho.stuup.custom.CusTransfer;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.KeyValueDTO;
-import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,28 +24,8 @@ import java.util.stream.Collectors;
  * @Modified By:
  */
 public class ProjectUtil {
-    /**
-     * request中获取当前登录用户信息
-     * @param request
-     * @return
-     */
-    public static String obtainLoginUser(HttpServletRequest request) {
-        Claims claimsUser = (Claims) request.getAttribute(CommonConstants.CLAIMS_USER);
-        return claimsUser.getId();
-    }
 
-    /**
-     *
-     * @param request
-     * @return
-     */
-    public static CusUser getSessionUser(HttpServletRequest request) {
-        Object object = MicrovanUtil.getSessionAttribute(request, ProjectConstants.SESSION_USER);
-        if (MicrovanUtil.isNotEmpty(object)) {
-            return (CusUser) object;
-        }
-        return null;
-    }
+    public static Map<Integer, String> LEVEL_DICT_MAP = new HashMap<>();
 
     /**
      * 下载Excel
@@ -87,7 +64,6 @@ public class ProjectUtil {
     }
 
     /**
-     *
      * @param roleIds
      * @return
      */
@@ -100,7 +76,6 @@ public class ProjectUtil {
     }
 
     /**
-     *
      * @param user
      * @return
      */
@@ -121,22 +96,19 @@ public class ProjectUtil {
     }
 
     /**
-     *
      * @param month
      * @return
      */
     public static String convertCHNYM(String month) {
         if (MicrovanUtil.isNotEmpty(month)) {
-            StringBuffer str = new StringBuffer();
-            str.append(month.replace("-", "年"));
-            str.append("月");
-            return str.toString();
+            String str = month.replace("-", "年") +
+                    "月";
+            return str;
         }
         return "";
     }
 
     /**
-     *
      * @param userType
      * @return
      */
@@ -160,7 +132,6 @@ public class ProjectUtil {
     }
 
     /**
-     *
      * @param score
      * @return
      */
@@ -186,25 +157,10 @@ public class ProjectUtil {
         return grade;
     }
 
-
-    /**
-     * 转换用户数据为穿梭框需要的数据
-     * @param users
-     * @return
-     */
-    public static List<CusTransfer> convertCusTransfer(List<User> users) {
-        List<CusTransfer> cusTransfers = new ArrayList<>();
-        if (MicrovanUtil.isNotEmpty(users)) {
-            for (User user : users) {
-                cusTransfers.add(new CusTransfer(user.getOid(), user.getUserName()));
-            }
-        }
-        return cusTransfers;
-    }
+    public static Map<Integer, String> MILITARY_LEVEL_DICT_MAP = new HashMap<>();
 
 
     /**
-     *
      * @param rangeType
      * @return
      */
@@ -233,8 +189,47 @@ public class ProjectUtil {
         return roleId;
     }
 
+    public static Map<Integer, String> GOOD_FLAG_DICT_MAP = new HashMap<>();
+    public static Map<Integer, String> POLITICAL_LEVEL_DICT_MAP = new HashMap<>();
+    public static Map<Integer, String> SCORE_TYPE_DICT_MAP = new HashMap<>();
+
+    /**
+     * @param sex
+     * @return
+     */
+    public static int getSex(String sex) {
+        int intSex = 1;
+        if (sex.contains("女")) {
+            intSex = 2;
+        }
+        return intSex;
+    }
+
+    public static Map<Integer, String> STU_STATUS_DICT_MAP = new HashMap<>();
+
+    public static String obtainLoginUserId(HttpServletRequest request) {
+        return Optional.ofNullable(StpUtil.getLoginId().toString()).orElse("");
+    }
+
+    /**
+     * 转换用户数据为穿梭框需要的数据
+     *
+     * @param users
+     * @return
+     */
+    public static List<CusTransfer> convertCusTransfer(List<User> users) {
+        List<CusTransfer> cusTransfers = new ArrayList<>();
+        if (MicrovanUtil.isNotEmpty(users)) {
+            for (User user : users) {
+                cusTransfers.add(new CusTransfer(user.getOid(), user.getUserName()));
+            }
+        }
+        return cusTransfers;
+    }
+
     /**
      * 将男女转换为码值
+     *
      * @param gradeStr
      * @return
      */
@@ -248,6 +243,7 @@ public class ProjectUtil {
 
     /**
      * 将用户类型转换为码值
+     *
      * @param userTypeStr
      * @return
      */
@@ -265,6 +261,7 @@ public class ProjectUtil {
 
     /**
      * 根据身份证号获取出生年月
+     *
      * @param idCard
      * @return
      */
@@ -272,9 +269,9 @@ public class ProjectUtil {
         String birthday = "";
         if (MicrovanUtil.isNotEmpty(idCard)) {
             if (idCard.length() == 15 || idCard.length() == 18) {
-                if(idCard.length() == 15) {
+                if (idCard.length() == 15) {
                     birthday = "19" + idCard.substring(6, 10);
-                } else if(idCard.length() == 18) {
+                } else if (idCard.length() == 18) {
                     birthday = idCard.substring(6, 12);
                 }
                 String year = birthday.substring(0, 4);
@@ -285,28 +282,15 @@ public class ProjectUtil {
         return birthday;
     }
 
-    /**
-     *
-     * @param sex
-     * @return
-     */
-    public static int getSex(String sex) {
-        int intSex = 1;
-        if (sex.contains("女")) {
-            intSex = 2;
+    public static int getPageNum(String pageNum) {
+        int page = 1;
+        if (MicrovanUtil.isNotEmpty(pageNum)) {
+            page = Integer.valueOf(pageNum);
         }
-        return intSex;
+        return page;
     }
 
-     public static int getPageNum(String pageNum){
-         int page = 1;
-         if (MicrovanUtil.isNotEmpty(pageNum)) {
-             page = Integer.valueOf(pageNum);
-         }
-         return page;
-     }
-
-    public static int getPageSize(String size){
+    public static int getPageSize(String size) {
         int pageSize = CommonConstants.PAGE_SIZE;
         if (MicrovanUtil.isNotEmpty(size)) {
             pageSize = Integer.parseInt(size);
@@ -314,23 +298,16 @@ public class ProjectUtil {
         return pageSize;
     }
 
-    public static Integer getDictKeyByValue (Map<Integer, String > dictMap, String value){
-        if(!CollectionUtils.isEmpty(dictMap) && StringUtils.isNotBlank(value)){
-            for(Map.Entry<Integer, String> entry : dictMap.entrySet()){
-                if(value.equals(entry.getValue())){
+    public static Integer getDictKeyByValue(Map<Integer, String> dictMap, String value) {
+        if (!CollectionUtils.isEmpty(dictMap) && StringUtils.isNotBlank(value)) {
+            for (Map.Entry<Integer, String> entry : dictMap.entrySet()) {
+                if (value.equals(entry.getValue())) {
                     return entry.getKey();
                 }
             }
         }
         return null;
     }
-
-    public static Map<Integer, String > LEVEL_DICT_MAP = new HashMap<>();
-    public static Map<Integer, String > MILITARY_LEVEL_DICT_MAP = new HashMap<>();
-    public static Map<Integer, String > GOOD_FLAG_DICT_MAP = new HashMap<>();
-    public static Map<Integer, String > POLITICAL_LEVEL_DICT_MAP = new HashMap<>();
-    public static Map<Integer, String > SCORE_TYPE_DICT_MAP = new HashMap<>();
-    public static Map<Integer, String > STU_STATUS_DICT_MAP = new HashMap<>();
 
     static {
         //级别字典
@@ -363,7 +340,7 @@ public class ProjectUtil {
 
     }
 
-    public static List<KeyValueDTO> convertDictMapToList (Map<Integer, String> dictMap){
+    public static List<KeyValueDTO> convertDictMapToList(Map<Integer, String> dictMap) {
         return dictMap.entrySet().stream()
                 .map(entry -> new KeyValueDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());

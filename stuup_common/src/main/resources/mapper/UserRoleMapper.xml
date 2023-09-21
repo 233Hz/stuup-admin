@@ -1,134 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.poho.stuup.dao.UserRoleMapper">
-  <resultMap id="BaseResultMap" type="com.poho.stuup.model.UserRole">
-    <id column="oid" jdbcType="BIGINT" property="oid" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
-    <result column="role_id" jdbcType="BIGINT" property="roleId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    oid, user_id, role_id, year_id, create_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_user_role
-    where oid = #{oid,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_user_role
-    where oid = #{oid,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.poho.stuup.model.UserRole">
-    insert into t_user_role (oid, user_id, role_id)
-    values (#{oid,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT})
-  </insert>
-  <insert id="insertSelective" parameterType="com.poho.stuup.model.UserRole">
-    insert into t_user_role
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        oid,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="roleId != null">
-        role_id,
-      </if>
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.UserRole">
+        <id column="oid" jdbcType="BIGINT" property="oid"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        oid, user_id, role_id, year_id, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_role
+        where oid = #{oid,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from t_user_role
+        where oid = #{oid,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.poho.stuup.model.UserRole">
+        insert into t_user_role (oid, user_id, role_id)
+        values (#{oid,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.poho.stuup.model.UserRole">
+        insert into t_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="oid != null">
+                oid,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
 
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="oid != null">
-        #{oid,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=BIGINT},
-      </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="oid != null">
+                #{oid,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
 
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.UserRole">
-    update t_user_role
-    <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where oid = #{oid,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.UserRole">
-    update t_user_role
-    set user_id = #{userId,jdbcType=BIGINT},
-      role_id = #{roleId,jdbcType=BIGINT}
-    where oid = #{oid,jdbcType=BIGINT}
-  </update>
-  <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
-    select
-    count(tur.oid)
-    from t_user_role as tur
-    where 1=1
-    <if test="userId != null">
-      and tur.user_id = #{userId,jdbcType=BIGINT}
-    </if>
-  </select>
-  <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select
-      distinct tur.role_id,
-      tur.oid,
-      tur.user_id,
-      tur.create_time
-    from t_user_role as tur
-    where 1=1
-    <if test="userId != null">
-      and tur.user_id = #{userId,jdbcType=BIGINT}
-    </if>
-    order by tur.oid desc
-    <if test="start != null and length != null">
-      limit #{start},#{length}
-    </if>
-  </select>
-  <select id="queryUserRoles" parameterType="java.util.HashMap" resultType="Long">
-    SELECT
-      distinct tur.role_id
-    FROM
-      t_user_role AS tur
-    WHERE
-      tur.user_id = #{userId,jdbcType=BIGINT}
-    ORDER BY
-      tur.role_id ASC
-  </select>
-  <delete id="clearUserRole" parameterType="java.lang.Long">
-    delete from t_user_role where user_id = #{_parameter,jdbcType=BIGINT}
-  </delete>
-  <delete id="clearUserAllRole" parameterType="java.lang.Long">
-    delete from t_user_role where user_id = #{_parameter,jdbcType=BIGINT}
-  </delete>
-  <delete id="clearUserRoleId" parameterType="java.util.HashMap">
-    DELETE
-    FROM
-      t_user_role
-    WHERE
-      user_id = #{userId,jdbcType=BIGINT}
-      AND role_id = #{roleId,jdbcType=BIGINT}
-  </delete>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.poho.stuup.model.UserRole">
+        update t_user_role
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where oid = #{oid,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.poho.stuup.model.UserRole">
+        update t_user_role
+        set user_id = #{userId,jdbcType=BIGINT},
+            role_id = #{roleId,jdbcType=BIGINT}
+        where oid = #{oid,jdbcType=BIGINT}
+    </update>
+    <select id="queryTotal" parameterType="java.util.HashMap" resultType="int">
+        select
+        count(tur.oid)
+        from t_user_role as tur
+        where 1=1
+        <if test="userId != null">
+            and tur.user_id = #{userId,jdbcType=BIGINT}
+        </if>
+    </select>
+    <select id="queryList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        select
+        distinct tur.role_id,
+        tur.oid,
+        tur.user_id,
+        tur.create_time
+        from t_user_role as tur
+        where 1=1
+        <if test="userId != null">
+            and tur.user_id = #{userId,jdbcType=BIGINT}
+        </if>
+        order by tur.oid desc
+        <if test="start != null and length != null">
+            limit #{start},#{length}
+        </if>
+    </select>
+    <select id="queryUserRoles" parameterType="java.util.HashMap" resultType="Long">
+        SELECT distinct tur.role_id
+        FROM t_user_role AS tur
+        WHERE tur.user_id = #{userId,jdbcType=BIGINT}
+        ORDER BY tur.role_id ASC
+    </select>
+    <delete id="clearUserRole" parameterType="java.lang.Long">
+        delete
+        from t_user_role
+        where user_id = #{_parameter,jdbcType=BIGINT}
+    </delete>
+    <delete id="clearUserAllRole" parameterType="java.lang.Long">
+        delete
+        from t_user_role
+        where user_id = #{_parameter,jdbcType=BIGINT}
+    </delete>
+    <delete id="clearUserRoleId" parameterType="java.util.HashMap">
+        DELETE
+        FROM t_user_role
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+          AND role_id = #{roleId,jdbcType=BIGINT}
+    </delete>
 
-  <select id="queryUserRoleId" resultType="Long">
-    select role_id from t_user_role where user_id = #{userId}
-  </select>
+    <select id="queryUserRoleId" resultType="Long">
+        select role_id
+        from t_user_role
+        where user_id = #{userId}
+    </select>
 
-  <select id="getRoleCodeListByUserId" resultType="String">
-    select distinct (r.role_code) as code from t_role r
-     inner join t_user_role ur on r.oid = ur.role_id
-     where ur.user_id = #{userId}
-  </select>
+    <resultMap id="RoleMap" type="com.poho.stuup.model.Role">
+        <id column="oid" property="oid"/>
+        <result column="role_code" property="roleCode"/>
+        <result column="role_name" property="roleName"/>
+    </resultMap>
+    <select id="fetchUserRoles" resultMap="RoleMap">
+        select distinct tur.role_id as oid, tr.role_name, tr.role_code
+        from t_user_role tur
+                 inner join t_role tr on tur.role_id = tr.oid
+        where tur.user_id = #{userId}
+    </select>
 
+    <select id="getRoleCodeListByUserId" resultType="String">
+        select distinct (r.role_code) as code
+        from t_role r
+                 inner join t_user_role ur on r.oid = ur.role_id
+        where ur.user_id = #{userId}
+    </select>
 
 
 </mapper>

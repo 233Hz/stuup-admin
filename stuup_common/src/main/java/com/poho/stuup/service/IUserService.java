@@ -8,6 +8,7 @@ import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
 import com.poho.stuup.model.dto.GrowthItemUserDTO;
 import com.poho.stuup.model.vo.GrowthItemUserVO;
+import com.poho.stuup.model.vo.UserInfoPermissionVO;
 
 import java.util.List;
 import java.util.Map;
@@ -109,4 +110,6 @@ public interface IUserService {
     IPage<GrowthItemUserVO> paginateGrowthItemUser(Page<GrowthItemUserVO> page, GrowthItemUserDTO query);
 
     ResponseModel<String> updateUserAvatar(Long userId, Long avatarId);
+
+    UserInfoPermissionVO getUserInfoPermission(Long userId);
 }

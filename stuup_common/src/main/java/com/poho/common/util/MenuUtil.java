@@ -1,17 +1,11 @@
 package com.poho.common.util;
 
-import com.poho.common.custom.MenuTree;
-import com.poho.stuup.model.Menu;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class MenuUtil {
 
 //    public static MenuTree parse(Menu menu) {
 //        if (null != menu) {
 //            MenuTree menuTree = new MenuTree();
-//            menuTree.setOid(menu.getOid());
+//            menuTree.setId(menu.getId());
 //            menuTree.setMenuName(menu.getMenuName());
 //            menuTree.setMenuCode(menu.getMenuCode());
 //            menuTree.setIcon(menu.getIcon());
@@ -49,10 +43,10 @@ public class MenuUtil {
 //     */
 //    private static List<MenuTree> buildChildren(MenuTree node, List<MenuTree> nodes) {
 //        List<MenuTree> children = null;
-//        Long oid = node.getOid();
+//        Long id = node.getId();
 //        for (MenuTree child : nodes) {
 //            //获取子节点
-//            if (oid.equals(child.getParentId())) {
+//            if (id.equals(child.getParentId())) {
 //                if (null == children) {
 //                    children = new ArrayList<>();
 //                }

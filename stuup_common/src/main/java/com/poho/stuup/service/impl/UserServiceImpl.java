@@ -2,7 +2,6 @@ package com.poho.stuup.service.impl;
 
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -14,6 +13,7 @@ import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.common.util.PasswordUtil;
 import com.poho.common.util.Validator;
+import com.poho.stuup.constant.PermissionType;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.constant.UserTypeEnum;
 import com.poho.stuup.constant.WhetherEnum;
@@ -21,11 +21,10 @@ import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.GrowthItemUserDTO;
+import com.poho.stuup.model.vo.FlowerVO;
 import com.poho.stuup.model.vo.GrowthItemUserVO;
-import com.poho.stuup.service.IUserService;
-import com.poho.stuup.service.RecAddScoreService;
-import com.poho.stuup.service.SemesterService;
-import com.poho.stuup.service.StuScoreService;
+import com.poho.stuup.model.vo.UserInfoPermissionVO;
+import com.poho.stuup.service.*;
 import com.poho.stuup.util.MinioUtils;
 import com.poho.stuup.util.ProjectUtil;
 import lombok.SneakyThrows;
@@ -93,6 +92,9 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private StpInterface stpInterface;
 
+    @Resource
+    private FlowerModelService flowerModelService;
+
     @Override
     public int deleteByPrimaryKey(Long oid) {
         return userMapper.deleteByPrimaryKey(oid);
@@ -143,104 +145,9 @@ public class UserServiceImpl implements IUserService {
                     map.put("userId", user.getOid());
                     List<Long> roleIds = userRoleMapper.queryUserRoles(map);
                     if (MicrovanUtil.isNotEmpty(roleIds)) {
-                        String message = "登录成功";
-
-                        Long yearId = yearMapper.getCurrentYearId();
-                        Long semesterId = semesterMapper.getCurrentSemesterId();
-
-                        CusUser cusUser = new CusUser();
-                        cusUser.setUserId(user.getOid());
-                        cusUser.setLoginName(user.getLoginName());
-                        cusUser.setUserName(user.getUserName());
-                        cusUser.setMobile(user.getMobile());
-                        cusUser.setDeptId(user.getDeptId());
-                        cusUser.setUserType(user.getUserType());
-                        cusUser.setRoleIds(ProjectUtil.splitListUseComma(roleIds));
-
-
-                        // 获取用户头像
-                        if (user.getAvatarId() != null) {
-                            try {
-                                File file = fileMapper.selectById(user.getAvatarId());
-                                String bucket = file.getBucket();
-                                String storageName = file.getStorageName();
-                                String url = MinioUtils.getPreSignedObjectUrl(bucket, storageName);
-                                cusUser.setAvatar(url);
-                            } catch (Exception e) {
-                                logger.error("获取用户头像url失败！{}", e.getMessage());
-                            }
-                        }
-
-                        if (yearId != null) cusUser.setYearId(yearId);
-                        if (semesterId != null) cusUser.setSemesterId(semesterId);
-                        // 每日登入
-                        if (user.getUserType() == UserTypeEnum.STUDENT.getValue()) {
-                            Student student = studentMapper.getStudentForStudentNO(user.getLoginName());
-                            if (student != null) {
-                                Integer studentId = student.getId();
-                                cusUser.setStudentId(studentId);
-                                // 获取用户总积分
-                                StuScore stuScore = stuScoreService.getOne(Wrappers.<StuScore>lambdaQuery()
-                                        .select(StuScore::getScore)
-                                        .eq(StuScore::getStudentId, studentId));
-                                cusUser.setTotalScore(BigDecimal.ZERO);
-                                if (stuScore != null) {
-                                    // 获取未收取的分数
-                                    List<RecAddScore> unCollectScores = recAddScoreService.list(Wrappers.<RecAddScore>lambdaQuery()
-                                            .select(RecAddScore::getScore)
-                                            .eq(RecAddScore::getStudentId, studentId)
-                                            .eq(RecAddScore::getState, WhetherEnum.NO.getValue()));
-                                    BigDecimal unCollectScore = unCollectScores.stream().map(RecAddScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
-                                    cusUser.setTotalScore(stuScore.getScore().subtract(unCollectScore));
-                                }
-
-                                // 获取排名
-                                Integer ranking = recAddScoreService.getStudentNowRanking(Long.valueOf(studentId));
-                                if (ranking != null) cusUser.setRanking(ranking);
-
-                                // 获取该学生的学期
-                                List<Semester> studentSemester = semesterService.getStudentSemester(studentId);
-                                if (CollUtil.isNotEmpty(studentSemester)) cusUser.setSemesters(studentSemester);
-
-                                // 查询当天的登入次数
-                                int count = loginLogMapper.findTodayLoginCount(cusUser.getUserId());
-                                count = 0;
-                                if (count == 0) {
-                                    if (yearId != null && semesterId != null) {
-                                        GrowthItem growthItem = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
-                                                .eq(GrowthItem::getCode, "CZ_066"));
-                                        if (growthItem != null) {
-                                            RecAddScore recAddScore = new RecAddScore();
-                                            recAddScore.setYearId(yearId);
-                                            recAddScore.setSemesterId(semesterId);
-                                            recAddScore.setStudentId(Long.valueOf(studentId));
-                                            recAddScore.setGrowId(growthItem.getId());
-                                            recAddScore.setScore(growthItem.getScore());
-                                            recAddScoreService.save(recAddScore);
-                                            StuScoreLog stuScoreLog = new StuScoreLog();
-                                            stuScoreLog.setYearId(yearId);
-                                            stuScoreLog.setSemesterId(semesterId);
-                                            stuScoreLog.setStudentId(Long.valueOf(studentId));
-                                            stuScoreLog.setGrowId(growthItem.getId());
-                                            stuScoreLog.setScore(growthItem.getScore());
-                                            stuScoreLogMapper.insert(stuScoreLog);
-                                            stuScoreService.updateTotalScore(Long.valueOf(studentId), growthItem.getScore());
-
-                                            message = StrUtil.format("登入成功（+{}分）", growthItem.getScore());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        // 保存登入日志
-                        LoginLog loginLog = new LoginLog();
-                        loginLog.setUserId(cusUser.getUserId());
-                        loginLogMapper.insert(loginLog);
-
+                        String message = userLoginHandler(user.getOid(), user.getUserType(), user.getLoginName());
                         model.setCode(CommonConstants.CODE_SUCCESS);
-                        model.setMsg(message);
-                        //model.setToken(JwtUtil.createJwt(user.getOid().toString(), CommonConstants.JWT_TTL_COMMON));
-                        model.setData(cusUser);
+                        model.setMsg(message != null ? message : "登录成功");
                         //sa-token
                         StpUtil.login(user.getOid());
                         model.setTokenInfo(StpUtil.getTokenInfo());
@@ -257,6 +164,53 @@ public class UserServiceImpl implements IUserService {
             }
         }
         return model;
+    }
+
+    private String userLoginHandler(Long userId, Integer userType, String loginName) {
+        String message = null;
+        // 每日登入
+        if (userType == UserTypeEnum.STUDENT.getValue()) {
+            Student student = studentMapper.getStudentForStudentNO(loginName);
+            if (student != null) {
+                Integer studentId = student.getId();
+                // 查询当天的登入次数
+                int count = loginLogMapper.findTodayLoginCount(userId);
+                count = 0;
+                if (count == 0) {
+                    Long yearId = yearMapper.getCurrentYearId();
+                    Long semesterId = semesterMapper.getCurrentSemesterId();
+                    if (yearId != null && semesterId != null) {
+                        GrowthItem growthItem = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
+                                .eq(GrowthItem::getCode, "CZ_066"));
+                        if (growthItem != null) {
+                            RecAddScore recAddScore = new RecAddScore();
+                            recAddScore.setYearId(yearId);
+                            recAddScore.setSemesterId(semesterId);
+                            recAddScore.setStudentId(Long.valueOf(studentId));
+                            recAddScore.setGrowId(growthItem.getId());
+                            recAddScore.setScore(growthItem.getScore());
+                            recAddScoreService.save(recAddScore);
+                            StuScoreLog stuScoreLog = new StuScoreLog();
+                            stuScoreLog.setYearId(yearId);
+                            stuScoreLog.setSemesterId(semesterId);
+                            stuScoreLog.setStudentId(Long.valueOf(studentId));
+                            stuScoreLog.setGrowId(growthItem.getId());
+                            stuScoreLog.setScore(growthItem.getScore());
+                            stuScoreLogMapper.insert(stuScoreLog);
+                            stuScoreService.updateTotalScore(Long.valueOf(studentId), growthItem.getScore());
+
+                            message = StrUtil.format("登入成功（+{}分）", growthItem.getScore());
+                        }
+                    }
+                }
+            }
+        }
+        // 保存登入日志
+        LoginLog loginLog = new LoginLog();
+        loginLog.setUserId(userId);
+        loginLogMapper.insert(loginLog);
+
+        return message;
     }
 
     @Override
@@ -558,5 +512,67 @@ public class UserServiceImpl implements IUserService {
         String storageName = file.getStorageName();
         String url = MinioUtils.getPreSignedObjectUrl(bucket, storageName);
         return ResponseModel.ok(url, "更新成功！");
+    }
+
+    @Override
+    public UserInfoPermissionVO getUserInfoPermission(Long userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        UserInfoPermissionVO.UserInfo userInfo = UserInfoPermissionVO.UserInfo.builder().userId(user.getOid()).userName(user.getUserName()).userType(user.getUserType()).build();
+        Optional.ofNullable(user.getAvatarId())
+                .flatMap(avatarId -> Optional.ofNullable(fileMapper.selectById(avatarId)))
+                .flatMap(file -> {
+                    try {
+                        return Optional.ofNullable(MinioUtils.getPreSignedObjectUrl(file.getBucket(), file.getStorageName()));
+                    } catch (Exception e) {
+                        logger.error("{}用户头像获取失败", user.getUserName());
+                        return Optional.empty();
+                    }
+                })
+                .ifPresent(userInfo::setAvatarUrl);
+        List<Role> roles = userRoleMapper.fetchUserRoles(userId);
+        List<String> roleCodes = new ArrayList<>();
+        List<Menu> menus = new ArrayList<>();
+        List<String> permissions = new ArrayList<>();
+        if (roles != null && !roles.isEmpty()) {
+            List<Long> roleIds = new ArrayList<>();
+            for (Role role : roles) {
+                roleIds.add(role.getOid());
+                roleCodes.add(role.getRoleCode());
+            }
+            List<Menu> list = roleMenuMapper.queryUserMenus(roleIds);
+            if (list != null && !list.isEmpty()) {
+                for (Menu menu : list) {
+                    if (menu.getType() == PermissionType.BUTTON.ordinal()) {
+                        permissions.add(menu.getPermission());
+                    } else if (menu.getType() == PermissionType.MENU.ordinal()) {
+                        menus.add(menu);
+                    }
+                }
+            }
+        }
+        UserInfoPermissionVO.OtherInfo otherInfo = UserInfoPermissionVO.OtherInfo.builder().build();
+        Optional.ofNullable(yearMapper.getCurrentYearId()).ifPresent(otherInfo::setYearId);
+        Optional.ofNullable(semesterMapper.getCurrentSemesterId()).ifPresent(otherInfo::setSemesterId);
+        UserInfoPermissionVO.GrowthInfo growthInfo = UserInfoPermissionVO.GrowthInfo.builder().totalScore(BigDecimal.ZERO).build();
+        Optional.ofNullable(user.getLoginName())
+                .flatMap(loginName -> Optional.ofNullable(studentMapper.getStudentForStudentNO(loginName)))
+                .ifPresent(student -> {
+                    otherInfo.setStudentId(student.getId());
+                    StuScore stuScore = stuScoreService.getOne(Wrappers.<StuScore>lambdaQuery()
+                            .select(StuScore::getScore)
+                            .eq(StuScore::getStudentId, student.getId()));
+                    Optional.ofNullable(recAddScoreService.getStudentNowRanking(Long.valueOf(student.getId()))).ifPresent(growthInfo::setRank);
+                    if (stuScore != null) {
+                        // 获取未收取的分数
+                        List<RecAddScore> unCollectScores = recAddScoreService.list(Wrappers.<RecAddScore>lambdaQuery()
+                                .select(RecAddScore::getScore)
+                                .eq(RecAddScore::getStudentId, student.getId())
+                                .eq(RecAddScore::getState, WhetherEnum.NO.getValue()));
+                        BigDecimal unCollectScore = unCollectScores.stream().map(RecAddScore::getScore).reduce(BigDecimal.ZERO, BigDecimal::add);
+                        growthInfo.setTotalScore(stuScore.getScore().subtract(unCollectScore));
+                    }
+                });
+        FlowerVO flowerModel = flowerModelService.getFlowerModel();
+        return UserInfoPermissionVO.builder().userInfo(userInfo).menus(menus).roles(roleCodes).permissions(permissions).flowerConfig(flowerModel).growthInfo(growthInfo).otherInfo(otherInfo).build();
     }
 }

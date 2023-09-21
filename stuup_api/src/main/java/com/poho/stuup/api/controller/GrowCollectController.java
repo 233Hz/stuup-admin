@@ -1,17 +1,21 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.api.config.MinioConfig;
 import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.constant.RecEnum;
+import com.poho.stuup.constant.UserTypeEnum;
 import com.poho.stuup.handle.RecDefaultHandle;
 import com.poho.stuup.handle.RecExcelHandle;
 import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.model.User;
 import com.poho.stuup.model.excel.ExcelError;
 import com.poho.stuup.service.GrowUserService;
 import com.poho.stuup.service.GrowthItemService;
+import com.poho.stuup.service.IUserService;
 import com.poho.stuup.util.MinioUtils;
 import com.poho.stuup.util.ProjectUtil;
 import com.poho.stuup.util.Utils;
@@ -47,9 +51,12 @@ public class GrowCollectController {
     @Resource
     private GrowUserService growUserService;
 
+    @Resource
+    private IUserService userService;
+
     @PostMapping("/import")
     public ResponseModel<List<ExcelError>> recImport(MultipartFile file, @RequestParam String recCode) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, recCode));
         if (growthItem == null) return ResponseModel.failed("导入项目不存在");
@@ -68,6 +75,10 @@ public class GrowCollectController {
     @SneakyThrows
     @GetMapping("/export")
     public void recExport(HttpServletResponse response, @RequestParam(required = false) Map<String, Object> params) {
+        String userId = StpUtil.getLoginId().toString();
+        User user = userService.selectByPrimaryKey(Long.valueOf(userId));
+        if (user == null || user.getUserType() != UserTypeEnum.TEACHER.getValue())
+            throw new RuntimeException("无权限导出");
         String recCode = (String) params.get("rec_code");
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, recCode));

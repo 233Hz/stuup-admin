@@ -37,7 +37,7 @@ public class RecLogController {
 
     @GetMapping("/page")
     public ResponseModel<IPage<RecLogVO>> getRecLogPage(Page<RecLogVO> page, RecLogDTO query) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         query.setUserId(Long.valueOf(userId));
         return ResponseModel.ok(recLogService.getRecLogPage(page, query));
     }

@@ -45,7 +45,7 @@ public class AudLogController {
      */
     @GetMapping("/page")
     public ResponseModel<IPage<AudLogVO>> getAuditRecordLog(Page<AudLogVO> page, AudLogDTO query) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         query.setUserId(Long.parseLong(userId));
         return ResponseModel.ok(audLogService.getAuditRecordLog(page, query));
     }

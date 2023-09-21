@@ -3,7 +3,7 @@
 <mapper namespace="com.poho.stuup.dao.MenuMapper">
 
     <resultMap id="MenuMap" type="com.poho.stuup.model.Menu">
-        <id column="oid" property="oid"/>
+        <id column="oid" property="id"/>
         <id column="pid" property="pid"/>
         <result column="name" property="name"/>
         <result column="code" property="code"/>
@@ -14,7 +14,7 @@
         <result column="sort" property="sort"/>
         <result column="keepAlive" property="keepAlive"/>
         <result column="permission" property="permission"/>
-        <result column="use_layout" property="useLayout"/>
+        <result column="layout" property="layout"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>

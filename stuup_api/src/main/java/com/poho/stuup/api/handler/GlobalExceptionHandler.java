@@ -1,7 +1,7 @@
 package com.poho.stuup.api.handler;
 
-import cn.dev33.satoken.exception.*;
-import cn.dev33.satoken.util.SaResult;
+import cn.dev33.satoken.exception.NotSafeException;
+import cn.dev33.satoken.exception.SaTokenException;
 import cn.hutool.core.util.StrUtil;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.saToken.SaTokenExceptionCodeEnum;
@@ -48,16 +48,22 @@ public class GlobalExceptionHandler {
         return ResponseModel.failed(e.getMessage());
     }
 
+
     @ExceptionHandler(SaTokenException.class)
     @ResponseBody
     public ResponseModel handlerSaTokenException(SaTokenException e) {
         String errorMsg = SaTokenExceptionCodeEnum.getEnumMsgByCode(e.getCode());
         ResponseModel responseModel = ResponseModel.failed(e.getMessage());
         responseModel.setCode(e.getCode());
-        if(StrUtil.isNotBlank(errorMsg)){
+
+        if (StrUtil.isNotBlank(errorMsg)) {
             responseModel.setMsg(errorMsg);
         }
-       return  responseModel;
+        if (e instanceof NotSafeException) {
+            responseModel.setData(((NotSafeException) e).getService());
+        }
+
+        return responseModel;
 
     }
 

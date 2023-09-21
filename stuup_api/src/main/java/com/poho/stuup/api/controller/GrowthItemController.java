@@ -1,5 +1,7 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckSafe;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -45,13 +47,16 @@ public class GrowthItemController {
                 .eq(growthItem.getCalculateType() != null, GrowthItem::getCalculateType, growthItem.getCalculateType())));
     }
 
+    @SaCheckPermission("growth_item_add_edit")
     @PostMapping("/saveOrUpdate")
     public ResponseModel<Long> saveOrUpdateGrowthItem(@Valid @RequestBody GrowthItem data) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         data.setCreateUser(Long.parseLong(userId));
         return growthItemService.saveOrUpdateGrowthItem(data);
     }
 
+    @SaCheckSafe("growth_item_del")
+    @SaCheckPermission("growth_item_del")
     @DeleteMapping("/del/{id}")
     public ResponseModel<Boolean> delGrowthItemById(@PathVariable("id") Long id) {
         return growthItemService.removeById(id) ? ResponseModel.ok(true, "删除成功！") : ResponseModel.failed("删除失败！");
@@ -59,7 +64,7 @@ public class GrowthItemController {
 
     @GetMapping("/self/apply")
     public ResponseModel<List<GrowthItem>> getSelfApplyItem(@RequestParam("type") String type) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return growthItemService.getSelfApplyItem(type, Long.valueOf(userId));
     }
 

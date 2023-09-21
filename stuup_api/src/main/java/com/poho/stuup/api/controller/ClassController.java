@@ -1,13 +1,13 @@
 package com.poho.stuup.api.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckSafe;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.common.util.TeachEvaUtil;
 import com.poho.stuup.model.Class;
 import com.poho.stuup.service.IClassService;
-import com.poho.stuup.service.IMajorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -36,8 +37,6 @@ public class ClassController {
     private final static Logger logger = LoggerFactory.getLogger(ClassController.class);
     @Autowired
     private IClassService classService;
-    @Autowired
-    private IMajorService majorService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String current, String size, Integer facultyId, Integer gradeId) {
@@ -53,7 +52,7 @@ public class ClassController {
         return classService.findDataPageResult(key, page, pageSize, facultyId, gradeId);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "全部班级信息", httpMethod = "GET")
     @GetMapping("/all")
     public ResponseModel all() {
@@ -65,6 +64,7 @@ public class ClassController {
         return classService.saveOrUpdate(clazz);
     }
 
+    @SaCheckSafe("class_del")
     @RequestMapping(value = "/delMultiClass", method = RequestMethod.POST)
     public ResponseModel deleteClass(@RequestBody Map params) {
         //$$班级考试科目表、考试试卷表
@@ -100,7 +100,7 @@ public class ClassController {
         request.setCharacterEncoding("UTF-8");
         String path = request.getServletContext().getRealPath("");
         String filePath = path + "/template/classTemplate.xls";
-        String fileName = new String("班级信息导入模板.xls".getBytes("UTF-8"), "iso-8859-1");
+        String fileName = new String("班级信息导入模板.xls".getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
         TeachEvaUtil.downLoadExcel(response, in, out, filePath, fileName);
     }
 

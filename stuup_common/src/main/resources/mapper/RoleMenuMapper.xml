@@ -8,7 +8,7 @@
     </resultMap>
 
     <resultMap id="MenuMap" type="com.poho.stuup.model.Menu">
-        <id column="oid" property="oid"/>
+        <id column="id" property="id"/>
         <id column="pid" property="pid"/>
         <result column="name" property="name"/>
         <result column="code" property="code"/>
@@ -19,7 +19,7 @@
         <result column="sort" property="sort"/>
         <result column="keep_alive" property="keepAlive"/>
         <result column="permission" property="permission"/>
-        <result column="use_layout" property="useLayout"/>
+        <result column="layout" property="layout"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
@@ -106,18 +106,18 @@
         where role_id = #{_parameter,jdbcType=BIGINT}
     </delete>
     <select id="queryRoleMenuIds" parameterType="java.util.HashMap" resultType="Long">
-        SELECT tm.oid
+        SELECT tm.id
         FROM t_role_menu AS trm
-                 LEFT JOIN t_menu AS tm ON tm.oid = trm.menu_id
+                 LEFT JOIN t_menu AS tm ON tm.id = trm.menu_id
         WHERE trm.role_id = #{roleId,jdbcType=BIGINT}
-        ORDER BY tm.oid ASC
+        ORDER BY tm.id ASC
     </select>
 
 
     <select id="queryUserMenus" resultMap="MenuMap">
         select
         distinct
-        m.oid,
+        m.id,
         m.pid,
         m.name,
         m.code,
@@ -127,18 +127,17 @@
         m.type,
         m.sort,
         m.keep_alive,
-        m.use_layout,
+        m.layout,
         m.hidden,
         m.redirect,
-        m.create_time,
-        m.update_time
+        m.permission
         from t_role_menu rm
-        left join t_menu m on m.oid = rm.menu_id
+        left join t_menu m on m.id = rm.menu_id
         where role_id in
         <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
             #{roleId}
         </foreach>
-        and m.oid is not null
+        and m.id is not null
     </select>
 
     <select id="getRoleMenu" resultType="Long">
@@ -161,19 +160,23 @@
     </insert>
 
     <select id="getMenuCodeByUserId" resultType="String">
-        SELECT DISTINCT(m.code) AS CODE FROM t_menu m
-             INNER JOIN t_role_menu rm ON m.oid = rm.menu_id
-             INNER JOIN t_role r ON rm.role_id = r.oid
-             INNER JOIN t_user_role ur ON r.oid = ur.role_id
+        SELECT DISTINCT(m.code) AS CODE
+        FROM t_menu m
+                 INNER JOIN t_role_menu rm ON m.id = rm.menu_id
+                 INNER JOIN t_role r ON rm.role_id = r.oid
+                 INNER JOIN t_user_role ur ON r.oid = ur.role_id
         WHERE ur.user_id = #{userId}
     </select>
 
-    <select id="getMenuCodeByRoleCode" resultType="String">
-        SELECT DISTINCT(m.code) AS CODE FROM t_menu m
-                     INNER JOIN t_role_menu rm ON m.oid = rm.menu_id
-                     INNER JOIN t_role r ON rm.role_id = r.oid
+    <select id="getPermissionByRoleCode" resultType="String">
+        SELECT DISTINCT(m.permission) AS permissionCode
+        FROM t_menu m
+                 INNER JOIN t_role_menu rm ON m.id = rm.menu_id
+                 INNER JOIN t_role r ON rm.role_id = r.oid
 
-        WHERE r.role_code = #{roleCode}
+
+        WHERE m.type = 1
+          and r.role_code = #{roleCode}
     </select>
 
 </mapper>

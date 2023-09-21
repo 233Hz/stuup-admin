@@ -1,5 +1,8 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckSafe;
+import cn.dev33.satoken.stp.StpUtil;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
@@ -8,6 +11,7 @@ import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.custom.CusUser;
 import com.poho.stuup.model.Menu;
 import com.poho.stuup.model.User;
+import com.poho.stuup.model.vo.UserInfoPermissionVO;
 import com.poho.stuup.service.IUserService;
 import com.poho.stuup.util.ExcelUtil;
 import com.poho.stuup.util.ProjectUtil;
@@ -79,13 +83,13 @@ public class UserController {
 
     @GetMapping("/info")
     public ResponseModel<CusUser> getUserInfo() {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return ResponseModel.ok(userService.getUserInfo(Long.valueOf(userId)));
     }
 
     @PostMapping("/queryUserAuthority")
     public ResponseModel<List<Menu>> queryUserAuthority() {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return userService.queryUserAuthority(Long.parseLong(userId));
     }
 
@@ -96,7 +100,7 @@ public class UserController {
     @RequestMapping(value = "/data", method = RequestMethod.POST)
     public ResponseModel data() {
         ResponseModel model = new ResponseModel();
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (MicrovanUtil.isNotEmpty(user)) {
             model.setCode(CommonConstants.CODE_SUCCESS);
@@ -121,6 +125,7 @@ public class UserController {
      * @param user
      * @return
      */
+    @SaCheckPermission("user_add_edit")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseModel save(@RequestBody User user) {
         return userService.saveOrUpdate(user);
@@ -130,6 +135,8 @@ public class UserController {
      * @param params
      * @return
      */
+    @SaCheckSafe("user_del")
+    @SaCheckPermission("user_del")
     @RequestMapping(value = "/del", method = RequestMethod.POST)
     public ResponseModel del(@RequestBody Map params) {
         String ids = params.get("ids").toString();
@@ -142,7 +149,7 @@ public class UserController {
      */
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     public ResponseModel updatePassword(@RequestBody Map params) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return userService.updatePassword(userId, params);
     }
 
@@ -188,9 +195,15 @@ public class UserController {
         return model;
     }
 
+    @GetMapping("/userInfoPermission")
+    public ResponseModel<UserInfoPermissionVO> getUserInfoPermission() {
+        Long userId = Long.valueOf(StpUtil.getLoginId().toString());
+        return ResponseModel.ok(userService.getUserInfoPermission(userId));
+    }
+
     @GetMapping("/updateAvatar")
     public ResponseModel<String> updateUserAvatar(@RequestParam("avatarId") Long avatarId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
-        return userService.updateUserAvatar(Long.valueOf(userId), avatarId);
+        Long userId = Long.valueOf(StpUtil.getLoginId().toString());
+        return userService.updateUserAvatar(userId, avatarId);
     }
 }

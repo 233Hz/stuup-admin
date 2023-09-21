@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * @author BUNGA
- * @description
  * @date 2023/9/12 15:20
  */
 @RestController
@@ -29,7 +28,7 @@ public class GrowthStatisticsController {
 
     @GetMapping("/list")
     public ResponseModel<List<GrowthStatisticsVO>> list(@RequestParam("yearId") Long yearId, @RequestParam("semesterId") Long semesterId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return ResponseModel.ok(growthStatisticsService.list(Long.valueOf(userId), yearId, semesterId));
     }
 }

@@ -67,7 +67,7 @@ public class RecAddScoreController {
             boolean isDateTime = Utils.isDateTime(query.getEndTime());
             if (!isDateTime) return ResponseModel.failed("结束时间格式错误");
         }
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return recAddScoreService.pageStudentRecScore(page, Long.parseLong(userId), query);
     }
 
@@ -82,7 +82,7 @@ public class RecAddScoreController {
 
     @GetMapping("/unCollectScore")
     public ResponseModel<List<UnCollectScore>> getUnCollectScore() {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return ResponseModel.ok(recAddScoreService.getUnCollectScore(Long.valueOf(userId)));
     }
 

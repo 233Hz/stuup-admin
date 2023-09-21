@@ -1,5 +1,6 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -40,13 +41,15 @@ public class AnnouncementController {
         return ResponseModel.ok(announcementService.notifyPage(page, query));
     }
 
+    @SaCheckPermission("notice_publish_edit")
     @PostMapping("/save_update")
     public ResponseModel<Boolean> saveOrUpdateNotify(@Valid @RequestBody AnnouncementDTO data) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         data.setUserId(Long.valueOf(userId));
         return announcementService.saveOrUpdateNotify(data);
     }
 
+    @SaCheckPermission("notice_publish_edit")
     @GetMapping("/publish/{id}")
     public ResponseModel<Boolean> publishNotify(@PathVariable("id") Long id) {
         Announcement announcement = announcementService.getById(id);
@@ -69,6 +72,7 @@ public class AnnouncementController {
         return result ? ResponseModel.ok(true, StrUtil.format("{}成功", message)) : ResponseModel.failed(false, StrUtil.format("{}失败", message));
     }
 
+    @SaCheckPermission("notice_del")
     @DeleteMapping("/del/{id}")
     public ResponseModel<Boolean> delNotify(@PathVariable("id") Long id) {
         boolean result = announcementService.removeById(id);
@@ -77,14 +81,14 @@ public class AnnouncementController {
 
     @GetMapping("/my/notify/page")
     public ResponseModel<IPage<AnnouncementVO>> myNotifyPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         query.setUserId(Long.valueOf(userId));
         return ResponseModel.ok(announcementService.myNotifyPage(page, query));
     }
 
     @GetMapping("/my/system/page")
     public ResponseModel<IPage<AnnouncementVO>> mySystemPage(Page<AnnouncementVO> page, AnnouncementDTO query) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         query.setUserId(Long.valueOf(userId));
         return ResponseModel.ok(announcementService.mySystemPage(page, query));
     }

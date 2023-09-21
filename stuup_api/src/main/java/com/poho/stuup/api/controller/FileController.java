@@ -1,5 +1,6 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckSafe;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -84,7 +85,7 @@ public class FileController {
         MinioUtils.uploadFile(prop.getBucketName(), multipartFile, fileName);
         String url = MinioUtils.getPreSignedObjectUrl(prop.getBucketName(), fileName, 60 * 30);
         // 保存文件信息
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         File file = new File();
         file.setStorageName(fileName);
         file.setOriginalName(originName);
@@ -125,6 +126,7 @@ public class FileController {
      * @date: 2023/6/14 16:49
      */
     @SneakyThrows
+    @SaCheckSafe("file_del")
     @GetMapping("/delFile")
     public ResponseModel<Boolean> delFile(@RequestParam("fileName") String fileName) {
         MinioUtils.removeFile(prop.getBucketName(), fileName);

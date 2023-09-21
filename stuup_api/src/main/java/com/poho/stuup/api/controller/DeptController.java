@@ -1,5 +1,6 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckSafe;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
@@ -36,9 +37,10 @@ public class DeptController {
 
     /**
      * 获取所有部门
+     *
      * @return
      */
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "获取所有部门", httpMethod = "GET")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseModel list(String key, String current, String size) {
@@ -54,7 +56,6 @@ public class DeptController {
     }
 
     /**
-     *
      * @return
      */
     @RequestMapping(value = "/all", method = RequestMethod.GET)
@@ -63,13 +64,12 @@ public class DeptController {
     }
 
     /**
-     *
      * @param dept
      * @return
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseModel save(@RequestBody Dept dept) {
-        String sesUser = ProjectUtil.obtainLoginUser(request);
+        String sesUser = ProjectUtil.obtainLoginUserId(request);
         dept.setCreateUser(Long.valueOf(sesUser));
         return deptService.saveOrUpdate(dept);
     }
@@ -78,6 +78,7 @@ public class DeptController {
      * @param params
      * @return
      */
+    @SaCheckSafe("dept_del")
     @RequestMapping(value = "/del", method = RequestMethod.POST)
     public ResponseModel del(@RequestBody Map params) {
         String ids = params.get("ids").toString();

@@ -34,7 +34,7 @@ public class StuScoreLogController {
 
     @GetMapping("/page")
     public ResponseModel<StudentScoreDetailsVO> studentScoreDetailsPage(Page<StudentRecScoreVO> page) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         return stuScoreLogService.studentScoreDetailsPage(page, Long.parseLong(userId));
     }
 

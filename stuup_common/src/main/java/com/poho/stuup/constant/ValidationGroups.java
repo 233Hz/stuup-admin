@@ -5,7 +5,7 @@ public class ValidationGroups {
     public interface Get {
     }
 
-    public interface Insert {
+    public interface ADD {
     }
 
     public interface Update {

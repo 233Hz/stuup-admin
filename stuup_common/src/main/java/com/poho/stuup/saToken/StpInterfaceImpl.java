@@ -35,11 +35,11 @@ public class StpInterfaceImpl implements StpInterface {
         List<String> permissionList = new ArrayList<>();
         // 2. 遍历角色列表，查询拥有的权限码 如果缓存没有从数据库查询
         List<String> roleCodeList = getRoleList(loginId, loginType);
-        if(CollUtil.isNotEmpty(roleCodeList)){
+        if (CollUtil.isNotEmpty(roleCodeList)) {
             for (String roleCode : roleCodeList) {
                 SaSession roleSession = SaSessionCustomUtil.getSessionById(Constants.ROLE_ + roleCode);
                 List<String> list = roleSession.get(SaSession.PERMISSION_LIST, () -> {
-                    return roleMenuService.getMenuCodeByRoleCode(roleCode);  // 从数据库查询这个角色所拥有的权限列表
+                    return roleMenuService.getPermissionByRoleCode(roleCode);  // 从数据库查询这个角色所拥有的权限列表
                 });
                 permissionList.addAll(list);
             }

@@ -3,7 +3,10 @@ package com.poho.stuup.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.poho.common.util.*;
+import com.poho.common.util.MD5;
+import com.poho.common.util.MicrovanUtil;
+import com.poho.common.util.PasswordUtil;
+import com.poho.common.util.TeachEvaUtil;
 import com.poho.stuup.constant.ProjectConstants;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
@@ -95,7 +98,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
             for (String key : sortedKeys) {
                 str.append(key).append("=").append(param.getString(key)).append("&");
             }
-            return MD5.getMD5Str(str.toString().substring(0, str.toString().length() - 1) + secuKey);
+            return MD5.getMD5Str(str.substring(0, str.toString().length() - 1) + secuKey);
         }
         return "";
     }
@@ -169,6 +172,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 
     /**
      * 处理同步出来的教师数据
+     *
      * @param jsonArray
      */
     private JSONObject handleTeacherData(JSONArray jsonArray) {
@@ -201,7 +205,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 //                if (MicrovanUtil.isNotEmpty(facultyName)) {
 //                    Faculty faculty = facultyMapper.findFacultyByName(facultyName);
 //                    if (faculty != null) {
-//                        teacher.setFacultyId(faculty.getOid());
+//                        teacher.setFacultyId(faculty.getId());
 //                    }
 //                } else {
 //                    teacher.setFacultyId(null);
@@ -466,6 +470,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 
     /**
      * 根据年级代码获取年级名称
+     *
      * @param njdm
      * @return
      */
@@ -486,6 +491,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 
     /**
      * 根据专业编号获取专业
+     *
      * @param zybh
      * @return
      */
@@ -497,9 +503,7 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
         JSONArray jsonArray = this.sendPost(param);
         if (MicrovanUtil.isNotEmpty(jsonArray)) {
             JSONObject item = (JSONObject) jsonArray.get(0);
-            if (item != null) {
-                return item;
-            }
+            return item;
         }
         return null;
     }
@@ -531,11 +535,12 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
 
     /**
      * 处理同步出来的学生数据
+     *
      * @param jsonArray
      * @param re
      */
     private void handleStudentData(JSONArray jsonArray, JSONObject re) {
-        logger.info("开始处理数据，数据条数="+jsonArray.size());
+        logger.info("开始处理数据，数据条数=" + jsonArray.size());
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject item = (JSONObject) jsonArray.get(i);
             //学号
@@ -682,66 +687,66 @@ public class SynchronizeServiceImpl implements ISynchronizeService {
         }
     }
 
-   /* @Override
-    public void synchronizeTerm() {
-        logger.error("同步学期开始");
-        int addTotal = 0;
-        int updateTotal = 0;
+    /* @Override
+     public void synchronizeTerm() {
+         logger.error("同步学期开始");
+         int addTotal = 0;
+         int updateTotal = 0;
 
-        JSONObject param = new JSONObject();
-        param.put("action", "zzjx.semester.find");
-        param.put("pageNum", 1);
-        param.put("pageSize", 500);
-        JSONArray jsonArray = this.sendPost(param);
-        if (MicrovanUtil.isNotEmpty(jsonArray)) {
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject item = (JSONObject) jsonArray.get(i);
-                //学期名称
-                String termName = item.getString("xqmc");
-                if (MicrovanUtil.isNotEmpty(termName)) {
-                    int termNo = 1;
-                    if (termName.contains("第二")) {
-                        termNo = 2;
-                    }
-                    Term checkTerm = new Term();
-                    checkTerm.setName(termName);
-                    checkTerm.setTermNo(termNo);
-                    Term term = termMapper.checkTerm(checkTerm);
-                    if (term == null) {
-                        term = new Term();
-                        term.setName(termName);
-                        term.setTermNo(checkTerm.getTermNo());
-                    }
-                    //开始日期
-                    String beginTime = item.getString("xqksrq");
-                    if (MicrovanUtil.isNotEmpty(beginTime)) {
-                        term.setBeginTime(MicrovanUtil.formatDate("yyyy-MM-dd", beginTime));
-                    }
-                    //结束日期
-                    String endTime = item.getString("xqjsrq");
-                    if (MicrovanUtil.isNotEmpty(endTime)) {
-                        term.setEndTime(MicrovanUtil.formatDate("yyyy-MM-dd", endTime));
-                    }
-                    String year = item.getString("xn");
-                    if (MicrovanUtil.isNotEmpty(year)) {
-                        term.setYear(year);
-                    }
-                    if (term.getId() == null) {
-                        term.setIsValid(1);
-                        int line = termMapper.insertSelective(term);
-                        if (line > 0) {
-                            addTotal++;
-                        }
-                    } else {
-                        termMapper.updateByPrimaryKeySelective(term);
-                        updateTotal++;
-                    }
-                }
-            }
-        }
-        logger.error("同步学期结束：新增成功" + addTotal + "个，更新" + updateTotal + "个");
-    }
-*/
+         JSONObject param = new JSONObject();
+         param.put("action", "zzjx.semester.find");
+         param.put("pageNum", 1);
+         param.put("pageSize", 500);
+         JSONArray jsonArray = this.sendPost(param);
+         if (MicrovanUtil.isNotEmpty(jsonArray)) {
+             for (int i = 0; i < jsonArray.size(); i++) {
+                 JSONObject item = (JSONObject) jsonArray.get(i);
+                 //学期名称
+                 String termName = item.getString("xqmc");
+                 if (MicrovanUtil.isNotEmpty(termName)) {
+                     int termNo = 1;
+                     if (termName.contains("第二")) {
+                         termNo = 2;
+                     }
+                     Term checkTerm = new Term();
+                     checkTerm.setName(termName);
+                     checkTerm.setTermNo(termNo);
+                     Term term = termMapper.checkTerm(checkTerm);
+                     if (term == null) {
+                         term = new Term();
+                         term.setName(termName);
+                         term.setTermNo(checkTerm.getTermNo());
+                     }
+                     //开始日期
+                     String beginTime = item.getString("xqksrq");
+                     if (MicrovanUtil.isNotEmpty(beginTime)) {
+                         term.setBeginTime(MicrovanUtil.formatDate("yyyy-MM-dd", beginTime));
+                     }
+                     //结束日期
+                     String endTime = item.getString("xqjsrq");
+                     if (MicrovanUtil.isNotEmpty(endTime)) {
+                         term.setEndTime(MicrovanUtil.formatDate("yyyy-MM-dd", endTime));
+                     }
+                     String year = item.getString("xn");
+                     if (MicrovanUtil.isNotEmpty(year)) {
+                         term.setYear(year);
+                     }
+                     if (term.getId() == null) {
+                         term.setIsValid(1);
+                         int line = termMapper.insertSelective(term);
+                         if (line > 0) {
+                             addTotal++;
+                         }
+                     } else {
+                         termMapper.updateByPrimaryKeySelective(term);
+                         updateTotal++;
+                     }
+                 }
+             }
+         }
+         logger.error("同步学期结束：新增成功" + addTotal + "个，更新" + updateTotal + "个");
+     }
+ */
     @Override
     public void synchronizeGrade() {
         logger.error("同步年级开始");

@@ -1,6 +1,5 @@
 package com.poho.stuup.service.impl;
 
-import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.session.SaSessionCustomUtil;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.dao.RoleMapper;
@@ -41,14 +40,14 @@ public class RoleMenuServiceImpl implements IRoleMenuService {
     }
 
 
-
     @Override
     public List<String> getMenuCodeByUserId(Long userId) {
         return roleMenuMapper.getMenuCodeByUserId(userId);
     }
+
     @Override
-    public  List<String> getMenuCodeByRoleCode(String roleCode) {
-        return roleMenuMapper.getMenuCodeByRoleCode(roleCode);
+    public List<String> getPermissionByRoleCode(String roleCode) {
+        return roleMenuMapper.getPermissionByRoleCode(roleCode);
     }
 
 }

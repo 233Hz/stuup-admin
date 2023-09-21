@@ -1,5 +1,7 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckSafe;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
@@ -69,9 +71,10 @@ public class RoleController {
      * @param role
      * @return
      */
+    @SaCheckPermission("role_add_edit")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseModel save(@RequestBody Role role) {
-        String sesUser = ProjectUtil.obtainLoginUser(request);
+        String sesUser = ProjectUtil.obtainLoginUserId(request);
         role.setCreateUser(Long.valueOf(sesUser));
         return roleService.saveOrUpdate(role);
     }
@@ -80,6 +83,8 @@ public class RoleController {
      * @param params
      * @return
      */
+    @SaCheckSafe("role_del")
+    @SaCheckPermission("role_del")
     @RequestMapping(value = "/del", method = RequestMethod.POST)
     public ResponseModel del(@RequestBody Map params) {
         String ids = params.get("ids").toString();
@@ -97,6 +102,7 @@ public class RoleController {
         return ResponseModel.ok(roleMenuService.getRoleMenu(roleId));
     }
 
+    @SaCheckPermission("role_auth")
     @PostMapping("/setRoleMenu")
     public ResponseModel setRoleMenu(@RequestBody @Valid RoleMenuDTO roleMenuDTO) {
         return roleMenuService.setRoleMenu(roleMenuDTO);

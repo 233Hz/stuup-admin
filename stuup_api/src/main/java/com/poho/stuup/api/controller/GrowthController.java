@@ -1,5 +1,7 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckSafe;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.Growth;
 import com.poho.stuup.model.vo.GrowthTreeVO;
@@ -37,9 +39,10 @@ public class GrowthController {
         return ResponseModel.ok(growthService.getGrowthTree());
     }
 
+    @SaCheckPermission("growth_add_edit")
     @PostMapping("/saveOrUpdate")
     public ResponseModel<Long> saveOrUpdateGrowth(@Valid @RequestBody Growth growth) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         growth.setCreateUser(Long.parseLong(userId));
         if (growth.getId() != null && growth.getPid() != null && Objects.equals(growth.getId(), growth.getPid())) {
             return ResponseModel.failed("父节点不能为自己");
@@ -47,6 +50,8 @@ public class GrowthController {
         return growthService.saveOrUpdate(growth) ? ResponseModel.ok(growth.getId(), "添加成功！") : ResponseModel.failed("添加失败！");
     }
 
+    @SaCheckSafe("growth_del")
+    @SaCheckPermission("growth_del")
     @DeleteMapping("/del/{id}")
     public ResponseModel<Long> delGrowthById(@PathVariable("id") Long id) {
         return growthService.removeById(id) ? ResponseModel.ok(id, "删除成功！") : ResponseModel.failed("删除失败！");

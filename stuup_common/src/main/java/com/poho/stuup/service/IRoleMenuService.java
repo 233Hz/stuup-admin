@@ -19,6 +19,7 @@ public interface IRoleMenuService {
 
     /**
      * 根据用户id，获取权限code列表
+     *
      * @param userId
      * @return
      */
@@ -26,8 +27,9 @@ public interface IRoleMenuService {
 
     /**
      * 根据角色code，获取权限code列表
+     *
      * @param roleCode
      * @return
      */
-    List<String> getMenuCodeByRoleCode(String roleCode);
+    List<String> getPermissionByRoleCode(String roleCode);
 }

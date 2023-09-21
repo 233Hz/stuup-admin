@@ -1,11 +1,11 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckSafe;
 import com.poho.common.constant.CommonConstants;
 import com.poho.common.custom.ResponseModel;
 import com.poho.common.util.MicrovanUtil;
 import com.poho.stuup.model.Faculty;
 import com.poho.stuup.service.IFacultyService;
-import com.poho.stuup.service.ITeacherService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
 /**
@@ -44,7 +45,7 @@ public class FacultyController {
         return facultyService.findDataPageResult(key, page, pageSize);
     }
 
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true) })
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "header", dataType = "string", name = "Authorization", value = "登录成功获取的token", required = true)})
     @ApiOperation(value = "全部系部信息", httpMethod = "GET")
     @GetMapping("/all")
     public ResponseModel all() {
@@ -52,7 +53,6 @@ public class FacultyController {
     }
 
     /**
-     *
      * @param faculty
      * @return
      */
@@ -63,6 +63,7 @@ public class FacultyController {
 
     }
 
+    @SaCheckSafe("faculty_del")
     @RequestMapping(value = "/delMultiFaculty", method = RequestMethod.POST)
     public ResponseModel delMultiFaculty(@RequestBody Map params) {
         //$$班级表、系部课程表、专业表、教师表

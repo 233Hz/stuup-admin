@@ -35,7 +35,7 @@ public interface YearMapper extends BaseDao<Year> {
 
     void setAllYearNotCurr();
 
-    void setCurrentYear(@Param("oid") Long oid);
+    void setCurrentYear(@Param("id") Long oid);
 
     List<Long> findRangeYearStart(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 

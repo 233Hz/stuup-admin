@@ -45,7 +45,7 @@ public class StuScoreController {
 
     @GetMapping("/getStudentScore")
     public ResponseModel<BigDecimal> getStudentScore() {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         Integer userType = user.getUserType();
         if (userType != UserTypeEnum.STUDENT.getValue()) return ResponseModel.ok();

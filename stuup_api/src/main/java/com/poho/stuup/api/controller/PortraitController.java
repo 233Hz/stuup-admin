@@ -41,7 +41,7 @@ public class PortraitController {
 
     @GetMapping("/basicInfo")
     public ResponseModel<PortraitBasicInfoVO> getBasicInfo(@RequestParam("studentId") Integer studentId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -54,7 +54,7 @@ public class PortraitController {
 
     @GetMapping("/capacityEvaluator")
     public ResponseModel<List<PortraitCapacityEvaluatorVO>> getCapacityEvaluator(@RequestParam("studentId") Integer studentId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -67,7 +67,7 @@ public class PortraitController {
 
     @GetMapping("/awardRecord")
     public ResponseModel<List<PortraitAwardRecordVO>> getAwardRecord(@RequestParam("studentId") Integer studentId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -80,7 +80,7 @@ public class PortraitController {
 
     @GetMapping("/activityRecord")
     public ResponseModel<List<PortraitActivityRecordVO>> getActivityRecord(@RequestParam("studentId") Integer studentId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -93,7 +93,7 @@ public class PortraitController {
 
     @GetMapping("/rankingCurve")
     public ResponseModel<List<PortraitRankingCurveVO>> getRankingCurve(@RequestParam("studentId") Integer studentId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -106,7 +106,7 @@ public class PortraitController {
 
     @GetMapping("/growthAnalysis")
     public ResponseModel<List<PortraitGrowthAnalysisVO>> getGrowthAnalysis(@RequestParam("studentId") Integer studentId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -119,7 +119,7 @@ public class PortraitController {
 
     @GetMapping("/growthData")
     public ResponseModel<PortraitGrowthDataVO> getGrowthData(@RequestParam("studentId") Integer studentId, @RequestParam("semesterId") Long semesterId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -132,7 +132,7 @@ public class PortraitController {
 
     @GetMapping("/growthComparison")
     public ResponseModel<List<PortraitGrowthComparisonVO>> getGrowthComparison(@RequestParam("studentId") Integer studentId, @RequestParam("semesterId") Long semesterId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -145,7 +145,7 @@ public class PortraitController {
 
     @GetMapping("/studyGrade")
     public ResponseModel<List<PortraitStudyGradeVO>> getStudyGrade(@RequestParam("studentId") Integer studentId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);
@@ -158,7 +158,7 @@ public class PortraitController {
 
     @GetMapping("/studyCourse")
     public ResponseModel<List<PortraitStudyCourseVO>> getStudyCourse(@RequestParam("studentId") Integer studentId, @RequestParam("semesterId") Long semesterId) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         User user = userService.selectByPrimaryKey(Long.valueOf(userId));
         if (user == null) return ResponseModel.failed("未查询到用户信息");
         Student student = studentService.selectByPrimaryKey(studentId);

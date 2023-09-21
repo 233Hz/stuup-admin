@@ -83,8 +83,8 @@ public class AudGrowController {
      * @date: 2023/6/15 16:44
      */
     @PostMapping("/apply")
-    public ResponseModel<Boolean> apply(@Validated({ValidationGroups.Insert.class}) @RequestBody AudGrow data) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+    public ResponseModel<Boolean> apply(@Validated({ValidationGroups.ADD.class}) @RequestBody AudGrow data) {
+        String userId = ProjectUtil.obtainLoginUserId(request);
         data.setApplicant(Long.parseLong(userId));
         return audGrowService.apply(data);
     }
@@ -129,7 +129,7 @@ public class AudGrowController {
     public ResponseModel<IPage<AudGrowthVO>> pageStudentApply(Page<AudGrowthVO> page, GrowRecordDTO query) {
         if (query.getYearId() == null || query.getSemesterId() == null)
             return ResponseModel.failed("请选择要查询的学年和学期");
-        Long userId = Long.parseLong(ProjectUtil.obtainLoginUser(request));
+        Long userId = Long.parseLong(ProjectUtil.obtainLoginUserId(request));
         query.setType(ApplyGrowTypeEnum.SELF.getValue());
         query.setApplicantId(userId);
         query.setSubmitterId(userId);
@@ -144,7 +144,7 @@ public class AudGrowController {
     public ResponseModel<IPage<AudGrowthVO>> pageStudentUnionApply(Page<AudGrowthVO> page, GrowRecordDTO query) {
         if (query.getYearId() == null || query.getSemesterId() == null)
             return ResponseModel.failed("请选择要查询的学年和学期");
-        Long userId = Long.parseLong(ProjectUtil.obtainLoginUser(request));
+        Long userId = Long.parseLong(ProjectUtil.obtainLoginUserId(request));
         query.setType(ApplyGrowTypeEnum.OTHERS.getValue());
         query.setSubmitterId(userId);
         query.setSortOrder("desc");
@@ -158,7 +158,7 @@ public class AudGrowController {
     public ResponseModel<IPage<AudGrowthVO>> pageStudentAudit(Page<AudGrowthVO> page, GrowRecordDTO query) {
         if (query.getYearId() == null || query.getSemesterId() == null)
             return ResponseModel.failed("请选择要查询的学年和学期");
-        Long userId = Long.parseLong(ProjectUtil.obtainLoginUser(request));
+        Long userId = Long.parseLong(ProjectUtil.obtainLoginUserId(request));
         query.setType(ApplyGrowTypeEnum.SELF.getValue());
         query.setAuditorId(userId);
         query.setState(AudStateEnum.PENDING_REVIEW.getCode());
@@ -172,7 +172,7 @@ public class AudGrowController {
     public ResponseModel<IPage<AudGrowthVO>> pageStudentUnionAudit(Page<AudGrowthVO> page, GrowRecordDTO query) {
         if (query.getYearId() == null || query.getSemesterId() == null)
             return ResponseModel.failed("请选择要查询的学年和学期");
-        Long userId = Long.parseLong(ProjectUtil.obtainLoginUser(request));
+        Long userId = Long.parseLong(ProjectUtil.obtainLoginUserId(request));
         query.setType(ApplyGrowTypeEnum.OTHERS.getValue());
         query.setAuditorId(userId);
         query.setState(AudStateEnum.PENDING_REVIEW.getCode());
@@ -199,7 +199,7 @@ public class AudGrowController {
         Integer state = audGrow.getState();
         if (AudStateEnum.TO_BE_SUBMITTED.getCode() != state && AudStateEnum.NO_PASS.getCode() != state)
             return ResponseModel.failed("当前状态无法提交");
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         audGrowService.updateState(id, audGrow.getGrowId(), AudStateEnum.PENDING_REVIEW, Long.parseLong(userId), null);
         // 发布通知
         User user = userService.selectByPrimaryKey(audGrow.getApplicant());
@@ -224,7 +224,7 @@ public class AudGrowController {
         Integer state = audGrow.getState();
         if (AudStateEnum.PENDING_REVIEW.getCode() != state)
             return ResponseModel.failed("当前状态无法审核");
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         // 更新状态
         audGrowService.updateState(id, audGrow.getGrowId(), AudStateEnum.PASS, Long.parseLong(userId), null);
         // 计算积分
@@ -252,7 +252,7 @@ public class AudGrowController {
         Integer state = audGrow.getState();
         if (AudStateEnum.PENDING_REVIEW.getCode() != state)
             return ResponseModel.failed("当前状态无法审核");
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         // 更新状态
         audGrowService.updateState(id, audGrow.getGrowId(), AudStateEnum.NO_PASS, Long.parseLong(userId), reason);
         // 发布通知
@@ -273,7 +273,7 @@ public class AudGrowController {
      */
     @PostMapping("/batchPass")
     public ResponseModel<Boolean> batchPass(@Validated({ValidationGroups.Audit.Batch.Pass.class}) @RequestBody GrowthAuditDTO data) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         List<Long> ids = data.getIds();
         int success = 0;
         for (Long id : ids) {
@@ -284,7 +284,7 @@ public class AudGrowController {
 
     @PostMapping("/batchNoPass")
     public ResponseModel<Boolean> batchNoPass(@Validated({ValidationGroups.Audit.Batch.NoPass.class}) @RequestBody GrowthAuditDTO data) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         List<Long> ids = data.getIds();
         String reason = data.getReason();
         int success = 0;
@@ -299,7 +299,7 @@ public class AudGrowController {
      */
     @PostMapping("/apply/import")
     public ResponseModel<List<ExcelError>> importApply(MultipartFile file, @RequestParam String recCode) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         GrowthItem growthItem = growthItemService.getOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, recCode));
         if (growthItem == null) return ResponseModel.failed("导入的项目不存在");

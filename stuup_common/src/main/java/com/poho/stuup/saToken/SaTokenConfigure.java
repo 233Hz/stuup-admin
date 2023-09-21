@@ -24,7 +24,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
 
     // 动态获取哪些 path 可以忽略鉴权
     public List<String> excludePaths() {
-        return Arrays.asList("/login");
+        return Arrays.asList("/login", "/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/**", "/sync/**", "/csrf", "/screen/**", "/manualTask/**");
     }
 }
 

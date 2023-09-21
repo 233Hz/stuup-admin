@@ -1,5 +1,6 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.constant.FloweringStageEnum;
 import com.poho.stuup.model.dto.FlowerDTO;
@@ -27,6 +28,7 @@ public class GrowthModelController {
         return ResponseModel.ok(flowerModelService.getFlowerModel());
     }
 
+    @SaCheckPermission("growth_model_setting")
     @PostMapping
     public ResponseModel<FlowerVO> setFlowerModel(@Valid @RequestBody FlowerDTO flowerDTO) {
         FloweringStageEnum floweringStageEnum = FloweringStageEnum.getByFieldName(flowerDTO.getKey());

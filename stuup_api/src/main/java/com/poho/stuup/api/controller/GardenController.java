@@ -32,7 +32,7 @@ public class GardenController {
 
     @GetMapping("/page")
     private ResponseModel<IPage<GrowGardenVO>> pageGrowGarden(Page<GrowGardenVO> page, GrowGardenDTO query) {
-        String userId = ProjectUtil.obtainLoginUser(request);
+        String userId = ProjectUtil.obtainLoginUserId(request);
         Integer gardenType = query.getGardenType();
         if (gardenType == null) return ResponseModel.failed("请确认要查询的花园类型");
         if (gardenType != GardenTypeEnum.XCJ.getValue() &&

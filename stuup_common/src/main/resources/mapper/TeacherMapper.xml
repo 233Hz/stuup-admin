@@ -336,7 +336,7 @@
             AND (tct.course_type = #{courseType} or tct.course_type = 3)
         </if>
         <if test="flag == 1">
-            -- group by tfc.oid,tt.id
+            -- group by tfc.id,tt.id
         </if>
         and tfc.course_name is not null
         and tfc.term_id=#{termId}
@@ -519,7 +519,7 @@
             AND tct.class_id = #{classId}
         </if>
         <if test="flag == 1">
-            <!--  group by tfc.oid,tt.id-->
+            <!--  group by tfc.id,tt.id-->
         </if>
         and tfc.course_name is not null
         and tfc.term_id = #{termId}

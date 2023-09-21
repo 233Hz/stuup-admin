@@ -1,5 +1,6 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -49,6 +50,7 @@ public class GrowUserController {
      * @author BUNGA
      * @date: 2023/6/14 18:54
      */
+    @SaCheckPermission("growth_item_admin")
     @PostMapping("/setGrowthItemUser")
     @Transactional(rollbackFor = Exception.class)
     public ResponseModel<Boolean> setGrowthItemUser(@Valid @RequestBody GrowthItemLeaderDTO data) {

@@ -47,7 +47,7 @@ public class AudGrow implements Serializable {
     /**
      * 项目id
      */
-    @NotNull(message = "申请项目不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
+    @NotNull(message = "申请项目不能为空", groups = {ValidationGroups.ADD.class, ValidationGroups.Update.class})
     private Long growId;
 
     /**
@@ -88,13 +88,13 @@ public class AudGrow implements Serializable {
     /**
      * 申请原因
      */
-    @NotBlank(message = "申请原因不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
+    @NotBlank(message = "申请原因不能为空", groups = {ValidationGroups.ADD.class, ValidationGroups.Update.class})
     private String reason;
 
     /**
      * 附件id
      */
-    @NotBlank(message = "必须上传证明附件", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
+    @NotBlank(message = "必须上传证明附件", groups = {ValidationGroups.ADD.class, ValidationGroups.Update.class})
     private String fileIds;
 
 
