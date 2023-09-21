@@ -67,5 +67,10 @@ public class ManualTaskController {
         return ResponseModel.ok();
     }
 
+    @GetMapping("/task10")
+    public boolean task10() {
+        return growScheduledTaskController.getGrowthTimerTaskSwitch();
+    }
+
 
 }

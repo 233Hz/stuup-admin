@@ -1,7 +1,6 @@
 package com.poho.common.custom;
 
 import com.poho.common.constant.CommonConstants;
-import com.poho.common.util.JwtUtil;
 
 /**
  * @Author: wupeng
@@ -94,14 +93,4 @@ public class ResponseMsg {
         return model.general();
     }
 
-    /**
-     * 刷新token
-     *
-     * @return
-     */
-    public static String refreshToken(String userId) {
-        ResponseModel model = new ResponseModel(CommonConstants.CODE_REFRESH_TOKEN, "刷新token");
-        model.setToken(JwtUtil.createJwt(userId, CommonConstants.JWT_TTL_COMMON));
-        return model.general();
-    }
 }

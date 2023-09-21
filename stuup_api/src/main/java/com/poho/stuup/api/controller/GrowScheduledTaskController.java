@@ -216,6 +216,7 @@ public class GrowScheduledTaskController {
     @Async
     @Scheduled(cron = "0 0 22 * * ?")   // 每天晚上 22:00
     public void calculateScoreForDay() {
+        if (!getGrowthTimerTaskSwitch()) return;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
@@ -230,6 +231,7 @@ public class GrowScheduledTaskController {
     @Async
     @Scheduled(cron = "0 20 22 ? * SUN")    // 每周日晚上 22:20
     public void calculateScoreForWeek() {
+        if (!getGrowthTimerTaskSwitch()) return;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
@@ -244,15 +246,16 @@ public class GrowScheduledTaskController {
     @Async
     @Scheduled(cron = "0 15 10 28-31 * ?")  // 每月最后一天晚上 22:40
     public void calculateScoreForMonth() {
+        if (!getGrowthTimerTaskSwitch()) return;
         Calendar calendar = Calendar.getInstance();
-//        if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        Date date = calendar.getTime();
-        jobGrowService.executeGrowJob(PeriodEnum.MONTH, date);
-        rankMonthService.generateRank(date);
-//        }
+        if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            Date date = calendar.getTime();
+            jobGrowService.executeGrowJob(PeriodEnum.MONTH, date);
+            rankMonthService.generateRank(date);
+        }
     }
 
     /**
@@ -261,6 +264,7 @@ public class GrowScheduledTaskController {
     @Async
     @Scheduled(cron = "0 0 23 15 1 ? ")   // 每年的01-15 23:00
     public void calculateScoreForLastSemester() {
+        if (!getGrowthTimerTaskSwitch()) return;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
@@ -277,6 +281,7 @@ public class GrowScheduledTaskController {
     @Async
     @Scheduled(cron = "0 20 23 30 6 ?")  // 每年的 06-30 23:00
     public void calculateScoreForYear() {
+        if (!getGrowthTimerTaskSwitch()) return;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
@@ -294,6 +299,7 @@ public class GrowScheduledTaskController {
     @Async
     @Scheduled(cron = "0 40 23 * * ?")  // 每天晚上的 23:40
     public void compensateCalculateFail() {
+        if (!getGrowthTimerTaskSwitch()) return;
         jobGrowService.executeGrowJobCompensation();
     }
 
@@ -304,6 +310,7 @@ public class GrowScheduledTaskController {
     @Async
     @Scheduled(cron = "0 55 23 * * ?")     // 每天晚上的 23:55
     public void collectionTimeoutScore() {
+        if (!getGrowthTimerTaskSwitch()) return;
         Config config = configService.selectByPrimaryKey(ConfigKeyEnum.SCORE_TIMEOUT_AUTO_COLLECT.getKey());
         int timeout;
         if (config != null) {
@@ -317,6 +324,14 @@ public class GrowScheduledTaskController {
             timeout = 7;
         }
         recAddScoreService.collectionTimeoutScore(timeout);
+    }
+
+    public boolean getGrowthTimerTaskSwitch() {
+        Config config = configService.selectByPrimaryKey(ConfigKeyEnum.GROWTH_TIMER_TASK_SWITCH.getKey());
+        if (config != null) {
+            return Boolean.parseBoolean(config.getConfigValue());
+        }
+        return false;
     }
 
 

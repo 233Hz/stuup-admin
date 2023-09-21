@@ -4,10 +4,9 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import com.alibaba.fastjson.JSON;
 import com.poho.common.constant.CommonConstants;
 
-import java.util.List;
-
 /**
- *  响应对象
+ * 响应对象
+ *
  * @author wupeng
  */
 public class ResponseModel<T> {
@@ -27,17 +26,9 @@ public class ResponseModel<T> {
     private T data;
 
     /**
-     * token信息
-     */
-    private String token;
-
-    /**
      * sa-token
      */
     private SaTokenInfo tokenInfo;
-
-    private List<String> roleCodeList;
-    private List<String> permissionList;
 
     public ResponseModel() {
     }
@@ -51,13 +42,6 @@ public class ResponseModel<T> {
         this.code = code;
         this.msg = msg;
         this.data = data;
-    }
-
-    public ResponseModel(Integer code, T data, String message, String token) {
-        this.code = code;
-        this.msg = message;
-        this.data = data;
-        this.token = token;
     }
 
     public static <T> ResponseModel<T> ok() {
@@ -112,14 +96,6 @@ public class ResponseModel<T> {
         this.data = data;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public SaTokenInfo getTokenInfo() {
         return tokenInfo;
     }
@@ -128,33 +104,12 @@ public class ResponseModel<T> {
         this.tokenInfo = tokenInfo;
     }
 
-    public List<String> getRoleCodeList() {
-        return roleCodeList;
-    }
-
-    public void setRoleCodeList(List<String> roleCodeList) {
-        this.roleCodeList = roleCodeList;
-    }
-
-    public List<String> getPermissionList() {
-        return permissionList;
-    }
-
-    public void setPermissionList(List<String> permissionList) {
-        this.permissionList = permissionList;
-    }
-
-    /**
-     * 请求返回数据处理
-     *
-     * @return
-     */
     public String general() {
         return JSON.toJSONString(this);
     }
 
-    public static <T> ResponseModel<T>  newSuccessData(T data){
-        return new ResponseModel(CommonConstants.CODE_SUCCESS, data, "请求成功");
+    public static <T> ResponseModel<T> newSuccessData(T data) {
+        return new ResponseModel<T>(CommonConstants.CODE_SUCCESS, data, "请求成功");
     }
 
     private static <T> ResponseModel<T> restResult(T data, int code, String msg) {

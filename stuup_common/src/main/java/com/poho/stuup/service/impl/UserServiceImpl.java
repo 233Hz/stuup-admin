@@ -151,8 +151,6 @@ public class UserServiceImpl implements IUserService {
                         //sa-token
                         StpUtil.login(user.getOid());
                         model.setTokenInfo(StpUtil.getTokenInfo());
-                        model.setRoleCodeList(stpInterface.getRoleList(user.getOid(), null));
-                        model.setPermissionList(stpInterface.getPermissionList(user.getOid(), null));
                     } else {
                         model.setCode(CommonConstants.CODE_EXCEPTION);
                         model.setMsg("用户未设置角色，暂无法登录");
