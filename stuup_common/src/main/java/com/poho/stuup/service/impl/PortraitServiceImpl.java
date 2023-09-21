@@ -11,6 +11,7 @@ import com.poho.stuup.constant.WhetherEnum;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.Class;
 import com.poho.stuup.model.*;
+import com.poho.stuup.model.dto.L1GrowthScoreDTO;
 import com.poho.stuup.model.vo.*;
 import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.service.PortraitService;
@@ -154,32 +155,31 @@ public class PortraitServiceImpl implements PortraitService {
 
     @Override
     public List<PortraitCapacityEvaluatorVO> getCapacityEvaluator(Long studentId) {
+        List<PortraitCapacityEvaluatorVO> result = new ArrayList<>();
         Long yearId = yearMapper.getCurrentYearId();
-        if (yearId == null) return Collections.emptyList();
+        if (yearId == null) return result;
         Integer totalStudentNum = studentMapper.countAtSchoolNum();
         List<Growth> growths = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
                 .select(Growth::getId, Growth::getName)
                 .eq(Growth::getPid, 0));
-        int size = growths.size();
-        ArrayList<PortraitCapacityEvaluatorVO> result = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
+        List<L1GrowthScoreDTO> studentL1GrowthScores = recAddScoreMapper.selectL1GrowthStudentScore(yearId, studentId);
+        Map<Long, BigDecimal> studentL1GrowthScoreMap = studentL1GrowthScores.stream().collect(Collectors.toMap(L1GrowthScoreDTO::getL1Id, L1GrowthScoreDTO::getScore));
+        List<L1GrowthScoreDTO> totalL1GrowthScores = recAddScoreMapper.selectL1GrowthTotalScore(yearId);
+        Map<Long, BigDecimal> totalL1GrowthScoresMap = totalL1GrowthScores.stream().collect(Collectors.toMap(L1GrowthScoreDTO::getL1Id, L1GrowthScoreDTO::getScore));
+
+        for (Growth growth : growths) {
             PortraitCapacityEvaluatorVO portraitCapacityEvaluatorVO = new PortraitCapacityEvaluatorVO();
-            Growth growth = growths.get(i);
-            Long id = growth.getId();
-            String name = growth.getName();
-            portraitCapacityEvaluatorVO.setIndicatorName(name);
-            List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                    .select(GrowthItem::getId)
-                    .eq(GrowthItem::getFirstLevelId, id));
-            List<Long> growthItemIds = growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList());
-            BigDecimal stu_total_score = recAddScoreMapper.fetchTotalScore(yearId, studentId, growthItemIds);
-            stu_total_score = stu_total_score == null ? BigDecimal.ZERO : stu_total_score;
-            portraitCapacityEvaluatorVO.setIndicatorScore(stu_total_score);
-            BigDecimal all_total_score = recAddScoreMapper.fetchTotalScore(yearId, null, growthItemIds);
-            all_total_score = all_total_score == null ? BigDecimal.ZERO : all_total_score.divide(BigDecimal.valueOf(totalStudentNum), 2, RoundingMode.HALF_UP);
-            portraitCapacityEvaluatorVO.setIndicatorAvgScore(all_total_score);
+            BigDecimal highestScore = recAddScoreMapper.selectL1GrowthHighestScore(yearId, growth.getId());
+            BigDecimal studentScore = studentL1GrowthScoreMap.getOrDefault(growth.getId(), BigDecimal.ZERO);
+            BigDecimal totalScore = totalL1GrowthScoresMap.getOrDefault(growth.getId(), BigDecimal.ZERO);
+            BigDecimal avgScore = totalScore.divide(BigDecimal.valueOf(totalStudentNum), 2, RoundingMode.HALF_UP);
+            portraitCapacityEvaluatorVO.setIndicatorName(growth.getName());
+            portraitCapacityEvaluatorVO.setHighestScore(highestScore);
+            portraitCapacityEvaluatorVO.setMyScore(studentScore);
+            portraitCapacityEvaluatorVO.setAvgScore(avgScore);
             result.add(portraitCapacityEvaluatorVO);
         }
+
         return result;
     }
 

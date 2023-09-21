@@ -284,4 +284,40 @@
         </if>
     </select>
 
+    <resultMap id="L1GrowthScoreDTOMap" type="com.poho.stuup.model.dto.L1GrowthScoreDTO">
+        <result column="l1_id" property="l1Id"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <select id="selectL1GrowthStudentScore" resultMap="L1GrowthScoreDTOMap">
+        select gi.first_level_id         as l1_id,
+               ifnull(sum(ras.score), 0) as score
+        from t_rec_add_score ras
+                 inner join t_growth_item gi on ras.grow_id = gi.id
+        where year_id = #{yearId}
+          and student_id = #{studentId}
+          and gi.first_level_id is not null
+        group by gi.first_level_id;
+    </select>
+
+    <select id="selectL1GrowthTotalScore" resultMap="L1GrowthScoreDTOMap">
+        select gi.first_level_id        as l1_id,
+               ifnull(sum(gi.score), 0) as score
+        from t_rec_add_score ras
+                 inner join t_growth_item gi on ras.grow_id = gi.id
+        where gi.first_level_id is not null
+          and year_id = #{yearId}
+        group by gi.first_level_id
+    </select>
+
+    <select id="selectL1GrowthHighestScore" resultType="decimal">
+        select ifnull(sum(ras.score), 0) as score
+        from t_rec_add_score ras
+                 inner join t_growth_item gi on ras.grow_id = gi.id
+        where gi.first_level_id = #{l1Id}
+        group by ras.student_id
+        order by score desc
+        limit 1
+    </select>
+
 </mapper>

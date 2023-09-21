@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.stuup.model.RecAddScore;
+import com.poho.stuup.model.dto.L1GrowthScoreDTO;
 import com.poho.stuup.model.dto.RecScoreDTO;
 import com.poho.stuup.model.dto.RecScoreYearRankDTO;
 import com.poho.stuup.model.dto.StudentRecScoreDTO;
@@ -66,4 +67,10 @@ public interface RecAddScoreMapper extends BaseMapper<RecAddScore> {
     int collectionTimeoutScore(@Param("timeout") Integer timeout);
 
     BigDecimal fetchTotalScore(@Param("yearId") Long yearId, @Param("studentId") Long studentId, @Param("growthItemIds") List<Long> growthItemIds);
+
+    List<L1GrowthScoreDTO> selectL1GrowthStudentScore(@Param("yearId") Long yearId, @Param("studentId") Long studentId);
+
+    List<L1GrowthScoreDTO> selectL1GrowthTotalScore(@Param("yearId") Long yearId);
+
+    BigDecimal selectL1GrowthHighestScore(@Param("yearId") Long yearId, @Param("l1Id") Long growthL1Id);
 }

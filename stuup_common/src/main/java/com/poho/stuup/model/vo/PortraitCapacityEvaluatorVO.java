@@ -4,11 +4,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-/**
- * @author BUNGA
- * @description: 学生画像-成长能力
- * @date 2023/8/7 16:07
- */
 @Data
 public class PortraitCapacityEvaluatorVO {
 
@@ -18,12 +13,18 @@ public class PortraitCapacityEvaluatorVO {
     private String indicatorName;
 
     /**
-     * 指标值
+     * 最高分
      */
-    private BigDecimal indicatorScore;
+    private BigDecimal highestScore;
 
     /**
-     * 指标平均值
+     * 我的分数
      */
-    private BigDecimal indicatorAvgScore;
+    private BigDecimal myScore;
+
+    /**
+     * 平均分
+     */
+    private BigDecimal avgScore;
+
 }
