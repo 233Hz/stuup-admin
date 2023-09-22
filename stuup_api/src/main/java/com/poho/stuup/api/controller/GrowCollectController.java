@@ -107,14 +107,12 @@ public class GrowCollectController {
     @GetMapping("/downTemp")
     public void downTemp(@RequestParam("recCode") String recCode, HttpServletResponse res) {
         RecEnum recEnum = RecEnum.getEnumByCode(recCode);
-        if (recEnum == null) recCode = "CZ_DEFAULT";
-        String growthItemName = growthItemService.getObj(Wrappers.<GrowthItem>lambdaQuery().select(GrowthItem::getName).eq(GrowthItem::getCode, recCode), Object::toString);
         String fileName, suffix = ".xlsx";
-        if (StrUtil.isBlank(growthItemName)) {
+        if (recEnum == null) {
             fileName = StrUtil.format("默认导入模板{}", suffix);
         } else {
-            fileName = StrUtil.format("{}_导入模板{}", growthItemName, suffix);
+            fileName = StrUtil.format("{}_导入模板{}", recEnum.getTempName(), suffix);
         }
-        MinioUtils.download(prop.getTempBucketName(), recCode + suffix, fileName, res);
+        MinioUtils.download(prop.getTempBucketName(), fileName + suffix, fileName, res);
     }
 }

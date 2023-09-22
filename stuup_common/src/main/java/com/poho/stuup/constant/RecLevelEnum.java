@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum RecLevelEnum {
     SCHOOL("校级", 1),
-    DISTRICT("区（行级）", 2),
+    DISTRICT("区（行业）", 2),
     CITY("市级", 3),
     COUNTRY("国家", 4),
     INTERNATIONAL("国际", 5);

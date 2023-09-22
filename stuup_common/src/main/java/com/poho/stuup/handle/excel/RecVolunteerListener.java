@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.fastjson.JSON;
+import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.dao.StudentMapper;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.excel.ExcelError;
@@ -78,6 +79,10 @@ public class RecVolunteerListener implements ReadListener<RecVolunteerExcel> {
         }
         if (StrUtil.isBlank(data.getLevel())) {
             errorMessages.add("级别不能为空");
+        }
+        if (data.getLevel().equals(RecLevelEnum.CITY.getLabel()) ||
+                data.getLevel().equals(RecLevelEnum.SCHOOL.getLabel())) {
+            errorMessages.add("级别不存在");
         }
         if (StrUtil.isBlank(data.getChild())) {
             errorMessages.add("子项目不能为空");
