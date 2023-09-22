@@ -111,8 +111,8 @@ public class GrowCollectController {
         if (recEnum == null) {
             fileName = StrUtil.format("默认导入模板{}", suffix);
         } else {
-            fileName = StrUtil.format("{}_导入模板{}", recEnum.getTempName(), suffix);
+            fileName = StrUtil.format("{}{}", recEnum.getTempName(), suffix);
         }
-        MinioUtils.download(prop.getTempBucketName(), fileName + suffix, fileName, res);
+        MinioUtils.download(prop.getTempBucketName(), fileName, fileName, res);
     }
 }
