@@ -88,8 +88,14 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
         String year = termName.substring(0,4);
         termName = StrUtil.format("{}-{}学年第{}学期", year, Integer.parseInt(year)+1
                 , termName.contains("上") ? "一" : "二");
-        log.info(StrUtil.format("syncCommunityMember termName:{}",  termName));
+      return this.syncCommunityMember(url, termName);
+    }
 
+
+    @Override
+    public ResponseModel syncCommunityMember(String url, String termName){
+
+        log.info(StrUtil.format("syncCommunityMember termName:{}",  termName));
         //检查同步表中同步表有已经同步记录
         SyncInfo syncInfo = this.getOne(Wrappers.<SyncInfo>lambdaQuery()
                 .eq(SyncInfo::getBusinessCode, ProjectConstants.SYNC_INFO_BUSINESS_CODE_COMMUNITY)
@@ -120,7 +126,7 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
         //调用外部系统接口，获取社团成员数据
         ResponseModel<List<CommunityMemberDTO>> responseModel = this.getRemoteCommunityMember(url, termName);
         if(CommonConstants.CODE_FAIL == responseModel.getCode()){ //调用接口失败
-           return responseModel;
+            return responseModel;
         }
         List<CommunityMemberDTO> list = responseModel.getData();
         if(CollUtil.isEmpty(list)){
@@ -145,6 +151,9 @@ public class SyncInfoServiceImpl extends ServiceImpl<SyncInfoMapper, SyncInfo> i
         applicationContext.publishEvent(new CommunityMemberEvent(infoId));
         return ResponseModel.ok(StrUtil.format("同步成功 同步总记录数：{}", list.size()));
     }
+
+
+
 
     private ResponseModel<List<CommunityMemberDTO>> getRemoteCommunityMember(String url, String termName){
         ResponseModel<List<CommunityMemberDTO>> responseModel;
