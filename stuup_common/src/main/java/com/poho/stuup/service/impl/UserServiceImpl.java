@@ -173,7 +173,6 @@ public class UserServiceImpl implements IUserService {
                 Integer studentId = student.getId();
                 // 查询当天的登入次数
                 int count = loginLogMapper.findTodayLoginCount(userId);
-                count = 0;
                 if (count == 0) {
                     Long yearId = yearMapper.getCurrentYearId();
                     Long semesterId = semesterMapper.getCurrentSemesterId();

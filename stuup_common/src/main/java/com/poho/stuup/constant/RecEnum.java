@@ -7,13 +7,16 @@ import lombok.Getter;
 public enum RecEnum {
 
     REC_CAUCUS("CZ_005", "参加党团学习项目记录填报", new RecCaucusHandle()),
-    REC_HONOR("CZ_031", "个人荣誉记录填报", new RecHonorHandle()),
+    REC_HONOR_NATIONAL("CZ_028", "个人荣誉记录填报国家级", new RecHonorHandle()),
+    REC_HONOR_MUNICIPAL_LEVEL("CZ_029", "个人荣誉记录填报市级", new RecHonorHandle()),
+    REC_HONOR_DISTRICT_LEVEL("CZ_030", "个人荣誉记录填报区级", new RecHonorHandle()),
+    REC_HONOR_SCHOOL_LEVEL("CZ_031", "个人荣誉记录填报校级级", new RecHonorHandle()),
     REC_LABOR_TIME("CZ_065", "生产劳动实践记录填报", new RecLaborTimeHandle()),
     REC_MILITARY_EXCELLENT("CZ_009", "军事训练记录填报（优秀学员）", new RecMilitaryHandle()),
     REC_MILITARY_QUALIFIED("CZ_010", "军事训练记录填报（合格学员）", new RecMilitaryHandle()),
     REC_NATION("CZ_008", "参加国防民防项目记录填报", new RecNationHandle()),
     REC_SOCIETY("CZ_011", "参加社团记录填报", new RecSocietyHandle()),
-    REC_VOLUNTEER("CZ_060", "志愿者活动记录填报", new RecVolunteerHandle());
+    REC_VOLUNTEER("CZ_062", "志愿者活动记录填报", new RecVolunteerHandle());
 
     private final String code;
 
