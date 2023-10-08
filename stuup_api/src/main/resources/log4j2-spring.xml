@@ -121,8 +121,8 @@
             <appender-ref ref="RollingFile"/>
         </root>
         <!--生产环境-->
-        <!--<root level="INFO">
-            <appender-ref ref="RollingFile"/>
-        </root>-->
+        <!--        <root level="INFO">-->
+        <!--            <appender-ref ref="RollingFile"/>-->
+        <!--        </root>-->
     </loggers>
 </configuration>

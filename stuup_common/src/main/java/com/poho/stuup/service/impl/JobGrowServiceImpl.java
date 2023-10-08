@@ -101,6 +101,10 @@ public class JobGrowServiceImpl extends ServiceImpl<JobGrowMapper, JobGrow> impl
                     .select(RecDefault::getStudentId)
                     .eq(RecDefault::getGrowId, growthItem.getId())
                     .between(RecDefault::getCreateTime, dateTimePeriod.getStartTime(), dateTimePeriod.getEndTime()));
+
+            //TODO 测试
+//            if (recDefaults == null || recDefaults.isEmpty()) continue;
+
             Map<Long, Long> countIdOccurrences = recDefaults.stream().collect(Collectors.groupingBy(RecDefault::getStudentId, Collectors.counting()));
 
             if (growthItem.getCalculateType() == CalculateTypeEnum.PLUS.getValue()) {
