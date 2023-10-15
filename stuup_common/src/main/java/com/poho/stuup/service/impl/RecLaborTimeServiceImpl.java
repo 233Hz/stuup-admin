@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLaborTimeMapper;
 import com.poho.stuup.dao.RecLogMapper;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.RecLaborTime;
@@ -45,7 +46,12 @@ public class RecLaborTimeServiceImpl extends ServiceImpl<RecLaborTimeMapper, Rec
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveRecLaborTimeExcel(List<RecLaborTimeExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+    public void saveRecLaborTimeExcel(List<RecLaborTimeExcel> excels, RecImportParams params) {
+        long batchCode = System.currentTimeMillis();
+        Long userId = params.getUserId();
+        Long yearId = params.getYearId();
+        Long semesterId = params.getSemesterId();
+        GrowthItem growthItem = params.getGrowthItem();
         List<Long> studentIds = new ArrayList<>();
         for (RecLaborTimeExcel excel : excels) {
             RecDefault recDefault = new RecDefault();

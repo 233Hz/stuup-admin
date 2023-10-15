@@ -50,4 +50,6 @@ public interface IStudentService {
 
     Long getIdByStudentNo(String studentNo);
 
+    Integer getStudentIdByUserId(Long userId);
+
 }

@@ -26,5 +26,5 @@ public interface RecSocietyMapper extends BaseMapper<RecSociety> {
 
     IPage<RecSocietyVO> getRecSocietyPage(Page<RecSocietyVO> page, @Param("query") RecSocietyDTO query);
 
-    List<RecSocietyExcel> queryExcelList(@Param("query") Map<String, Object> params);
+    List<RecSocietyExcel> selectExportData(@Param("query") Map<String, Object> params);
 }

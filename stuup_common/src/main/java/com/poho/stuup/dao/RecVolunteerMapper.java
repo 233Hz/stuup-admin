@@ -26,5 +26,5 @@ public interface RecVolunteerMapper extends BaseMapper<RecVolunteer> {
 
     IPage<RecVolunteerVO> getVolunteerPage(Page<RecVolunteerVO> page, @Param("query") RecVolunteerDTO query);
 
-    List<RecVolunteerExcel> queryExcelList(@Param("query") Map<String, Object> params);
+    List<RecVolunteerExcel> selectExportData(@Param("query") Map<String, Object> params);
 }

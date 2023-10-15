@@ -2,19 +2,19 @@ package com.poho.stuup.api.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaCheckSafe;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.vo.GrowthItemSelectVO;
 import com.poho.stuup.model.vo.GrowthRuleDescVO;
+import com.poho.stuup.model.vo.UserApplyGrowthItemVO;
 import com.poho.stuup.service.GrowthItemService;
-import com.poho.stuup.util.ProjectUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,9 +29,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/growthItem")
 public class GrowthItemController {
-
-    @Resource
-    private HttpServletRequest request;
 
     @Resource
     private GrowthItemService growthItemService;
@@ -50,7 +47,7 @@ public class GrowthItemController {
     @SaCheckPermission("growth_item_add_edit")
     @PostMapping("/saveOrUpdate")
     public ResponseModel<Long> saveOrUpdateGrowthItem(@Valid @RequestBody GrowthItem data) {
-        String userId = ProjectUtil.obtainLoginUserId(request);
+        String userId = StpUtil.getLoginId().toString();
         data.setCreateUser(Long.parseLong(userId));
         return growthItemService.saveOrUpdateGrowthItem(data);
     }
@@ -63,15 +60,11 @@ public class GrowthItemController {
     }
 
     @GetMapping("/self/apply")
-    public ResponseModel<List<GrowthItem>> getSelfApplyItem(@RequestParam("type") String type) {
-        String userId = ProjectUtil.obtainLoginUserId(request);
-        return growthItemService.getSelfApplyItem(type, Long.valueOf(userId));
-    }
-
-
-    @GetMapping("/studentGrowthItems")
-    public ResponseModel<List<GrowthItemSelectVO>> getStudentGrowthItems() {
-        return ResponseModel.ok(growthItemService.getStudentGrowthItems());
+    public ResponseModel<List<UserApplyGrowthItemVO>> getSelfApplyItem(@RequestParam("type") String type) {
+        GrowGathererEnum gathererEnum = GrowGathererEnum.getEnumByCode(type);
+        if (gathererEnum == null) return ResponseModel.failed("类型不存在");
+        String userId = StpUtil.getLoginId().toString();
+        return ResponseModel.ok(growthItemService.getApplyGrowthItem(gathererEnum, Long.valueOf(userId)));
     }
 
     @GetMapping("/rule/desc")

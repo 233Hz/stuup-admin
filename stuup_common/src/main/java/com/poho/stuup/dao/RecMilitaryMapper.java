@@ -26,5 +26,5 @@ public interface RecMilitaryMapper extends BaseMapper<RecMilitary> {
 
     IPage<RecMilitaryVO> getRecMilitaryPage(Page<RecMilitaryVO> page, @Param("query") RecMilitaryDTO query);
 
-    List<RecMilitaryExcel> queryExcelList(@Param("query") Map<String, Object> params);
+    List<RecMilitaryExcel> selectExportData(@Param("query") Map<String, Object> params);
 }

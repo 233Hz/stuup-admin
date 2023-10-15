@@ -20,32 +20,33 @@
         <result column="first_level_id" property="firstLevelId"/>
         <result column="second_level_id" property="secondLevelId"/>
         <result column="three_level_id" property="threeLevelId"/>
+        <result column="handle" property="handle"/>
     </resultMap>
 
-    <resultMap id="GrowthItemSelectVOMap" type="com.poho.stuup.model.vo.GrowthItemSelectVO">
+    <resultMap id="ApplyGrowthItemVOMap" type="com.poho.stuup.model.vo.UserApplyGrowthItemVO">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
-        <result column="first_level_id" property="firstLevelId"/>
-        <result column="second_level_id" property="secondLevelId"/>
-        <result column="third_level_id" property="thirdLevelId"/>
-        <result column="first_level_name" property="firstLevelName"/>
-        <result column="second_level_name" property="secondLevelName"/>
-        <result column="third_level_name" property="thirdLevelName"/>
+        <result column="l1_id" property="l1Id"/>
+        <result column="l2_id" property="l2Id"/>
+        <result column="l3_id" property="l3Id"/>
+        <result column="l1_name" property="l1Name"/>
+        <result column="l2_name" property="l2Name"/>
+        <result column="l3_name" property="l3Name"/>
     </resultMap>
 
-    <select id="getStudentGrowthItems" resultMap="GrowthItemSelectVOMap">
+    <select id="getStudentGrowthItems" resultMap="ApplyGrowthItemVOMap">
         select gi.id,
                gi.name,
-               gi.first_level_id,
-               gi.second_level_id,
-               gi.three_level_id as third_level_id,
-               first.name        as first_level_name,
-               second.name       as second_level_name,
-               third.name        as third_level_name
+               gi.first_level_id  as l1_id,
+               gi.second_level_id as l2_id,
+               gi.three_level_id  as l3_id,
+               l1.name            as l1_name,
+               l2.name            as l2_name,
+               l3.name            as l3_name
         from t_growth_item gi
-                 left join t_growth first on first.id = gi.first_level_id
-                 left join t_growth second on second.id = gi.second_level_id
-                 left join t_growth third on third.id = gi.three_level_id
+                 left join t_growth l1 on first.id = gi.first_level_id
+                 left join t_growth l2 on second.id = gi.second_level_id
+                 left join t_growth l3 on third.id = gi.three_level_id
         where gi.gatherer = 3
     </select>
 

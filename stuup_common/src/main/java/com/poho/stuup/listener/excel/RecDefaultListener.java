@@ -1,16 +1,15 @@
-package com.poho.stuup.handle.excel;
+package com.poho.stuup.listener.excel;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.fastjson.JSON;
-import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.Student;
+import com.poho.stuup.dao.StudentMapper;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.excel.ExcelError;
 import com.poho.stuup.model.excel.RecDefaultExcel;
-import com.poho.stuup.service.AudGrowService;
-import com.poho.stuup.service.IStudentService;
+import com.poho.stuup.service.RecDefaultService;
+import com.poho.stuup.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
 
@@ -19,28 +18,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 默认导入
+ */
 @Slf4j
-public class AudApplyListener implements ReadListener<RecDefaultExcel> {
+public class RecDefaultListener implements ReadListener<RecDefaultExcel> {
 
-    private final Long yearId;
-    private final Long semesterId;
-    private final IStudentService studentService;
-    private final AudGrowService audGrowService;
-    private final GrowthItem growthItem;
-    private final Long userId;
+    private final StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
+
+    private final RecDefaultService recDefaultService = SpringContextHolder.getBean(RecDefaultService.class);
+
+    private final RecImportParams params;
     private final StopWatch stopWatch;
-    private final Map<String, Long> studentMap = new HashMap<>();
-    private final List<Long> studentIds = new ArrayList<>();
-    public int total;
-    public List<ExcelError> errors = new ArrayList<>();
 
-    public AudApplyListener(Long yearId, Long semesterId, IStudentService studentService, AudGrowService audGrowService, GrowthItem growthItem, Long userId, StopWatch stopWatch) {
-        this.yearId = yearId;
-        this.semesterId = semesterId;
-        this.studentService = studentService;
-        this.audGrowService = audGrowService;
-        this.growthItem = growthItem;
-        this.userId = userId;
+    //===============================================================
+
+    public int total, success, fail;
+    public List<ExcelError> errors = new ArrayList<>();
+    private final Map<String, Long> studentMap = new HashMap<>();
+    private final List<RecDefaultExcel> recDefaultExcels = new ArrayList<>();
+
+    public RecDefaultListener(RecImportParams params, StopWatch stopWatch) {
+        this.params = params;
         this.stopWatch = stopWatch;
     }
 
@@ -58,17 +57,20 @@ public class AudApplyListener implements ReadListener<RecDefaultExcel> {
         }
         Long studentId = studentMap.get(studentNo);
         if (studentId == null) {
-            studentId = studentService.findIdByStudentNo(studentNo);
+            studentId = studentMapper.getIdByStudentNo(studentNo);
         }
         if (studentId == null) {
             errorMessages.add("该学生不存在");
         } else {
             studentMap.put(studentNo, studentId);
+            data.setStudentId(studentId);
         }
-        if (CollUtil.isEmpty(errorMessages)) {
+        if (errorMessages.isEmpty()) {
             log.info("==========解析到一条数据:{}", JSON.toJSONString(data));
-            studentIds.add(studentId);
+            success++;
+            recDefaultExcels.add(data);
         } else {
+            fail++;
             this.errors.add(ExcelError.builder().lineNum(rowIndex).errors(JSON.toJSONString(errorMessages)).build());
         }
     }
@@ -76,12 +78,8 @@ public class AudApplyListener implements ReadListener<RecDefaultExcel> {
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         stopWatch.stop();
-        stopWatch.start("获取所有学生");
-        List<Student> allStudent = studentService.getAllStudent();
-        stopWatch.stop();
-        if (total == 0) return;
-        stopWatch.start("插入审核数据");
-        audGrowService.batchSubmitAudGrows(allStudent, studentIds, yearId, semesterId, growthItem, userId);
-        stopWatch.stop();
+        stopWatch.start("保存数据");
+        recDefaultService.saveRecDefaultExcel(recDefaultExcels, params);
+        log.info("==========导入已完成！==========");
     }
 }

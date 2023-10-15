@@ -3,7 +3,7 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.RecCaucus;
 import com.poho.stuup.model.dto.RecCaucusDTO;
 import com.poho.stuup.model.excel.RecCaucusExcel;
@@ -31,7 +31,7 @@ public interface RecCaucusService extends IService<RecCaucus> {
      * @author BUNGA
      * @date: 2023/6/1 14:08
      */
-    void saveRecCaucusExcel(List<RecCaucusExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
+    void saveRecCaucusExcel(List<RecCaucusExcel> excels, RecImportParams params);
 
     /**
      * @description: 分页查询

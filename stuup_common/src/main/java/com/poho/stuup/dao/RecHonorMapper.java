@@ -26,5 +26,5 @@ public interface RecHonorMapper extends BaseMapper<RecHonor> {
 
     IPage<RecHonorVO> getRecHonorPage(Page<RecHonorVO> page, @Param("query") RecHonorDTO query);
 
-    List<RecHonorExcel> queryExcelList(@Param("query") Map<String, Object> params);
+    List<RecHonorExcel> selectExportData(@Param("query") Map<String, Object> params);
 }

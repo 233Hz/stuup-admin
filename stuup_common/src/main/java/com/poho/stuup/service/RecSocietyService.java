@@ -3,7 +3,7 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.RecSociety;
 import com.poho.stuup.model.dto.RecSocietyDTO;
 import com.poho.stuup.model.dto.SocietySaveDTO;
@@ -32,7 +32,7 @@ public interface RecSocietyService extends IService<RecSociety> {
      * @author BUNGA
      * @date: 2023/6/1 13:35
      */
-    void saveRecSocietyExcel(List<RecSocietyExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
+    void saveRecSocietyExcel(List<RecSocietyExcel> excels, RecImportParams params);
 
     /**
      * @description: 分页查询

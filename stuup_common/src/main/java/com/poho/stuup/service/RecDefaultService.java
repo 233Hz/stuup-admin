@@ -1,7 +1,7 @@
 package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.excel.RecDefaultExcel;
 
@@ -26,5 +26,5 @@ public interface RecDefaultService extends IService<RecDefault> {
      * @author BUNGA
      * @date: 2023/5/29 10:42
      */
-    void saveRecDefaultExcel(List<RecDefaultExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
+    void saveRecDefaultExcel(List<RecDefaultExcel> excels, RecImportParams recImportParams);
 }

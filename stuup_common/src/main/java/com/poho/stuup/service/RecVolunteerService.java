@@ -3,7 +3,7 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.RecVolunteer;
 import com.poho.stuup.model.dto.RecVolunteerDTO;
 import com.poho.stuup.model.excel.RecVolunteerExcel;
@@ -31,7 +31,7 @@ public interface RecVolunteerService extends IService<RecVolunteer> {
      * @author BUNGA
      * @date: 2023/6/1 14:37
      */
-    void saveRecVolunteerExcel(List<RecVolunteerExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
+    void saveRecVolunteerExcel(List<RecVolunteerExcel> excels, RecImportParams params);
 
     /**
      * @description: 分页查询

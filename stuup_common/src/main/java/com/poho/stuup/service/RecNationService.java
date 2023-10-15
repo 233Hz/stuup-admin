@@ -3,7 +3,7 @@ package com.poho.stuup.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.RecNation;
 import com.poho.stuup.model.dto.RecNationDTO;
 import com.poho.stuup.model.excel.RecNationExcel;
@@ -31,7 +31,7 @@ public interface RecNationService extends IService<RecNation> {
      * @author BUNGA
      * @date: 2023/6/1 14:32
      */
-    void saveRecNationExcel(List<RecNationExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode);
+    void saveRecNationExcel(List<RecNationExcel> excels, RecImportParams params);
 
     /**
      * @description: 分页查询

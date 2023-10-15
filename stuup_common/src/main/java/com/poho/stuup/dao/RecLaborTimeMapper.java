@@ -26,5 +26,5 @@ public interface RecLaborTimeMapper extends BaseMapper<RecLaborTime> {
 
     IPage<RecLaborTimeVO> getRecLaborTimePage(Page<RecLaborTimeVO> page, @Param("query") RecLaborTimeDTO query);
 
-    List<RecLaborTimeExcel> queryExcelList(@Param("query") Map<String, Object> params);
+    List<RecLaborTimeExcel> selectExportData(@Param("query") Map<String, Object> params);
 }

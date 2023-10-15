@@ -334,4 +334,9 @@
           and ts.is_valid = 1
     </select>
 
+    <select id="selectStudentIdByUserId" resultType="integer">
+        select *
+        from t_student s
+                 inner join t_user u on s.student_no = u.login_name and u.oid = #{userId}
+    </select>
 </mapper>

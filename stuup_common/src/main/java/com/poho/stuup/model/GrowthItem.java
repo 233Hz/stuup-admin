@@ -117,5 +117,10 @@ public class GrowthItem implements Serializable {
      */
     private Long threeLevelId;
 
+    /**
+     * 处理类标识
+     */
+    private String handle;
+
 
 }

@@ -90,7 +90,7 @@
         <result column="hour" property="hour"/>
     </resultMap>
 
-    <select id="queryExcelList" resultMap="RecNationExcelMap">
+    <select id="selectExportData" resultMap="RecNationExcelMap">
         select
         g.grade_name,
         c.name as class_name,

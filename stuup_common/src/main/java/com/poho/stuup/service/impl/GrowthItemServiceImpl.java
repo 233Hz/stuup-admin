@@ -1,25 +1,19 @@
 package com.poho.stuup.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.poho.common.custom.ResponseModel;
-import com.poho.stuup.constant.FloweringStageEnum;
 import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.constant.PeriodEnum;
 import com.poho.stuup.dao.GrowUserMapper;
 import com.poho.stuup.dao.GrowthItemMapper;
 import com.poho.stuup.dao.GrowthMapper;
-import com.poho.stuup.model.Config;
 import com.poho.stuup.model.Growth;
 import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.vo.FlowerVO;
-import com.poho.stuup.model.vo.GrowthItemSelectVO;
 import com.poho.stuup.model.vo.GrowthRuleDescVO;
+import com.poho.stuup.model.vo.UserApplyGrowthItemVO;
 import com.poho.stuup.service.GrowthItemService;
-import com.poho.stuup.service.IConfigService;
 import com.poho.stuup.util.Utils;
 import org.springframework.stereotype.Service;
 
@@ -42,53 +36,52 @@ import java.util.stream.Collectors;
 public class GrowthItemServiceImpl extends ServiceImpl<GrowthItemMapper, GrowthItem> implements GrowthItemService {
 
     @Resource
-    private IConfigService configService;
-
-    @Resource
     private GrowUserMapper growUserMapper;
 
     @Resource
     private GrowthMapper growthMapper;
 
     @Override
-    public ResponseModel<List<GrowthItem>> getSelfApplyItem(String type, Long userId) {
-        Integer gatherer = null;
-        if (type.equals("teacher")) gatherer = GrowGathererEnum.TEACHER.getValue();
-        else if (type.equals("studentUnion")) gatherer = GrowGathererEnum.STUDENT_UNION.getValue();
-        else return ResponseModel.failed("类型不存在");
-        if (Utils.isSuperAdmin(userId))
-            return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery()
-                    .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)
-                    .eq(GrowthItem::getGatherer, gatherer)));
-        List<Long> growIds = growUserMapper.findUserGrow(userId);
-        if (CollUtil.isEmpty(growIds)) return ResponseModel.failed("您没有可导入的项目");
-        return ResponseModel.ok(this.list(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode)
-                .eq(GrowthItem::getGatherer, gatherer)
-                .in(GrowthItem::getId, growIds)));
-    }
-
-    //    @Cacheable(value = "flower", key = "#root.methodName")
-    @Override
-    public FlowerVO getFlowerConfig() {
-        FlowerVO flowerVO = new FlowerVO();
-        for (FloweringStageEnum floweringStageEnum : FloweringStageEnum.values()) {
-            Config config = configService.selectByPrimaryKey(floweringStageEnum.getConfigKey());
-            try {
-                int configValue = Integer.parseInt(config.getConfigValue());
-                ReflectUtil.setFieldValue(flowerVO, floweringStageEnum.getFieldName(), configValue);
-            } catch (Exception e) {
-                throw new RuntimeException(StrUtil.format("系统配置：{}设置错误，请输入数字", floweringStageEnum.getDescription()));
+    public List<UserApplyGrowthItemVO> getApplyGrowthItem(GrowGathererEnum type, Long userId) {
+        List<Growth> growths = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
+                .select(Growth::getId, Growth::getName));
+        Map<Long, String> growthMap = growths.stream().collect(Collectors.toMap(Growth::getId, Growth::getName));
+        if (type == GrowGathererEnum.STUDENT) {
+            return baseMapper.getStudentGrowthItems();
+        } else if (type == GrowGathererEnum.TEACHER || type == GrowGathererEnum.STUDENT_UNION) {
+            List<UserApplyGrowthItemVO> result = new ArrayList<>();
+            List<GrowthItem> growthItems;
+            if (Utils.isSuperAdmin(userId)) {
+                growthItems = this.list(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode, GrowthItem::getFirstLevelId, GrowthItem::getSecondLevelId, GrowthItem::getThreeLevelId)
+                        .eq(GrowthItem::getGatherer, type.getValue()));
+            } else {
+                List<Long> growIds = growUserMapper.findUserGrow(userId);
+                if (growIds == null || growIds.isEmpty()) return result;
+                growthItems = this.list(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getName, GrowthItem::getCode, GrowthItem::getFirstLevelId, GrowthItem::getSecondLevelId, GrowthItem::getThreeLevelId)
+                        .eq(GrowthItem::getGatherer, type.getValue())
+                        .in(GrowthItem::getId, growIds));
             }
+            if (growthItems == null || growthItems.isEmpty()) return null;
+            for (GrowthItem growthItem : growthItems) {
+                UserApplyGrowthItemVO userApplyGrowthItemVO = new UserApplyGrowthItemVO();
+                userApplyGrowthItemVO.setId(growthItem.getId());
+                userApplyGrowthItemVO.setName(growthItem.getName());
+                userApplyGrowthItemVO.setCode(growthItem.getCode());
+                userApplyGrowthItemVO.setL1Id(growthItem.getFirstLevelId());
+                userApplyGrowthItemVO.setL2Id(growthItem.getSecondLevelId());
+                userApplyGrowthItemVO.setL3Id(growthItem.getThreeLevelId());
+                userApplyGrowthItemVO.setL1Name(growthMap.get(growthItem.getFirstLevelId()));
+                userApplyGrowthItemVO.setL2Name(growthMap.get(growthItem.getSecondLevelId()));
+                userApplyGrowthItemVO.setL3Name(growthMap.get(growthItem.getThreeLevelId()));
+                result.add(userApplyGrowthItemVO);
+            }
+            return result;
+        } else {
+            throw new RuntimeException("A type that does not exist");
         }
-        return flowerVO;
     }
-
-    @Override
-    public List<GrowthItemSelectVO> getStudentGrowthItems() {
-        return baseMapper.getStudentGrowthItems();
-    }
-
 
     @Override
     public ResponseModel<Long> saveOrUpdateGrowthItem(GrowthItem data) {

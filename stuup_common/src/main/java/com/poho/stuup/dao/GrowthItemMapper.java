@@ -2,7 +2,7 @@ package com.poho.stuup.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.vo.GrowthItemSelectVO;
+import com.poho.stuup.model.vo.UserApplyGrowthItemVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @Mapper
 public interface GrowthItemMapper extends BaseMapper<GrowthItem> {
 
-    List<GrowthItemSelectVO> getStudentGrowthItems();
+    List<UserApplyGrowthItemVO> getStudentGrowthItems();
 
     Long fetchMaxId();
 }

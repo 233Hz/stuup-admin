@@ -1,4 +1,4 @@
-package com.poho.stuup.handle.excel;
+package com.poho.stuup.listener.excel;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
@@ -7,12 +7,14 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.fastjson.JSON;
 import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.dao.StudentMapper;
-import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.excel.ExcelError;
 import com.poho.stuup.model.excel.RecNationExcel;
 import com.poho.stuup.service.RecNationService;
+import com.poho.stuup.util.SpringContextHolder;
 import com.poho.stuup.util.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,13 +29,10 @@ import java.util.Map;
 @Slf4j
 public class RecNationListener implements ReadListener<RecNationExcel> {
 
-    private final StudentMapper studentMapper;
-    private final RecNationService recNationService;
-    private final GrowthItem growthItem;
-    private final Long yearId;
-    private final Long semesterId;
-    private final Long userId;
-    private final long batchCode;
+    private final StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
+    private final RecNationService recNationService = SpringContextHolder.getBean(RecNationService.class);
+    private final RecImportParams params;
+    private final StopWatch stopWatch;
 
     //================================================================
 
@@ -42,14 +41,9 @@ public class RecNationListener implements ReadListener<RecNationExcel> {
     private final Map<String, Long> studentMap = new HashMap<>();
     private final List<RecNationExcel> recNationExcels = new ArrayList<>();
 
-    public RecNationListener(StudentMapper studentMapper, RecNationService recNationService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
-        this.studentMapper = studentMapper;
-        this.recNationService = recNationService;
-        this.growthItem = growthItem;
-        this.yearId = yearId;
-        this.semesterId = semesterId;
-        this.userId = userId;
-        this.batchCode = batchCode;
+    public RecNationListener(RecImportParams params, StopWatch stopWatch) {
+        this.params = params;
+        this.stopWatch = stopWatch;
     }
 
     @Override
@@ -110,7 +104,9 @@ public class RecNationListener implements ReadListener<RecNationExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recNationService.saveRecNationExcel(recNationExcels, growthItem, yearId, semesterId, userId, batchCode);
+        stopWatch.stop();
+        stopWatch.start("保存数据");
+        recNationService.saveRecNationExcel(recNationExcels, params);
         log.info("==========导入已完成！==========");
     }
 }

@@ -8,12 +8,17 @@ import lombok.Data;
  * @date 2023/6/15 15:06
  */
 @Data
-public class GrowthItemSelectVO {
+public class UserApplyGrowthItemVO {
 
     /**
      * id
      */
     private Long id;
+
+    /**
+     * 编号
+     */
+    private String code;
 
     /**
      * 项目名称
@@ -23,30 +28,30 @@ public class GrowthItemSelectVO {
     /**
      * 一级项目id
      */
-    private Long firstLevelId;
+    private Long l1Id;
 
     /**
      * 二级项目id
      */
-    private Long secondLevelId;
+    private Long l2Id;
 
     /**
      * 三级项目id
      */
-    private Long thirdLevelId;
+    private Long l3Id;
 
     /**
      * 一级项目
      */
-    private String firstLevelName;
+    private String l1Name;
 
     /**
      * 二级项目
      */
-    private String secondLevelName;
+    private String l2Name;
 
     /**
      * 三级项目
      */
-    private String thirdLevelName;
+    private String l3Name;
 }

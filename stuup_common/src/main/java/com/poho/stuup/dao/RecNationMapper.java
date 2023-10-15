@@ -26,5 +26,5 @@ public interface RecNationMapper extends BaseMapper<RecNation> {
 
     IPage<RecNationVO> getRecNationPage(Page<RecNationVO> page, @Param("query") RecNationDTO query);
 
-    List<RecNationExcel> queryExcelList(@Param("query") Map<String, Object> params);
+    List<RecNationExcel> selectExportData(@Param("query") Map<String, Object> params);
 }

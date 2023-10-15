@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poho.stuup.dao.RecProjectMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.poho.stuup.model.RecProject">
+        <id column="id" property="id"/>
+        <result column="year_id" property="yearId"/>
+        <result column="semester_id" property="semesterId"/>
+        <result column="grow_id" property="growId"/>
+        <result column="student_id" property="studentId"/>
+        <result column="name" property="name"/>
+        <result column="time" property="time"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="batch_code" property="batchCode"/>
+    </resultMap>
+
+    <resultMap id="RecProjectExcelMap" type="com.poho.stuup.model.excel.RecProjectExcel">
+        <result column="student_no" property="studentNo"/>
+        <result column="student_name" property="studentName"/>
+        <result column="name" property="name"/>
+        <result column="time" property="time"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <select id="selectExportData" resultMap="RecProjectExcelMap">
+        select
+        g.grade_name,
+        c.name as class_name,
+        s.name as student_name,
+        s.student_no,
+        s.id_card,
+        trp.name,
+        trp.time
+        from t_rec_project trp
+        left join t_student s on s.id = trp.student_id
+        left join t_grade g on g.oid = s.grade_id
+        left join t_class c on c.id = s.class_id
+        <where>
+            trp.year_id = #{query.yearId}
+            <if test="query.gradeId != null and query.gradeId != ''">
+                and g.oid = #{query.gradeId}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                and c.name like concat('%',#{query.className},'%')
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and s.name like concat('%',#{query.studentName},'%')
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and s.student_no like concat('%',#{query.studentNo},'%')
+            </if>
+            <if test="query.name != null and query.name != ''">
+                and trp.name like concat('%',#{query.name},'%')
+            </if>
+        </where>
+        order by trp.time desc
+    </select>
+
+</mapper>

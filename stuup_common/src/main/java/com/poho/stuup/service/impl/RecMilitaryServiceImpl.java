@@ -12,6 +12,7 @@ import com.poho.stuup.dao.GrowthItemMapper;
 import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecMilitaryMapper;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecDefault;
 import com.poho.stuup.model.RecLog;
@@ -53,7 +54,12 @@ public class RecMilitaryServiceImpl extends ServiceImpl<RecMilitaryMapper, RecMi
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveRecMilitaryExcel(List<RecMilitaryExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+    public void saveRecMilitaryExcel(List<RecMilitaryExcel> excels, RecImportParams params) {
+        long batchCode = System.currentTimeMillis();
+        Long userId = params.getUserId();
+        Long yearId = params.getYearId();
+        Long semesterId = params.getSemesterId();
+        GrowthItem growthItem = params.getGrowthItem();
         GrowthItem growthItem1 = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
                 .eq(GrowthItem::getCode, RecEnum.REC_MILITARY_EXCELLENT.getCode()));
         GrowthItem growthItem2 = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()

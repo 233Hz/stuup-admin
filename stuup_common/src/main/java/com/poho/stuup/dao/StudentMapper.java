@@ -89,4 +89,6 @@ public interface StudentMapper {
     Integer getClassIdByStudentNo(@Param("studentNo") String studentNo);
 
     List<StudentIdAndUserIdDTO> selectAllStudentIdUserId();
+
+    Integer selectStudentIdByUserId(@Param("userId") Long userId);
 }

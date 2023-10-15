@@ -99,7 +99,7 @@
         <result column="role_value" property="roleValue"/>
     </resultMap>
 
-    <select id="queryExcelList" resultMap="RecSocietyExcelMap">
+    <select id="selectExportData" resultMap="RecSocietyExcelMap">
         select
         g.grade_name,
         c.name as class_name,

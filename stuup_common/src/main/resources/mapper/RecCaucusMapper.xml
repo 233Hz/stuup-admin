@@ -95,7 +95,7 @@
         <result column="role_value" property="roleValue"/>
     </resultMap>
 
-    <select id="queryExcelList" resultMap="RecCaucusExcelMap">
+    <select id="selectExportData" resultMap="RecCaucusExcelMap">
         select
         g.grade_name,
         c.name as class_name,

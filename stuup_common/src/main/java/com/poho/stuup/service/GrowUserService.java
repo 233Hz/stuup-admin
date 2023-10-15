@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface GrowUserService extends IService<GrowUser> {
 
-    boolean isGrowUser(Long userId, Long growthItemId);
+    boolean isGrowthItemUser(Long userId, Long growthItemId);
 
     List<GrowthItemUserVO> getGrowItemUser(Long growthItemId);
 }

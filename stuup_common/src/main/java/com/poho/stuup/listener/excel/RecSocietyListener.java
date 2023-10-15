@@ -1,5 +1,4 @@
-package com.poho.stuup.handle.excel;
-
+package com.poho.stuup.listener.excel;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
@@ -9,12 +8,14 @@ import com.alibaba.fastjson.JSON;
 import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.constant.RecRoleEnum;
 import com.poho.stuup.dao.StudentMapper;
-import com.poho.stuup.model.GrowthItem;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.excel.ExcelError;
-import com.poho.stuup.model.excel.RecCaucusExcel;
-import com.poho.stuup.service.RecCaucusService;
+import com.poho.stuup.model.excel.RecSocietyExcel;
+import com.poho.stuup.service.RecSocietyService;
+import com.poho.stuup.util.SpringContextHolder;
 import com.poho.stuup.util.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,39 +24,31 @@ import java.util.Map;
 
 /**
  * @author BUNGA
- * @description: 参加党团学习项目记录填报导入
- * @date 2023/5/25 13:47
+ * @description: 参加社团记录填报导入
+ * @date 2023/5/25 14:58
  */
 @Slf4j
-public class RecCaucusListener implements ReadListener<RecCaucusExcel> {
+public class RecSocietyListener implements ReadListener<RecSocietyExcel> {
 
-    private final StudentMapper studentMapper;
-    private final RecCaucusService recCaucusService;
-    private final GrowthItem growthItem;
-    private final Long yearId;
-    private final Long semesterId;
-    private final Long userId;
-    private final long batchCode;
+    private final StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
+    private final RecSocietyService recSocietyService = SpringContextHolder.getBean(RecSocietyService.class);
+    private final RecImportParams params;
+    private final StopWatch stopWatch;
 
-    //===============================================================
+    //================================================================
 
     public int total, success, fail;
     public List<ExcelError> errors = new ArrayList<>();
     private final Map<String, Long> studentMap = new HashMap<>();
-    private final List<RecCaucusExcel> recCaucusExcels = new ArrayList<>();
+    private final List<RecSocietyExcel> recSocietyExcels = new ArrayList<>();
 
-    public RecCaucusListener(StudentMapper studentMapper, RecCaucusService recCaucusService, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, long batchCode) {
-        this.studentMapper = studentMapper;
-        this.recCaucusService = recCaucusService;
-        this.growthItem = growthItem;
-        this.yearId = yearId;
-        this.semesterId = semesterId;
-        this.userId = userId;
-        this.batchCode = batchCode;
+    public RecSocietyListener(RecImportParams params, StopWatch stopWatch) {
+        this.params = params;
+        this.stopWatch = stopWatch;
     }
 
     @Override
-    public void invoke(RecCaucusExcel data, AnalysisContext context) {
+    public void invoke(RecSocietyExcel data, AnalysisContext context) {
         total++;
         Integer rowIndex = context.readRowHolder().getRowIndex();
         List<String> errorMessages = new ArrayList<>();
@@ -77,15 +70,15 @@ public class RecCaucusListener implements ReadListener<RecCaucusExcel> {
             data.setStudentId(studentId);
         }
         if (StrUtil.isBlank(data.getName())) {
-            errorMessages.add("项目名称不能为空");
+            errorMessages.add("社团名称不能为空");
         }
         if (StrUtil.isBlank(data.getLevel())) {
-            errorMessages.add("项目级别不能为空");
+            errorMessages.add("获奖级别不能为空");
         }
         if (data.getLevel().equals(RecLevelEnum.CITY.getLabel()) ||
                 data.getLevel().equals(RecLevelEnum.DISTRICT.getLabel()) ||
                 data.getLevel().equals(RecLevelEnum.SCHOOL.getLabel())) {
-            errorMessages.add("项目级别不存在");
+            errorMessages.add("获奖级别不存在");
         }
         if (StrUtil.isBlank(data.getStartTime())) {
             errorMessages.add("开始时间不能为空");
@@ -106,10 +99,11 @@ public class RecCaucusListener implements ReadListener<RecCaucusExcel> {
             errorMessages.add("角色不存在");
         }
 
+
         if (CollUtil.isEmpty(errorMessages)) {
             log.info("==========解析到一条数据:{}", JSON.toJSONString(data));
             success++;
-            recCaucusExcels.add(data);
+            recSocietyExcels.add(data);
         } else {
             fail++;
             this.errors.add(ExcelError.builder().lineNum(rowIndex).errors(JSON.toJSONString(errorMessages)).build());
@@ -118,7 +112,9 @@ public class RecCaucusListener implements ReadListener<RecCaucusExcel> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        recCaucusService.saveRecCaucusExcel(recCaucusExcels, growthItem, yearId, semesterId, userId, batchCode);
+        stopWatch.stop();
+        stopWatch.start("保存数据");
+        recSocietyService.saveRecSocietyExcel(recSocietyExcels, params);
         log.info("==========导入已完成！==========");
     }
 }

@@ -22,7 +22,7 @@ public class MySqlGenerator {
         String PROJECT_DIR = System.getProperty("user.dir") + "\\stuup_common";
         String CONTROLLER_DIR = System.getProperty("user.dir") + "\\stuup_api\\src\\main\\java\\com\\poho\\stuup\\api\\controller";
         // 数据库设置
-        String URL = "jdbc:mysql://localhost:3306/stuup_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&autoReconnect=true&failOverReadOnly=false";
+        String URL = "jdbc:mysql://192.168.0.100:3306/stuup_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&autoReconnect=true&failOverReadOnly=false";
         String USERNAME = "root";
         String PASSWORD = "admin";
         // 路径配置

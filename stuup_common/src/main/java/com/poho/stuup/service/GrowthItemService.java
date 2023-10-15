@@ -2,10 +2,10 @@ package com.poho.stuup.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poho.common.custom.ResponseModel;
+import com.poho.stuup.constant.GrowGathererEnum;
 import com.poho.stuup.model.GrowthItem;
-import com.poho.stuup.model.vo.FlowerVO;
-import com.poho.stuup.model.vo.GrowthItemSelectVO;
 import com.poho.stuup.model.vo.GrowthRuleDescVO;
+import com.poho.stuup.model.vo.UserApplyGrowthItemVO;
 
 import java.util.List;
 
@@ -19,26 +19,10 @@ import java.util.List;
  */
 public interface GrowthItemService extends IService<GrowthItem> {
 
-
-    ResponseModel<List<GrowthItem>> getSelfApplyItem(String type, Long userId);
-
     /**
-     * @description: 获取成长模型配置
-     * @param:
-     * @return: com.poho.stuup.model.vo.FlowerVO
-     * @author BUNGA
-     * @date: 2023/6/9 11:23
+     * 获取用户的申请项目
      */
-    FlowerVO getFlowerConfig();
-
-    /**
-     * @description: 获取学生可申请的成长项
-     * @param:
-     * @return: java.util.List<com.poho.stuup.model.vo.GrowthItemSelectVO>
-     * @author BUNGA
-     * @date: 2023/6/15 15:09
-     */
-    List<GrowthItemSelectVO> getStudentGrowthItems();
+    List<UserApplyGrowthItemVO> getApplyGrowthItem(GrowGathererEnum type, Long userId);
 
 
     ResponseModel<Long> saveOrUpdateGrowthItem(GrowthItem data);

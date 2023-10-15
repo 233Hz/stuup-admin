@@ -76,4 +76,9 @@ public class StudentServiceImpl implements IStudentService {
         return studentMapper.getIdByStudentNo(studentNo);
     }
 
+    @Override
+    public Integer getStudentIdByUserId(Long userId) {
+        return studentMapper.selectStudentIdByUserId(userId);
+    }
+
 }

@@ -89,7 +89,7 @@
         <result column="time" property="time"/>
     </resultMap>
 
-    <select id="queryExcelList" resultMap="RecHonorExcelMap">
+    <select id="selectExportData" resultMap="RecHonorExcelMap">
         select
         g.grade_name,
         c.name as class_name,

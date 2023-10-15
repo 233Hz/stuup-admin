@@ -26,5 +26,5 @@ public interface RecCaucusMapper extends BaseMapper<RecCaucus> {
 
     IPage<RecCaucusVO> getRecCaucusPage(Page<RecCaucusVO> page, @Param("query") RecCaucusDTO query);
 
-    List<RecCaucusExcel> queryExcelList(@Param("query") Map<String, Object> params);
+    List<RecCaucusExcel> selectExportData(@Param("query") Map<String, Object> params);
 }

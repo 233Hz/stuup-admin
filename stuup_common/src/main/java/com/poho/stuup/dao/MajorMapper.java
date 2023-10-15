@@ -2,6 +2,7 @@ package com.poho.stuup.dao;
 
 
 import com.poho.stuup.model.Major;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -62,4 +63,6 @@ public interface MajorMapper {
     int countMajorTotal();
 
     List<Major> selectAllIdName();
+
+    String selectMajorNameById(@Param("majorId") Integer majorId);
 }

@@ -165,4 +165,10 @@
         where state = 1
     </select>
 
+    <select id="selectMajorNameById" resultType="string">
+        select major_name
+        from t_major
+        where oid = #{majorId}
+    </select>
+
 </mapper>

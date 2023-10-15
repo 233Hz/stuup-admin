@@ -103,7 +103,7 @@
         <result column="reason" property="reason"/>
     </resultMap>
 
-    <select id="queryExcelList" resultMap="RecVolunteerExcelMap">
+    <select id="selectExportData" resultMap="RecVolunteerExcelMap">
         select
         g.grade_name,
         c.name as class_name,

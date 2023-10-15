@@ -8,6 +8,7 @@ import com.poho.stuup.constant.RecLevelEnum;
 import com.poho.stuup.dao.RecCaucusMapper;
 import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLogMapper;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.GrowthItem;
 import com.poho.stuup.model.RecCaucus;
 import com.poho.stuup.model.RecDefault;
@@ -46,7 +47,12 @@ public class RecCaucusServiceImpl extends ServiceImpl<RecCaucusMapper, RecCaucus
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveRecCaucusExcel(List<RecCaucusExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+    public void saveRecCaucusExcel(List<RecCaucusExcel> excels, RecImportParams params) {
+        long batchCode = System.currentTimeMillis();
+        Long userId = params.getUserId();
+        Long yearId = params.getYearId();
+        Long semesterId = params.getSemesterId();
+        GrowthItem growthItem = params.getGrowthItem();
         List<Long> studentIds = new ArrayList<>();
         for (RecCaucusExcel excel : excels) {
             RecDefault recDefault = new RecDefault();

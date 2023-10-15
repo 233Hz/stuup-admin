@@ -85,7 +85,7 @@
     </resultMap>
 
 
-    <select id="queryExcelList" resultMap="RecMilitaryExcelMap">
+    <select id="selectExportData" resultMap="RecMilitaryExcelMap">
         select
         g.grade_name,
         c.name as class_name,

@@ -11,6 +11,7 @@ import com.poho.stuup.dao.RecDefaultMapper;
 import com.poho.stuup.dao.RecLogMapper;
 import com.poho.stuup.dao.RecSocietyMapper;
 import com.poho.stuup.dao.SyncCommunityMemberMapper;
+import com.poho.stuup.growth.RecImportParams;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.dto.RecSocietyDTO;
 import com.poho.stuup.model.dto.SocietySaveDTO;
@@ -50,7 +51,12 @@ public class RecSocietyServiceImpl extends ServiceImpl<RecSocietyMapper, RecSoci
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveRecSocietyExcel(List<RecSocietyExcel> excels, GrowthItem growthItem, Long yearId, Long semesterId, Long userId, Long batchCode) {
+    public void saveRecSocietyExcel(List<RecSocietyExcel> excels, RecImportParams params) {
+        long batchCode = System.currentTimeMillis();
+        Long userId = params.getUserId();
+        Long yearId = params.getYearId();
+        Long semesterId = params.getSemesterId();
+        GrowthItem growthItem = params.getGrowthItem();
         List<Long> studentIds = new ArrayList<>();
         for (RecSocietyExcel excel : excels) {
             RecDefault recDefault = new RecDefault();
