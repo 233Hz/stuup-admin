@@ -25,7 +25,6 @@ public class FlowerModelManager {
 
     @Cacheable(value = CacheKeyConstant.FLOWER_MODEL, key = "'getFlowerModel'")
     public FlowerVO queryFlowerModel() {
-        log.debug("测试查询了数据库");
         FlowerVO flowerVO = new FlowerVO();
         for (FloweringStageEnum floweringStageEnum : FloweringStageEnum.values()) {
             Config config = configService.selectByPrimaryKey(floweringStageEnum.getConfigKey());

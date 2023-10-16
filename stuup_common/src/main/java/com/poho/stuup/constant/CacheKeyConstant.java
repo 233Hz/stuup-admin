@@ -10,4 +10,6 @@ public class CacheKeyConstant {
 
     public static final String MENU_TREE_LIST = "menuTreeList";
 
+    public static final String GROWTH_REPORT_CONFIG = "growthReportConfig";
+
 }

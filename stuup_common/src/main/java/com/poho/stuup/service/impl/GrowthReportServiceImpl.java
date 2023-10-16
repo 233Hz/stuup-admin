@@ -1,32 +1,38 @@
 package com.poho.stuup.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.vo.GrowthReportVO;
 import com.poho.stuup.service.GrowthReportService;
+import com.poho.stuup.service.manager.GrowthReportManger;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class GrowthReportServiceImpl implements GrowthReportService {
 
+    private final GrowthReportManger growthReportManger;
     private final StudentMapper studentMapper;
     private final ClassMapper classMapper;
     private final MajorMapper majorMapper;
-    private final GrowthMapper growthMapper;
     private final GrowthItemMapper growthItemMapper;
     private final RecMilitaryMapper recMilitaryMapper;
     private final RecDefaultMapper recDefaultMapper;
+    private final RecProjectMapper recProjectMapper;
     private final SyncCommunityMemberMapper syncCommunityMemberMapper;
 
+    /**
+     * 基本信息
+     */
     @Override
     public GrowthReportVO.BasicInfo getReportBasicInfo(Integer studentId) {
         Student student = studentMapper.selectByPrimaryKey(studentId);
@@ -93,6 +99,9 @@ public class GrowthReportServiceImpl implements GrowthReportService {
 
     }
 
+    /**
+     * 道德与公民素养
+     */
     @Override
     public GrowthReportVO.EthicsAndCitizenship getReportEthicsAndCitizenship(Integer studentId) {
         Student student = studentMapper.selectByPrimaryKey(studentId);
@@ -109,86 +118,110 @@ public class GrowthReportServiceImpl implements GrowthReportService {
                 .build();
     }
 
+    /**
+     * 技能与学习素养
+     */
     @Override
     public GrowthReportVO.SkillsAndLearningLiteracy getReportSkillsAndLearningLiteracy(Integer studentId) {
-
         GrowthReportVO.SkillsAndLearningLiteracy.SubjectGrades subjectGrades = SkillsAndLearningLiteracy_SubjectGrades(studentId);
+        List<String> professionalQualifications = SkillsAndLearningLiteracy_ProfessionalQualifications(studentId);
+        List<String> professionalism = SkillsAndLearningLiteracy_Professionalism(studentId);
         GrowthReportVO.SkillsAndLearningLiteracy.DoubleInnovationCompetition doubleInnovationCompetition = SkillsAndLearningLiteracy_DoubleInnovationCompetition(studentId);
-
         return GrowthReportVO.SkillsAndLearningLiteracy
                 .builder()
                 .subjectGrades(subjectGrades)
+                .professionalQualifications(professionalQualifications)
+                .professionalism(professionalism)
                 .doubleInnovationCompetition(doubleInnovationCompetition)
                 .build();
     }
 
+    /**
+     * 运动与身心健康
+     */
     @Override
     public GrowthReportVO.ExerciseAndPhysicalAndMentalHealth getReportExerciseAndPhysicalAndMentalHealth(Integer studentId) {
-        List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getCode)
-                .in(GrowthItem::getCode, Arrays.asList("CZ_052", "CZ_053")));
-        Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
-
-        long countPsychodramaOrPsychoMonthShowcase = 0, countPsychologicalCenter = 0;
-
-        Long psychodramaOrPsychoMonthShowcaseGrowthId = growthItemMap.get("CZ_052");
-        if (psychodramaOrPsychoMonthShowcaseGrowthId != null) {
-            countPsychodramaOrPsychoMonthShowcase = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, countPsychodramaOrPsychoMonthShowcase));
-        }
-
-        Long psychologicalCenterGrowthId = growthItemMap.get("CZ_053");
-        if (psychologicalCenterGrowthId != null) {
-            countPsychologicalCenter = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, psychologicalCenterGrowthId));
-        }
-
+        GrowthReportVO.ExerciseAndPhysicalAndMentalHealth.PsychologicalLiteracy psychologicalLiteracy = ExerciseAndPhysicalAndMentalHealth_PsychologicalLiteracy(studentId);
+        GrowthReportVO.ExerciseAndPhysicalAndMentalHealth.PhysicalLiteracy physicalLiteracy = ExerciseAndPhysicalAndMentalHealth_PhysicalLiteracy(studentId);
         return GrowthReportVO.ExerciseAndPhysicalAndMentalHealth
                 .builder()
-                .countPsychodramaOrPsychoMonthShowcase(countPsychodramaOrPsychoMonthShowcase)
-                .countPsychologicalCenter(countPsychologicalCenter)
+                .psychologicalLiteracy(psychologicalLiteracy)
+                .physicalLiteracy(physicalLiteracy)
                 .build();
     }
 
+    /**
+     * 审美与艺术修养
+     */
     @Override
     public GrowthReportVO.AestheticAndArtisticAccomplishment getReportAestheticAndArtisticAccomplishment(Integer studentId) {
-        return null;
+        GrowthReportVO.AestheticAndArtisticAccomplishment.ArtisticActivities artisticActivities = AestheticAndArtisticAccomplishment_ArtisticActivities(studentId);
+        GrowthReportVO.AestheticAndArtisticAccomplishment.TalentShow talentShow = AestheticAndArtisticAccomplishment_TalentShow(studentId);
+        GrowthReportVO.AestheticAndArtisticAccomplishment.ArtSocieties artSocieties = AestheticAndArtisticAccomplishment_ArtSocieties(studentId);
+        return GrowthReportVO.AestheticAndArtisticAccomplishment
+                .builder()
+                .artisticActivities(artisticActivities)
+                .talentShow(talentShow)
+                .artSocieties(artSocieties)
+                .build();
     }
 
+    /**
+     * 社会实践与志愿服务
+     */
     @Override
     public GrowthReportVO.LaborAndProfessionalism getReportLaborAndProfessionalism(Integer studentId) {
-        return null;
+        GrowthReportVO.LaborAndProfessionalism.ArtisticActivities artisticActivities = LaborAndProfessionalism_ArtisticActivities(studentId);
+        List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> creditCompletions = LaborAndProfessionalism_CreditsForShiharaActivities(studentId);
+        List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> creditCompletions1 = LaborAndProfessionalism_ProductionLaborPracticeCredits(studentId);
+        return GrowthReportVO.LaborAndProfessionalism
+                .builder()
+                .artisticActivities(artisticActivities)
+                .creditsForShiharaActivities(creditCompletions)
+                .productionLaborPracticeCredits(creditCompletions1)
+                .build();
     }
 
+    /**
+     * 道德与公民素养-思想品德
+     */
     @Override
     public GrowthReportVO.EthicsAndCitizenship.IdeologicalCharacter EthicsAndCitizenship_IdeologicalCharacter(Integer studentId, String studentNo) {
-        List<Growth> growths = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
-                .select(Growth::getId, Growth::getName)
-                .in(Growth::getName, Arrays.asList("爱国爱校", "时政学习", "安全法制")));
-        Map<String, Long> growthMap = growths.stream().collect(Collectors.toMap(Growth::getName, Growth::getId));
-        List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getThreeLevelId, GrowthItem::getId)
-                .in(GrowthItem::getThreeLevelId, growthMap.values()));
-        Map<String, List<Long>> map = new HashMap<>();
-        for (Map.Entry<String, Long> entry : growthMap.entrySet()) {
-            Long growthId = entry.getValue();
-            List<Long> growthItemId = growthItems.stream().filter(growthItem -> growthItem.getThreeLevelId().equals(growthId))
-                    .map(GrowthItem::getId)
-                    .collect(Collectors.toList());
-            map.put(entry.getKey(), growthItemId);
-        }
-        long countLoveTheCountryAndTheSchool = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId, map.getOrDefault("爱国爱校", Collections.emptyList())));
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map ethicsAndCitizenshipConfig = (Map) config.get("ethicsAndCitizenship");
 
-        long countCurrentPoliticsStudy = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId, map.getOrDefault("时政学习", Collections.emptyList())));
-        long countSecurityRuleOfLaw = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId, map.getOrDefault("安全法制", Collections.emptyList())));
+        AtomicLong countLoveTheCountryAndTheSchool = new AtomicLong();  // 爱国爱校
+        AtomicLong countCurrentPoliticsStudy = new AtomicLong();        // 时政学习
+        AtomicLong countSecurityRuleOfLaw = new AtomicLong();           // 安全法制
+
+        if (ethicsAndCitizenshipConfig != null && !ethicsAndCitizenshipConfig.isEmpty()) {
+            Map<String, List<String>> ideologicalCharacterConfig = (Map<String, List<String>>) ethicsAndCitizenshipConfig.get("ideologicalCharacter");
+            if (ideologicalCharacterConfig != null && !ideologicalCharacterConfig.isEmpty()) {
+                Map<String, AtomicLong> map = new HashMap<>();
+                map.put("loveTheCountryAndTheSchool", countLoveTheCountryAndTheSchool);
+                map.put("currentPoliticsStudy", countCurrentPoliticsStudy);
+                map.put("securityRuleOfLaw", countSecurityRuleOfLaw);
+
+                for (Map.Entry<String, AtomicLong> entry : map.entrySet()) {
+                    Optional.ofNullable(ideologicalCharacterConfig.get(entry.getKey()))
+                            .flatMap(codes -> {
+                                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                                        .select(GrowthItem::getId)
+                                        .in(GrowthItem::getCode, codes));
+                                return Optional.ofNullable(growthItems);
+                            })
+                            .map(growthItems -> growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList()))
+                            .flatMap(ids -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .in(RecDefault::getGrowId, ids));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+
+            }
+        }
 
         List<String> participatingSocieties = syncCommunityMemberMapper.selectList(Wrappers.<SyncCommunityMember>lambdaQuery()
                         .select(SyncCommunityMember::getCommunityName)
@@ -198,252 +231,627 @@ public class GrowthReportServiceImpl implements GrowthReportService {
                 .stream().map(SyncCommunityMember::getCommunityName)
                 .collect(Collectors.toList());
 
+
         return GrowthReportVO.EthicsAndCitizenship.IdeologicalCharacter
                 .builder()
-                .countArtSocieties(0L)
-                .countLoveTheCountryAndTheSchool(countLoveTheCountryAndTheSchool)
-                .countCurrentPoliticsStudy(countCurrentPoliticsStudy)
-                .countSecurityRuleOfLaw(countSecurityRuleOfLaw)
+                .countLoveTheCountryAndTheSchool(countLoveTheCountryAndTheSchool.get())
+                .countCurrentPoliticsStudy(countCurrentPoliticsStudy.get())
+                .countSecurityRuleOfLaw(countSecurityRuleOfLaw.get())
                 .participatingSocieties(participatingSocieties)
                 .build();
     }
 
+    /**
+     * 道德与公民素养-文明修养
+     */
     @Override
     public GrowthReportVO.EthicsAndCitizenship.CivilizedCultivation EthicsAndCitizenship_CivilizedCultivation(Integer studentId) {
-        List<Growth> growths = growthMapper.selectList(Wrappers.<Growth>lambdaQuery()
-                .select(Growth::getId, Growth::getName)
-                .in(Growth::getName, Arrays.asList("六项评比（流动红旗）", "文明寝室", "安全法制", "仪表规范", "仪容整洁", "文明礼仪", "卫生环境")));
-        Map<String, Long> growthMap = growths.stream().collect(Collectors.toMap(Growth::getName, Growth::getId));
-        List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getThreeLevelId, GrowthItem::getId)
-                .in(GrowthItem::getThreeLevelId, growthMap.values()));
-        Map<String, List<Long>> map = new HashMap<>();
-        for (Map.Entry<String, Long> entry : growthMap.entrySet()) {
-            Long growthId = entry.getValue();
-            List<Long> growthItemId = growthItems.stream().filter(growthItem -> growthItem.getThreeLevelId().equals(growthId))
-                    .map(GrowthItem::getId)
-                    .collect(Collectors.toList());
-            map.put(entry.getKey(), growthItemId);
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map ethicsAndCitizenshipConfig = (Map) config.get("ethicsAndCitizenship");
+
+        AtomicLong countMobileRedFlags = new AtomicLong();                  // 六项评比（流动红旗）
+        AtomicLong countCivilizationBedroom = new AtomicLong();             // 文明寝室
+        AtomicLong countGroomingViolations = new AtomicLong();              // 仪表仪容违规
+        AtomicLong countViolationOfCivilityAndEtiquette = new AtomicLong(); // 文明礼仪违规
+        AtomicLong countSanitaryEnvironmentViolations = new AtomicLong();   // 卫生环境违规
+
+
+        if (ethicsAndCitizenshipConfig != null && !ethicsAndCitizenshipConfig.isEmpty()) {
+            Map<String, List<String>> civilizedCultivationConfig = (Map<String, List<String>>) ethicsAndCitizenshipConfig.get("civilizedCultivation");
+            if (civilizedCultivationConfig != null && !civilizedCultivationConfig.isEmpty()) {
+                Map<String, AtomicLong> map = new HashMap<>();
+                map.put("mobileRedFlags", countMobileRedFlags);
+                map.put("civilizationBedroom", countCivilizationBedroom);
+                map.put("groomingViolations", countGroomingViolations);
+                map.put("violationOfCivilityAndEtiquette", countViolationOfCivilityAndEtiquette);
+                map.put("sanitaryEnvironmentViolations", countSanitaryEnvironmentViolations);
+
+
+                for (Map.Entry<String, AtomicLong> entry : map.entrySet()) {
+                    Optional.ofNullable(civilizedCultivationConfig.get(entry.getKey()))
+                            .flatMap(codes -> {
+                                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                                        .select(GrowthItem::getId)
+                                        .in(GrowthItem::getCode, codes));
+                                return Optional.ofNullable(growthItems);
+                            })
+                            .map(growthItems -> growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList()))
+                            .flatMap(ids -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .in(RecDefault::getGrowId, ids));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
         }
-
-        long countMobileRedFlags = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId, map.getOrDefault("六项评比（流动红旗）", Collections.emptyList())));
-
-        long countCivilizationBedroom = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId, map.getOrDefault("文明寝室", Collections.emptyList())));
-
-        long countGroomingViolations = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId,
-                        Stream.of(map.getOrDefault("仪容整洁", Collections.emptyList()),
-                                        map.getOrDefault("仪表规范", Collections.emptyList()))
-                                .flatMap(Collection::stream)
-                                .collect(Collectors.toList())
-                ));
-
-        long countViolationOfCivilityAndEtiquette = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId, map.getOrDefault("文明礼仪", Collections.emptyList())));
-
-        long countSanitaryEnvironmentViolations = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                .eq(RecDefault::getStudentId, studentId)
-                .in(RecDefault::getGrowId, map.getOrDefault("卫生环境", Collections.emptyList())));
 
 
         return GrowthReportVO.EthicsAndCitizenship.CivilizedCultivation
                 .builder()
-                .countMobileRedFlags(countMobileRedFlags)
-                .countCivilizationBedroom(countCivilizationBedroom)
-                .countGroomingViolations(countGroomingViolations)
-                .countViolationOfCivilityAndEtiquette(countViolationOfCivilityAndEtiquette)
-                .countSanitaryEnvironmentViolations(countSanitaryEnvironmentViolations)
+                .countMobileRedFlags(countMobileRedFlags.get())
+                .countCivilizationBedroom(countCivilizationBedroom.get())
+                .countGroomingViolations(countGroomingViolations.get())
+                .countViolationOfCivilityAndEtiquette(countViolationOfCivilityAndEtiquette.get())
+                .countSanitaryEnvironmentViolations(countSanitaryEnvironmentViolations.get())
                 .build();
     }
 
+    /**
+     * 道德与公民素养-遵纪自律
+     */
     @Override
     public GrowthReportVO.EthicsAndCitizenship.BeDisciplinedAndSelfDisciplined EthicsAndCitizenship_BeDisciplinedAndSelfDisciplined(Integer studentId) {
-        List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getCode)
-                .in(GrowthItem::getCode, Arrays.asList("CZ_012", "CZ_013", "CZ_014", "CZ_015")));
-        Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map ethicsAndCitizenshipConfig = (Map) config.get("ethicsAndCitizenship");
 
-        long countDisciplinaryAction = 0, countLateArrivalAndEarlyDeparture = 0, countAbsenteeismFromClass = 0, countNotGettingOutOnTime = 0;
+        AtomicLong countDisciplinaryAction = new AtomicLong();  // 纪律处分
+        AtomicLong countLateArrivalAndEarlyDeparture = new AtomicLong();  // 迟到早退
+        AtomicLong countAbsenteeismFromClass = new AtomicLong();  // 上课缺勤
+        AtomicLong countNotGettingOutOnTime = new AtomicLong();  // 不准时出操
 
-        Long disciplinaryActionGrowthId = growthItemMap.get("CZ_012");
-        if (disciplinaryActionGrowthId != null) {
-            countDisciplinaryAction = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, disciplinaryActionGrowthId));
-        }
+        if (ethicsAndCitizenshipConfig != null && !ethicsAndCitizenshipConfig.isEmpty()) {
+            Map<String, String> beDisciplinedAndSelfDisciplinedConfig = (Map<String, String>) ethicsAndCitizenshipConfig.get("beDisciplinedAndSelfDisciplined");
+            if (beDisciplinedAndSelfDisciplinedConfig != null && !beDisciplinedAndSelfDisciplinedConfig.isEmpty()) {
+                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getCode)
+                        .in(GrowthItem::getCode, beDisciplinedAndSelfDisciplinedConfig.values()));
+                Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
 
-        Long lateArrivalAndEarlyDepartureGrowthId = growthItemMap.get("CZ_013");
-        if (lateArrivalAndEarlyDepartureGrowthId != null) {
-            countLateArrivalAndEarlyDeparture = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, lateArrivalAndEarlyDepartureGrowthId));
-        }
+                Map<String, AtomicLong> map1 = new HashMap<>();
+                map1.put("disciplinaryAction", countDisciplinaryAction);
+                map1.put("lateArrivalAndEarlyDeparture", countLateArrivalAndEarlyDeparture);
+                map1.put("absenteeismFromClass", countAbsenteeismFromClass);
+                map1.put("notGettingOutOnTime", countNotGettingOutOnTime);
 
-        Long absenteeismFromClassGrowthId = growthItemMap.get("CZ_014");
-        if (absenteeismFromClassGrowthId != null) {
-            countAbsenteeismFromClass = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, absenteeismFromClassGrowthId));
-        }
-
-        Long notGettingOutOnTimeGrowthId = growthItemMap.get("CZ_015");
-        if (notGettingOutOnTimeGrowthId != null) {
-            countNotGettingOutOnTime = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, notGettingOutOnTimeGrowthId));
+                for (Map.Entry<String, AtomicLong> entry : map1.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, growId));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
         }
 
         return GrowthReportVO.EthicsAndCitizenship.BeDisciplinedAndSelfDisciplined
                 .builder()
-                .countDisciplinaryAction(countDisciplinaryAction)
-                .countLateArrivalAndEarlyDeparture(countLateArrivalAndEarlyDeparture)
-                .countAbsenteeismFromClass(countAbsenteeismFromClass)
-                .countNotGettingOutOnTime(countNotGettingOutOnTime)
+                .countDisciplinaryAction(countDisciplinaryAction.get())
+                .countLateArrivalAndEarlyDeparture(countLateArrivalAndEarlyDeparture.get())
+                .countAbsenteeismFromClass(countAbsenteeismFromClass.get())
+                .countNotGettingOutOnTime(countNotGettingOutOnTime.get())
                 .build();
     }
 
+    /**
+     * 道德与公民素养-个人荣誉
+     */
     @Override
     public GrowthReportVO.EthicsAndCitizenship.IndividualHonors EthicsAndCitizenship_IndividualHonors(Integer studentId) {
-        List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getCode)
-                .in(GrowthItem::getCode, Arrays.asList("CZ_028", "CZ_029", "CZ_030", "CZ_031")));
-        Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map ethicsAndCitizenshipConfig = (Map) config.get("ethicsAndCitizenship");
 
-        long countNationalScholarships = 0, countMunicipalHonors = 0, countDistrictLevelIndustryHonors = 0, countSchoolScholarships = 0;
+        AtomicLong countNationalScholarships = new AtomicLong();        // 国家级奖学金
+        AtomicLong countMunicipalHonors = new AtomicLong();             // 市级奖学金
+        AtomicLong countDistrictLevelIndustryHonors = new AtomicLong(); // 区（行）级奖学金
+        AtomicLong countSchoolScholarships = new AtomicLong();          // 校级奖学金
 
-        Long nationalScholarshipsGrowthId = growthItemMap.get("CZ_028");
-        if (nationalScholarshipsGrowthId != null) {
-            countNationalScholarships = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, nationalScholarshipsGrowthId));
-        }
+        if (ethicsAndCitizenshipConfig != null && !ethicsAndCitizenshipConfig.isEmpty()) {
+            Map<String, String> individualHonorsConfig = (Map<String, String>) ethicsAndCitizenshipConfig.get("individualHonors");
+            if (individualHonorsConfig != null && !individualHonorsConfig.isEmpty()) {
+                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getCode)
+                        .in(GrowthItem::getCode, individualHonorsConfig.values()));
+                Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
 
-        Long municipalHonorsGrowthId = growthItemMap.get("CZ_013");
-        if (municipalHonorsGrowthId != null) {
-            countMunicipalHonors = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, municipalHonorsGrowthId));
-        }
+                Map<String, AtomicLong> map1 = new HashMap<>();
+                map1.put("nationalScholarships", countNationalScholarships);
+                map1.put("municipalHonors", countMunicipalHonors);
+                map1.put("districtLevelIndustryHonors", countDistrictLevelIndustryHonors);
+                map1.put("schoolScholarships", countSchoolScholarships);
 
-        Long districtLevelIndustryHonorsGrowthId = growthItemMap.get("CZ_014");
-        if (districtLevelIndustryHonorsGrowthId != null) {
-            countDistrictLevelIndustryHonors = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, districtLevelIndustryHonorsGrowthId));
-        }
-
-        Long schoolScholarshipsGrowthId = growthItemMap.get("CZ_015");
-        if (schoolScholarshipsGrowthId != null) {
-            countSchoolScholarships = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, schoolScholarshipsGrowthId));
+                for (Map.Entry<String, AtomicLong> entry : map1.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, growId));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
         }
 
         return GrowthReportVO.EthicsAndCitizenship.IndividualHonors
                 .builder()
-                .countNationalScholarships(countNationalScholarships)
-                .countMunicipalHonors(countMunicipalHonors)
-                .countDistrictLevelIndustryHonors(countDistrictLevelIndustryHonors)
-                .countSchoolScholarships(countSchoolScholarships)
+                .countNationalScholarships(countNationalScholarships.get())
+                .countMunicipalHonors(countMunicipalHonors.get())
+                .countDistrictLevelIndustryHonors(countDistrictLevelIndustryHonors.get())
+                .countSchoolScholarships(countSchoolScholarships.get())
                 .build();
     }
 
+    /**
+     * 技能与学习素养-学科成绩
+     */
     @Override
     public GrowthReportVO.SkillsAndLearningLiteracy.SubjectGrades SkillsAndLearningLiteracy_SubjectGrades(Integer studentId) {
         return GrowthReportVO.SkillsAndLearningLiteracy.SubjectGrades.builder().build();
     }
 
     @Override
+    public List<String> SkillsAndLearningLiteracy_ProfessionalQualifications(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map skillsAndLearningLiteracyConfig = (Map) config.get("skillsAndLearningLiteracy");
+
+        List<String> professionalQualifications = new ArrayList<>();
+
+        if (skillsAndLearningLiteracyConfig != null && !skillsAndLearningLiteracyConfig.isEmpty()) {
+            String recCode = (String) skillsAndLearningLiteracyConfig.get("professionalQualifications");
+            if (StrUtil.isNotBlank(recCode)) {
+                GrowthItem growthItem = growthItemMapper.selectOne(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId)
+                        .eq(GrowthItem::getCode, recCode));
+                Optional.ofNullable(growthItem)
+                        .map(GrowthItem::getId)
+                        .flatMap(growthItemId -> {
+                            List<Object> names = recProjectMapper.selectObjs(Wrappers.<RecProject>lambdaQuery()
+                                    .select(RecProject::getName)
+                                    .eq(RecProject::getStudentId, studentId)
+                                    .eq(RecProject::getGrowId, growthItemId));
+                            return Optional.ofNullable(names);
+                        })
+                        .ifPresent(names -> names.forEach(name -> professionalQualifications.add((String) name)));
+
+            }
+        }
+
+        return professionalQualifications;
+    }
+
+    @Override
+    public List<String> SkillsAndLearningLiteracy_Professionalism(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map skillsAndLearningLiteracyConfig = (Map) config.get("skillsAndLearningLiteracy");
+
+        ArrayList<String> professionalism = new ArrayList<>();
+        if (skillsAndLearningLiteracyConfig != null && !skillsAndLearningLiteracyConfig.isEmpty()) {
+            List<String> professionalismConfig = (List<String>) skillsAndLearningLiteracyConfig.get("professionalism");
+            if (professionalismConfig != null && !professionalismConfig.isEmpty()) {
+                List<Object> ids = growthItemMapper.selectObjs(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId)
+                        .in(GrowthItem::getCode, professionalismConfig));
+                Optional.ofNullable(ids)
+                        .map(idList -> idList.stream().map(id -> (Long) id).collect(Collectors.toList()))
+                        .flatMap(idList -> {
+                            List<Object> names = recProjectMapper.selectObjs(Wrappers.<RecProject>lambdaQuery()
+                                    .select(RecProject::getName)
+                                    .eq(RecProject::getStudentId, studentId)
+                                    .in(RecProject::getGrowId, idList));
+                            return Optional.ofNullable(names);
+                        })
+                        .ifPresent(names -> names.forEach(name -> professionalism.add((String) name)));
+            }
+        }
+        return professionalism;
+    }
+
+    /**
+     * 技能与学习素养-双创比赛
+     */
+    @Override
     public GrowthReportVO.SkillsAndLearningLiteracy.DoubleInnovationCompetition SkillsAndLearningLiteracy_DoubleInnovationCompetition(Integer studentId) {
-        List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getCode)
-                .in(GrowthItem::getCode, Arrays.asList("CZ_041", "CZ_042", "CZ_043", "CZ_044")));
-        Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map skillsAndLearningLiteracyConfig = (Map) config.get("skillsAndLearningLiteracy");
 
-        long countNationalLevel = 0, countMunicipalLevel = 0, countDistrictIndustryLevel = 0, countSchoolLevel = 0;
+        AtomicLong countNationalLevel = new AtomicLong();                   // 国家级
+        AtomicLong countMunicipalLevel = new AtomicLong();                  // 市级
+        AtomicLong countDistrictIndustryLevel = new AtomicLong();           // 区（行）级
+        AtomicLong countSchoolLevel = new AtomicLong();                     // 校级
+        List<String> nationalLevelRecords = new ArrayList<>();              // 国家级记录
+        List<String> municipalLevelRecords = new ArrayList<>();             // 市级记录
+        List<String> districtIndustryLevelRecords = new ArrayList<>();      // 区（行）级记录
+        List<String> schoolLevelRecords = new ArrayList<>();                // 校级记录
 
-        Long nationalLevelGrowthId = growthItemMap.get("CZ_041");
-        if (nationalLevelGrowthId != null) {
-            countNationalLevel = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, nationalLevelGrowthId));
+        if (skillsAndLearningLiteracyConfig != null && !skillsAndLearningLiteracyConfig.isEmpty()) {
+            Map<String, String> doubleInnovationCompetitionConfig = (Map<String, String>) skillsAndLearningLiteracyConfig.get("doubleInnovationCompetition");
+            if (doubleInnovationCompetitionConfig != null && !doubleInnovationCompetitionConfig.isEmpty()) {
+                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getCode)
+                        .in(GrowthItem::getCode, doubleInnovationCompetitionConfig.values()));
+                Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+
+                Map<String, AtomicLong> map1 = new HashMap<>();
+                map1.put("nationalLevel", countNationalLevel);
+                map1.put("municipalLevel", countMunicipalLevel);
+                map1.put("districtIndustryLevel", countDistrictIndustryLevel);
+                map1.put("schoolLevel", countSchoolLevel);
+
+                for (Map.Entry<String, AtomicLong> entry : map1.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, growId));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+
+                Map<String, List<String>> map2 = new HashMap<>();
+                map2.put("nationalLevel", nationalLevelRecords);
+                map2.put("municipalLevel", municipalLevelRecords);
+                map2.put("districtIndustryLevel", districtIndustryLevelRecords);
+                map2.put("schoolLevel", schoolLevelRecords);
+
+                for (Map.Entry<String, List<String>> entry : map2.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                List<RecProject> recProjects = recProjectMapper.selectList(Wrappers.<RecProject>lambdaQuery()
+                                        .select(RecProject::getName)
+                                        .eq(RecProject::getStudentId, studentId)
+                                        .eq(RecProject::getGrowId, growId));
+                                return Optional.ofNullable(recProjects);
+                            })
+                            .ifPresent(recProjects -> recProjects.forEach(recProject -> entry.getValue().add(recProject.getName())));
+                }
+            }
         }
-
-        Long municipalLevelGrowthId = growthItemMap.get("CZ_042");
-        if (municipalLevelGrowthId != null) {
-            countMunicipalLevel = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, municipalLevelGrowthId));
-        }
-
-        Long districtIndustryLevelGrowthId = growthItemMap.get("CZ_043");
-        if (districtIndustryLevelGrowthId != null) {
-            countDistrictIndustryLevel = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, districtIndustryLevelGrowthId));
-        }
-
-        Long schoolLevelGrowthId = growthItemMap.get("CZ_044");
-        if (schoolLevelGrowthId != null) {
-            countSchoolLevel = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, schoolLevelGrowthId));
-        }
-
 
         return GrowthReportVO.SkillsAndLearningLiteracy.DoubleInnovationCompetition
                 .builder()
-                .countNationalLevel(countNationalLevel)
-                .countMunicipalLevel(countMunicipalLevel)
-                .countDistrictIndustryLevel(countDistrictIndustryLevel)
-                .countSchoolLevel(countSchoolLevel)
+                .countNationalLevel(countNationalLevel.get())
+                .countMunicipalLevel(countMunicipalLevel.get())
+                .countDistrictIndustryLevel(countDistrictIndustryLevel.get())
+                .countSchoolLevel(countSchoolLevel.get())
+                .nationalLevelRecords(nationalLevelRecords)
+                .municipalLevelRecords(municipalLevelRecords)
+                .districtIndustryLevelRecords(districtIndustryLevelRecords)
+                .schoolLevelRecords(schoolLevelRecords)
                 .build();
     }
 
+    /**
+     * 运动与身心健康-心理素养
+     */
+    @Override
+    public GrowthReportVO.ExerciseAndPhysicalAndMentalHealth.PsychologicalLiteracy ExerciseAndPhysicalAndMentalHealth_PsychologicalLiteracy(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map exerciseAndPhysicalAndMentalHealthConfig = (Map) config.get("exerciseAndPhysicalAndMentalHealth");
+
+        AtomicLong countPsychodramaOrPsychoMonthShowcase = new AtomicLong();        // 参加心理剧或心理月展示活动
+        AtomicLong countPsychologicalCenter = new AtomicLong();                     // 参与心理中心活动
+
+        if (exerciseAndPhysicalAndMentalHealthConfig != null && !exerciseAndPhysicalAndMentalHealthConfig.isEmpty()) {
+            Map<String, String> psychologicalLiteracyConfig = (Map<String, String>) exerciseAndPhysicalAndMentalHealthConfig.get("psychologicalLiteracy");
+            if (psychologicalLiteracyConfig != null && !psychologicalLiteracyConfig.isEmpty()) {
+                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getCode)
+                        .in(GrowthItem::getCode, psychologicalLiteracyConfig.values()));
+                Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+
+                Map<String, AtomicLong> map1 = new HashMap<>();
+                map1.put("psychodramaOrPsychoMonthShowcase", countPsychodramaOrPsychoMonthShowcase);
+                map1.put("psychologicalCenter", countPsychologicalCenter);
+
+                for (Map.Entry<String, AtomicLong> entry : map1.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, growId));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
+        }
+
+        return GrowthReportVO.ExerciseAndPhysicalAndMentalHealth.PsychologicalLiteracy
+                .builder()
+                .countPsychodramaOrPsychoMonthShowcase(countPsychodramaOrPsychoMonthShowcase.get())
+                .countPsychologicalCenter(countPsychologicalCenter.get())
+                .build();
+    }
+
+    /**
+     * 运动与身心健康-身体素养
+     */
     public GrowthReportVO.ExerciseAndPhysicalAndMentalHealth.PhysicalLiteracy ExerciseAndPhysicalAndMentalHealth_PhysicalLiteracy(Integer studentId) {
-        List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
-                .select(GrowthItem::getId, GrowthItem::getCode)
-                .in(GrowthItem::getCode, Arrays.asList("CZ_012", "CZ_013", "CZ_014", "CZ_015")));
-        Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map exerciseAndPhysicalAndMentalHealthConfig = (Map) config.get("exerciseAndPhysicalAndMentalHealth");
 
-        long countDisciplinaryAction = 0, countLateArrivalAndEarlyDeparture = 0, countAbsenteeismFromClass = 0, countNotGettingOutOnTime = 0;
+        AtomicLong countNationalLevel = new AtomicLong();            // 国家级
+        AtomicLong countMunicipalLevel = new AtomicLong();           // 市级
+        AtomicLong countDistrictIndustryLevel = new AtomicLong();    // 区（行）级
+        AtomicLong countSchoolLevel = new AtomicLong();              // 校级
 
-        Long disciplinaryActionGrowthId = growthItemMap.get("CZ_012");
-        if (disciplinaryActionGrowthId != null) {
-            countDisciplinaryAction = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, disciplinaryActionGrowthId));
+        if (exerciseAndPhysicalAndMentalHealthConfig != null && !exerciseAndPhysicalAndMentalHealthConfig.isEmpty()) {
+            Map<String, String> physicalLiteracyConfig = (Map<String, String>) exerciseAndPhysicalAndMentalHealthConfig.get("physicalLiteracy");
+            if (physicalLiteracyConfig != null && !physicalLiteracyConfig.isEmpty()) {
+                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getCode)
+                        .in(GrowthItem::getCode, physicalLiteracyConfig.values()));
+                Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+
+                Map<String, AtomicLong> map1 = new HashMap<>();
+                map1.put("nationalLevel", countNationalLevel);
+                map1.put("municipalLevel", countMunicipalLevel);
+                map1.put("districtIndustryLevel", countDistrictIndustryLevel);
+                map1.put("schoolLevel", countSchoolLevel);
+
+                for (Map.Entry<String, AtomicLong> entry : map1.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, growId));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
         }
 
-        Long lateArrivalAndEarlyDepartureGrowthId = growthItemMap.get("CZ_013");
-        if (lateArrivalAndEarlyDepartureGrowthId != null) {
-            countLateArrivalAndEarlyDeparture = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, lateArrivalAndEarlyDepartureGrowthId));
-        }
-
-        Long absenteeismFromClassGrowthId = growthItemMap.get("CZ_014");
-        if (absenteeismFromClassGrowthId != null) {
-            countAbsenteeismFromClass = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, absenteeismFromClassGrowthId));
-        }
-
-        Long notGettingOutOnTimeGrowthId = growthItemMap.get("CZ_015");
-        if (notGettingOutOnTimeGrowthId != null) {
-            countNotGettingOutOnTime = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
-                    .eq(RecDefault::getStudentId, studentId)
-                    .eq(RecDefault::getGrowId, notGettingOutOnTimeGrowthId));
-        }
         return GrowthReportVO.ExerciseAndPhysicalAndMentalHealth.PhysicalLiteracy
                 .builder()
+                .countNationalLevel(countNationalLevel.get())
+                .countMunicipalLevel(countMunicipalLevel.get())
+                .countDistrictIndustryLevel(countDistrictIndustryLevel.get())
+                .countSchoolLevel(countSchoolLevel.get())
                 .build();
     }
+
+    /**
+     * 审美与艺术修养-艺术活动
+     */
+    @Override
+    public GrowthReportVO.AestheticAndArtisticAccomplishment.ArtisticActivities AestheticAndArtisticAccomplishment_ArtisticActivities(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map aestheticAndArtisticAccomplishment = (Map) config.get("aestheticAndArtisticAccomplishment");
+
+        AtomicLong countTalentActivities = new AtomicLong();  // 参加艺术活动
+
+        if (aestheticAndArtisticAccomplishment != null && !aestheticAndArtisticAccomplishment.isEmpty()) {
+            Map<String, List<String>> artisticActivitiesConfig = (Map<String, List<String>>) aestheticAndArtisticAccomplishment.get("artisticActivities");
+            if (artisticActivitiesConfig != null && !artisticActivitiesConfig.isEmpty()) {
+                Map<String, AtomicLong> map = new HashMap<>();
+                map.put("talentActivities", countTalentActivities);
+
+                for (Map.Entry<String, AtomicLong> entry : map.entrySet()) {
+                    Optional.ofNullable(artisticActivitiesConfig.get(entry.getKey()))
+                            .flatMap(codes -> {
+                                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                                        .select(GrowthItem::getId)
+                                        .in(GrowthItem::getCode, codes));
+                                return Optional.ofNullable(growthItems);
+                            })
+                            .map(growthItems -> growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList()))
+                            .flatMap(growId -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, growId));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
+        }
+        return GrowthReportVO.AestheticAndArtisticAccomplishment.ArtisticActivities
+                .builder()
+                .countTalentActivities(countTalentActivities.get())
+                .build();
+    }
+
+    /**
+     * 审美与艺术修养-才艺展示
+     */
+    @Override
+    public GrowthReportVO.AestheticAndArtisticAccomplishment.TalentShow AestheticAndArtisticAccomplishment_TalentShow(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map aestheticAndArtisticAccomplishmentConfig = (Map) config.get("aestheticAndArtisticAccomplishment");
+
+        AtomicLong countNationalLevel = new AtomicLong();                   // 国家级
+        AtomicLong countMunicipalLevel = new AtomicLong();                  // 市级
+        AtomicLong countDistrictIndustryLevel = new AtomicLong();           // 区（行）级
+        AtomicLong countSchoolLevel = new AtomicLong();                     // 校级
+        List<String> nationalLevelRecords = new ArrayList<>();              // 国家级记录
+        List<String> municipalLevelRecords = new ArrayList<>();             // 市级记录
+        List<String> districtIndustryLevelRecords = new ArrayList<>();      // 区（行）级记录
+        List<String> schoolLevelRecords = new ArrayList<>();                // 校级记录
+
+        if (aestheticAndArtisticAccomplishmentConfig != null && !aestheticAndArtisticAccomplishmentConfig.isEmpty()) {
+            Map<String, String> talentShowConfig = (Map<String, String>) aestheticAndArtisticAccomplishmentConfig.get("talentShow");
+            if (talentShowConfig != null && !talentShowConfig.isEmpty()) {
+                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                        .select(GrowthItem::getId, GrowthItem::getCode)
+                        .in(GrowthItem::getCode, talentShowConfig.values()));
+                Map<String, Long> growthItemMap = growthItems.stream().collect(Collectors.toMap(GrowthItem::getCode, GrowthItem::getId));
+
+                Map<String, AtomicLong> map1 = new HashMap<>();
+                map1.put("nationalLevel", countNationalLevel);
+                map1.put("municipalLevel", countMunicipalLevel);
+                map1.put("districtIndustryLevel", countDistrictIndustryLevel);
+                map1.put("schoolLevel", countSchoolLevel);
+
+                for (Map.Entry<String, AtomicLong> entry : map1.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, growId));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+
+                Map<String, List<String>> map2 = new HashMap<>();
+                map2.put("nationalLevel", nationalLevelRecords);
+                map2.put("municipalLevel", municipalLevelRecords);
+                map2.put("districtIndustryLevel", districtIndustryLevelRecords);
+                map2.put("schoolLevel", schoolLevelRecords);
+
+                for (Map.Entry<String, List<String>> entry : map2.entrySet()) {
+                    Optional.ofNullable(entry.getKey())
+                            .map(growthItemMap::get)
+                            .flatMap(growId -> {
+                                List<RecProject> recProjects = recProjectMapper.selectList(Wrappers.<RecProject>lambdaQuery()
+                                        .select(RecProject::getName)
+                                        .eq(RecProject::getStudentId, studentId)
+                                        .eq(RecProject::getGrowId, growId));
+                                return Optional.ofNullable(recProjects);
+                            })
+                            .ifPresent(recProjects -> recProjects.forEach(recProject -> entry.getValue().add(recProject.getName())));
+                }
+            }
+        }
+
+        return GrowthReportVO.AestheticAndArtisticAccomplishment.TalentShow
+                .builder()
+                .countNationalLevel(countNationalLevel.get())
+                .countMunicipalLevel(countMunicipalLevel.get())
+                .countDistrictIndustryLevel(countDistrictIndustryLevel.get())
+                .countSchoolLevel(countSchoolLevel.get())
+                .nationalLevelRecords(nationalLevelRecords)
+                .municipalLevelRecords(municipalLevelRecords)
+                .districtIndustryLevelRecords(districtIndustryLevelRecords)
+                .schoolLevelRecords(schoolLevelRecords)
+                .build();
+    }
+
+    /**
+     * 审美与艺术修养-艺术社团
+     */
+    @Override
+    public GrowthReportVO.AestheticAndArtisticAccomplishment.ArtSocieties AestheticAndArtisticAccomplishment_ArtSocieties(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map aestheticAndArtisticAccomplishment = (Map) config.get("aestheticAndArtisticAccomplishment");
+
+        AtomicLong countArtSocieties = new AtomicLong();  // 参加艺术活动
+
+        if (aestheticAndArtisticAccomplishment != null && !aestheticAndArtisticAccomplishment.isEmpty()) {
+            Map<String, List<String>> artSocietiesConfig = (Map<String, List<String>>) aestheticAndArtisticAccomplishment.get("artSocieties");
+            if (artSocietiesConfig != null && !artSocietiesConfig.isEmpty()) {
+                Map<String, AtomicLong> map = new HashMap<>();
+                map.put("artSocieties", countArtSocieties);
+
+                for (Map.Entry<String, AtomicLong> entry : map.entrySet()) {
+                    Optional.ofNullable(artSocietiesConfig.get(entry.getKey()))
+                            .flatMap(codes -> {
+                                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                                        .select(GrowthItem::getId)
+                                        .in(GrowthItem::getCode, codes));
+                                return Optional.ofNullable(growthItems);
+                            })
+                            .map(growthItems -> growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList()))
+                            .flatMap(ids -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, ids));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
+        }
+        return GrowthReportVO.AestheticAndArtisticAccomplishment.ArtSocieties
+                .builder()
+                .countArtSocieties(countArtSocieties.get())
+                .build();
+    }
+
+    /**
+     * 劳动与职业素养-艺术活动
+     */
+    @Override
+    public GrowthReportVO.LaborAndProfessionalism.ArtisticActivities LaborAndProfessionalism_ArtisticActivities(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map laborAndProfessionalismConfig = (Map) config.get("laborAndProfessionalism");
+
+        AtomicLong countVolunteerService = new AtomicLong();            // 参加志愿者服务
+        AtomicLong countTrafficPostsAreOnDuty = new AtomicLong();       // 参加交通岗执勤
+
+        if (laborAndProfessionalismConfig != null && !laborAndProfessionalismConfig.isEmpty()) {
+            Map<String, List<String>> artisticActivitiesConfig = (Map<String, List<String>>) laborAndProfessionalismConfig.get("artisticActivities");
+            if (artisticActivitiesConfig != null && !artisticActivitiesConfig.isEmpty()) {
+                Map<String, AtomicLong> map1 = new HashMap<>();
+                map1.put("volunteerService", countVolunteerService);
+                map1.put("trafficPostsAreOnDuty", countTrafficPostsAreOnDuty);
+
+                for (Map.Entry<String, AtomicLong> entry : map1.entrySet()) {
+                    Optional.ofNullable(artisticActivitiesConfig.get(entry.getKey()))
+                            .flatMap(codes -> {
+                                List<GrowthItem> growthItems = growthItemMapper.selectList(Wrappers.<GrowthItem>lambdaQuery()
+                                        .select(GrowthItem::getId)
+                                        .in(GrowthItem::getCode, codes));
+                                return Optional.ofNullable(growthItems);
+                            })
+                            .map(growthItems -> growthItems.stream().map(GrowthItem::getId).collect(Collectors.toList()))
+                            .flatMap(ids -> {
+                                Long count = recDefaultMapper.selectCount(Wrappers.<RecDefault>lambdaQuery()
+                                        .eq(RecDefault::getStudentId, studentId)
+                                        .eq(RecDefault::getGrowId, ids));
+                                return Optional.ofNullable(count);
+                            })
+                            .ifPresent(entry.getValue()::set);
+                }
+            }
+        }
+
+        return GrowthReportVO.LaborAndProfessionalism.ArtisticActivities
+                .builder()
+                .countVolunteerService(countVolunteerService.get())
+                .countTrafficPostsAreOnDuty(countTrafficPostsAreOnDuty.get())
+                .build();
+    }
+
+    /**
+     * 劳动与职业素养-志原者活动学分
+     */
+    @Override
+    public List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> LaborAndProfessionalism_CreditsForShiharaActivities(Integer studentId) {
+        return null;
+    }
+
+    /**
+     * 劳动与职业素养-生产劳动实践学分
+     */
+    @Override
+    public List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> LaborAndProfessionalism_ProductionLaborPracticeCredits(Integer studentId) {
+        return null;
+    }
+
 
 }

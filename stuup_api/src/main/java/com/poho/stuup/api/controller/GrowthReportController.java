@@ -1,5 +1,6 @@
 package com.poho.stuup.api.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.poho.common.custom.ResponseModel;
 import com.poho.stuup.model.vo.GrowthReportVO;
@@ -22,6 +23,7 @@ public class GrowthReportController {
     /**
      * 查询成长报告基本信息
      */
+    @SaIgnore
     @GetMapping("/basicInfo")
     public ResponseModel<GrowthReportVO.BasicInfo> queryGrowthReportBasicInfo(@RequestParam(name = "studentId", required = false) Integer studentId) {
         studentId = isNullStudentId(studentId);
@@ -32,6 +34,7 @@ public class GrowthReportController {
     /**
      * 查询成长报告道德与公民素养
      */
+    @SaIgnore
     @GetMapping("/ethicsAndCitizenship")
     public ResponseModel<GrowthReportVO.EthicsAndCitizenship> queryGrowthReportEthicsAndCitizenship(@RequestParam(name = "studentId", required = false) Integer studentId) {
         studentId = isNullStudentId(studentId);
@@ -42,6 +45,7 @@ public class GrowthReportController {
     /**
      * 查询成长报告技能与学习素养
      */
+    @SaIgnore
     @GetMapping("/skillsAndLearningLiteracy")
     public ResponseModel<GrowthReportVO.SkillsAndLearningLiteracy> queryGrowthReportSkillsAndLearningLiteracy(@RequestParam(name = "studentId", required = false) Integer studentId) {
         studentId = isNullStudentId(studentId);
@@ -53,6 +57,7 @@ public class GrowthReportController {
     /**
      * 查询成长运动与身心健康
      */
+    @SaIgnore
     @GetMapping("/exerciseAndPhysicalAndMentalHealth")
     public ResponseModel<GrowthReportVO.ExerciseAndPhysicalAndMentalHealth> queryGrowthReportExerciseAndPhysicalAndMentalHealth(@RequestParam(name = "studentId", required = false) Integer studentId) {
         studentId = isNullStudentId(studentId);
@@ -64,6 +69,7 @@ public class GrowthReportController {
     /**
      * 查询成长报告审美与艺术修养
      */
+    @SaIgnore
     @GetMapping("/aestheticAndArtisticAccomplishment")
     public ResponseModel<GrowthReportVO.AestheticAndArtisticAccomplishment> queryGrowthReportAestheticAndArtisticAccomplishment(@RequestParam(name = "studentId", required = false) Integer studentId) {
         studentId = isNullStudentId(studentId);
@@ -75,6 +81,7 @@ public class GrowthReportController {
     /**
      * 查询成长报告劳动与职业素养
      */
+    @SaIgnore
     @GetMapping("/laborAndProfessionalism")
     public ResponseModel<GrowthReportVO.LaborAndProfessionalism> queryGrowthReportLaborAndProfessionalism(@RequestParam(name = "studentId", required = false) Integer studentId) {
         studentId = isNullStudentId(studentId);

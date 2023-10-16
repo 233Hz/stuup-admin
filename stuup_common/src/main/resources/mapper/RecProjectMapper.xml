@@ -39,7 +39,6 @@
         left join t_grade g on g.oid = s.grade_id
         left join t_class c on c.id = s.class_id
         <where>
-            trp.year_id = #{query.yearId}
             <if test="query.gradeId != null and query.gradeId != ''">
                 and g.oid = #{query.gradeId}
             </if>
@@ -51,6 +50,10 @@
             </if>
             <if test="query.studentNo != null and query.studentNo != ''">
                 and s.student_no like concat('%',#{query.studentNo},'%')
+            </if>
+            trp.year_id = #{query.yearId}
+            <if test="query.growId != null and query.growId != ''">
+                and trp.grow_id = #{query.growId}
             </if>
             <if test="query.name != null and query.name != ''">
                 and trp.name like concat('%',#{query.name},'%')

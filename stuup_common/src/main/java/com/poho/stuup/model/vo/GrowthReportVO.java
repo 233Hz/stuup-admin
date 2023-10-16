@@ -92,11 +92,6 @@ public class GrowthReportVO {
         public static class IdeologicalCharacter {
 
             /**
-             * 参加学校及以上组织的艺术社团
-             */
-            private long countArtSocieties;
-
-            /**
              * 参加爱国爱校相关活动
              */
             private long countLoveTheCountryAndTheSchool;
@@ -309,17 +304,17 @@ public class GrowthReportVO {
             /**
              * 国家级记录
              */
-            private List<String> countNationalLevelRecords;
+            private List<String> nationalLevelRecords;
 
             /**
              * 市级记录
              */
-            private List<String> countMunicipalLevelRecords;
+            private List<String> municipalLevelRecords;
 
             /**
              * 区（行业）级记录
              */
-            private List<String> countDistrictIndustryLevelRecords;
+            private List<String> districtIndustryLevelRecords;
 
             /**
              * 校级记录
@@ -334,17 +329,10 @@ public class GrowthReportVO {
     @Builder
     public static class ExerciseAndPhysicalAndMentalHealth {
 
+        /**
+         * 心理素养
+         */
         private PsychologicalLiteracy psychologicalLiteracy;
-
-        /**
-         * 参加心理剧或心理月展示活动次数
-         */
-        private long countPsychodramaOrPsychoMonthShowcase;
-
-        /**
-         * 参与心理中心活动次数
-         */
-        private long countPsychologicalCenter;
 
         /**
          * 身体素养
@@ -387,7 +375,7 @@ public class GrowthReportVO {
             /**
              * 校级
              */
-            private long schoolLevel;
+            private long countSchoolLevel;
         }
     }
 
@@ -396,54 +384,86 @@ public class GrowthReportVO {
     public static class AestheticAndArtisticAccomplishment {
 
         /**
-         * 参加才艺活动次数
+         * 艺术活动
          */
-        private long countTalentActivities;
+        private ArtisticActivities artisticActivities;
 
         /**
-         * 参加学校及以上组织的艺术社团
+         * 才艺展示
          */
-        private long countArtSocieties;
+        private TalentShow talentShow;
 
         /**
-         * 国家级
+         * 艺术社团
          */
-        private long countNationalLevel;
+        private ArtSocieties artSocieties;
 
-        /**
-         * 市级
-         */
-        private long countMunicipalLevel;
 
-        /**
-         * 区（行业）级
-         */
-        private long countDistrictIndustryLevel;
+        @Data
+        @Builder
+        public static class ArtisticActivities {
 
-        /**
-         * 校级
-         */
-        private long schoolLevel;
+            /**
+             * 参加才艺活动次数
+             */
+            private long countTalentActivities;
+        }
 
-        /**
-         * 国家级记录
-         */
-        private List<String> countNationalLevelRecords;
+        @Data
+        @Builder
+        public static class TalentShow {
 
-        /**
-         * 市级记录
-         */
-        private List<String> countMunicipalLevelRecords;
+            /**
+             * 国家级
+             */
+            private long countNationalLevel;
 
-        /**
-         * 区（行业）级记录
-         */
-        private List<String> countDistrictIndustryLevelRecords;
+            /**
+             * 市级
+             */
+            private long countMunicipalLevel;
 
-        /**
-         * 校级记录
-         */
-        private List<String> schoolLevelRecords;
+            /**
+             * 区（行业）级
+             */
+            private long countDistrictIndustryLevel;
+
+            /**
+             * 校级
+             */
+            private long countSchoolLevel;
+
+            /**
+             * 国家级记录
+             */
+            private List<String> nationalLevelRecords;
+
+            /**
+             * 市级记录
+             */
+            private List<String> municipalLevelRecords;
+
+            /**
+             * 区（行业）级记录
+             */
+            private List<String> districtIndustryLevelRecords;
+
+            /**
+             * 校级记录
+             */
+            private List<String> schoolLevelRecords;
+        }
+
+        @Data
+        @Builder
+        public static class ArtSocieties {
+
+            /**
+             * 参加学校及以上组织的艺术社团
+             */
+            private long countArtSocieties;
+        }
+
     }
 
     @Data
@@ -451,14 +471,9 @@ public class GrowthReportVO {
     public static class LaborAndProfessionalism {
 
         /**
-         * 参加志愿者服务次数
+         * 艺术活动
          */
-        private long countVolunteerService;
-
-        /**
-         * 参加交通岗值勤次数
-         */
-        private long countTrafficPostsAreOnDuty;
+        private ArtisticActivities artisticActivities;
 
         /**
          * 志原者活动学分
@@ -469,6 +484,21 @@ public class GrowthReportVO {
          * 生产劳动实践学分
          */
         private List<CreditCompletion> productionLaborPracticeCredits;
+
+        @Data
+        @Builder
+        public static class ArtisticActivities {
+            /**
+             * 参加志愿者服务次数
+             */
+            private long countVolunteerService;
+
+            /**
+             * 参加交通岗值勤次数
+             */
+            private long countTrafficPostsAreOnDuty;
+        }
+
 
         @Data
         @Builder

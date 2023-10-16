@@ -1,0 +1,113 @@
+{
+  "ethicsAndCitizenship": {
+    "ideologicalCharacter": {
+      "loveTheCountryAndTheSchool": [
+        "CZ_001",
+        "CZ_002"
+      ],
+      "currentPoliticsStudy": [
+        "CZ_003",
+        "CZ_004",
+        "CZ_005"
+      ],
+      "securityRuleOfLaw": [
+        "CZ_006",
+        "CZ_007",
+        "CZ_008"
+      ]
+    },
+    "civilizedCultivation": {
+      "mobileRedFlags": [
+        "CZ_026"
+      ],
+      "civilizationBedroom": [
+        "CZ_027"
+      ],
+      "groomingViolations": [
+        "CZ_016",
+        "CZ_017",
+        "CZ_018",
+        "CZ_019",
+        "CZ_020",
+        "CZ_021"
+      ],
+      "violationOfCivilityAndEtiquette": [
+        "CZ_022",
+        "CZ_023"
+      ],
+      "sanitaryEnvironmentViolations": [
+        "CZ_024",
+        "CZ_025"
+      ]
+    },
+    "beDisciplinedAndSelfDisciplined": {
+      "disciplinaryAction": "CZ_012",
+      "lateArrivalAndEarlyDeparture": "CZ_013",
+      "absenteeismFromClass": "CZ_014",
+      "notGettingOutOnTime": "CZ_015"
+    },
+    "individualHonors": {
+      "nationalScholarships": "CZ_028",
+      "municipalHonors": "CZ_029",
+      "districtLevelIndustryHonors": "CZ_030",
+      "schoolScholarships": "CZ_031"
+    }
+  },
+  "skillsAndLearningLiteracy": {
+    "professionalQualifications": "CZ_036",
+    "professionalism": [
+      "CZ_037",
+      "CZ_038",
+      "CZ_039",
+      "CZ_040"
+    ],
+    "doubleInnovationCompetition": {
+      "nationalScholarships": "CZ_041",
+      "municipalHonors": "CZ_042",
+      "districtLevelIndustryHonors": "CZ_043",
+      "schoolScholarships": "CZ_044"
+    }
+  },
+  "exerciseAndPhysicalAndMentalHealth": {
+    "psychologicalLiteracy": {
+      "psychodramaOrPsychoMonthShowcase": "CZ_052",
+      "psychologicalCenter": "CZ_053"
+    },
+    "physicalLiteracy": {
+      "nationalLevel": "CZ_048",
+      "municipalLevel": "CZ_049",
+      "districtIndustryLevel": "CZ_050",
+      "schoolLevel": "CZ_051"
+    }
+  },
+  "aestheticAndArtisticAccomplishment": {
+    "artisticActivities": {
+      "talentActivities": [
+        "CZ_054"
+      ]
+    },
+    "talentShow": {
+      "nationalScholarships": "CZ_055",
+      "municipalHonors": "CZ_056",
+      "districtLevelIndustryHonors": "CZ_057",
+      "schoolScholarships": "CZ_058"
+    },
+    "artSocieties": {
+      "artSocieties": [
+        "CZ_059"
+      ]
+    }
+  },
+  "laborAndProfessionalism": {
+    "artisticActivities": {
+      "volunteerService": [
+        "CZ_060"
+      ],
+      "trafficPostsAreOnDuty": [
+        "CZ_061"
+      ]
+    },
+    "creditsForShiharaActivities": "CZ_062",
+    "productionLaborPracticeCredits": "CZ_065"
+  }
+}

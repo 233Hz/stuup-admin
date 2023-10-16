@@ -73,6 +73,7 @@ public class SaTokenController {
     }
 
     // 注销  ---- http://localhost:9000/stuup_api/saToken/logout
+    @SaIgnore
     @RequestMapping("logout")
     public ResponseModel<String> logout(Long userId) {
         StpUtil.logout(userId);
