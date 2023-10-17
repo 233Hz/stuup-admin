@@ -1,18 +1,23 @@
 package com.poho.stuup.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.poho.stuup.dao.*;
 import com.poho.stuup.model.*;
 import com.poho.stuup.model.vo.GrowthReportVO;
 import com.poho.stuup.service.GrowthReportService;
+import com.poho.stuup.service.SemesterService;
 import com.poho.stuup.service.manager.GrowthReportManger;
+import com.poho.stuup.util.MinioUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,6 +26,7 @@ import java.util.stream.Collectors;
 public class GrowthReportServiceImpl implements GrowthReportService {
 
     private final GrowthReportManger growthReportManger;
+    private final UserMapper userMapper;
     private final StudentMapper studentMapper;
     private final ClassMapper classMapper;
     private final MajorMapper majorMapper;
@@ -29,6 +35,9 @@ public class GrowthReportServiceImpl implements GrowthReportService {
     private final RecDefaultMapper recDefaultMapper;
     private final RecProjectMapper recProjectMapper;
     private final SyncCommunityMemberMapper syncCommunityMemberMapper;
+    private final SemesterService semesterService;
+    private final FileMapper fileMapper;
+    private final RecAddScoreMapper recAddScoreMapper;
 
     /**
      * 基本信息
@@ -80,6 +89,25 @@ public class GrowthReportServiceImpl implements GrowthReportService {
             else if (excellent == 2) militaryTrainingLevel = "不合格";
         }
 
+        AtomicReference<String> username = new AtomicReference<>();
+        AtomicReference<String> avatarUrl = new AtomicReference<>();
+        Optional.ofNullable(StpUtil.getLoginId().toString())
+                .flatMap(userId -> Optional.ofNullable(userMapper.selectByPrimaryKey(Long.valueOf(userId)))
+                        .flatMap(user -> {
+                            username.set(user.getUserName());
+                            return Optional.ofNullable(user.getAvatarId());
+                        }))
+                .flatMap(avatarId -> Optional.ofNullable(fileMapper.selectById(avatarId)))
+                .flatMap(file -> {
+                    try {
+                        return Optional.ofNullable(MinioUtils.getPreSignedObjectUrl(file.getBucket(), file.getStorageName()));
+                    } catch (Exception e) {
+                        log.error("{}用户头像获取失败", username.get(), e);
+                        return Optional.empty();
+                    }
+                })
+                .ifPresent(avatarUrl::set);
+
         return GrowthReportVO.BasicInfo.builder()
                 .studentId(studentId)
                 .studentNo(student.getStudentNo())
@@ -95,6 +123,7 @@ public class GrowthReportServiceImpl implements GrowthReportService {
                 .phone(phone)
                 .academicStatus(academicStatus)
                 .militaryTrainingLevel(militaryTrainingLevel)
+                .avatarUrl(avatarUrl.get())
                 .build();
 
     }
@@ -231,6 +260,8 @@ public class GrowthReportServiceImpl implements GrowthReportService {
                 .stream().map(SyncCommunityMember::getCommunityName)
                 .collect(Collectors.toList());
 
+        BigDecimal countIdeologicalCharacterTotalScore = EthicsAndCitizenship_IdeologicalCharacterTotalScore(studentId);
+
 
         return GrowthReportVO.EthicsAndCitizenship.IdeologicalCharacter
                 .builder()
@@ -238,6 +269,7 @@ public class GrowthReportServiceImpl implements GrowthReportService {
                 .countCurrentPoliticsStudy(countCurrentPoliticsStudy.get())
                 .countSecurityRuleOfLaw(countSecurityRuleOfLaw.get())
                 .participatingSocieties(participatingSocieties)
+                .countIdeologicalCharacterTotalScore(countIdeologicalCharacterTotalScore)
                 .build();
     }
 
@@ -346,6 +378,49 @@ public class GrowthReportServiceImpl implements GrowthReportService {
                 .countAbsenteeismFromClass(countAbsenteeismFromClass.get())
                 .countNotGettingOutOnTime(countNotGettingOutOnTime.get())
                 .build();
+    }
+
+    @Override
+    public BigDecimal EthicsAndCitizenship_IdeologicalCharacterTotalScore(Integer studentId) {
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map ethicsAndCitizenshipConfig = (Map) config.get("ethicsAndCitizenship");
+
+        AtomicReference<BigDecimal> totalScore = new AtomicReference<>(BigDecimal.ZERO);
+        if (ethicsAndCitizenshipConfig != null && !ethicsAndCitizenshipConfig.isEmpty()) {
+            List<String> recCodes = new ArrayList<>();
+            Map<String, Object> ideologicalCharacterConfig = (Map<String, Object>) ethicsAndCitizenshipConfig.get("ideologicalCharacter");
+            if (ideologicalCharacterConfig != null && !ideologicalCharacterConfig.isEmpty()) {
+                ideologicalCharacterConfig.values().forEach(codes -> {
+                    if (codes instanceof List) {
+                        List<Object> list = (List<Object>) codes;
+                        list.forEach(element -> {
+                            if (element instanceof String) recCodes.add((String) element);
+                        });
+                    } else if (codes instanceof String) {
+                        recCodes.add((String) codes);
+                    }
+                });
+            }
+            if (!recCodes.isEmpty()) {
+                List<Long> ids = growthItemMapper.selectObjs(Wrappers.<GrowthItem>lambdaQuery()
+                                .select(GrowthItem::getId)
+                                .in(GrowthItem::getCode, recCodes))
+                        .stream()
+                        .map(id -> (Long) id)
+                        .collect(Collectors.toList());
+                if (!ids.isEmpty()) {
+                    recAddScoreMapper.selectObjs(Wrappers.<RecAddScore>lambdaQuery()
+                                    .select(RecAddScore::getScore)
+                                    .eq(RecAddScore::getStudentId, studentId)
+                                    .in(RecAddScore::getGrowId, ids))
+                            .stream()
+                            .map(score -> (BigDecimal) score)
+                            .reduce(BigDecimal::add)
+                            .ifPresent(totalScore::set);
+                }
+            }
+        }
+        return totalScore.get();
     }
 
     /**
@@ -842,7 +917,30 @@ public class GrowthReportServiceImpl implements GrowthReportService {
      */
     @Override
     public List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> LaborAndProfessionalism_CreditsForShiharaActivities(Integer studentId) {
-        return null;
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map laborAndProfessionalismConfig = (Map) config.get("laborAndProfessionalism");
+
+        List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> result = new ArrayList<>();
+        if (laborAndProfessionalismConfig != null && !laborAndProfessionalismConfig.isEmpty()) {
+            String creditsForShiharaActivitiesConfig = (String) laborAndProfessionalismConfig.get("creditsForShiharaActivities");
+            if (StrUtil.isNotBlank(creditsForShiharaActivitiesConfig)) {
+                List<Semester> studentSemester = semesterService.getStudentSemester(studentId);
+                studentSemester.forEach(semester -> {
+                    Long semesterId = semester.getId();
+                    boolean exists = recDefaultMapper.exists(Wrappers.<RecDefault>lambdaQuery()
+                            .eq(RecDefault::getStudentId, studentId)
+                            .eq(RecDefault::getSemesterId, semesterId));
+                    GrowthReportVO.LaborAndProfessionalism.CreditCompletion creditCompletion = GrowthReportVO.LaborAndProfessionalism.CreditCompletion
+                            .builder()
+                            .semesterId(semesterId)
+                            .semesterName(semester.getName())
+                            .completion(exists ? "已完成" : "未完成")
+                            .build();
+                    result.add(creditCompletion);
+                });
+            }
+        }
+        return result;
     }
 
     /**
@@ -850,7 +948,30 @@ public class GrowthReportServiceImpl implements GrowthReportService {
      */
     @Override
     public List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> LaborAndProfessionalism_ProductionLaborPracticeCredits(Integer studentId) {
-        return null;
+        Map config = growthReportManger.getGrowthReportConfig();
+        Map laborAndProfessionalismConfig = (Map) config.get("laborAndProfessionalism");
+
+        List<GrowthReportVO.LaborAndProfessionalism.CreditCompletion> result = new ArrayList<>();
+        if (laborAndProfessionalismConfig != null && !laborAndProfessionalismConfig.isEmpty()) {
+            String productionLaborPracticeCreditsConfig = (String) laborAndProfessionalismConfig.get("productionLaborPracticeCredits");
+            if (StrUtil.isNotBlank(productionLaborPracticeCreditsConfig)) {
+                List<Semester> studentSemester = semesterService.getStudentSemester(studentId);
+                studentSemester.forEach(semester -> {
+                    Long semesterId = semester.getId();
+                    boolean exists = recDefaultMapper.exists(Wrappers.<RecDefault>lambdaQuery()
+                            .eq(RecDefault::getStudentId, studentId)
+                            .eq(RecDefault::getSemesterId, semesterId));
+                    GrowthReportVO.LaborAndProfessionalism.CreditCompletion creditCompletion = GrowthReportVO.LaborAndProfessionalism.CreditCompletion
+                            .builder()
+                            .semesterId(semesterId)
+                            .semesterName(semester.getName())
+                            .completion(exists ? "已完成" : "未完成")
+                            .build();
+                    result.add(creditCompletion);
+                });
+            }
+        }
+        return result;
     }
 
 

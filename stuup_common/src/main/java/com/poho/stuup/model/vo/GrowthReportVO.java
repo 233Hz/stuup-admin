@@ -61,6 +61,7 @@ public class GrowthReportVO {
         private String phone;
         private String academicStatus;
         private String militaryTrainingLevel;
+        private String avatarUrl;
     }
 
     @Data
@@ -110,6 +111,11 @@ public class GrowthReportVO {
              * 参加过的社团
              */
             private List<String> participatingSocieties;
+
+            /**
+             * 思想品德总分
+             */
+            private BigDecimal countIdeologicalCharacterTotalScore;
         }
 
         @Data

@@ -2,6 +2,7 @@ package com.poho.stuup.service;
 
 import com.poho.stuup.model.vo.GrowthReportVO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface GrowthReportService {
@@ -55,6 +56,11 @@ public interface GrowthReportService {
      * 道德与公民素养-个人荣誉
      */
     GrowthReportVO.EthicsAndCitizenship.IndividualHonors EthicsAndCitizenship_IndividualHonors(Integer studentId);
+
+    /**
+     * 道德与公民素养-总分
+     */
+    BigDecimal EthicsAndCitizenship_IdeologicalCharacterTotalScore(Integer studentId);
 
     /**
      * 技能与学习素养-学科成绩
