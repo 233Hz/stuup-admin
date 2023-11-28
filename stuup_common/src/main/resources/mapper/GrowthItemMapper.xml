@@ -44,9 +44,9 @@
                l2.name            as l2_name,
                l3.name            as l3_name
         from t_growth_item gi
-                 left join t_growth l1 on first.id = gi.first_level_id
-                 left join t_growth l2 on second.id = gi.second_level_id
-                 left join t_growth l3 on third.id = gi.three_level_id
+                 left join t_growth l1 on l1.id = gi.first_level_id
+                 left join t_growth l2 on l2.id = gi.second_level_id
+                 left join t_growth l3 on l3.id = gi.three_level_id
         where gi.gatherer = 3
     </select>
 
